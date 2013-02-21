@@ -1,0 +1,6 @@
+; $Id$
+name = open_journal
+description = submit e-journal module
+package = "open_journal"
+core = 7.x
+project = "open_journal"
