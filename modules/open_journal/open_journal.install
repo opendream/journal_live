@@ -1,0 +1,26 @@
+<?php
+/*function open_journal_schema() {
+	$schema['open_journal_journal'] = array(
+    'fields' => array(
+      'jid' => array(
+        'description' => 'The primary identifier for a node.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+     'title' => array(
+        'type' => 'text',
+        'size' => 'normal'
+      ),
+     'abstract_main' => array(
+     	'type' => 'varchar',
+     	'size' => 50,
+     	'default' => 'English'
+     ),
+     'abstract_main' => array(
+     	'type' => 'varchar',
+     	'size' => 50,
+     	'default' => 'Thai'
+     ),
+     ''
+}*/

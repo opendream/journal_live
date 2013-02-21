@@ -1,0 +1,73 @@
+<?php
+function open_journal_menu() {
+  $items['journal']	= array(
+    'title' => 'Open Journal',
+    'page callback' => 'open_journal_overview',
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['journal/login'] = array(
+    'title' => 'Login',
+    'page callback' => 'open_journal_login',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_login_form.inc',
+  ); 
+  return $items;
+}
+
+function open_journal_theme() {
+
+  return array(
+    'open_journal_login' => array(
+      'variables' => array(
+        'form' => NULL,
+        'condition' => NULL,
+      ),
+      'template' => 'templates/open-journal-login', // do not include .tpl.php
+        
+    ),
+  );
+}
+
+function open_journal_permission() {
+  return array(
+    'access open journal' => array(
+      'title' => t('Access open journal'),
+      'description' => t('Perform user can lonin to join open journal.'),
+    ),
+  );
+}
+
+function open_journal_preprocess_page(&$vars) {
+
+  $mpath = drupal_get_path('module', 'open_journal');
+
+  if($_GET['q'] == 'journal/login'){
+    // TODO: change to settings upload file
+    $vars['open_journal_logo1'] = FALSE;
+    $vars['open_journal_logo2'] = $mpath.'/images/default_logo2.png';
+    $vars['disabled_title'] = TRUE;
+  }
+  else {
+
+    $vars['open_journal_logo1'] = 'open_journal_logo1';
+    $vars['open_journal_logo2'] = FALSE;
+    $vars['disabled_title'] = FALSE;
+  }
+  
+}
+
+function open_journal_overview() {
+
+  return '# Journal list';
+
+}
+
+function open_journal_login() {
+  return theme('open_journal_login', array(
+    'form' => drupal_render(drupal_get_form('open_journal_login_form')),
+    'condition' => 'CONDITION',
+  ));
+}
