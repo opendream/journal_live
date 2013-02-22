@@ -55,5 +55,17 @@ function open_journal_account_setting_form($form, &$form_state) {
   $form['#submit'][] = 'user_profile_form_submit';
 
 
+  if (variable_get('nocurrent_pass_disabled', TRUE)) {
+    // searches the #validate array for the current_pass validation function, and removes it
+    $key = array_search('user_validate_current_pass', $form['#validate']);
+    if ($key !== FALSE) {
+      unset($form['#validate'][$key]);
+    }
+    // hide the current password fields
+    $form['account']['current_pass_required_value']['#access'] = FALSE;
+    $form['account']['current_pass']['#access'] = FALSE;
+  }
+
+
   return $form;
 }

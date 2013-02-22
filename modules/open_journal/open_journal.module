@@ -113,7 +113,25 @@ function open_journal_register() {
 }
 
 function open_journal_form_user_profile_form_alter(&$form, &$form_state, $form_id) {
-  if (!$_GET['destination']) {
+  if (!isset($_GET['destination'])) {
     drupal_goto('journal/account/setting');
   }
+}
+
+function open_journal_form_user_admin_settings_alter(&$form, &$form_state) {
+  // reorder fieldset weights
+  $form['anonymous_settings']['#weight'] = -4;
+  $form['admin_role']['#weight'] = -3;
+  $form['registration_cancellation']['#weight'] = -2;
+  $form['nocurrent_pass_settings'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Require Current Password'),
+    '#weight' => -1,
+  );
+  $form['nocurrent_pass_settings']['nocurrent_pass_disabled'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Do not require current password'),
+    '#description' => t('Check this box to disable the "current password" field on the User Edit form.'),
+    '#default_value' => variable_get('nocurrent_pass_disabled', TRUE),
+  );
 }
