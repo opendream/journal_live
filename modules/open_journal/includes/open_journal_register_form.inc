@@ -206,13 +206,13 @@ function open_journal_account_form(&$form, &$form_state) {
   $form['data']['firstname'] = array(
     '#type' => 'textfield',
     '#title' => t('First name'),
-    '#default_value' => $account->data['firstname'],
+    '#default_value' => isset($account->data)? $account->data['firstname']: '',
     '#description' => t('Ex : Sommay'),
   );
   $form['data']['lastname'] = array(
     '#type' => 'textfield',
     '#title' => t('Last name'),
-    '#default_value' => $account->data['lastname'],
+    '#default_value' => isset($account->data)? $account->data['lastname']: '',
     '#description' => t('Ex : Dejai'),
   );
   
