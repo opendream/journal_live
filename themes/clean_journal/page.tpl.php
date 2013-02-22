@@ -2,7 +2,7 @@
   <?php 
   if(!empty($open_journal_logo2)):?>
     <div id="open-journal-sign-logo">
-      <img src="<?php print($open_journal_logo2);?>" alt="<?php print $site_name; ?>" />
+      <?php print $open_journal_logo2;?>
     </div>
   <?php endif;?>
 

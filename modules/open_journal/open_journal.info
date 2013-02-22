@@ -4,3 +4,5 @@ description = submit e-journal module
 package = "open_journal"
 core = 7.x
 project = "open_journal"
+
+files[] = includes/open_journal_register_form.inc

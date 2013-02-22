@@ -13,6 +13,22 @@ function open_journal_menu() {
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_login_form.inc',
+  );
+
+  $items['journal/register'] = array(
+    'title' => 'Register',
+    'page callback' => 'open_journal_register',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_register_form.inc',
+  );  
+  $items['journal/account/setting'] = array(
+    'title' => 'Setting my account',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('open_journal_account_setting_form'),
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_account_setting_form.inc',
   ); 
   return $items;
 }
@@ -28,6 +44,16 @@ function open_journal_theme() {
       'template' => 'templates/open-journal-login', // do not include .tpl.php
         
     ),
+
+    'open_journal_register' => array(
+      'variables' => array(
+        'form' => NULL,
+        'condition' => NULL,
+      ),
+      'template' => 'templates/open-journal-register', // do not include .tpl.php
+        
+    ),
+
   );
 }
 
@@ -44,15 +70,21 @@ function open_journal_preprocess_page(&$vars) {
 
   $mpath = drupal_get_path('module', 'open_journal');
 
-  if($_GET['q'] == 'journal/login'){
+  if($_GET['q'] == 'journal/login' || $_GET['q'] == 'journal/register'){
     // TODO: change to settings upload file
     $vars['open_journal_logo1'] = FALSE;
-    $vars['open_journal_logo2'] = $mpath.'/images/default_logo2.png';
+    $vars['open_journal_logo2'] = theme('image', array(
+      'path' => $mpath.'/images/default_logo2.png',
+      'alt' => variable_get('site_name', ''),
+    ));
     $vars['disabled_title'] = TRUE;
   }
   else {
 
-    $vars['open_journal_logo1'] = 'open_journal_logo1';
+    $vars['open_journal_logo1'] = theme('image', array(
+      'path' => $mpath.'/images/default_logo1.png',
+      'alt' => variable_get('site_name', ''),
+    ));
     $vars['open_journal_logo2'] = FALSE;
     $vars['disabled_title'] = FALSE;
   }
@@ -70,4 +102,18 @@ function open_journal_login() {
     'form' => drupal_render(drupal_get_form('open_journal_login_form')),
     'condition' => 'CONDITION',
   ));
+}
+
+function open_journal_register() {
+  //return drupal_render(drupal_get_form('open_journal_register_form'));
+  return theme('open_journal_register', array(
+    'form' => drupal_render(drupal_get_form('open_journal_register_form')),
+    'condition' => 'CONDITION',
+  ));
+}
+
+function open_journal_form_user_profile_form_alter(&$form, &$form_state, $form_id) {
+  if (!$_GET['destination']) {
+    drupal_goto('journal/account/setting');
+  }
 }
