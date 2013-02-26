@@ -87,6 +87,15 @@ function open_journal_permission() {
   );
 }
 
+function open_journal_preprocess_html(&$vars) {
+  if (user_is_logged_in()) {
+    $vars['header_class'] = 'header-logged-in';
+  }
+  else {
+    $vars['header_class'] = 'header-logged-out';
+  }
+}
+
 function open_journal_preprocess_page(&$vars) {
 
   $mpath = drupal_get_path('module', 'open_journal');
@@ -126,6 +135,7 @@ function open_journal_overview() {
 }
 
 function open_journal_login() {
+  drupal_add_js(drupal_get_path('module','open_journal').'/js/open_journal_compact.js');
   return theme('open_journal_login', array(
     'form' => drupal_render(drupal_get_form('open_journal_login_form')),
     'condition' => 'CONDITION',
@@ -133,7 +143,7 @@ function open_journal_login() {
 }
 
 function open_journal_register() {
-  //return drupal_render(drupal_get_form('open_journal_register_form'));
+  drupal_add_js(drupal_get_path('module','open_journal').'/js/open_journal_compact.js');
   return theme('open_journal_register', array(
     'form' => drupal_render(drupal_get_form('open_journal_register_form')),
     'condition' => 'CONDITION',
