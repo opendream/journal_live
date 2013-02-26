@@ -1,18 +1,9 @@
 
-  <?php 
-  if(!empty($open_journal_logo2)):?>
+  <?php if(!empty($open_journal_logo2)):?>
     <div id="open-journal-sign-logo">
       <?php print l($open_journal_logo2, '', array('html' => TRUE));?>
     </div>
   <?php endif;?>
-
-  <?php 
-  if(!empty($open_journal_logo1)):?>
-    <div id="open-journal-small-logo">
-      <?php print l($open_journal_logo1, '', array('html' => TRUE));?>
-    </div>
-  <?php endif;?>
-
 
   <?php if ($title && !$disabled_title): ?>
     <h1 class="page-title"><?php print $title; ?></h1>

@@ -58,8 +58,18 @@
   </div>
   
   <div id="header-profile" class="<?php print $header_class; ?>">
+    <?php if ($logged_in): ?>
+    <?php if(!empty($open_journal_logo1)):?>
+    <div id="open-journal-small-logo">
+      <?php print l($open_journal_logo1, '', array('html' => TRUE));?>
+    </div>
+    <?php endif;?>
+    <?php else: ?>
   	<p>Welcome to E-Journal</p>
+    <?php endif;?>
   </div>
+
+
   
   <!-- <div id="logged-in-header">
   	<div><srong>E-Journal</strong>ระบบจัดการวารสารออนไลน์</div>
