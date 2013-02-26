@@ -39,10 +39,10 @@ function open_journal_register_form($form, &$form_state) {
     '#value' => t('Register'),
   );
   $form['actions']['login'] = array(
-    '#markup' => l(t('Login'), OPEN_JOURNAL_PREFIX_PATH.'/login'),
+    '#markup' => l(t('Login'), OPEN_JOURNAL_PREFIX_PATH.'/login', array('attributes' => array('class' => array('link-login')))),
   );
   $form['actions']['forget'] = array(
-    '#markup' => l(t('Forget password'), '#'),
+    '#markup' => l(t('Forget password'), '#', array('attributes' => array('class' => array('link-forget')))),
   );
 
   $form['#validate'][] = 'user_register_validate';
@@ -63,6 +63,14 @@ function open_journal_account_form(&$form, &$form_state) {
 
   $account = $form['#user'];
   $register = ($form['#user']->uid > 0 ? FALSE : TRUE);
+
+  if ($register) {
+    $form['title'] = array(
+      '#markup' => '<h2>'.t('Register').'</h2>',
+      '#weight' => -50
+    );  
+  }
+
 
   $admin = user_access('administer users');
 
