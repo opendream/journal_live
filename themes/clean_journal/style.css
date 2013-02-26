@@ -1035,22 +1035,59 @@ body {
 	background: url(images/bg-body.png);
 }
 
-/* Header
+/* Header logged out
 ----------------------------------------------------------------*/
-#not-log-in-header {
+.header-logged-out {
 	background: url(images/bg-header.png) #FFF repeat-x bottom left;
 	height: 50px;
 	text-align: center;
 	overflow: hidden;
 }
-
-/* logo
-----------------------------------------------------------------*/
 #open-journal-sign-logo {
 	text-align: center;
 	margin: 50px 0;
 }
 
+/* Header logged in
+----------------------------------------------------------------*/
+.header-logged-in {
+	background: url(images/bg-header.png) #FFF repeat-x bottom left;
+	height: 80px;
+	text-align: center;
+	/*overflow: hidden;*/
+}
+.header-logged-in #header-content {
+	width: 960px;
+	margin: 0 auto;
+	position: relative;
+}
+#open-journal-small-logo {
+	float: left;
+	margin-top: 20px;
+}
+.user-manage {
+	float: right;
+	line-height: 80px;
+}
+.user-manage a.view-all-journal {
+	float: left;
+	margin-right: 30px;
+}
+.user-manage .user-dropdown {
+	float: left;
+}
+.user-manage .user-dropdown img {
+	float: left;
+	margin-right: 15px;
+	margin-top: 20px;
+}
+.user-manage .user-dropdown ul {
+	position: absolute;
+	top: 80px;
+	right: 0;
+	width: 200px;
+	z-index: 999;
+}
 /* Page layout
 ----------------------------------------------------------------*/
 #page.page-sign {
@@ -1060,7 +1097,7 @@ body {
 	padding: 0;
 }
 #page.page-normal {
-	width: 960px;
+	width: 920px;
 	margin: 0 auto;
 	background-color: transparent;
 	padding: 0;
@@ -1100,7 +1137,7 @@ body {
 	top: 16px;
 	left: 20px;
 	font-family: 'THSarabunNewRegular';
-	font-size: 22px;
+	font-size: 24px;
 }
 #open-journal-login-form label .form-required,
 #open-journal-register-form label .form-required {
@@ -1120,6 +1157,17 @@ body {
 	width: 356px;
 	font-family: 'THSarabunNewRegular';
 	font-size: 22px;
+}
+#open-journal-login-form #edit-name {
+	font-size: 28px;
+	padding: 8px 20px;
+}
+#open-journal-login-form #edit-pass {
+	color: #555;
+	font-weight: 200;
+	font-size: 24px;
+	line-height: 24px;
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", sans-serif;
 }
 #open-journal-login-form #edit-name.error,
 #open-journal-login-form #edit-pass.error,

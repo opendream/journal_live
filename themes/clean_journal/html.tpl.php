@@ -60,11 +60,25 @@
   <div id="header-profile" class="<?php print $header_class; ?>">
   	<p>Welcome to E-Journal</p>
   </div>
-  
-  <!-- <div id="logged-in-header">
-  	<div><srong>E-Journal</strong>ระบบจัดการวารสารออนไลน์</div>
-  	<div class="profile"></div>
-  </div> -->
+  <div id="header-profile" class="header-logged-in">
+  	<div id="header-content">
+  		<div id="open-journal-small-logo">
+  			<a href="/"><img typeof="foaf:Image" src="http://open_journal.local/sites/all/modules/open_journal/images/default_logo1.png" alt="E-Journal"></a>
+  		</div>
+  		<div class="user-manage">
+  			<a href="#" class="view-all-journal">View My Journal</a>
+  			<div class="user-dropdown">
+  				<img src="/sites/default/files/benz-avatar.png" alt="benz-profile-image" />
+  				<a href="#" class="dropdown-link">Benz Gimmik</a>
+  				<ul class="dropdown active-dropdown">
+  				  <li>แก้ไขข้อมูล</li>
+  				  <li>ออกจากระบบ</li>
+  				</ul>
+  			</div>
+  		</div>
+  	</div>	  
+  </div>
+
   <?php print $page_top; ?>
   <?php print $page; ?>
   <?php print $page_bottom; ?>
