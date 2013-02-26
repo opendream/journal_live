@@ -19,7 +19,7 @@
   <?php endif; ?>
 
 
-  <div id="page">
+  <div id="page" class="<?php print $page_class; ?>">
     <div id="content" class="clearfix">
       <?php if ($messages): ?>
         <div id="console" class="clearfix"><?php print $messages; ?></div>

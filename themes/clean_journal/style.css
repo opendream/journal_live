@@ -1006,14 +1006,14 @@ body {
 
 /* logo
 ----------------------------------------------------------------*/
-.not-logged-in #open-journal-sign-logo {
+#open-journal-sign-logo {
 	text-align: center;
 	margin: 50px 0;
 }
 
 /* Login and Register page layout
 ----------------------------------------------------------------*/
-.not-logged-in #page {
+#page.page-sign {
 	width: 436px;
 	margin: 0 auto;
 	background-color: transparent;
