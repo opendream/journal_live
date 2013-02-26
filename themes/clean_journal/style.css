@@ -3,7 +3,7 @@
  * Generic elements.
  */
 body {
-  color: #000;
+  color: #111111;
   background: #fff;
   font: normal 81.3%/1.538em "Lucida Grande", "Lucida Sans Unicode", sans-serif;
 }
@@ -986,4 +986,192 @@ div.add-or-remove-shortcuts {
   -moz-border-radius: 8px;
   -webkit-border-radius: 8px;
   border-radius: 8px;
+}
+
+/* Open Journal 
+----------------------------------------------------------------*/
+body {
+	color: #111;
+	background: url(images/bg-body.png);
+}
+
+/* Header
+----------------------------------------------------------------*/
+#not-log-in-header {
+	background: url(images/bg-header.png) #FFF repeat-x bottom left;
+	height: 50px;
+	text-align: center;
+	overflow: hidden;
+}
+
+/* logo
+----------------------------------------------------------------*/
+.not-logged-in #open-journal-sign-logo {
+	text-align: center;
+	margin: 50px 0;
+}
+
+/* Login and Register page layout
+----------------------------------------------------------------*/
+.not-logged-in #page {
+	width: 436px;
+	margin: 0 auto;
+	background-color: transparent;
+	padding: 0;
+}
+
+/* Form Style
+----------------------------------------------------------------*/
+#open-journal-login-form,
+#open-journal-register-form {
+	padding: 20px;
+	background-color: #FFF;
+	display: block;
+	box-shadow: 2px 2px 5px #DADADA;
+	margin-bottom: 40px;
+	float:left;
+}
+#open-journal-login-form h2,
+#open-journal-register-form h2 {
+	background: url(images/ic.png) no-repeat 2px 6px;
+	padding-left: 20px;
+	text-transform: uppercase;
+	margin-bottom: 20px;
+}
+#open-journal-login-form .form-item,
+#open-journal-register-form .form-item {
+	position: relative;
+	margin: 0;
+	padding: 0;
+	margin-bottom: 20px;
+}
+#open-journal-login-form label,
+#open-journal-register-form label {
+	color: #acacac;
+	position: absolute;
+	top: 16px;
+	left: 20px;
+}
+#open-journal-login-form label .form-required,
+#open-journal-register-form label .form-required {
+	display: none;
+}
+#open-journal-login-form #edit-name,
+#open-journal-login-form #edit-pass,
+#open-journal-register-form #edit-name,
+#open-journal-register-form #edit-mail,
+#open-journal-register-form #edit-data-firstname,
+#open-journal-register-form #edit-data-lastname {
+	padding: 18px 20px;
+	border: none;
+	background: #f1f1f1;
+	color: #111;
+	width: 356px;
+	font-size: 13px;
+	font-weight: bold;
+}
+#open-journal-login-form #edit-name.error,
+#open-journal-login-form #edit-pass.error,
+#open-journal-register-form #edit-name.error,
+#open-journal-register-form #edit-mail.error,
+#open-journal-register-form #edit-data-firstname.error,
+#open-journal-register-form #edit-data-lastname.error {
+	border: 2px solid red;
+	padding: 16px 18px;
+}
+#open-journal-login-form .form-actions,
+#open-journal-register-form .form-actions {
+	margin: 0;
+	display: block;
+}
+#open-journal-login-form .form-submit,
+#open-journal-register-form .form-submit {
+	border-radius: 0;
+	-moz-border-radius: 0;
+	-webkit-border-radius: 0;
+	border: none;
+	background-color: #55b0d6;
+	color: #FFF;
+	text-transform: uppercase;
+	padding: 8px 17px;
+	float: left;
+	margin-bottom: 0;
+}
+#open-journal-login-form .form-submit:hover,
+#open-journal-register-form .form-submit:hover {
+	background-color: #4084a0;
+}
+.link-login,
+.link-register,
+.link-forget {
+	color: #909090;
+	text-transform: uppercase;
+	line-height: 33px;
+}
+.link-login,
+.link-register {
+	border-right: 1px solid #909090;
+	padding-right: 10px;
+}
+.link-forget {
+	padding-left: 10px;
+}
+
+/* register Form fixed
+----------------------------------------------------------------*/
+#open-journal-register-form fieldset {
+	border: none;
+	padding: 0;
+	margin: 0;
+}
+#open-journal-register-form fieldset .fieldset-wrapper {
+	padding: 0;
+}
+#open-journal-register-form fieldset#edit-data {
+	padding-top: 5px;
+}
+#open-journal-register-form fieldset#edit-data .fieldset-legend {
+	padding-left: 0;
+	position: relative;
+	text-align: left;
+	margin-left: 0;
+}
+#open-journal-register-form .fieldset-description {
+	color: #ACACAC;
+	margin-bottom: 15px;
+}
+#open-journal-register-form .description {
+	color: #acacac;
+	margin-top: 5px;
+}
+/* Member Condition 
+----------------------------------------------------------------*/
+#member-condition {
+	background: url(images/ic.png) no-repeat 2px 6px;
+	padding-left: 20px;
+	float: left;
+}
+#member-condition  h3 {
+	color: #767676;
+	text-transform: uppercase;
+	margin-top: 0;
+}
+#member-condition  div {
+	color: #929292;
+}
+
+/* Footer
+----------------------------------------------------------------*/
+#footer {
+	height: 84px;
+	background: #FFF;
+	border-top: 1px solid #ebebeb;
+	color: #55b0d6;
+	text-align: center;
+	line-height: 84px;
+	margin: 0;
+	margin-top: 50px;
+}
+#footer p {
+	margin: 0;
 }

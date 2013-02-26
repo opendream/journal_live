@@ -28,10 +28,10 @@ function open_journal_login_form($form_state) {
     '#value' => t('Submit'),
   );
   $form['actions']['register'] = array(
-    '#markup' => l(t('Register'), 'journal/register'),
+    '#markup' => l(t('Register'), 'journal/register', array('attributes' => array('class' => array('link-register')))),
   );
   $form['actions']['forget'] = array(
-    '#markup' => l(t('Forget password'), '#'),
+    '#markup' => l(t('Forget password'), '#', array('attributes' => array('class' => array('link-forget')))),
   );
 
   $form['#theme'] = 'open_journal_login_form';
