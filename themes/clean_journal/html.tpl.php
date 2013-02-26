@@ -57,26 +57,32 @@
     <a href="#main-content" class="element-invisible element-focusable"><?php print t('Skip to main content'); ?></a>
   </div>
   
+
   <div id="header-profile" class="<?php print $header_class; ?>">
+
+    <?php if ($logged_in): ?>
+    <div id="header-content">
+      <?php if(!empty($open_journal_logo1)):?>
+      <div id="open-journal-small-logo">
+        <?php print l($open_journal_logo1, '', array('html' => TRUE));?>
+      </div>
+      <div class="user-manage">
+        <a href="#" class="view-all-journal">View My Journal</a>
+        <div class="user-dropdown">
+          <img src="/sites/default/files/benz-avatar.png" alt="benz-profile-image" />
+          <a href="#" class="dropdown-link">Benz Gimmik</a>
+          <ul class="dropdown active-dropdown">
+            <li>แก้ไขข้อมูล</li>
+            <li>ออกจากระบบ</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <?php endif;?>
+    <?php else: ?>
   	<p>Welcome to E-Journal</p>
-  </div>
-  <div id="header-profile" class="header-logged-in">
-  	<div id="header-content">
-  		<div id="open-journal-small-logo">
-  			<a href="/"><img typeof="foaf:Image" src="http://open_journal.local/sites/all/modules/open_journal/images/default_logo1.png" alt="E-Journal"></a>
-  		</div>
-  		<div class="user-manage">
-  			<a href="#" class="view-all-journal">View My Journal</a>
-  			<div class="user-dropdown">
-  				<img src="/sites/default/files/benz-avatar.png" alt="benz-profile-image" />
-  				<a href="#" class="dropdown-link">Benz Gimmik</a>
-  				<ul class="dropdown active-dropdown">
-  				  <li>แก้ไขข้อมูล</li>
-  				  <li>ออกจากระบบ</li>
-  				</ul>
-  			</div>
-  		</div>
-  	</div>	  
+    <?php endif;?>
+
   </div>
 
   <?php print $page_top; ?>

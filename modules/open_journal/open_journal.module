@@ -1,9 +1,21 @@
 <?php
 
 define('OPEN_JOURNAL_PREFIX_PATH', 'journal');
-define('OPEN_JOURNAL_SUB_LANG', 'Thai');
+
+define('OPEN_JOURNAL_SUB_LANG_ENABLE', TRUE);
 define('OPEN_JOURNAL_SUB_LANG_CODE', 'th');
+define('OPEN_JOURNAL_SUB_LANG_TEXT', 'ไทย');
+define('OPEN_JOURNAL_SUB_LANG_ABSTRACT_LABEL', 'บทคัดย่อ');
+define('OPEN_JOURNAL_SUB_LANG_KEYWORDS_LABEL', 'คำสำคัญ');
+
+define('OPEN_JOURNAL_SUB_LANG_ABSTRACT_REQUIRED', TRUE);
+define('OPEN_JOURNAL_SUB_LANG_KEYWORDS_REQUIRED', TRUE);
+define('OPEN_JOURNAL_ABSTRACT_REQUIRED', TRUE);
+define('OPEN_JOURNAL_KEYWORDS_REQUIRED', TRUE);
+
 define('OPEN_JOURNAL_ABSTRACT_MAX_LENGTH', 500);
+define('OPEN_JOURNAL_MAX_MULTI_TEXTFIELD', 10);
+
 define('OPEN_JOURNAL_ALLOWED_FILE_TYPE', 'doc  docx');
 
 function open_journal_menu() {
@@ -90,10 +102,13 @@ function open_journal_permission() {
 function open_journal_preprocess_html(&$vars) {
   if (user_is_logged_in()) {
     $vars['header_class'] = 'header-logged-in';
+    $vars['logged_in'] = TRUE;
   }
   else {
     $vars['header_class'] = 'header-logged-out';
+    $vars['logged_in'] = FALSE;
   }
+  open_journal_preprocess_page($vars);
 }
 
 function open_journal_preprocess_page(&$vars) {
