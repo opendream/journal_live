@@ -987,6 +987,46 @@ div.add-or-remove-shortcuts {
   -webkit-border-radius: 8px;
   border-radius: 8px;
 }
+/* Custom CSS 
+----------------------------------------------------------------*/
+
+/* -- Font -- */
+
+@font-face {
+    font-family: 'THSarabunNewBold';
+    src: url('fonts/thsarabunnew_bold-webfont.eot');
+    src: url('fonts/thsarabunnew_bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/thsarabunnew_bold-webfont.woff') format('woff'),
+         url('fonts/thsarabunnew_bold-webfont.ttf') format('truetype'),
+         url('fonts/thsarabunnew_bold-webfont.svg#THSarabunNewBold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'THSarabunNewRegular';
+    src: url('fonts/thsarabunnew-webfont.eot');
+    src: url('fonts/thsarabunnew-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/thsarabunnew-webfont.woff') format('woff'),
+         url('fonts/thsarabunnew-webfont.ttf') format('truetype'),
+         url('fonts/thsarabunnew-webfont.svg#THSarabunNewRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'THSarabunNewBold';
+  margin: 10px 0;
+}
+
+div.messages ul li {
+	word-wrap: break-word;
+} 
 
 /* Open Journal 
 ----------------------------------------------------------------*/
@@ -1011,10 +1051,16 @@ body {
 	margin: 50px 0;
 }
 
-/* Login and Register page layout
+/* Page layout
 ----------------------------------------------------------------*/
 #page.page-sign {
 	width: 436px;
+	margin: 0 auto;
+	background-color: transparent;
+	padding: 0;
+}
+#page.page-normal {
+	width: 960px;
 	margin: 0 auto;
 	background-color: transparent;
 	padding: 0;
@@ -1023,20 +1069,22 @@ body {
 /* Form Style
 ----------------------------------------------------------------*/
 #open-journal-login-form,
-#open-journal-register-form {
+#open-journal-register-form,
+.page-user-reset #page,
+#page.page-normal {
 	padding: 20px;
 	background-color: #FFF;
 	display: block;
 	box-shadow: 2px 2px 5px #DADADA;
 	margin-bottom: 40px;
-	float:left;
 }
 #open-journal-login-form h2,
 #open-journal-register-form h2 {
-	background: url(images/ic.png) no-repeat 2px 6px;
+	background: url(images/ic.png) no-repeat 2px 4px;
 	padding-left: 20px;
 	text-transform: uppercase;
 	margin-bottom: 20px;
+	font-size: 22px;
 }
 #open-journal-login-form .form-item,
 #open-journal-register-form .form-item {
@@ -1051,24 +1099,27 @@ body {
 	position: absolute;
 	top: 16px;
 	left: 20px;
+	font-family: 'THSarabunNewRegular';
+	font-size: 22px;
 }
 #open-journal-login-form label .form-required,
 #open-journal-register-form label .form-required {
 	display: none;
 }
+
 #open-journal-login-form #edit-name,
 #open-journal-login-form #edit-pass,
 #open-journal-register-form #edit-name,
 #open-journal-register-form #edit-mail,
 #open-journal-register-form #edit-data-firstname,
 #open-journal-register-form #edit-data-lastname {
-	padding: 18px 20px;
+	padding: 11px 20px;
 	border: none;
 	background: #f1f1f1;
 	color: #111;
 	width: 356px;
-	font-size: 13px;
-	font-weight: bold;
+	font-family: 'THSarabunNewRegular';
+	font-size: 22px;
 }
 #open-journal-login-form #edit-name.error,
 #open-journal-login-form #edit-pass.error,
@@ -1077,15 +1128,15 @@ body {
 #open-journal-register-form #edit-data-firstname.error,
 #open-journal-register-form #edit-data-lastname.error {
 	border: 2px solid red;
-	padding: 16px 18px;
+	padding: 8px 18px;
 }
+
 #open-journal-login-form .form-actions,
 #open-journal-register-form .form-actions {
 	margin: 0;
 	display: block;
 }
-#open-journal-login-form .form-submit,
-#open-journal-register-form .form-submit {
+input.form-submit {
 	border-radius: 0;
 	-moz-border-radius: 0;
 	-webkit-border-radius: 0;
@@ -1097,8 +1148,7 @@ body {
 	float: left;
 	margin-bottom: 0;
 }
-#open-journal-login-form .form-submit:hover,
-#open-journal-register-form .form-submit:hover {
+input.form-submit:hover {
 	background-color: #4084a0;
 }
 .link-login,
@@ -1147,7 +1197,7 @@ body {
 /* Member Condition 
 ----------------------------------------------------------------*/
 #member-condition {
-	background: url(images/ic.png) no-repeat 2px 6px;
+	background: url(images/ic.png) no-repeat 2px 4px;
 	padding-left: 20px;
 	float: left;
 }
@@ -1155,6 +1205,7 @@ body {
 	color: #767676;
 	text-transform: uppercase;
 	margin-top: 0;
+	font-size: 22px;
 }
 #member-condition  div {
 	color: #929292;
@@ -1163,6 +1214,7 @@ body {
 /* Footer
 ----------------------------------------------------------------*/
 #footer {
+	width: 100%;
 	height: 84px;
 	background: #FFF;
 	border-top: 1px solid #ebebeb;
@@ -1171,7 +1223,10 @@ body {
 	line-height: 84px;
 	margin: 0;
 	margin-top: 50px;
+	float: left;
 }
 #footer p {
 	margin: 0;
+	font-family: 'THSarabunNewRegular';
+	font-size: 18px;
 }

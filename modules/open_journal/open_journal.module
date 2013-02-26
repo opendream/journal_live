@@ -91,7 +91,12 @@ function open_journal_preprocess_page(&$vars) {
 
   $mpath = drupal_get_path('module', 'open_journal');
 
-  if(in_array($_GET['q'], array(OPEN_JOURNAL_PREFIX_PATH.'/login', OPEN_JOURNAL_PREFIX_PATH.'/register'))) {
+  if(in_array($_GET['q'], array(
+      OPEN_JOURNAL_PREFIX_PATH.'/login', 
+      OPEN_JOURNAL_PREFIX_PATH.'/register')
+    ) || 
+    (arg(0) == 'user' && arg(1) == 'reset')
+  ) {
     // TODO: change to settings upload file
     $vars['open_journal_logo1'] = FALSE;
     $vars['open_journal_logo2'] = theme('image', array(
