@@ -57,7 +57,7 @@
     <a href="#main-content" class="element-invisible element-focusable"><?php print t('Skip to main content'); ?></a>
   </div>
   
-  <div id="not-log-in-header">
+  <div id="header-profile" class="<?php print $header_class; ?>">
   	<p>Welcome to E-Journal</p>
   </div>
   

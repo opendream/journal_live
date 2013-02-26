@@ -54,7 +54,7 @@ function open_journal_login_validate($form, &$form_state) {
   $account = db_query("SELECT * FROM {users} WHERE (name = :name OR mail = :name) AND status = 1", array(':name' => $form_state['values']['name']))->fetchObject();
 
   // copy from user_login_name_validate
-  if (isset($form_state['values']['name']) && user_is_blocked($account->name)) {
+  if (isset($form_state['values']['name']) && $account && user_is_blocked($account->name)) {
     // Blocked in user administration.
     form_set_error('name', t('The username or email %name has not been activated or is blocked.', array('%name' => $form_state['values']['name'])));
   }
@@ -124,7 +124,13 @@ function open_journal_login_validate($form, &$form_state) {
     }
     else {
       form_set_error('name', t('Sorry, unrecognized username or password. <a href="@password">Have you forgotten your password?</a>', array('@password' => url('user/password'))));
-      watchdog('user', 'Login attempt failed for %user.', array('%user' => $account->name));
+      if ($account) {
+        watchdog('user', 'Login attempt failed for %user.', array('%user' => $account->name));
+      }
+      else {
+        watchdog('user', 'Login attempt failed for user.');
+
+      }
     }
   }
   elseif (isset($form_state['flood_control_user_identifier'])) {
