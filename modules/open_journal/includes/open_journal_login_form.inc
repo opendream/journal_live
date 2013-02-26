@@ -28,7 +28,7 @@ function open_journal_login_form($form_state) {
     '#value' => t('Submit'),
   );
   $form['actions']['register'] = array(
-    '#markup' => l(t('Register'), 'journal/register'),
+    '#markup' => l(t('Register'), OPEN_JOURNAL_PREFIX_PATH.'/register'),
   );
   $form['actions']['forget'] = array(
     '#markup' => l(t('Forget password'), '#'),

@@ -1,13 +1,20 @@
 <?php
+
+define('OPEN_JOURNAL_PREFIX_PATH', 'journal');
+define('OPEN_JOURNAL_SUB_LANG', 'Thai');
+define('OPEN_JOURNAL_SUB_LANG_CODE', 'th');
+define('OPEN_JOURNAL_ABSTRACT_MAX_LENGTH', 500);
+define('OPEN_JOURNAL_ALLOWED_FILE_TYPE', 'doc  docx');
+
 function open_journal_menu() {
-  $items['journal']	= array(
+  $items[OPEN_JOURNAL_PREFIX_PATH]	= array(
     'title' => 'Open Journal',
     'page callback' => 'open_journal_overview',
     'access arguments' => array('access open journal'),
     'type' => MENU_CALLBACK,
   );
 
-  $items['journal/login'] = array(
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/login'] = array(
     'title' => 'Login',
     'page callback' => 'open_journal_login',
     'access callback' => TRUE,
@@ -15,20 +22,28 @@ function open_journal_menu() {
     'file' => 'includes/open_journal_login_form.inc',
   );
 
-  $items['journal/register'] = array(
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/register'] = array(
     'title' => 'Register',
     'page callback' => 'open_journal_register',
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_register_form.inc',
   );  
-  $items['journal/account/setting'] = array(
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/account/setting'] = array(
     'title' => 'Setting my account',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('open_journal_account_setting_form'),
     'access arguments' => array('access open journal'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_account_setting_form.inc',
+  );
+
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/add'] = array(
+    'title' => 'Add new journal',
+    'page callback' => 'open_journal_information',
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_information_form.inc',
   ); 
   return $items;
 }
@@ -41,8 +56,7 @@ function open_journal_theme() {
         'form' => NULL,
         'condition' => NULL,
       ),
-      'template' => 'templates/open-journal-login', // do not include .tpl.php
-        
+      'template' => 'templates/open-journal-login',
     ),
 
     'open_journal_register' => array(
@@ -50,8 +64,15 @@ function open_journal_theme() {
         'form' => NULL,
         'condition' => NULL,
       ),
-      'template' => 'templates/open-journal-register', // do not include .tpl.php
-        
+      'template' => 'templates/open-journal-register',
+    ),
+
+    'open_journal_detail' => array(
+      'variables' => array(
+        'jid' => NULL,
+        'content' => NULL,
+      ),
+      'template' => 'templates/open-journal-detail',
     ),
 
   );
@@ -70,7 +91,7 @@ function open_journal_preprocess_page(&$vars) {
 
   $mpath = drupal_get_path('module', 'open_journal');
 
-  if($_GET['q'] == 'journal/login' || $_GET['q'] == 'journal/register'){
+  if($_GET['q'] == OPEN_JOURNAL_PREFIX_PATH.'/login' || $_GET['q'] == OPEN_JOURNAL_PREFIX_PATH.'/register'){
     // TODO: change to settings upload file
     $vars['open_journal_logo1'] = FALSE;
     $vars['open_journal_logo2'] = theme('image', array(
@@ -93,7 +114,7 @@ function open_journal_preprocess_page(&$vars) {
 
 function open_journal_overview() {
 
-  return '# Journal list';
+  return '# Journal list'.l('add', OPEN_JOURNAL_PREFIX_PATH.'/add');
 
 }
 
@@ -114,7 +135,7 @@ function open_journal_register() {
 
 function open_journal_form_user_profile_form_alter(&$form, &$form_state, $form_id) {
   if (!isset($_GET['destination'])) {
-    drupal_goto('journal/account/setting');
+    drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/account/setting');
   }
 }
 
@@ -134,4 +155,13 @@ function open_journal_form_user_admin_settings_alter(&$form, &$form_state) {
     '#description' => t('Check this box to disable the "current password" field on the User Edit form.'),
     '#default_value' => variable_get('nocurrent_pass_disabled', TRUE),
   );
+}
+
+function open_journal_information() {
+
+  $output =  theme('open_journal_detail', array(
+    'content' => drupal_render(drupal_get_form('open_journal_information_form')),
+  ));
+
+  return $output;
 }

@@ -39,7 +39,7 @@ function open_journal_register_form($form, &$form_state) {
     '#value' => t('Register'),
   );
   $form['actions']['login'] = array(
-    '#markup' => l(t('Login'), 'journal/login'),
+    '#markup' => l(t('Login'), OPEN_JOURNAL_PREFIX_PATH.'/login'),
   );
   $form['actions']['forget'] = array(
     '#markup' => l(t('Forget password'), '#'),
@@ -206,13 +206,13 @@ function open_journal_account_form(&$form, &$form_state) {
   $form['data']['firstname'] = array(
     '#type' => 'textfield',
     '#title' => t('First name'),
-    '#default_value' => isset($account->data)? $account->data['firstname']: '',
+    '#default_value' => isset($account->data) && isset($account->data['firstname'])? $account->data['firstname']: '',
     '#description' => t('Ex : Sommay'),
   );
   $form['data']['lastname'] = array(
     '#type' => 'textfield',
     '#title' => t('Last name'),
-    '#default_value' => isset($account->data)? $account->data['lastname']: '',
+    '#default_value' => isset($account->data) && isset($account->data['lastname'])? $account->data['lastname']: '',
     '#description' => t('Ex : Dejai'),
   );
   
