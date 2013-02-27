@@ -72,8 +72,8 @@
           <img src="/sites/default/files/benz-avatar.png" alt="benz-profile-image" />
           <a href="#" class="dropdown-link">Benz Gimmik</a>
           <ul class="dropdown active-dropdown">
-            <li>แก้ไขข้อมูล</li>
-            <li>ออกจากระบบ</li>
+            <li><a href="#">แก้ไขข้อมูล</a></li>
+            <li><a href="/user/logout">ออกจากระบบ</a></li>
           </ul>
         </div>
       </div>
