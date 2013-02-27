@@ -57,24 +57,34 @@
     <a href="#main-content" class="element-invisible element-focusable"><?php print t('Skip to main content'); ?></a>
   </div>
   
+
   <div id="header-profile" class="<?php print $header_class; ?>">
+
     <?php if ($logged_in): ?>
-    <?php if(!empty($open_journal_logo1)):?>
-    <div id="open-journal-small-logo">
-      <?php print l($open_journal_logo1, '', array('html' => TRUE));?>
+    <div id="header-content">
+      <?php if(!empty($open_journal_logo1)):?>
+      <div id="open-journal-small-logo">
+        <?php print l($open_journal_logo1, '', array('html' => TRUE));?>
+      </div>
+      <div class="user-manage">
+        <a href="#" class="view-all-journal">View My Journal</a>
+        <div class="user-dropdown">
+          <img src="/sites/default/files/benz-avatar.png" alt="benz-profile-image" />
+          <a href="#" class="dropdown-link">Benz Gimmik</a>
+          <ul class="dropdown active-dropdown">
+            <li><a href="#">แก้ไขข้อมูล</a></li>
+            <li><a href="/user/logout">ออกจากระบบ</a></li>
+          </ul>
+        </div>
+      </div>
     </div>
     <?php endif;?>
     <?php else: ?>
   	<p>Welcome to E-Journal</p>
     <?php endif;?>
+
   </div>
 
-
-  
-  <!-- <div id="logged-in-header">
-  	<div><srong>E-Journal</strong>ระบบจัดการวารสารออนไลน์</div>
-  	<div class="profile"></div>
-  </div> -->
   <?php print $page_top; ?>
   <?php print $page; ?>
   <?php print $page_bottom; ?>

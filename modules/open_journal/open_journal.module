@@ -27,14 +27,14 @@ define('OPEN_JOURNAL_STATUS_INFORMATION_APPROVE', 0);
 
 function open_journal_menu() {
   $items[OPEN_JOURNAL_PREFIX_PATH]	= array(
-    'title' => 'Open Journal',
-    'page callback' => 'open_journal_overview',
+    'title' => t('Journal list'),
+    'page callback' => 'open_journal_list',
     'access arguments' => array('access open journal'),
     'type' => MENU_CALLBACK,
   );
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/login'] = array(
-    'title' => 'Login',
+    'title' => t('Login'),
     'page callback' => 'open_journal_login',
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
@@ -42,14 +42,14 @@ function open_journal_menu() {
   );
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/register'] = array(
-    'title' => 'Register',
+    'title' => t('Register'),
     'page callback' => 'open_journal_register',
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_register_form.inc',
   );  
   $items[OPEN_JOURNAL_PREFIX_PATH.'/account/setting'] = array(
-    'title' => 'Setting my account',
+    'title' => t('Setting my account'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('open_journal_account_setting_form'),
     'access arguments' => array('access open journal'),
@@ -58,11 +58,43 @@ function open_journal_menu() {
   );
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/add'] = array(
-    'title' => 'Add new journal',
+    'title' => t('Add new journal'),
     'page callback' => 'open_journal_information',
     'access arguments' => array('access open journal'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_information_form.inc',
+  ); 
+
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/%/overview'] = array(
+    'title' => t('Overview'),
+    'page callback' => 'open_journal_overview',
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_overview.inc',
+  ); 
+
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/%/discussion'] = array(
+    'title' => t('Discussions'),
+    'page callback' => 'open_journal_discussion_form',
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_discussion_form.inc',
+  ); 
+
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/%/file'] = array(
+    'title' => t('Files'),
+    'page callback' => 'open_journal_file',
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_file.inc',
+  ); 
+
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/%/people'] = array(
+    'title' => t('Peoples'),
+    'page callback' => 'open_journal_people',
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_people_form.inc',
   ); 
   return $items;
 }
@@ -92,6 +124,66 @@ function open_journal_theme() {
         'content' => NULL,
       ),
       'template' => 'templates/open-journal-detail',
+    ),
+
+    'open_journal_overview_content' => array(
+      'variables' => array(
+        'jid' => NULL,
+        'abstract' => NULL,
+        'latest_file' => NULL,
+        'discussion_list' => NULL,
+      ),
+      'template' => 'templates/open-journal-overview-content',
+    ),
+
+    'open_journal_overview_sidebar' => array(
+      'variables' => array(
+        'jid' => NULL,
+        'status'=> NULL,
+        'people_list'=> NULL,
+        'information'=> NULL,
+      ),
+      'template' => 'templates/open-journal-overview-sidebar',
+    ),
+
+    'open_journal_discussion' => array(
+      'variables' => array(
+        'jid' => NULL,
+        'discussion_list' => NULL,
+      ),
+      'template' => 'templates/open-journal-discussion',
+    ),
+
+    'open_journal_status_form' => array(
+      'variables' => array(
+        'jid' => NULL,
+        'form' => NULL,
+      ),
+      'template' => 'templates/open-journal-status-form',
+    ),
+
+    'open_journal_file' => array(
+      'variables' => array(
+        'jid' => NULL,
+        'file_list' => NULL,
+      ),
+      'template' => 'templates/open-journal-file',
+    ),
+
+    'open_journal_people' => array(
+      'variables' => array(
+        'jid' => NULL,
+        'people_creator_list' => NULL,
+        'people_contributor_list' => NULL,
+      ),
+      'template' => 'templates/open-journal-people',
+    ),
+
+    'open_journal_list' => array(
+      'variables' => array(
+        'journal_list' => NULL,
+      ),
+      'template' => 'templates/open-journal-list',
     ),
 
   );
@@ -150,14 +242,13 @@ function open_journal_preprocess_page(&$vars) {
     $vars['open_journal_logo2'] = FALSE;
     $vars['disabled_title'] = FALSE;
     $vars['page_class'] = 'page-normal';
+
+    if ($_GET['q'] == OPEN_JOURNAL_PREFIX_PATH || $_GET['q'] == OPEN_JOURNAL_PREFIX_PATH.'/list') {
+      $vars['page_class'] = 'page-normal page-journal-list';
+    }
+
   }
   
-}
-
-function open_journal_overview() {
-
-  return '# Journal list'.l('add', OPEN_JOURNAL_PREFIX_PATH.'/add');
-
 }
 
 function open_journal_login() {
@@ -202,9 +293,40 @@ function open_journal_form_user_admin_settings_alter(&$form, &$form_state) {
 
 function open_journal_information() {
 
-  $output =  theme('open_journal_detail', array(
+  return theme('open_journal_detail', array(
     'content' => drupal_render(drupal_get_form('open_journal_information_form')),
   ));
+}
 
-  return $output;
+function open_journal_overview() {
+  return theme('open_journal_detail', array(
+    'content' => theme('open_journal_overview_content'),
+    'sidebar' => theme('open_journal_overview_sidebar'),
+  ));
+}
+
+function open_journal_discussion() {
+  return theme('open_journal_detail', array(
+    'content' => theme('open_journal_discussion'),
+    'sidebar' => theme('open_journal_status_form'),
+  ));
+}
+
+function open_journal_file() {
+  return theme('open_journal_detail', array(
+    'content' => theme('open_journal_file'),
+  ));
+}
+
+function open_journal_people() {
+  return theme('open_journal_detail', array(
+    'content' => theme('open_journal_people'),
+  ));
+}
+
+function open_journal_list() {
+  drupal_set_title('');
+  return theme('open_journal_list', array(
+    'journal_list' => array(),
+  ));
 }
