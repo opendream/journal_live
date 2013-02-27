@@ -1,5 +1,7 @@
 <?php
 
+// Convert to admin settings
+
 define('OPEN_JOURNAL_PREFIX_PATH', 'journal');
 
 define('OPEN_JOURNAL_SUB_LANG_ENABLE', TRUE);
@@ -13,10 +15,15 @@ define('OPEN_JOURNAL_SUB_LANG_KEYWORDS_REQUIRED', TRUE);
 define('OPEN_JOURNAL_ABSTRACT_REQUIRED', TRUE);
 define('OPEN_JOURNAL_KEYWORDS_REQUIRED', TRUE);
 
-define('OPEN_JOURNAL_ABSTRACT_MAX_LENGTH', 500);
+define('OPEN_JOURNAL_ABSTRACT_MAX_LENGTH', 10);
 define('OPEN_JOURNAL_MAX_MULTI_TEXTFIELD', 10);
 
-define('OPEN_JOURNAL_ALLOWED_FILE_TYPE', 'doc  docx');
+
+// Constant
+
+define('OPEN_JOURNAL_ALLOWED_FILE_TYPE', 'doc docx');
+
+define('OPEN_JOURNAL_STATUS_INFORMATION_APPROVE', 0);
 
 function open_journal_menu() {
   $items[OPEN_JOURNAL_PREFIX_PATH]	= array(
@@ -95,6 +102,10 @@ function open_journal_permission() {
     'access open journal' => array(
       'title' => t('Access open journal'),
       'description' => t('Perform user can lonin to join open journal.'),
+    ),
+    'update final url field' => array(
+      'title' => t('Update final URL field'),
+      'description' => t('Perform user can update URL field. Recommented for librarian role.'),
     ),
   );
 }
