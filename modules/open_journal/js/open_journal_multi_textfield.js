@@ -2,7 +2,7 @@ jQuery(document).ready(function () {
 
   $ = jQuery;
   $('.multi-textfield').each(function () {
-    if (!$(this).hasClass('multi-textfield-0') && !$(this).hasClass('multi-textfield-1')) {
+    if (!$(this).hasClass('multi-textfield-0') && !$(this).hasClass('multi-textfield-1') && $(this).val() == '') {
       $(this).parent('.form-type-textfield').hide();
     }
   });

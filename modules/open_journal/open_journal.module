@@ -26,6 +26,9 @@ define('OPEN_JOURNAL_ALLOWED_FILE_TYPE', 'doc docx');
 define('OPEN_JOURNAL_STATUS_INFORMATION_APPROVE', 0);
 
 function open_journal_menu() {
+
+  $arg = count(explode('/', OPEN_JOURNAL_PREFIX_PATH));
+
   $items[OPEN_JOURNAL_PREFIX_PATH]	= array(
     'title' => t('Journal list'),
     'page callback' => 'open_journal_list',
@@ -63,9 +66,18 @@ function open_journal_menu() {
     'access arguments' => array('access open journal'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_information_form.inc',
+  );
+
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/edit'] = array(
+    'title' => t('Edit journal'),
+    'page callback' => 'open_journal_information',
+    'page arguments' => array($arg),
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_information_form.inc',
   ); 
 
-  $items[OPEN_JOURNAL_PREFIX_PATH.'/%/overview'] = array(
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/overview'] = array(
     'title' => t('Overview'),
     'page callback' => 'open_journal_overview',
     'access arguments' => array('access open journal'),
@@ -73,7 +85,7 @@ function open_journal_menu() {
     'file' => 'includes/open_journal_overview.inc',
   ); 
 
-  $items[OPEN_JOURNAL_PREFIX_PATH.'/%/discussion'] = array(
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/discussion'] = array(
     'title' => t('Discussions'),
     'page callback' => 'open_journal_discussion_form',
     'access arguments' => array('access open journal'),
@@ -81,7 +93,15 @@ function open_journal_menu() {
     'file' => 'includes/open_journal_discussion_form.inc',
   ); 
 
-  $items[OPEN_JOURNAL_PREFIX_PATH.'/%/file'] = array(
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/discussion/add'] = array(
+    'title' => t('Add new discussion'),
+    'page callback' => 'open_journal_discussion_form',
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_discussion_form.inc',
+  ); 
+
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/file'] = array(
     'title' => t('Files'),
     'page callback' => 'open_journal_file',
     'access arguments' => array('access open journal'),
@@ -89,7 +109,7 @@ function open_journal_menu() {
     'file' => 'includes/open_journal_file.inc',
   ); 
 
-  $items[OPEN_JOURNAL_PREFIX_PATH.'/%/people'] = array(
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/people'] = array(
     'title' => t('Peoples'),
     'page callback' => 'open_journal_people',
     'access arguments' => array('access open journal'),
@@ -291,11 +311,103 @@ function open_journal_form_user_admin_settings_alter(&$form, &$form_state) {
   );
 }
 
-function open_journal_information() {
+function open_journal_journal_load($jid) {
 
+  // Query data from database for edit journal when have journal ID
+  $data = db_select('open_journal_journal', 'j')
+  ->fields('j')
+  ->condition('jid', $jid, '=')
+  ->execute()
+  ->fetchObject();
+
+  $data->subject_sub = explode(',' ,$data->subject_sub);
+  $data->subject_en = explode(',' ,$data->subject_en);
+  $data->dc_creator = explode(',' ,$data->dc_creator);
+  $data->dc_publisher = explode(',' ,$data->dc_publisher);
+  $data->dc_contributor = explode(',' ,$data->dc_contributor);
+
+  return $data;
+}
+
+function open_journal_update_field(&$data, $field_name, $field_value=NULL) {
+
+  // Prepare variables
+  $old_field_value = isset($data->{$field_name})? $data->{$field_name}: NULL;
+  if (!$field_value) {
+    $field_value = $old_field_value;
+  }
+
+  // Set variables
+  if (is_array($field_value)) {
+    $data->{$field_name} = implode(',', array_filter($field_value));
+  }
+  else {
+    $data->{$field_name} = $field_value;
+  }
+}
+
+function open_journal_get_field($data, $field_name, $default_value=NULL) {
+  return isset($data->{$field_name})? $data->{$field_name}: $default_value;
+}
+
+function open_journal_journal_save($data, $change_status=FALSE) {
+  
+  if (empty($data->created)) {
+    $data->created = REQUEST_TIME;
+  }
+
+  $data->changed = REQUEST_TIME;
+
+  if ($change_status || empty($data->status_changed)) {
+    $data->status_changed = REQUEST_TIME;
+  }
+
+  open_journal_update_field($data, 'subject_en');
+  open_journal_update_field($data, 'subject_sub');
+
+  // Dublin core
+  open_journal_update_field($data, 'dc_description', $data->description_sub.','.$data->description_en);
+  open_journal_update_field($data, 'dc_subject', $data->subject_sub.','.$data->subject_en);
+  open_journal_update_field($data, 'dc_creator');
+  open_journal_update_field($data, 'dc_publisher');
+  open_journal_update_field($data, 'dc_contributor');
+
+  if (is_array($data->date)) {
+    $date = (object) $data->date;
+    open_journal_update_field($data, 'dc_date', mktime(0, 0, 0, $date->month, $date->day, $date->year));
+  }
+  else {
+    open_journal_update_field($data, 'dc_date');
+  }
+
+  if ($data->file) {
+    $file = file_load($data->file);
+    $data->dc_format = $file->filemime;
+  }
+  
+  // Importantly, save record before save file.
+  $pk = (isset($data->jid) && $data->jid)? 'jid': array();
+
+  drupal_write_record('open_journal_journal', $data, $pk);
+  
+  if ($data->file) {
+    $file->status = FILE_STATUS_PERMANENT;
+    file_save($file);
+  }
+  
+  // create first discussion.
+  if (!$pk) {
+    // TODO: code
+  }
+
+  return $data;
+
+}
+
+function open_journal_information($jid=NULL) {
+  
   return theme('open_journal_detail', array(
-    'content' => drupal_render(drupal_get_form('open_journal_information_form')),
-    'jid' => 1
+    'content' => drupal_render(drupal_get_form('open_journal_information_form',$jid)),
   ));
 }
 
