@@ -338,6 +338,10 @@ function open_journal_update_field(&$data, $field_name, $field_value=NULL) {
   }
 }
 
+function open_journal_get_field($data, $field_name, $default_value=NULL) {
+  return isset($data->{$field_name})? $data->{$field_name}: $default_value;
+}
+
 function open_journal_journal_save($data, $change_status=FALSE) {
   
   if (empty($data->created)) {
