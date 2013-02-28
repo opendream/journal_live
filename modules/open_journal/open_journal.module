@@ -93,6 +93,14 @@ function open_journal_menu() {
     'file' => 'includes/open_journal_discussion_form.inc',
   ); 
 
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/discussion/add'] = array(
+    'title' => t('Add new discussion'),
+    'page callback' => 'open_journal_discussion_form',
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_discussion_form.inc',
+  ); 
+
   $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/file'] = array(
     'title' => t('Files'),
     'page callback' => 'open_journal_file',

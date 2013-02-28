@@ -222,7 +222,7 @@ function open_journal_multi_textfield($title='' , $values = FALSE) {
       '#default_value' => $values[$i],
     );
   }
-  $multi_textfield[] = array('#markup' => '<button class="add-multi-textfield">'.t('Add').'</button>');
+  $multi_textfield[] = array('#markup' => '<button class="add-multi-textfield">'.t('Add another').'</button>');
 
   return $multi_textfield;
 }
