@@ -87,7 +87,7 @@ function open_journal_menu() {
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/discussion'] = array(
     'title' => t('Discussions'),
-    'page callback' => 'open_journal_discussion_form',
+    'page callback' => 'open_journal_discussion',
     'access arguments' => array('access open journal'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_discussion_form.inc',
@@ -95,7 +95,8 @@ function open_journal_menu() {
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/discussion/add'] = array(
     'title' => t('Add new discussion'),
-    'page callback' => 'open_journal_discussion_form',
+    'page callback' => 'open_journal_discussion_add',
+    'page arguments' => array($arg),
     'access arguments' => array('access open journal'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_discussion_form.inc',
@@ -219,6 +220,10 @@ function open_journal_permission() {
       'title' => t('Update final URL field'),
       'description' => t('Perform user can update URL field. Recommented for librarian role.'),
     ),
+    'auto active when create journal' => array(
+      'title' => t('Auto active when create journal'),
+      'description' => t('Perform user force to active for review abstract first. Recommented for editor role.'),
+    ),
   );
 }
 
@@ -311,23 +316,6 @@ function open_journal_form_user_admin_settings_alter(&$form, &$form_state) {
   );
 }
 
-function open_journal_journal_load($jid) {
-
-  // Query data from database for edit journal when have journal ID
-  $data = db_select('open_journal_journal', 'j')
-  ->fields('j')
-  ->condition('jid', $jid, '=')
-  ->execute()
-  ->fetchObject();
-
-  $data->subject_sub = explode(',' ,$data->subject_sub);
-  $data->subject_en = explode(',' ,$data->subject_en);
-  $data->dc_creator = explode(',' ,$data->dc_creator);
-  $data->dc_publisher = explode(',' ,$data->dc_publisher);
-  $data->dc_contributor = explode(',' ,$data->dc_contributor);
-
-  return $data;
-}
 
 function open_journal_update_field(&$data, $field_name, $field_value=NULL) {
 
@@ -348,6 +336,28 @@ function open_journal_update_field(&$data, $field_name, $field_value=NULL) {
 
 function open_journal_get_field($data, $field_name, $default_value=NULL) {
   return isset($data->{$field_name})? $data->{$field_name}: $default_value;
+}
+
+
+/**
+ * Journal method
+ */
+function open_journal_journal_load($jid) {
+
+  // Query data from database for edit journal when have journal ID
+  $data = db_select('open_journal_journal', 'j')
+  ->fields('j')
+  ->condition('jid', $jid, '=')
+  ->execute()
+  ->fetchObject();
+
+  $data->subject_sub = explode(',' ,$data->subject_sub);
+  $data->subject_en = explode(',' ,$data->subject_en);
+  $data->dc_creator = explode(',' ,$data->dc_creator);
+  $data->dc_publisher = explode(',' ,$data->dc_publisher);
+  $data->dc_contributor = explode(',' ,$data->dc_contributor);
+
+  return $data;
 }
 
 function open_journal_journal_save($data, $change_status=FALSE) {
@@ -380,7 +390,7 @@ function open_journal_journal_save($data, $change_status=FALSE) {
     open_journal_update_field($data, 'dc_date');
   }
 
-  if ($data->file) {
+  if (isset($data->file) && $data->file) {
     $file = file_load($data->file);
     $data->dc_format = $file->filemime;
   }
@@ -390,7 +400,88 @@ function open_journal_journal_save($data, $change_status=FALSE) {
 
   drupal_write_record('open_journal_journal', $data, $pk);
   
-  if ($data->file) {
+  if (isset($data->file) && $data->file) {
+    $file->status = FILE_STATUS_PERMANENT;
+    file_save($file);
+  }
+  
+  // When create first
+  if (!$pk) {
+
+    // Active auto user
+    if(user_access('auto active when create journal')) {
+
+      $user_auto_active_list = db_query("SELECT uid FROM users_roles ur, role_permission rp WHERE rp.permission = 'auto active when create journal' AND rp.rid = ur.rid")->fetchAllKeyed(0,0);
+
+      foreach ($user_auto_active_list as $uid) {
+        open_journal_journal_people_active($data->jid, $uid);
+      }
+    }
+
+    // create first discussion.
+    // TODO
+
+    drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->jid.'/overview');
+    druapl_set_message(t('You has been submit new journal completed. Wait for information review.'));
+
+  }
+  else {
+    drupal_set_message(t('This journal information has been updated.'));
+    drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->jid.'/overview');
+
+  }
+
+  return $data;
+
+}
+
+/**
+ * Journal people method
+ */
+function open_journal_journal_people_active($jid, $uid) {
+  $data = (object) array(
+    'joined' => REQUEST_TIME,
+    'jid' => $jid,
+    'uid' => $uid,
+  );
+  drupal_write_record('open_journal_journal_people', $data);
+}
+
+
+/**
+ * Discussion method
+ */
+function open_journal_discussion_load($did) {
+
+  // Query data from database for edit journal when have journal ID
+  $data = db_select('open_journal_discussion', 'd')
+  ->fields('d')
+  ->condition('did', $did, '=')
+  ->execute()
+  ->fetchObject();
+
+  return $data;
+}
+
+function open_journal_discussion_save($data) {
+  
+  if (empty($data->created)) {
+    $data->created = REQUEST_TIME;
+  }
+
+  $data->changed = REQUEST_TIME;
+
+
+  if ($data->fid) {
+    $file = file_load($data->fid);
+  }
+  
+  // Importantly, save record before save file.
+  $pk = (isset($data->did) && $data->did)? 'did': array();
+
+  drupal_write_record('open_journal_discussion', $data, $pk);
+  
+  if ($data->fid) {
     $file->status = FILE_STATUS_PERMANENT;
     file_save($file);
   }
@@ -401,7 +492,6 @@ function open_journal_journal_save($data, $change_status=FALSE) {
   }
 
   return $data;
-
 }
 
 function open_journal_information($data=NULL) {
@@ -421,9 +511,18 @@ function open_journal_overview() {
   ));
 }
 
+
 function open_journal_discussion() {
   return theme('open_journal_detail', array(
-    'content' => theme('open_journal_discussion', array('jid' => 1)),
+    'content' => drupal_render(drupal_get_form('open_journal_discussion_form')),
+    'sidebar' => theme('open_journal_status_form', array('jid' => 1)),
+    'jid' => 1
+  ));
+}
+
+function open_journal_discussion_add($journal) {
+  return theme('open_journal_detail', array(
+    'content' => drupal_render(drupal_get_form('open_journal_discussion_form', $journal)),
     'sidebar' => theme('open_journal_status_form', array('jid' => 1)),
     'jid' => 1
   ));
