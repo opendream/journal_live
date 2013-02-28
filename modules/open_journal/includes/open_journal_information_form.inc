@@ -2,6 +2,8 @@
 
 function open_journal_information_form($form, &$form_state , $data=NULL) {
 
+  global $user;
+
   $mpath = drupal_get_path('module', 'open_journal');
   drupal_add_js($mpath.'/js/open_journal_multi_textfield.js');
 
@@ -64,7 +66,7 @@ function open_journal_information_form($form, &$form_state , $data=NULL) {
   $form['main']['actions'] = array('#type' => 'actions');
   $form['main']['actions']['submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Save'),
+    '#value' => t('Submit'),
   );
   $form['main']['actions']['cancel'] = array(
     '#markup' => l(t('Cancel'), $_SERVER['HTTP_REFERER']),
@@ -180,6 +182,7 @@ function open_journal_information_form($form, &$form_state , $data=NULL) {
     '#value' => '',
     '#access' => FALSE,
   );
+
   if (open_journal_get_field($data, 'jid')) {
     $form['jid'] = array(
       '#type' => 'hidden',
@@ -187,6 +190,14 @@ function open_journal_information_form($form, &$form_state , $data=NULL) {
       '#access' => FALSE,
     );
   }
+  else {
+    $form['uid'] = array(
+      '#type' => 'hidden',
+      '#value' => $user->uid,
+      '#access' => FALSE,
+    );
+  }
+
   
   
 
