@@ -11,7 +11,7 @@ function open_journal_information_form($form, &$form_state , $data=NULL) {
   $form['main']['main_title'] = array('#markup' => '<h2>'.t('Information').'</h2>');
 
   $form['main']['dc_title'] = array(
-    '#title' => t('Title'),
+    '#title' => open_journal_label_help('Title', 'Help me please.'),
     '#type' => 'textfield',
     '#required' => TRUE,
     '#default_value' => open_journal_get_field($data, 'dc_title'),
@@ -19,7 +19,7 @@ function open_journal_information_form($form, &$form_state , $data=NULL) {
 
   if (OPEN_JOURNAL_SUB_LANG_ENABLE) {
     $form['main']['description_sub'] = array(
-      '#title' => OPEN_JOURNAL_SUB_LANG_ABSTRACT_LABEL,
+      '#title' => open_journal_label_help(OPEN_JOURNAL_SUB_LANG_ABSTRACT_LABEL, 'Help me please.'),
       '#type' => 'textarea',
       '#description' => t('No more than !d words please!', array('!d' => OPEN_JOURNAL_ABSTRACT_MAX_LENGTH)),
       '#required' => OPEN_JOURNAL_SUB_LANG_ABSTRACT_REQUIRED,
@@ -28,7 +28,7 @@ function open_journal_information_form($form, &$form_state , $data=NULL) {
   }
 
   $form['main']['description_en'] = array(
-    '#title' => t('Abstract'),
+    '#title' => open_journal_label_help('Abstract', 'Help me please.'),
     '#type' => 'textarea',
     '#description' => t('No more than !d words please!', array('!d' => OPEN_JOURNAL_ABSTRACT_MAX_LENGTH)),
     '#required' => OPEN_JOURNAL_ABSTRACT_REQUIRED,
@@ -102,6 +102,7 @@ function open_journal_information_form($form, &$form_state , $data=NULL) {
   // Group date 
 
   $form['data']['group']['date'] = array(
+    '#title' => open_journal_label_help('Date', 'Help me please.'),
     '#type' => 'fieldset',
     '#tree' => TRUE
   );
@@ -110,14 +111,14 @@ function open_journal_information_form($form, &$form_state , $data=NULL) {
     '#type' => 'select',
     '#options' => open_journal_get_date_option(date('Y')-10,date('Y')),
     '#default_value' => $year,
-    '#suffix' => '/',
+    '#suffix' => '<span>/</span>',
   );
   $form['data']['group']['date']['month'] = array(
     '#title' => t('Month'),
     '#type' => 'select',
     '#options' => open_journal_get_date_option(1,12),
     '#default_value' => $month,
-    '#suffix' => '/',
+    '#suffix' => '<span>/</span>',
 
   );
   $form['data']['group']['date']['day'] = array(
@@ -129,7 +130,7 @@ function open_journal_information_form($form, &$form_state , $data=NULL) {
 
   if (OPEN_JOURNAL_SUB_LANG_ENABLE) {
     $form['data']['group']['dc_language'] = array(
-      '#title' => 'Language',
+      '#title' => open_journal_label_help('Language', 'Help me please.'),
       '#type' => 'select',
       '#options' => array(
         OPEN_JOURNAL_SUB_LANG_CODE => t(OPEN_JOURNAL_SUB_LANG_TEXT),
@@ -208,7 +209,7 @@ function open_journal_multi_textfield($title='' , $values = FALSE) {
 
   $multi_textfield = array(
     '#type' => 'fieldset',
-    '#title' => t($title),
+    '#title' => open_journal_label_help($title, 'Help me please.'),
     '#tree' => TRUE,
   );
 
@@ -253,4 +254,8 @@ function open_journal_information_form_submit($form, &$form_state) {
   $data = (object) $form_state['values'];
   open_journal_journal_save($data);
 
+}
+
+function open_journal_label_help($label='', $help_text='') {
+  return t($label).'<span class="label-help">'.$help_text.'</span>';
 }

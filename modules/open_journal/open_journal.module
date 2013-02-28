@@ -77,7 +77,7 @@ function open_journal_menu() {
     'file' => 'includes/open_journal_information_form.inc',
   ); 
 
-  $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/overview'] = array(
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/%/overview'] = array(
     'title' => t('Overview'),
     'page callback' => 'open_journal_overview',
     'access arguments' => array('access open journal'),
@@ -101,7 +101,7 @@ function open_journal_menu() {
     'file' => 'includes/open_journal_discussion_form.inc',
   ); 
 
-  $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/file'] = array(
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/%/file'] = array(
     'title' => t('Files'),
     'page callback' => 'open_journal_file',
     'access arguments' => array('access open journal'),
@@ -109,7 +109,7 @@ function open_journal_menu() {
     'file' => 'includes/open_journal_file.inc',
   ); 
 
-  $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/people'] = array(
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/%/people'] = array(
     'title' => t('Peoples'),
     'page callback' => 'open_journal_people',
     'access arguments' => array('access open journal'),

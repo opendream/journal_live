@@ -1200,7 +1200,8 @@ h1.page-title {
 }
 #open-journal-login-form h2,
 #open-journal-register-form h2,
-h2.journal-block-title {
+h2.journal-block-title,
+#open-journal-information-form h2 {
 	background: url(images/ic.png) no-repeat 2px 4px;
 	padding-left: 20px;
 	text-transform: uppercase;
@@ -1784,23 +1785,173 @@ h2.journal-block-title {
 #open-journal-information-form {
 	overflow: hidden;
 }
-#edit-main,
+
 #edit-data {
 	padding: 0 20px;
 	float: left;
 }
 #edit-main {
-	width: 470px;
+	width: 510px;
+	float: left;
 }
+	#edit-main .form-item {
+		width: 470px;
+		padding: 0 20px;
+	}
 #edit-data {
 	width: 370px;
+	margin-top: 40px;
 }
-#edit-data #edit-group {
+#edit-data h3 {
+	font-size: 22px;
+}
+#edit-data fieldset {
 	border: none;
+	margin-top: 0;
+}
+#edit-data fieldset#edit-group {
+	border: 1px solid #C9C9C9;
+	padding: 25px 10px 20px 0;
+	margin-top: 0;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;	
 }
 #edit-data #edit-group .fieldset-wrapper {
 	padding: 0;
 }
+
+#edit-subject-sub,
+#edit-subject-en,
+#edit-dc-creator,
+#edit-dc-publisher,
+#edit-dc-contributor,
+#edit-date {
+	padding-top: 0;
+}
+.form-item-dc-language {
+	margin-bottom: 10px;
+	overflow: hidden;
+}
+#edit-subject-sub legend,
+#edit-subject-en legend,
+#edit-dc-creator legend,
+#edit-dc-publisher legend,
+#edit-dc-contributor legend,
+#edit-date legend,
+.form-item-dc-language label,
+.form-item-dc-identifier label {
+	width: 100px;
+	float: left;
+	text-align: right;
+	padding-right: 23px;
+	padding-top: 3px;
+}
+#edit-date legend {
+	padding-top: 20px;
+}
+.form-item-dc-identifier label {
+	width: 118px;
+	padding-right: 0px;
+}
+.form-item-dc-identifier .description {
+	margin: 10px 0 0 132px !important;
+	float: left;
+}
+.form-item-dc-language label { position: relative; }
+#edit-subject-sub .fieldset-legend,
+#edit-subject-en .fieldset-legend,
+#edit-dc-creator .fieldset-legend,
+#edit-dc-publisher .fieldset-legend,
+#edit-dc-contributor .fieldset-legend,
+#edit-date .fieldset-legend {
+	position: relative;
+	padding-left: 0;
+	text-transform: none;
+}
+#edit-subject-sub .fieldset-legend .label-help,
+#edit-subject-en .fieldset-legend .label-help,
+#edit-dc-creator .fieldset-legend .label-help,
+#edit-dc-publisher .fieldset-legend .label-help,
+#edit-dc-contributor .fieldset-legend .label-help,
+#edit-date .fieldset-legend .label-help,
+.form-item-dc-language label .label-help {
+	text-align: justify;
+	text-indent: -999em;
+	overflow: hidden;
+	display: block;
+	width: 12px;
+	height: 12px;
+	background: url(images/ic-hint.png) no-repeat center right;
+	position: absolute;
+	top: 3px;
+	right: -16px;
+}
+.form-item-dc-language label .label-help {
+	top: 7px;
+	right: 5px;
+}
+#edit-subject-sub .fieldset-legend .label-help:hover,
+#edit-subject-en .fieldset-legend .label-help:hover,
+#edit-dc-creator .fieldset-legend .label-help:hover,
+#edit-dc-publisher .fieldset-legend .label-help:hover,
+#edit-dc-contributor .fieldset-legend .label-help:hover,
+#edit-date .fieldset-legend .label-help:hover,
+.form-item-dc-language label.label-help:hover {
+	cursor: pointer;
+}
+#edit-subject-sub .fieldset-wrapper,
+#edit-subject-en .fieldset-wrapper,
+#edit-dc-creator .fieldset-wrapper,
+#edit-dc-publisher .fieldset-wrapper,
+#edit-dc-contributor .fieldset-wrapper,
+#edit-date .fieldset-wrapper,
+.form-item-dc-language #edit-dc-language,
+.form-item-dc-identifier #edit-dc-identifier {
+	width: 225px;
+	float: right;
+}
+.form-item-dc-language #edit-dc-language {
+	margin-top: 3px;
+}
+	#edit-subject-sub .fieldset-wrapper .form-item,
+	#edit-subject-en .fieldset-wrapper .form-item,
+	#edit-dc-creator .fieldset-wrapper .form-item,
+	#edit-dc-publisher .fieldset-wrapper .form-item,
+	#edit-dc-contributor .fieldset-wrapper .form-item,
+	#edit-date .fieldset-wrapper .form-item,
+	.form-item-dc-identifier #edit-dc-identifier {
+		margin-bottom: 0;
+		padding-top: 0;
+	}
+		#edit-subject-sub .fieldset-wrapper .form-item .multi-textfield,
+		#edit-subject-en .fieldset-wrapper .form-item .multi-textfield,
+		#edit-dc-creator .fieldset-wrapper .form-item .multi-textfield,
+		#edit-dc-publisher .fieldset-wrapper .form-item .multi-textfield,
+		#edit-dc-contributor .fieldset-wrapper .form-item .multi-textfield,
+		.form-item-dc-identifier #edit-dc-identifier {
+			width: 200px;
+			padding: 2px 10px 2px 10px;
+			border: none;
+			background: #f1f1f1;
+			color: #111;
+			font-family: 'THSarabunNewRegular';
+			font-size: 20px;
+		}
+		.form-item-dc-identifier #edit-dc-identifier {
+			margin-right: 5px;
+		}
+#edit-date .form-type-select,
+#edit-date .fieldset-wrapper span {
+	float: left;
+	margin-right: 10px;
+	text-align: center;
+}
+#edit-date .fieldset-wrapper span {
+	margin-top: 20px;
+}
+
+
 /* File List
 ----------------------------------------------------------------*/
 #file-list-item { width: 880px; }
