@@ -67,7 +67,7 @@
         <?php print l($open_journal_logo1, '', array('html' => TRUE));?>
       </div>
       <div class="user-manage">
-        <a href="#" class="view-all-journal">View My Journal</a>
+        <a href="/journal/" class="view-all-journal">View My Journal</a>
         <div class="user-dropdown">
           <img src="/sites/all/themes/clean_journal/images/dummy/benz-avatar.png" alt="benz-profile-image" />
           <a href="#" class="dropdown-link">Benz Gimmik</a>

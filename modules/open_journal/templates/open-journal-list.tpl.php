@@ -25,7 +25,7 @@
 	<ul>
 		<li class="journal-item">
 			<div class="journal-status information-approve"><span>Information Approve</span></div>
-			<h3 class="journal-title"><a href="#">Risk Factor For Developing First Risk Risk Factor For Developing First Risk Factor For Developing First Risk Factor For Developing First</a></h3>
+			<h3 class="journal-title"><a href="/journal/1/overview">Risk Factor For Developing First Risk Risk Factor For Developing First Risk Factor For Developing First Risk Factor For Developing First</a></h3>
 			<div class="journal-update">
 				<span class="label">Status update: </span>
 				<span>13 Feb 2013</span>

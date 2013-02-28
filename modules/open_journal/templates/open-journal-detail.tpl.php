@@ -1,15 +1,22 @@
 
 <?php if ($jid): ?>
-<ul id="journal-detail-navigation">
-  <li><?php print l(t('Overview'),    OPEN_JOURNAL_PREFIX_PATH.'/'.$jid.''); ?></li>
-  <li><?php print l(t('Discussions'), OPEN_JOURNAL_PREFIX_PATH.'/'.$jid.''); ?></li>
-  <li><?php print l(t('Information'), OPEN_JOURNAL_PREFIX_PATH.'/'.$jid.'/information'); ?></li>
-  <li><?php print l(t('Files'),       OPEN_JOURNAL_PREFIX_PATH.'/'.$jid.''); ?></li>
-  <li><?php print l(t('Peoples'),     OPEN_JOURNAL_PREFIX_PATH.'/'.$jid.''); ?></li>
-</ul>
+<div class="journal-menu">
+  <ul id="journal-menu-item-list">
+    <li><?php print l(t('Overview'),    OPEN_JOURNAL_PREFIX_PATH.'/'.$jid.'/overview'); ?></li>
+    <li><?php print l(t('Discussions'), OPEN_JOURNAL_PREFIX_PATH.'/'.$jid.'/discussion'); ?></li>
+    <li><?php print l(t('Information'), OPEN_JOURNAL_PREFIX_PATH.'/'.$jid.'/information'); ?></li>
+    <li><?php print l(t('Files'),       OPEN_JOURNAL_PREFIX_PATH.'/'.$jid.'/file'); ?></li>
+    <li><?php print l(t('Peoples'),     OPEN_JOURNAL_PREFIX_PATH.'/'.$jid.'/people'); ?></li>
+  </ul>
+</div>
 <?php endif ?>
 
-<div id="journal-detail-content">
-  <?php print $content; ?>    
+<div id="journal-detail-wrapper" class="journal-detail-normal<?php if ($sidebar): ?> journal-detail-has-sidebar<?php endif; ?> ">
+  <div id="journal-detail-content">
+    <?php print $content; ?>    
+  </div>
+  <div id="journal-detail-sidebar">
+    <?php print $sidebar; ?>    
+  </div>
 </div>
 

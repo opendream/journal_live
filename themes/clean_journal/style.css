@@ -987,6 +987,8 @@ div.add-or-remove-shortcuts {
   -webkit-border-radius: 8px;
   border-radius: 8px;
 }
+
+
 /* Custom CSS 
 ----------------------------------------------------------------*/
 
@@ -1027,6 +1029,21 @@ h6 {
 div.messages ul li {
 	word-wrap: break-word;
 } 
+
+a.file-download-btn {
+  float: right;
+  height: 40px;
+  line-height: 40px;
+  text-transform: uppercase;
+  padding: 0 15px;
+  background-color: #55b0d6;
+  color: #FFF;
+  border-left: 1px solid #FFF;
+}
+a.file-download-btn:hover {
+  text-decoration: none;
+  background-color: #4084a0;
+}
 
 /* Open Journal 
 ----------------------------------------------------------------*/
@@ -1130,18 +1147,51 @@ body {
 	overflow: hidden;
 }
 h1.page-title {
-	width: 960px;
+	width: 910px;
+	height: 32px;
+	font-size: 36px;
+	line-height: 36px;
 	margin: 30px auto;
-	font-size: 30px;
+	padding-left: 50px;
+	background: url(images/bg-page-title.png) no-repeat center left;
+	text-transform: uppercase;
 }
 
+#journal-detail-content {
+	width: 640px;
+	float: left;
+	margin-top: 20px;
+}
+.journal-detail-normal #journal-detail-content {
+	width: 960px;
+}
+	.journal-detail-normal #journal-detail-content .journal-block-content {
+		width: 920px;
+	}
+#journal-detail-sidebar {
+	width: 300px;
+	float: right;
+	margin-top: 20px;
+}
+	.journal-detail-has-sidebar #journal-detail-content {
+		width: 600px;
+	}
+	.journal-detail-has-sidebar #journal-detail-content .journal-block-content {
+		width: 600px;
+	}
+	#journal-detail-sidebar .journal-block-content {
+		width: 260px;
+	}
+	
 /* Form Style
 ----------------------------------------------------------------*/
 #open-journal-login-form,
 #open-journal-register-form,
 .page-user-reset #page,
 .page-user-password #page,
-#open-journal-account-setting-form {
+#open-journal-account-setting-form,
+#open-journal-information-form,
+.block-bg-shadow {
 	padding: 20px;
 	background-color: #FFF;
 	display: block;
@@ -1149,7 +1199,8 @@ h1.page-title {
 	margin-bottom: 40px;
 }
 #open-journal-login-form h2,
-#open-journal-register-form h2 {
+#open-journal-register-form h2,
+h2.journal-block-title {
 	background: url(images/ic.png) no-repeat 2px 4px;
 	padding-left: 20px;
 	text-transform: uppercase;
@@ -1321,77 +1372,119 @@ input.form-submit:hover {
 			margin-bottom: 0;
 			margin-top: 18px;
 		}
-	#page.page-journal-list .journal-filter-tab {
-		border-width: 1px 0 1px 0;
-		border-color: #555555;
-		border-style: solid;
-		display: block;
-		width: 940px;
-		height: 30px;
-		float: left;
-		padding: 10px 0 10px 20px;
-		position: relative;
-	}
-		#page.page-journal-list .journal-filter-tab .journal-filter .journal-filter-active {
-			line-height: 30px;
-			font-size: 26px;
-			font-family: 'THSarabunNewRegular';
-			float: left;
-			cursor: pointer;
-			padding-right: 25px;
-			background: url(images/journal-filter-dwn-arw.png) no-repeat center right;
-		}
-		#page.page-journal-list .journal-filter-tab ul#journal-filter-item-list {
-			position: absolute;
-			z-index: 10;
-			top: 51px;
-			left: 0;
-			list-style: none;
-			margin: 0;
-			width: 150px;
-		}
-			#page.page-journal-list .journal-filter-tab ul#journal-filter-item-list li {
-				background: url(images/bg-body.png) repeat-x;
-				border: 1px solid #555;
-				border-top: none;
-				border-left: none;
-				border-right: none;
-			}
-				#page.page-journal-list .journal-filter-tab ul#journal-filter-item-list li a {
-					display: block;
-					width: 110px;
-					padding: 5px 20px;
-					color: #333;
-				}
-				#page.page-journal-list .journal-filter-tab ul#journal-filter-item-list li.select-item a {
-					background: url(images/checkmark.png) no-repeat center left;
-					padding-left: 25px;
-					width: 105px;
-				} 
-				#page.page-journal-list .journal-filter-tab ul#journal-filter-item-list li a:hover {
-					text-decoration: none;
-					background-color: #ccc;
-					
-				}
-		#page.page-journal-list .journal-filter-tab .add-journal-btn {
-			position: absolute;
-			right: 0;
-			top: 10px;
-		}
-			#page.page-journal-list .journal-filter-tab .add-journal-btn a {
-				display: block;
-				padding: 5px 10px 5px 30px;
-				border-radius: 5px;
-				-moz-border-radius: 5px;
-				-webkit-border-radius: 5px;
-				color: #FFF;
-				text-transform: uppercase;
-				background: url(images/ic-add-journal-btn.png) #55b0d6 no-repeat 7px 7px;
-			}
-				#page.page-journal-list .journal-filter-tab .add-journal-btn a:hover {
-					text-decoration: none;
-					background-color: #4084a0;
-				}
+
+/* journal menu tab */
+
+#page.page-journal-list .journal-filter-tab,
+.journal-menu {
+  border-width: 1px 0 1px 0;
+  border-color: #555555;
+  border-style: solid;
+  display: block;
+  width: 940px;
+  height: 30px;
+  float: left;
+  padding: 10px 0 10px 20px;
+  position: relative;
+}
+  #page.page-journal-list .journal-filter-tab .journal-filter .journal-filter-active,
+  #journal-menu-item-list li a {
+  	line-height: 30px;
+  	font-size: 26px;
+  	font-family: 'THSarabunNewRegular';
+  	float: left;
+  	cursor: pointer;
+  	padding-right: 25px;
+  	background: url(images/journal-filter-dwn-arw.png) no-repeat center right;
+  }
+  #page.page-journal-list .journal-filter-tab ul#journal-filter-item-list {
+  	position: absolute;
+  	z-index: 10;
+  	top: 51px;
+  	left: 0;
+  	list-style: none;
+  	margin: 0;
+  	width: 150px;
+  }
+  	#page.page-journal-list .journal-filter-tab ul#journal-filter-item-list li {
+  		background: url(images/bg-body.png) repeat-x;
+  		border: 1px solid #555;
+  		border-top: none;
+  		border-left: none;
+  		border-right: none;
+  	}
+  		#page.page-journal-list .journal-filter-tab ul#journal-filter-item-list li a {
+  			display: block;
+  			width: 110px;
+  			padding: 5px 20px;
+  			color: #333;
+  		}
+  		#page.page-journal-list .journal-filter-tab ul#journal-filter-item-list li.select-item a {
+  			background: url(images/checkmark.png) no-repeat center left;
+  			padding-left: 25px;
+  			width: 105px;
+  		} 
+  		#page.page-journal-list .journal-filter-tab ul#journal-filter-item-list li a:hover {
+  			text-decoration: none;
+  			background-color: #ccc;
+  		}
+  #page.page-journal-list .journal-filter-tab .add-journal-btn {
+  	position: absolute;
+  	right: 0;
+  	top: 10px;
+  }
+  	#page.page-journal-list .journal-filter-tab .add-journal-btn a {
+  		display: block;
+  		padding: 5px 10px 5px 30px;
+  		border-radius: 5px;
+  		-moz-border-radius: 5px;
+  		-webkit-border-radius: 5px;
+  		color: #FFF;
+  		text-transform: uppercase;
+  		background: url(images/ic-add-journal-btn.png) #55b0d6 no-repeat 7px 7px;
+  	}
+  		#page.page-journal-list .journal-filter-tab .add-journal-btn a:hover {
+  			text-decoration: none;
+  			background-color: #4084a0;
+  		}
+
+/* fixed journal menu */
+
+.journal-menu {
+	padding: 10px 0 10px 0;
+	width: 960px;
+}
+  #journal-menu-item-list li a {
+  	font-size: 22px;
+  	line-height: 31px;
+  	height: 30px;
+  	display: block;
+  }
+    #journal-menu-item-list {
+  		width: 940px;
+  		list-style: none;
+  		margin: 0;
+  	}
+    	#journal-menu-item-list li {
+  			float: left;
+  			margin: 0 10px;
+  		}
+  		#journal-menu-item-list li a {
+  			padding: 0 10px;
+  			margin: 0;
+  			background-image: none;
+  			color: #333;
+  		}
+  		#journal-menu-item-list li a:hover,
+  		#journal-menu-item-list li a.active {
+  			text-decoration: none;
+  			background-color: #55b0d6;
+  			color: #FFF;
+  			border-radius: 5px;
+  			-moz-border-radius: 5px;
+  			-webkit-border-radius: 5px;
+  		}
+
 .profile-picture-large {
 	border-radius: 36px;
 	-moz-border-radius: 36px;
@@ -1476,14 +1569,14 @@ input.form-submit:hover {
 		top: 33px;
 		width: 250px;
 	}
-	#journal-list .journal-item .relate-peoples li {
+	.relate-peoples li {
 		float: left;
 		margin: 0 5px 5px 5px;
 		overflow: hidden;
 		width: 40px;
 		height: 40px;
 	}
-	#journal-list .journal-item .relate-peoples li a {
+	.relate-peoples li a {
 		display: block;
 		width: 40px;
 		height: 40px;
@@ -1493,7 +1586,7 @@ input.form-submit:hover {
 		-moz-border-radius: 20px;
 		-webkit-border-radius: 20px;
 	}
-	#journal-list .journal-item .relate-peoples li.owner span {
+	.relate-peoples li.owner span {
 		position: absolute;
 		bottom: 0;
 		left: 0;
@@ -1508,7 +1601,7 @@ input.form-submit:hover {
 		line-height: 13px;
 		overflow: hidden;
 	}
-	#journal-list .journal-item .relate-peoples li.more-people {
+	.relate-peoples li.more-people {
 		font-size: 20px;
 		width: 40px;
 		height: 40px;
@@ -1520,10 +1613,10 @@ input.form-submit:hover {
 		-moz-border-radius: 20px;
 		-webkit-border-radius: 20px;
 	}
-		#journal-list .journal-item .relate-peoples li.more-people a {
+		.relate-peoples li.more-people a {
 			color: #FFF;
 		}
-		#journal-list .journal-item .relate-peoples li.more-people a:hover {
+		.relate-peoples li.more-people a:hover {
 			text-decoration: none;
 		}
 #journal-list .load-more {
@@ -1544,7 +1637,199 @@ input.form-submit:hover {
 			background: #4084a0;
 			text-decoration: none;
 		}
-		
+
+/* Journal Overview
+----------------------------------------------------------------*/
+.journal-block {
+	display: block;
+	float: left;
+	padding-top: 10px;
+	position: relative;
+}
+.block-bg-shadow {
+	margin-bottom: 20px;
+}
+h2.journal-block-title {
+	margin-bottom: 15px;
+}
+.people-block .relate-peoples {
+	position: relative;
+	width: 260px;
+	margin: 0;
+	margin-bottom: 10px;
+	display: block;
+	float: left;
+}
+.people-block .view-all-people {
+	float: right;
+}
+.information-block .information-field .label {
+	text-align: right;
+	width: 70px;
+	display: block;
+	padding-right: 15px;
+	float: left;
+	color: #111111;
+	font-weight: bold;
+}
+.information-block .information-field .value {
+	width: 175px;
+	float: right;
+	color: #333333;
+}
+.information-field {
+	margin-bottom: 15px;
+	float:left;
+}
+.abstract-block .journal-block-content p {
+	padding: 0 20px;
+}
+.journal-file-download {
+	background-color: #ebebeb;
+	display: block;
+	overflow: hidden;
+	width: 540px;
+	margin: 0 20px;
+	padding-left: 10px;
+}
+	.journal-file-download .file-download-update,
+	.journal-file-download .file-download-create {
+		float: left;
+		margin-right: 20px;
+		color: #7d7d7d;
+		line-height: 40px;
+	}
+.status-block .journal-update .label,
+.status-block .journal-create .label {
+	font-weight: bold;
+}
+.status-block {
+	width: 260px;
+}
+	.status-block h2.journal-block-title {
+		width: 271px;
+		background: url(images/bg-header-block.png) no-repeat;
+		margin: 0 0 0 -28px;
+		padding: 17px 15px 23px 30px;
+		color: #FFF;
+		font-family: 'THSarabunNewRegular';
+	}
+#overview-discussion,
+#file-list-item {
+	list-style: none;
+	margin: 0 20px 0 20px;
+	border-top: 1px solid #e1e1e1;
+	width: 560px;
+	float: left;
+}
+	#overview-discussion li,
+	#file-list-item li {
+		float:left;
+		padding: 10px 0;
+		border-bottom: 1px solid #e1e1e1;
+	}
+	#overview-discussion li .journal-user,
+	#file-list-item li .journal-user {
+		width: 140px;
+		height: 40px;
+		float: left;
+		line-height: 40px;
+	}
+	#file-list-item li .journal-user {
+		width: 190px;
+	}
+		#overview-discussion li .journal-user a img,
+		#file-list-item li .journal-user a img {
+			float: left;
+			margin-right: 10px;
+		}
+		#overview-discussion li .journal-user a:hover,
+		#file-list-item li .journal-user a:hover {
+			text-decoration: none;
+		}
+		#overview-discussion li .journal-user a span,
+		#file-list-item li .journal-user a span {
+			display: block;
+			line-height: 40px;
+			color: #666666;
+		}
+	#overview-discussion li .discus-title,
+	#overview-discussion li .discus-content {
+		float: right;
+		width: 420px;
+	}
+	#overview-discussion li .discus-title {
+		margin-bottom: 7px;
+	}
+	#overview-discussion li .discus-title a {
+		font-weight: bold;
+		color: #111;
+		float: left;
+		margin-right: 5px;
+	}
+		#overview-discussion li .discus-title a:hover {
+			text-decoration: none;
+		}
+	#overview-discussion li .file-attach img {
+		margin-left: 4px;
+	}
+.view-all-discus {
+	margin-left: 20px;
+	margin-top: 20px;
+	float: left;
+}
+
+/* Journal Add
+----------------------------------------------------------------*/
+#open-journal-information-form {
+	overflow: hidden;
+}
+#edit-main,
+#edit-data {
+	padding: 0 20px;
+	float: left;
+}
+#edit-main {
+	width: 470px;
+}
+#edit-data {
+	width: 370px;
+}
+#edit-data #edit-group {
+	border: none;
+}
+#edit-data #edit-group .fieldset-wrapper {
+	padding: 0;
+}
+/* File List
+----------------------------------------------------------------*/
+#file-list-item { width: 880px; }
+	#file-list-item li .file-name {
+		width: 580px;
+		float: left;
+	}
+		#file-list-item li .file-name a {
+			color: #111;
+			font-size: 18px;
+			font-weight: bold;
+		}
+		#file-list-item li .file-name a:hover {
+			text-decoration: none;
+		}
+	#file-list-item li .upload-date,
+	#file-list-item li .file-size {
+		float: left;
+		margin-right: 30px;
+		color: #333;
+		font-size: 0.8em;
+	}
+	#file-list-item li .file-attach img {
+		margin-right: 4px;
+	}
+	#file-list-item li a.file-download-btn {
+		float: none;
+		padding: 10px 15px;
+	}
 /* Footer
 ----------------------------------------------------------------*/
 #footer {

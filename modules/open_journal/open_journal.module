@@ -295,32 +295,37 @@ function open_journal_information() {
 
   return theme('open_journal_detail', array(
     'content' => drupal_render(drupal_get_form('open_journal_information_form')),
+    'jid' => 1
   ));
 }
 
 function open_journal_overview() {
   return theme('open_journal_detail', array(
-    'content' => theme('open_journal_overview_content'),
-    'sidebar' => theme('open_journal_overview_sidebar'),
+    'content' => theme('open_journal_overview_content', array('jid' => 1)),
+    'sidebar' => theme('open_journal_overview_sidebar', array('jid' => 1)),
+    'jid' => 1
   ));
 }
 
 function open_journal_discussion() {
   return theme('open_journal_detail', array(
-    'content' => theme('open_journal_discussion'),
-    'sidebar' => theme('open_journal_status_form'),
+    'content' => theme('open_journal_discussion', array('jid' => 1)),
+    'sidebar' => theme('open_journal_status_form', array('jid' => 1)),
+    'jid' => 1
   ));
 }
 
 function open_journal_file() {
   return theme('open_journal_detail', array(
     'content' => theme('open_journal_file'),
+    'jid' => 1
   ));
 }
 
 function open_journal_people() {
   return theme('open_journal_detail', array(
     'content' => theme('open_journal_people'),
+    'jid' => 1
   ));
 }
 
