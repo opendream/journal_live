@@ -99,14 +99,14 @@ function open_journal_information_form($form, &$form_state , $data=NULL) {
     '#title' => t('Year'),
     '#type' => 'select',
     '#options' => open_journal_get_date_option(date('Y')-10,date('Y')),
-    '#default_value' => date('Y'),
+    '#default_value' => $year,
     '#suffix' => '/',
   );
   $form['data']['group']['date']['month'] = array(
     '#title' => t('Month'),
     '#type' => 'select',
     '#options' => open_journal_get_date_option(1,12),
-    '#default_value' => date('m'),
+    '#default_value' => $month,
     '#suffix' => '/',
 
   );
@@ -114,7 +114,7 @@ function open_journal_information_form($form, &$form_state , $data=NULL) {
     '#title' => t('Day'),
     '#type' => 'select',
     '#options' => open_journal_get_date_option(1,30),
-    '#default_value' => date('d'),
+    '#default_value' => $day,
   );
 
   if (OPEN_JOURNAL_SUB_LANG_ENABLE) {
