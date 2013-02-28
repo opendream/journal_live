@@ -55,13 +55,13 @@ function open_journal_information_form($form, &$form_state , $data=NULL) {
       '#upload_location' => "public://journal/",
       '#required' => TRUE,
     );
-  }
 
-  $form['main']['guideline'] = array(
-    '#title' => t('I read submit journal guideline completely.').' '.l(t('Download guideline'), ''),
-    '#type' => 'checkbox',
-    '#required' => TRUE,
-  );
+    $form['main']['guideline'] = array(
+      '#title' => t('I read submit journal guideline completely.').' '.l(t('Download guideline'), ''),
+      '#type' => 'checkbox',
+      '#required' => TRUE,
+    );
+  }
 
   $form['main']['actions'] = array('#type' => 'actions');
   $form['main']['actions']['submit'] = array(

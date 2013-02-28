@@ -135,11 +135,7 @@ function open_journal_schema() {
         'unsigned' => TRUE,
         'not null' => TRUE,
       ),
-      'created' => array(
-        'type' => 'int',
-        'not null' => TRUE,
-      ),
-      'changed' => array(
+      'joined' => array(
         'type' => 'int',
         'not null' => TRUE,
       ),

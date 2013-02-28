@@ -220,6 +220,10 @@ function open_journal_permission() {
       'title' => t('Update final URL field'),
       'description' => t('Perform user can update URL field. Recommented for librarian role.'),
     ),
+    'auto active when create journal' => array(
+      'title' => t('Auto active when create journal'),
+      'description' => t('Perform user force to active for review abstract first. Recommented for editor role.'),
+    ),
   );
 }
 
@@ -386,7 +390,7 @@ function open_journal_journal_save($data, $change_status=FALSE) {
     open_journal_update_field($data, 'dc_date');
   }
 
-  if ($data->file) {
+  if (isset($data->file) && $data->file) {
     $file = file_load($data->file);
     $data->dc_format = $file->filemime;
   }
@@ -396,19 +400,53 @@ function open_journal_journal_save($data, $change_status=FALSE) {
 
   drupal_write_record('open_journal_journal', $data, $pk);
   
-  if ($data->file) {
+  if (isset($data->file) && $data->file) {
     $file->status = FILE_STATUS_PERMANENT;
     file_save($file);
   }
   
-  // create first discussion.
+  // When create first
   if (!$pk) {
-    // TODO: code
+
+    // Active auto user
+    if(user_access('auto active when create journal')) {
+
+      $user_auto_active_list = db_query("SELECT uid FROM users_roles ur, role_permission rp WHERE rp.permission = 'auto active when create journal' AND rp.rid = ur.rid")->fetchAllKeyed(0,0);
+
+      foreach ($user_auto_active_list as $uid) {
+        open_journal_journal_people_active($data->jid, $uid);
+      }
+    }
+
+    // create first discussion.
+    // TODO
+
+    drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->jid.'/overview');
+    druapl_set_message(t('You has been submit new journal completed. Wait for information review.'));
+
+  }
+  else {
+    drupal_set_message(t('This journal information has been updated.'));
+    drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->jid.'/overview');
+
   }
 
   return $data;
 
 }
+
+/**
+ * Journal people method
+ */
+function open_journal_journal_people_active($jid, $uid) {
+  $data = (object) array(
+    'joined' => REQUEST_TIME,
+    'jid' => $jid,
+    'uid' => $uid,
+  );
+  drupal_write_record('open_journal_journal_people', $data);
+}
+
 
 /**
  * Discussion method
