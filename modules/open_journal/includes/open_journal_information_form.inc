@@ -26,6 +26,7 @@ function open_journal_information_form($form, &$form_state , $data=NULL) {
       '#description' => t('No more than !d words please!', array('!d' => OPEN_JOURNAL_ABSTRACT_MAX_LENGTH)),
       '#required' => OPEN_JOURNAL_SUB_LANG_ABSTRACT_REQUIRED,
       '#default_value' => open_journal_get_field($data, 'description_sub'),
+      '#rows' => 10,
     );
   }
 
@@ -35,6 +36,7 @@ function open_journal_information_form($form, &$form_state , $data=NULL) {
     '#description' => t('No more than !d words please!', array('!d' => OPEN_JOURNAL_ABSTRACT_MAX_LENGTH)),
     '#required' => OPEN_JOURNAL_ABSTRACT_REQUIRED,
     '#default_value' => open_journal_get_field($data, 'description_en'),
+      '#rows' => 10,
   );
 
   if(isset($data->jid)) {
