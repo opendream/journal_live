@@ -499,24 +499,70 @@ function open_journal_discussion_save($data) {
     file_save($file);
   }
   
-  // create first discussion.
+  // create discussion.
   if (!$pk) {
-    // TODO: code
+    open_jounal_discussion_mail($data);
   }
 
   return $data;
 }
 
 // Send mail function 
-
-function open_jounal_discussion_mail() {
+function open_jounal_discussion_mail($data) {
   
+  $sender = user_load($data->uid);
+  // TODO: send with correct name
+  $from = $sender->name;
+  
+  $user_list = open_journal_people_active_list($data->jid, $data->uid);
+  
+  $user_list_email = array();
+  foreach ($user_list as $user) {
+    $user_list_email[] = $user->mail;
+  }
+  
+  $message = array(
+    'id' => 'open_journal_discussion_add',
+    'to' => $user_list_email,
+    'subject' => $data->title,
+    'body' =>  $data->description,
+    'headers' => array(
+      'From' => $sender->name, 
+      'Sender' => $sender->name,
+      'Return-Path' => variable_get('system_mail', ''),
+    ),
+  );
+  $system = drupal_mail_system('open_journal', 'discussion_add');
+  if ($system->mail($message)) {
+    dpm($system);
+    dpm('success');
+    return TRUE;
+  }
+  else {
+    dpm($system);
+    dpm('fail');
+    return FALSE;
+  }
 
-  $params = array('current_conditions' => 'aaa');
-  $to = 'ruangritboonrod@gmail.com';
-  $message = drupal_mail('Open journal', 'Discussion', $to, 'en', $params, FALSE);
-  return $message;
 } 
+
+/**
+ * People method
+ */
+function open_journal_people_active_list($jid, $exclude=array()) {
+    $exclude = !is_array($exclude)? array($exclude): $exclude;
+  
+    $user_list = db_select('open_journal_journal_people', 'jp')
+    ->fields('jp', array('uid'))
+    ->condition('jid', $jid, '=')
+    ->execute()
+    ->fetchAllKeyed(0, 0);
+    
+    $user_list = array_values($user_list);
+    $user_list = array_diff($user_list, $exclude);
+    
+    return user_load_multiple($user_list);
+}
 
 
 function open_journal_information($data=NULL) {
@@ -552,7 +598,6 @@ function open_journal_discussion() {
 }
 
 function open_journal_discussion_add($journal) {
-  print_r(open_jounal_discussion_mail());
   return theme('open_journal_detail', array(
     'content' => drupal_render(drupal_get_form('open_journal_discussion_form', $journal)),
     'sidebar' => theme('open_journal_status_form', array('jid' => 1)),
