@@ -366,6 +366,8 @@ function open_journal_journal_load($jid) {
   $data->dc_publisher = explode(',' ,$data->dc_publisher);
   $data->dc_contributor = explode(',' ,$data->dc_contributor);
 
+  $data->title = $data->dc_title;
+
   return $data;
 }
 
@@ -507,41 +509,42 @@ function open_journal_discussion_save($data) {
   return $data;
 }
 
+function open_journal_mail($key, &$message, $data) {
+
+  $site_name = variable_get('site_name', t('E-Journal'));
+
+  switch ($key) {
+    case 'open_journal_discussion_add':
+      //$message['subject'] = '['.truncate_utf8($data->journal->title, 10, FALSE, TRUE).']'.$data->title;
+      $message['subject'] = ''.$data->journal->title.' '.$data->title;
+
+      $body = '';
+      $body .= "\n".'Journal: '.$data->journal->title;
+      $body .= "\n";
+      $body .= "\n".'Start discussion by '.$data->sender->name.':';
+      $body .= "\n";
+      $body .= "\n".$data->title;
+      $body .= "\n".$data->description;
+      $body .= "\n";
+      $body .= "\n".'View more detail on '.$site_name;
+      $body .= "\n".url(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->journal->jid.'/discussion/'.$data->did, array('absolute' => TRUE));
+
+
+      $message['body'][] = $body;
+  }
+}
+
 // Send mail function 
 function open_jounal_discussion_mail($data) {
   
-  $sender = user_load($data->uid);
-  // TODO: send with correct name
-  $from = $sender->name;
-  
   $user_list = open_journal_people_active_list($data->jid, $data->uid);
-  
-  $user_list_email = array();
+  $sender = user_load($data->uid);
+  $data->journal = open_journal_journal_load($data->jid);
+  $data->sender = $sender;
+
   foreach ($user_list as $user) {
-    $user_list_email[] = $user->mail;
-  }
-  
-  $message = array(
-    'id' => 'open_journal_discussion_add',
-    'to' => $user_list_email,
-    'subject' => $data->title,
-    'body' =>  $data->description,
-    'headers' => array(
-      'From' => $sender->name, 
-      'Sender' => $sender->name,
-      'Return-Path' => variable_get('system_mail', ''),
-    ),
-  );
-  $system = drupal_mail_system('open_journal', 'discussion_add');
-  if ($system->mail($message)) {
-    dpm($system);
-    dpm('success');
-    return TRUE;
-  }
-  else {
-    dpm($system);
-    dpm('fail');
-    return FALSE;
+    // TODO: check valid name for permission to dee the sender name
+    drupal_mail('open_journal', 'open_journal_discussion_add', $user->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
   }
 
 } 
