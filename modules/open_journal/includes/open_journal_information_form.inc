@@ -5,7 +5,7 @@ function open_journal_information_form($form, &$form_state , $data=NULL) {
   global $user;
 
   $mpath = drupal_get_path('module', 'open_journal');
-  drupal_add_js($mpath.'/js/open_journal_multi_textfield.js');
+  
 
   // Main form
   $form['main'] = array('#type' => 'container');

@@ -1,11 +1,7 @@
 jQuery(document).ready(function () {
 
   $ = jQuery;
-  $('.multi-textfield').each(function () {
-    if (!$(this).hasClass('multi-textfield-0') && !$(this).hasClass('multi-textfield-1') && $(this).val() == '') {
-      $(this).parent('.form-type-textfield').hide();
-    }
-  });
+  
 
   $('.add-multi-textfield').click(function (e) {
     e.preventDefault();
@@ -16,5 +12,19 @@ jQuery(document).ready(function () {
     }
   });
 
+  $('.multi-textfield-0').parent('.form-type-textfield').each(function () {
 
+    $.each($.makeArray($(this).siblings('.form-type-textfield')).reverse(), function (i, item) {
+      
+      var input = $(item).find('input');
+      if (input.val() || input.hasClass('multi-textfield-1')) {
+        return false;
+      }
+      else {
+        $(item).hide();
+      }
+    })
+  });
+
+  
 });
