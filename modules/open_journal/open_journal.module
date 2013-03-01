@@ -421,15 +421,8 @@ function open_journal_journal_save($data, $change_status=FALSE) {
     // create first discussion.
     // TODO
 
-    drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->jid.'/overview');
-    druapl_set_message(t('You has been submit new journal completed. Wait for information review.'));
-
   }
-  else {
-    drupal_set_message(t('This journal information has been updated.'));
-    drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->jid.'/overview');
 
-  }
 
   return $data;
 
@@ -495,6 +488,9 @@ function open_journal_discussion_save($data) {
 }
 
 function open_journal_information($data=NULL) {
+  
+  drupal_add_js(drupal_get_path('module','open_journal').'/js/jquery.qtip.min.js');
+  drupal_add_js(drupal_get_path('module','open_journal').'/js/open_journal_help.js');
   
   return theme('open_journal_detail', array(
     'content' => drupal_render(drupal_get_form('open_journal_information_form',$data)),

@@ -1913,7 +1913,7 @@ h2.journal-block-title {
 #edit-dc-contributor .fieldset-legend .label-help:hover,
 #edit-date .fieldset-legend .label-help:hover,
 .form-item-dc-language label .label-help:hover {
-	cursor: pointer;
+	/* cursor: pointer; */
 }
 #edit-subject-sub .fieldset-wrapper,
 #edit-subject-en .fieldset-wrapper,
@@ -1986,6 +1986,16 @@ h2.journal-block-title {
 #edit-file-ajax-wrapper {
 	margin-bottom: 20px;
 }
+#edit-file-ajax-wrapper label {
+  position: relative;
+  float: left;
+}
+#edit-file-ajax-wrapper .description,
+#edit-file-ajax-wrapper .form-type-managed-file {
+  float: left;
+}
+
+
 #edit-file {
 	width: 470px;
 	float: left;

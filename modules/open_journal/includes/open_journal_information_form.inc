@@ -13,7 +13,7 @@ function open_journal_information_form($form, &$form_state , $data=NULL) {
   $form['main']['main_title'] = array('#markup' => '<h2>'.t('Information').'</h2>');
 
   $form['main']['dc_title'] = array(
-    '#title' => open_journal_label_help('Title', 'Help me please.'),
+    '#title' => open_journal_label_help('Title', 'Help me please.', TRUE),
     '#type' => 'textfield',
     '#required' => TRUE,
     '#default_value' => open_journal_get_field($data, 'dc_title'),
@@ -21,7 +21,7 @@ function open_journal_information_form($form, &$form_state , $data=NULL) {
 
   if (OPEN_JOURNAL_SUB_LANG_ENABLE) {
     $form['main']['description_sub'] = array(
-      '#title' => open_journal_label_help(OPEN_JOURNAL_SUB_LANG_ABSTRACT_LABEL, 'Help me please.'),
+      '#title' => open_journal_label_help(OPEN_JOURNAL_SUB_LANG_ABSTRACT_LABEL, 'Help me please.', TRUE),
       '#type' => 'textarea',
       '#description' => t('No more than !d words please!', array('!d' => OPEN_JOURNAL_ABSTRACT_MAX_LENGTH)),
       '#required' => OPEN_JOURNAL_SUB_LANG_ABSTRACT_REQUIRED,
@@ -31,7 +31,7 @@ function open_journal_information_form($form, &$form_state , $data=NULL) {
   }
 
   $form['main']['description_en'] = array(
-    '#title' => open_journal_label_help('Abstract', 'Help me please.'),
+    '#title' => open_journal_label_help('Abstract', 'Help me please.', TRUE),
     '#type' => 'textarea',
     '#description' => t('No more than !d words please!', array('!d' => OPEN_JOURNAL_ABSTRACT_MAX_LENGTH)),
     '#required' => OPEN_JOURNAL_ABSTRACT_REQUIRED,
@@ -48,7 +48,7 @@ function open_journal_information_form($form, &$form_state , $data=NULL) {
   else {
     $form['main']['file'] = array(
       '#type' => 'managed_file',
-      '#title' => t('File'),
+      '#title' => open_journal_label_help('File', 'Help me please.', TRUE),
       '#description' => t('Allowed file types: %s',array('%s' => OPEN_JOURNAL_ALLOWED_FILE_TYPE)),
       '#upload_validators' => array(
         'file_validate_extensions' => array(OPEN_JOURNAL_ALLOWED_FILE_TYPE),
@@ -265,10 +265,28 @@ function open_journal_information_form_validate($form, &$form_state) {
 function open_journal_information_form_submit($form, &$form_state) {
   
   $data = (object) $form_state['values'];
+  
+  $is_new = (isset($data->jid) && $data->jid)? FALSE: TRUE;
+  
   open_journal_journal_save($data);
+  
+  if ($is_new) {
+    druapl_set_message(t('You has been submit new journal completed. Wait for information review.'));
+    drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->jid.'/overview');
+  }
+  else {
+    drupal_set_message(t('This journal information has been updated.'));
+    drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->jid.'/overview');
+  }
+
 
 }
 
-function open_journal_label_help($label='', $help_text='') {
-  return t($label).'<span class="label-help">'.$help_text.'</span>';
+function open_journal_label_help($label='', $help_text='', $leftside=FALSE) {
+  if ($leftside) {
+    return t($label).'<span class="label-help tip-right">'.$help_text.'</span>';
+  }
+  else {
+    return t($label).'<span class="label-help">'.$help_text.'</span>';
+  }
 }
