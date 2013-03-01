@@ -1858,7 +1858,21 @@ h2.journal-block-title {
 	margin: 10px 0 0 132px !important;
 	float: left;
 }
-.form-item-dc-language label { position: relative; }
+
+.form-item-dc-title,
+.form-item-description-sub,
+.form-item-description-en {
+	margin-bottom: 20px;
+}
+
+.form-item-dc-language label,
+.form-item-dc-title label,
+.form-item-description-sub label,
+.form-item-description-en label {
+	position: relative;
+	float: left;
+}
+
 #edit-subject-sub .fieldset-legend,
 #edit-subject-en .fieldset-legend,
 #edit-dc-creator .fieldset-legend,
@@ -1875,7 +1889,8 @@ h2.journal-block-title {
 #edit-dc-publisher .fieldset-legend .label-help,
 #edit-dc-contributor .fieldset-legend .label-help,
 #edit-date .fieldset-legend .label-help,
-.form-item-dc-language label .label-help {
+.form-item-dc-language label .label-help,
+.label-help {
 	text-align: justify;
 	text-indent: -999em;
 	overflow: hidden;
@@ -1897,7 +1912,7 @@ h2.journal-block-title {
 #edit-dc-publisher .fieldset-legend .label-help:hover,
 #edit-dc-contributor .fieldset-legend .label-help:hover,
 #edit-date .fieldset-legend .label-help:hover,
-.form-item-dc-language label.label-help:hover {
+.form-item-dc-language label .label-help:hover {
 	cursor: pointer;
 }
 #edit-subject-sub .fieldset-wrapper,
@@ -1929,7 +1944,10 @@ h2.journal-block-title {
 		#edit-dc-creator .fieldset-wrapper .form-item .multi-textfield,
 		#edit-dc-publisher .fieldset-wrapper .form-item .multi-textfield,
 		#edit-dc-contributor .fieldset-wrapper .form-item .multi-textfield,
-		.form-item-dc-identifier #edit-dc-identifier {
+		.form-item-dc-identifier #edit-dc-identifier,
+		.form-item-dc-title .form-text,
+		.form-item-description-sub .form-textarea,
+		.form-item-description-en .form-textarea {
 			width: 200px;
 			padding: 2px 10px 2px 10px;
 			border: none;
@@ -1937,6 +1955,21 @@ h2.journal-block-title {
 			color: #111;
 			font-family: 'THSarabunNewRegular';
 			font-size: 20px;
+		}
+		.form-item-dc-title .form-text,
+		.form-item-description-sub .form-textarea,
+		.form-item-description-en .form-textarea {
+			width: 470px;
+			max-width: 470px;
+			line-height: 1em;
+		}
+		.form-item-dc-title .form-text {
+			width: 450px;
+		}
+		.form-item-dc-title label,
+		.form-item-description-sub label,
+		.form-item-description-en label {
+			margin-bottom: 10px;
 		}
 		.form-item-dc-identifier #edit-dc-identifier {
 			margin-right: 5px;
@@ -1950,7 +1983,29 @@ h2.journal-block-title {
 #edit-date .fieldset-wrapper span {
 	margin-top: 20px;
 }
-
+#edit-file-ajax-wrapper {
+	margin-bottom: 20px;
+}
+#edit-file {
+	width: 470px;
+	float: left;
+}
+#edit-file-upload-button {
+	float: none;
+	margin-left: 20px;
+}
+.form-item-description-sub .form-textarea-wrapper,
+.form-item-description-en .form-textarea-wrapper {
+	clear: both;
+}
+#edit-main .form-actions {
+  padding-left: 20px;
+  margin-top: 30px;
+}
+#edit-main .form-actions a {
+	color: #555;
+	line-height: 35px;
+}
 
 /* File List
 ----------------------------------------------------------------*/
