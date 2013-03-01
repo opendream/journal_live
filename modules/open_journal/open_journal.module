@@ -100,7 +100,16 @@ function open_journal_menu() {
     'access arguments' => array('access open journal'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_discussion_form.inc',
-  ); 
+  );
+
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/discussion/%open_journal_discussion/edit'] = array(
+    'title' => t('Edit discussion'),
+    'page callback' => 'open_journal_discussion_add',
+    'page arguments' => array($arg),
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_discussion_form.inc',
+  );  
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/%/file'] = array(
     'title' => t('Files'),
@@ -398,7 +407,7 @@ function open_journal_journal_save($data, $change_status=FALSE) {
   // Importantly, save record before save file.
   $pk = (isset($data->jid) && $data->jid)? 'jid': array();
 
-  drupal_write_record('open_journal_journal', $data, $pk);
+  $jid = drupal_write_record('open_journal_journal', $data, $pk);
   
   if (isset($data->file) && $data->file) {
     $file->status = FILE_STATUS_PERMANENT;
@@ -419,6 +428,17 @@ function open_journal_journal_save($data, $change_status=FALSE) {
     }
 
     // create first discussion.
+    $data_discussion = array(
+      'uid' => $data->uid,
+      'jid' => $data->jid,
+      'title' => t('Journal add new'),
+      'description' => t('This journal has been submit new journal completed. Wait for information review.'),
+      'fid' => $data->file,
+      'contributor_only' => 0,
+      'created' => $data->created
+    );
+  $data_discussion = (object) $data_discussion;
+  open_journal_discussion_save($data_discussion);
     // TODO
 
     drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->jid.'/overview');
@@ -494,11 +514,22 @@ function open_journal_discussion_save($data) {
   return $data;
 }
 
+// Send mail function 
+
+function open_jounal_discussion_mail() {
+  
+  $params = array('current_conditions' => 'aaa');
+  $to = 'ruangritboonrod@gmail.com';
+  $message = drupal_mail('Open journal', 'Discussion', $to, 'en', $params, FALSE);
+  return $message;
+} 
+
+
 function open_journal_information($data=NULL) {
 
   $mpath = drupal_get_path('module', 'open_journal');
   drupal_add_js($mpath.'/js/open_journal_multi_textfield.js');
-  
+
   return theme('open_journal_detail', array(
     'content' => drupal_render(drupal_get_form('open_journal_information_form',$data)),
     'sidebar' => '',
@@ -524,6 +555,7 @@ function open_journal_discussion() {
 }
 
 function open_journal_discussion_add($journal) {
+  print_r(open_jounal_discussion_mail());
   return theme('open_journal_detail', array(
     'content' => drupal_render(drupal_get_form('open_journal_discussion_form', $journal)),
     'sidebar' => theme('open_journal_status_form', array('jid' => 1)),

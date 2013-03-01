@@ -263,7 +263,9 @@ function open_journal_information_form_validate($form, &$form_state) {
 function open_journal_information_form_submit($form, &$form_state) {
   
   $data = (object) $form_state['values'];
-  open_journal_journal_save($data);
+  $jid = open_journal_journal_save($data);
+  dpm($data);
+  
 
 }
 
