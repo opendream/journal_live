@@ -15,8 +15,9 @@ define('OPEN_JOURNAL_SUB_LANG_KEYWORDS_REQUIRED', TRUE);
 define('OPEN_JOURNAL_ABSTRACT_REQUIRED', TRUE);
 define('OPEN_JOURNAL_KEYWORDS_REQUIRED', TRUE);
 
-define('OPEN_JOURNAL_ABSTRACT_MAX_LENGTH', 100);
-define('OPEN_JOURNAL_MAX_MULTI_TEXTFIELD', 100);
+
+define('OPEN_JOURNAL_ABSTRACT_MAX_LENGTH', 500);
+define('OPEN_JOURNAL_MAX_MULTI_TEXTFIELD', 10);
 
 
 // Constant
@@ -128,6 +129,12 @@ function open_journal_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_people_form.inc',
   ); 
+
+  $items['open_journal_avatar'] = array(
+    'page callback' => 'open_journal_avatar',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
   return $items;
 }
 
@@ -588,7 +595,7 @@ function open_journal_mail($key, &$message, $data) {
   switch ($key) {
     case 'open_journal_discussion_add':
       //$message['subject'] = '['.truncate_utf8($data->journal->title, 10, FALSE, TRUE).']'.$data->title;
-      $message['subject'] = ''.$data->journal->title.' - '.$data->title;
+      $message['subject'] = truncate_utf8($data->journal->title, 20, FALSE, TRUE).' - '.$data->title;
 
       $body = "\n";
       $body .= "\n".'Journal: '.$data->journal->title;
@@ -772,6 +779,10 @@ function open_journal_list() {
   ));
 }
 
+function open_journal_avatar() {
+  include drupal_get_path('module', 'open_journal').'/includes/identicon.inc';
+}
+
 function open_journal_display_user_image($user, $file ) {
   $data = array(
     'image_url' => file_create_url($file->uri),
@@ -779,5 +790,21 @@ function open_journal_display_user_image($user, $file ) {
   );
  
   return $data;
+
+}
+
+function open_journal_get_display_user_info($user, $image_style=NULL, $size=NULL) {
+
+  $info = array(
+    'display_picture_url' => NULL,
+    'display_name' => NULL,
+  );
+
+  if (!$user->picture->fid) {
+  }
+  else {
+  }
+
+  return $info;
 
 }
