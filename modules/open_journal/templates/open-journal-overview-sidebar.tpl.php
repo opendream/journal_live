@@ -1,17 +1,17 @@
 <!-- Start Status Block -->	
 <div class="journal-block status-block block-bg-shadow">
 
-  <h2 class="journal-block-title">Information Approve</h2>
+  <h2 class="journal-block-title"><?php print $status['name']?></h2>
   
   <!-- Journal-block-content -->
   <div class="journal-block-content">
   	<div class="journal-update">
   		<span class="label">Status update: </span>
-  		<span>13 Feb 2013</span>
+  		<span><?php print $status['updated']?></span>
   	</div>
   	<div class="journal-create">
   		<span class="label">Create Date: </span>
-  		<span>1 Jan 2010</span>		
+  		<span><?php print $status['created']?></span>		
   	</div>
   </div><!-- End Journal-block-content -->
 

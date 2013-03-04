@@ -34,24 +34,17 @@
   <!-- Journal-block-content -->
   <div class="journal-block-content">
   	<ul id="overview-discussion">
-  		<li>
-  			<div class="journal-user profile-picture-small"><a href="#"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /><span class="username">Benz Gim…</span></a></div>
-  			<div class="discus-title"><a href="#">Add logos and photographer credit at the bote. <span class="file-attach"><img src="/sites/all/modules/open_journal/images/ic-has-file.png" alt="has file attach" /></span></a></div>
-  			<div class="discus-content">Thanks Donut. Just made slight update to photo credit. peritonitis have two out of these three  manifestations includi…</div>
-  		</li>
-  		<li>
-  			<div class="journal-user profile-picture-small"><a href="#"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /><span class="username">Benz Gim…</span></a></div>
-  			<div class="discus-title"><a href="#">Add logos and photographer credit at the bote logos and photographer credit at the bote logos and photographer credit at the bote. <span class="file-attach"><img src="/sites/all/modules/open_journal/images/ic-has-file.png" alt="has file attach" /></span></a></div>
-  			<div class="discus-content">Thanks Donut. Just made slight update to photo credit. peritonitis have two out of these three  manifestations includi…</div>
-  		</li>
-  		<li>
-  			<div class="journal-user profile-picture-small"><a href="#"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /><span class="username">Benz Gim…</span></a></div>
-  			<div class="discus-title"><a href="#">Add logos and photographer credit at the bote.</a></div>
-  			<div class="discus-content">Thanks Donut. Just made slight update to photo credit. peritonitis have two out of these three  manifestations includi…</div>
-  		</li>
+      <?php foreach($discussion_data as $data):?>
+      <li>
+        <!--<div class="journal-user profile-picture-small"><a href="#"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /><span class="username">Benz Gim…</span></a></div>-->
+        <div class="journal-user profile-picture-small"><?php print $data['user_image'];?></div>
+        <div class="discus-title"><a href="#"><?php print $data['title'];?><span class="file-attach"><img src="/sites/all/modules/open_journal/images/ic-has-file.png" alt="has file attach" /></span></a></div>
+        <div class="discus-content"><?php print $data['description'];?></div>
+      </li>
+      <?php endforeach;?>
   	</ul>
   </div><!-- End Journal-block-content -->
   
-  <a class="view-all-discus" href="#">13 more discussion</a>	
+  <a class="view-all-discus" href=""><?php print $more_discussion;?> more discussion</a>	
   
 </div><!-- End Discussion Block -->	
