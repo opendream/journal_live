@@ -26,18 +26,9 @@
   <div class="journal-block-content">
   	<ul class="relate-peoples">
       <?php foreach($people_list as $list):?>
-      <li class="clickable-people owner profile-picture-small"><a href="#"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /><span><?php print '';?></span></a></li>
+      <li class="clickable-people owner profile-picture-small"><a href="#"><img src="<?php print $list['user_image']['image_url'];?>" alt="" /><span><?php print $list['user_image']['user'];?></span></a></li>
       <?php endforeach;?>
-  		<li class="clickable-people owner profile-picture-small"><a href="#"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /><span>Owner</span></a></li>
-  		<li class="profile-picture-small"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /></li>
-  		<li class="profile-picture-small"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /></li>
-  		<li class="profile-picture-small"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-chatchai.png" alt="" /></li>
-  		<li class="profile-picture-small"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /></li>
-  		<li class="profile-picture-small"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /></li>
-  		<li class="profile-picture-small"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /></li>
-  		<li class="profile-picture-small"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /></li>
-  		<li class="profile-picture-small"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-chatchai.png" alt="" /></li>
-  		<li class="profile-picture-small"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-chatchai.png" alt="" /></li>
+  		
   	</ul>	
   </div><!-- End Journal-block-content -->
   
@@ -53,50 +44,50 @@
   <!-- Journal-block-content -->
   <div class="journal-block-content">
   
-  	<div class="information-field publisher-field">
-  		<span class="label">Publisher: </span>
-  		<span class="value">Sornchai Jaidee</span>
+    <?php if (OPEN_JOURNAL_SUB_LANG_ENABLE):?>
+    <div class="information-field subject-sub-field">
+    <?php //dpm($information);?>
+    <span class="label"><?php print OPEN_JOURNAL_SUB_LANG_KEYWORDS_LABEL ; ?>: </span>
+    <span class="value"><?php print $information->subject_sub;?> </span>
+    </div>
+    <?php endif;?>
+
+  	<div class="information-field subject-en-field">
+  		<span class="label">Keyword:</span>
+  		<span class="value"><?php print $information->subject_en;?></span>
   	</div>
 
-  	<div class="information-field type-field">
-  		<span class="label">Type: </span>
-  		<span class="value">Normal Journal</span>
+  	<div class="information-field dc-creator-field">
+  		<span class="label">Creators: </span>
+  		<span class="value"><?php echo $information->dc_creator;?></span>
   	</div>
   	
-  	<div class="information-field format-field">
-  		<span class="label">Format: </span>
-  		<span class="value">Paper</span>
+  	<div class="information-field dc-publisher-field">
+  		<span class="label">Publishers: </span>
+  		<span class="value"><?php print $information->dc_publisher?></span>
   	</div>
   	
-  	<div class="information-field identifier-field">
-  		<span class="label">Identifier: </span>
-  		<span class="value">hospital were recruited for this study</span>
+  	<div class="information-field dc-contributor-field">
+  		<span class="label">Contributors: </span>
+  		<span class="value"><?php print $information->dc_contributor;?></span>
   	</div>
 
-  	<div class="information-field source-field">
-  		<span class="label">Source: </span>
-  		<span class="value">Thaihealth Report</span>
+  	<div class="information-field date-field">
+  		<span class="label">Date: </span>
+  		<span class="value"><?php print date('d M Y' ,$information->dc_date);?></span>
   	</div>
 
   	<div class="information-field language-field">
   		<span class="label">Language: </span>
-  		<span class="value">English</span>
+  		<span class="value"><?php print $information->dc_language?></span>
   	</div>
 
-  	<div class="information-field relation-field">
-  		<span class="label">Relation: </span>
-  		<span class="value">In relations</span>
+  	<div class="information-field dc-identifier-field">
+  		<span class="label">Final URL: </span>
+  		<span class="value"><?php print $information->dc_identifier;?></span>
   	</div>
   	
-  	<div class="information-field coverage-field">
-  		<span class="label">Coverage: </span>
-  		<span class="value">Peritonitis is a common complication</span>
-  	</div>
   	
-  	<div class="information-field rights-field">
-  		<span class="label">Rights: </span>
-  		<span class="value">E-Journal © 2013 Health System Research Institute (HSRI)</span>
-  	</div>
 
   </div><!-- End Journal-block-content -->
   

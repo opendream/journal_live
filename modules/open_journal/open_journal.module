@@ -15,8 +15,8 @@ define('OPEN_JOURNAL_SUB_LANG_KEYWORDS_REQUIRED', TRUE);
 define('OPEN_JOURNAL_ABSTRACT_REQUIRED', TRUE);
 define('OPEN_JOURNAL_KEYWORDS_REQUIRED', TRUE);
 
-define('OPEN_JOURNAL_ABSTRACT_MAX_LENGTH', 10);
-define('OPEN_JOURNAL_MAX_MULTI_TEXTFIELD', 10);
+define('OPEN_JOURNAL_ABSTRACT_MAX_LENGTH', 100);
+define('OPEN_JOURNAL_MAX_MULTI_TEXTFIELD', 100);
 
 
 // Constant
@@ -77,7 +77,7 @@ function open_journal_menu() {
     'file' => 'includes/open_journal_information_form.inc',
   ); 
 
-  $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/overview'] = array(
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_overview/overview'] = array(
     'title' => t('Overview'),
     'page callback' => 'open_journal_overview',
     'page arguments' => array($arg),
@@ -369,6 +369,20 @@ function open_journal_journal_load($jid) {
   $data->dc_creator = explode(',' ,$data->dc_creator);
   $data->dc_publisher = explode(',' ,$data->dc_publisher);
   $data->dc_contributor = explode(',' ,$data->dc_contributor);
+
+  $data->title = $data->dc_title;
+
+  return $data;
+}
+
+function open_journal_overview_load($jid) {
+
+  // Query data from database for edit journal when have journal ID
+  $data = db_select('open_journal_journal', 'j')
+  ->fields('j')
+  ->condition('jid', $jid, '=')
+  ->execute()
+  ->fetchObject();
 
   $data->title = $data->dc_title;
 
@@ -675,7 +689,6 @@ function open_journal_overview($data) {
   // get user and file data
   $user = user_load($data_d->uid);
   $file = file_load($data_d->fid);
-
   $status = array(
     'name' => 'Information Approve Dummy',
     'updated' => date('d M Y', $data->status_changed),
@@ -687,7 +700,7 @@ function open_journal_overview($data) {
   $i = 0;
   foreach($people as $row) {
     $user_p = user_load($row->uid);
-    $file_p = file_load($user->picture->fid);
+    $file_p = file_load($user_p->picture->fid);
     $people_list[$i]['user_image'] = open_journal_display_user_image($user_p, $file_p);
     $i++;
   }
