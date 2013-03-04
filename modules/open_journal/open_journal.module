@@ -89,6 +89,7 @@ function open_journal_menu() {
   $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/discussion'] = array(
     'title' => t('Discussions'),
     'page callback' => 'open_journal_discussion',
+    'page arguments' => array($arg),
     'access arguments' => array('access open journal'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_discussion_form.inc',
@@ -433,18 +434,18 @@ function open_journal_journal_save($data, $change_status=FALSE) {
     }
 
     // create first discussion.
-    $data_discussion = array(
+    $discussion = array(
       'uid' => $data->uid,
       'jid' => $data->jid,
-      'title' => t('Journal add new'),
-      'description' => t('This journal has been submit new journal completed. Wait for information review.'),
+      'title' => t('New journal has been created.'),
+      'description' => 'Submit new journal has been completed. Now, status is "information review".'."\n\n".'See information with abstract field and journal file on "Information" tab.'."\n".url('journal/'.$data->jid.'/information', array('absolute' => TRUE)),
       'fid' => $data->file,
       'contributor_only' => 0,
-      'created' => $data->created
+      'created' => $data->created,
+      'permanent' => 1
     );
-  $data_discussion = (object) $data_discussion;
-  open_journal_discussion_save($data_discussion);
-    // TODO
+    $discussion = (object) $discussion;
+    open_journal_discussion_save($discussion);
 
   }
 
@@ -560,10 +561,8 @@ function open_journal_discussion_save($data) {
     file_save($file);
   }
   
-  // create discussion.
-  if (!$pk) {
-    open_jounal_discussion_mail($data);
-  }
+  $data->is_new = !$pk;
+  open_jounal_discussion_mail($data);
 
   return $data;
 }
@@ -575,13 +574,18 @@ function open_journal_mail($key, &$message, $data) {
   switch ($key) {
     case 'open_journal_discussion_add':
       //$message['subject'] = '['.truncate_utf8($data->journal->title, 10, FALSE, TRUE).']'.$data->title;
-      $message['subject'] = ''.$data->journal->title.' '.$data->title;
+      $message['subject'] = ''.$data->journal->title.' - '.$data->title;
 
       $body = "\n";
       $body .= "\n".'Journal: '.$data->journal->title;
       $body .= "\n".'------------------------------------------------------------------------';
       $body .= "\n";
+      if ($data->is_new) {
       $body .= "\n".'Start discussion by : '.$data->sender->name;
+      }
+      else {
+      $body .= "\n".'Update discussion by : '.$data->sender->name;
+      }
       $body .= "\n".'Title: '.$data->title;
       $body .= "\n".'------------------------------------------------------------------------';
       $body .= "\n";

@@ -40,7 +40,6 @@ function open_journal_information_form($form, &$form_state , $data=NULL) {
   );
 
   if(isset($data->jid)) {
-    // TODO: create discussion
     $form['main']['file_link'] = array(
       '#markup' => 'Latest file : '.l('filename.doc', '').'<div class="description">'.t('When you create discussion or comment with upload file, The latest file will be update.').'</div>'
     );
@@ -266,13 +265,13 @@ function open_journal_information_form_submit($form, &$form_state) {
   
   $data = (object) $form_state['values'];
 
-  $jid = open_journal_journal_save($data);
   $is_new = (isset($data->jid) && $data->jid)? FALSE: TRUE;
   
   open_journal_journal_save($data);
   
   if ($is_new) {
-    druapl_set_message(t('You has been submit new journal completed. Wait for information review.'));
+
+    drupal_set_message(t('You has been submit new journal completed. Wait for information review.'));
     drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->jid.'/overview');
   }
   else {
