@@ -830,9 +830,9 @@ function open_journal_display_user_image($user, $file ) {
 
 }
 
-function open_journal_get_display_user_info($account, $image_style='open_journal_avatar_medium') {
+function open_journal_get_display_user_info($account, $variables=array('image_style' => 'open_journal_avatar_medium', 'user' => NULL)) {
 
-  $image_style = image_style_load($image_style);
+  $image_style = image_style_load($variables['image_style']);
   
   $size = array();
   if ($width = $image_style['effects'][0]['data']['width']) {
@@ -899,7 +899,9 @@ function open_journal_get_display_user_info($account, $image_style='open_journal
   
   
   // Check before return
-  global $user;
+  if (!$variables['user']) {
+    global $user;
+  }
   
   // Editor
   if (user_access('auto active when create journal')) {
