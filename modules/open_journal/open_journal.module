@@ -369,6 +369,8 @@ function open_journal_journal_load($jid) {
   $data->dc_publisher = explode(',' ,$data->dc_publisher);
   $data->dc_contributor = explode(',' ,$data->dc_contributor);
 
+  $data->title = $data->dc_title;
+
   return $data;
 }
 
@@ -558,24 +560,74 @@ function open_journal_discussion_save($data) {
     file_save($file);
   }
   
-  // create first discussion.
+  // create discussion.
   if (!$pk) {
-    // TODO: code
+    open_jounal_discussion_mail($data);
   }
 
   return $data;
 }
 
+function open_journal_mail($key, &$message, $data) {
+
+  $site_name = variable_get('site_name', t('E-Journal'));
+
+  switch ($key) {
+    case 'open_journal_discussion_add':
+      //$message['subject'] = '['.truncate_utf8($data->journal->title, 10, FALSE, TRUE).']'.$data->title;
+      $message['subject'] = ''.$data->journal->title.' '.$data->title;
+
+      $body = "\n";
+      $body .= "\n".'Journal: '.$data->journal->title;
+      $body .= "\n".'------------------------------------------------------------------------';
+      $body .= "\n";
+      $body .= "\n".'Start discussion by : '.$data->sender->name;
+      $body .= "\n".'Title: '.$data->title;
+      $body .= "\n".'------------------------------------------------------------------------';
+      $body .= "\n";
+      $body .= "\n".$data->description;
+      $body .= "\n";
+      $body .= "\n".'------------------------------------------------------------------------';
+      $body .= "\n".'View more detail on '.$site_name.': ';
+      $body .= "\n".url(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->journal->jid.'/discussion/'.$data->did, array('absolute' => TRUE));
+
+
+      $message['body'][] = $body;
+  }
+}
+
 // Send mail function 
-
-function open_jounal_discussion_mail() {
+function open_jounal_discussion_mail($data) {
   
+  $user_list = open_journal_people_active_list($data->jid, $data->uid);
+  $sender = user_load($data->uid);
+  $data->journal = open_journal_journal_load($data->jid);
+  $data->sender = $sender;
 
-  $params = array('current_conditions' => 'aaa');
-  $to = 'ruangritboonrod@gmail.com';
-  $message = drupal_mail('Open journal', 'Discussion', $to, 'en', $params, FALSE);
-  return $message;
+  foreach ($user_list as $user) {
+    // TODO: check valid name for permission to dee the sender name
+    drupal_mail('open_journal', 'open_journal_discussion_add', $user->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
+  }
+
 } 
+
+/**
+ * People method
+ */
+function open_journal_people_active_list($jid, $exclude=array()) {
+    $exclude = !is_array($exclude)? array($exclude): $exclude;
+  
+    $user_list = db_select('open_journal_journal_people', 'jp')
+    ->fields('jp', array('uid'))
+    ->condition('jid', $jid, '=')
+    ->execute()
+    ->fetchAllKeyed(0, 0);
+    
+    $user_list = array_values($user_list);
+    $user_list = array_diff($user_list, $exclude);
+    
+    return user_load_multiple($user_list);
+}
 
 
 function open_journal_information($data=NULL) {
@@ -676,7 +728,6 @@ function open_journal_discussion() {
 }
 
 function open_journal_discussion_add($journal) {
-  print_r(open_jounal_discussion_mail());
   return theme('open_journal_detail', array(
     'content' => drupal_render(drupal_get_form('open_journal_discussion_form', $journal)),
     'sidebar' => theme('open_journal_status_form', array('jid' => 1)),
