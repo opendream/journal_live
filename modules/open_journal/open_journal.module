@@ -238,6 +238,10 @@ function open_journal_permission() {
       'title' => t('Auto active when create journal'),
       'description' => t('Perform user force to active for review abstract first. Recommented for editor role.'),
     ),
+    'access contributor process' => array(
+      'title' => t('Access contributor process'),
+      'description' => t('Perform user can see contributor real name, avatar and create contributor only discussion. Recommented for editor, reviewer, librarian roles.'),
+    ),
   );
 }
 
@@ -745,7 +749,7 @@ function open_journal_discussion() {
 }
 
 function open_journal_discussion_add($journal) {
-  dpm(open_journal_get_display_user_info( $GLOBALS['user']));
+  open_journal_get_display_user_info( $GLOBALS['user']);
   return theme('open_journal_detail', array(
     'content' => drupal_render(drupal_get_form('open_journal_discussion_form', $journal)),
     'sidebar' => theme('open_journal_status_form', array('jid' => 1)),
@@ -774,8 +778,46 @@ function open_journal_list() {
   ));
 }
 
-function open_journal_avatar() {
-  include drupal_get_path('module', 'open_journal').'/includes/identicon.inc';
+function open_journal_image_default_styles() {
+  $styles = array();
+
+  $styles['open_journal_avatar_small'] = array(
+    'effects' => array(
+      array(
+        'name' => 'image_scale_and_crop',
+        'data' => array(
+          'width' => 32,
+          'height' => 32,
+        ),
+        'weight' => 0,
+      ),
+    ),
+  );
+  $styles['open_journal_avatar_medium'] = array(
+    'effects' => array(
+      array(
+        'name' => 'image_scale_and_crop',
+        'data' => array(
+          'width' => 40,
+          'height' => 40,
+        ),
+        'weight' => 0,
+      ),
+    ),
+  );
+  $styles['open_journal_avatar_large'] = array(
+    'effects' => array(
+      array(
+        'name' => 'image_scale_and_crop',
+        'data' => array(
+          'width' => 73,
+          'height' => 73,
+        ),
+        'weight' => 0,
+      ),
+    ),
+  );
+  return $styles;
 }
 
 function open_journal_display_user_image($user, $file ) {
@@ -788,11 +830,7 @@ function open_journal_display_user_image($user, $file ) {
 
 }
 
-function open_journal_get_display_user_info($user, $image_style=NULL) {
-
-  if (!$image_style) {
-    $image_style = variable_get('user_picture_style', 'thumbnail');
-  }
+function open_journal_get_display_user_info($account, $image_style='open_journal_avatar_medium') {
 
   $image_style = image_style_load($image_style);
   
@@ -804,21 +842,88 @@ function open_journal_get_display_user_info($user, $image_style=NULL) {
     $size[] = $height;
   }
   $size = min($size);
-  dpm($image_style['effects'][0]['data']);
-  dpm($size);
-
-  $info = array(
-    'display_picture_url' => NULL,
-    'display_name' => NULL,
-  );
-
-  if (!$user->picture) {
-    $info['display_picture_url'] = 'http://www.gravatar.com/avatar/1'.$user->uid.'?d=identicon&f=y&size='.$size;
-    // print('<img src="'.'http://www.gravatar.com/avatar/1'.$user->uid.'?d=identicon&f=y&size='.$size.'" />');
+  
+  
+  // Prepare name and picture to display
+  $dummy_name = $account->name;
+  $dummy_picture = theme('image', array(
+    'path' => 'http://www.gravatar.com/avatar/1'.$account->uid.'?d=identicon&f=y&size='.$size,
+    'width' => $size,
+    'height' => $size,
+    'alt' => $dummy_name,
+    'title' => $dummy_name,
+  ));
+    
+  if (!$account->picture) {
+    $real_picture = $dummy_picture;
   }
   else {
+    
+    $picture = file_load(is_numeric($account->picture)? $account->picture: $account->picture->fid);
+        
+    $real_picture = $dummy_picture = theme('image_style', array(
+      'style_name' => $image_style['name'],
+      'path' => $picture->uri,
+      'width' => $size,
+      'height' => $size,
+      'alt' => $dummy_name,
+      'title' => $dummy_name,
+    ));
   }
-
+  
+  $real_name = '';
+  if (isset($account->data['firstname']) && $account->data['firstname']) {
+    $real_name .= $account->data['firstname'];
+  }
+  
+  if (isset($account->data['lastname']) && $account->data['lastname'] && $real_name) {
+    $real_name .= ' '.truncate_utf8($account->data['lastname'], 1).'.';
+  }
+  elseif (isset($account->data['lastname']) && $account->data['lastname'] && !$real_name) {
+    $real_name .= $account->data['lastname'];
+  }
+  else {
+    $real_name .= dummy_name;
+  }
+  
+  
+  // Prepare info to return
+  $info_real = array(
+    'display_picture' => $real_picture,
+    'display_name' => $real_name,
+  );
+  $info_dummy = array(
+    'display_picture' => $dummy_picture,
+    'display_name' => $dummy_name,
+  );
+  
+  
+  // Check before return
+  global $user;
+  
+  // Editor
+  if (user_access('auto active when create journal')) {
+    $info = $info_real;
+  }    
+  // Reviewer and librarian
+  elseif (user_access('access contributor process') && !user_access('auto active when create journal')) {
+    if (user_access('access contributor process', $account)) {
+      $info = $info_real;
+    }
+    else {
+      $info = $info_dummy;
+    }
+  }
+  // Researcher
+  else {
+    if ($user->uid == $account->uid) {
+      $info = $info_real;
+    }
+    else {
+      $info = $info_dummy;
+    }
+  }
+    
   return $info;
 
 }
