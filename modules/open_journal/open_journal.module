@@ -127,12 +127,6 @@ function open_journal_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_people_form.inc',
   ); 
-
-  $items['open_journal_avatar'] = array(
-    'page callback' => 'open_journal_avatar',
-    'access arguments' => array('access content'),
-    'type' => MENU_CALLBACK,
-  );
   return $items;
 }
 
@@ -736,6 +730,7 @@ function open_journal_discussion() {
 }
 
 function open_journal_discussion_add($journal) {
+  dpm(open_journal_get_display_user_info( $GLOBALS['user']));
   return theme('open_journal_detail', array(
     'content' => drupal_render(drupal_get_form('open_journal_discussion_form', $journal)),
     'sidebar' => theme('open_journal_status_form', array('jid' => 1)),
@@ -778,14 +773,33 @@ function open_journal_display_user_image($user, $file ) {
 
 }
 
-function open_journal_get_display_user_info($user, $image_style=NULL, $size=NULL) {
+function open_journal_get_display_user_info($user, $image_style=NULL) {
+
+  if (!$image_style) {
+    $image_style = variable_get('user_picture_style', 'thumbnail');
+  }
+
+  $image_style = image_style_load($image_style);
+  
+  $size = array();
+  if ($width = $image_style['effects'][0]['data']['width']) {
+    $size[] = $width;
+  }
+  if ($height = $image_style['effects'][0]['data']['height']) {
+    $size[] = $height;
+  }
+  $size = min($size);
+  dpm($image_style['effects'][0]['data']);
+  dpm($size);
 
   $info = array(
     'display_picture_url' => NULL,
     'display_name' => NULL,
   );
 
-  if (!$user->picture->fid) {
+  if (!$user->picture) {
+    $info['display_picture_url'] = 'http://www.gravatar.com/avatar/1'.$user->uid.'?d=identicon&f=y&size='.$size;
+    // print('<img src="'.'http://www.gravatar.com/avatar/1'.$user->uid.'?d=identicon&f=y&size='.$size.'" />');
   }
   else {
   }
