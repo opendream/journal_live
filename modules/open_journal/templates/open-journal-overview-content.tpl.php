@@ -5,7 +5,7 @@
   
   <!-- Journal-block-content -->
   <div class="journal-block-content">
-  	<p>Peritonitis is a common complication in patients undergoing continuous ambulatory peritoneal dialysis (CAPD).  It is the most common cause of transferring to hemodialysis. The aim of this study was to determine the risk factor for developing first episode of peritonitis. Patients who have been treated with CAPD for more than 3 months at Hat-Yai hospital were recruited for this study.  Patients who are diagnosed with peritonitis  have two out of these three  manifestations including (1) symptoms such as abdominal pain, fever (2) turbid dialysate effluent with white cell count > 100 /mm3 and PMN> 50% of WBC and (3) identification of dialysate organism. The data was retrospectively reviewed from 2005 to 2011 and analyzed appropriately with either Chi’s square and logistic regression.</p>
+  	<p><?php print $abstract; ?></p>
   </div><!-- End Journal-block-content -->
   
   <!-- Journal-file-download -->
@@ -13,15 +13,15 @@
   
   	<div class="file-download-update">
   	  <span class="label">Last update: </span>
-  	  <span>13 Feb 2013</span>
+  	  <span><?php print $last_update;?></span>
   	</div>
   	
   	<div class="file-download-create">
   	  <span class="label">By: </span>
-  	  <span>Sornchai Jaidee</span>		
+  	  <span><?php print $update_by; ?></span>		
   	</div>
   	
-  	<a class="file-download-btn" href="#">Download</a>
+  	<a class="file-download-btn" href="<?php print $latest_file;?>" target="_blank">Download</a>
   </div><!-- End Journal-file-download -->
   
 </div><!-- End Abstract Block -->	
