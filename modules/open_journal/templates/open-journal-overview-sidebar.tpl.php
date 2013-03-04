@@ -25,6 +25,9 @@
   <!-- Journal-block-content -->
   <div class="journal-block-content">
   	<ul class="relate-peoples">
+      <?php foreach($people_list as $list):?>
+      <li class="clickable-people owner profile-picture-small"><a href="#"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /><span><?php print '';?></span></a></li>
+      <?php endforeach;?>
   		<li class="clickable-people owner profile-picture-small"><a href="#"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /><span>Owner</span></a></li>
   		<li class="profile-picture-small"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /></li>
   		<li class="profile-picture-small"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /></li>

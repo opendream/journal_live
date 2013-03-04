@@ -36,8 +36,7 @@
   	<ul id="overview-discussion">
       <?php foreach($discussion_data as $data):?>
       <li>
-        <!--<div class="journal-user profile-picture-small"><a href="#"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /><span class="username">Benz Gim…</span></a></div>-->
-        <div class="journal-user profile-picture-small"><?php print $data['user_image'];?></div>
+        <div class="journal-user profile-picture-small"><a href="#"><img src="<?php print $data['user_image']['image_url'];?>" alt="" /><span class="username"><?php print $data['user_image']['user'];?></span></a></div>
         <div class="discus-title"><a href="#"><?php print $data['title'];?><span class="file-attach"><img src="/sites/all/modules/open_journal/images/ic-has-file.png" alt="has file attach" /></span></a></div>
         <div class="discus-content"><?php print $data['description'];?></div>
       </li>
@@ -45,6 +44,9 @@
   	</ul>
   </div><!-- End Journal-block-content -->
   
+  <?php if($more_discussion > 0):?>
   <a class="view-all-discus" href=""><?php print $more_discussion;?> more discussion</a>	
-  
+  <?php else:?>
+  <span> no more discustion</span>
+  <?php endif;?>
 </div><!-- End Discussion Block -->	

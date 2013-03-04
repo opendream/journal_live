@@ -660,8 +660,8 @@ function open_journal_overview($data) {
     $user = user_load($row->uid);
     $file = file_load($user->picture->fid);
     $discussion_data[$i]['user_image'] = open_journal_display_user_image($user, $file);
-    $discussion_data[$i]['title'] = truncate_utf8($row->title, 10, '' ,'...' ,'');
-    $discussion_data[$i]['description'] = truncate_utf8($row->description, 10, '' ,'...' ,'');
+    $discussion_data[$i]['title'] = truncate_utf8($row->title, 20, '' ,'...' ,'');
+    $discussion_data[$i]['description'] = truncate_utf8($row->description, 100, '' ,'...' ,'');
     $discussion_data[$i]['url'] = '';
     $discussion_data[$i]['jid'] = $data->jid;
     $i++;
@@ -682,14 +682,13 @@ function open_journal_overview($data) {
   $people_list = array();
   $i = 0;
   foreach($people as $row) {
-    $user = user_load($row->uid);
-    $file = file_load($user->picture->fid);
-    $people_list[$i]['user_image'] = open_journal_display_user_image($user, $file);
+    $user_p = user_load($row->uid);
+    $file_p = file_load($user->picture->fid);
+    $people_list[$i]['user_image'] = open_journal_display_user_image($user_p, $file_p);
     $i++;
   }
 
-  // Prepare information send to theme
-  $information = array();
+
   open_journal_display_user_image($user, $file);
   if(OPEN_JOURNAL_SUB_LANG_ENABLE) {
     $abstract = $data->description_sub;
@@ -712,7 +711,7 @@ function open_journal_overview($data) {
       'jid' => 1,
       'status' => $status,
       'people_list'=> $people_list,
-      'information'=> NULL,
+      'information'=> $data,
       )
     ),
     'jid' => 1
@@ -757,8 +756,11 @@ function open_journal_list() {
 }
 
 function open_journal_display_user_image($user, $file ) {
-
-  $html = "<div class='journal-user profile-picture-small'><a href='#'><img  src='".file_create_url($file->uri)."' alt='' /><span class='username'>".$user->name."</span></a></div>";
-  return $html;
+  $data = array(
+    'image_url' => file_create_url($file->uri),
+    'user' => $user->name,
+  );
+ 
+  return $data;
 
 }
