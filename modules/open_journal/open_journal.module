@@ -296,18 +296,20 @@ function open_journal_preprocess_page(&$vars) {
     }
 
   }
-    
-  global $user;
+   
+  if (user_is_logged_in()) { 
+    global $user;
   
-  $dummy = open_journal_get_display_user_info($user, array('image_style' => 'open_journal_avatar_small'));
-  $vars['user_info'] = $dummy;
-  $vars['user_info']['display_picture_small'] = $dummy['display_picture'];
+    $dummy = open_journal_get_display_user_info($user, array('image_style' => 'open_journal_avatar_small'));
+    $vars['user_info'] = $dummy;
+    $vars['user_info']['display_picture_small'] = $dummy['display_picture'];
   
-  $dummy = open_journal_get_display_user_info($user, array('image_style' => 'open_journal_avatar_medium'));
-  $vars['user_info']['display_picture_medium'] = $dummy['display_picture'];
+    $dummy = open_journal_get_display_user_info($user, array('image_style' => 'open_journal_avatar_medium'));
+    $vars['user_info']['display_picture_medium'] = $dummy['display_picture'];
   
-  $dummy = open_journal_get_display_user_info($user, array('image_style' => 'open_journal_avatar_large'));
-  $vars['user_info']['display_picture_large'] = $dummy['display_picture'];
+    $dummy = open_journal_get_display_user_info($user, array('image_style' => 'open_journal_avatar_large'));
+    $vars['user_info']['display_picture_large'] = $dummy['display_picture'];
+  }
 }
 
 function open_journal_login() {
