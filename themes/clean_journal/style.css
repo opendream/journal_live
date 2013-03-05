@@ -1840,7 +1840,8 @@ h2.journal-block-title {
 #edit-dc-contributor legend,
 #edit-date legend,
 .form-item-dc-language label,
-.form-item-dc-identifier label {
+.form-item-dc-identifier label,
+.form-item-dc-coverage label {
 	width: 100px;
 	float: left;
 	text-align: right;
@@ -1850,11 +1851,20 @@ h2.journal-block-title {
 #edit-date legend {
 	padding-top: 20px;
 }
-.form-item-dc-identifier label {
-	width: 118px;
+
+.form-item-dc-identifier,
+.form-item-dc-coverage {
+	overflow: hidden;
+	margin-bottom: 0px;
+}
+
+.form-item-dc-identifier label,
+.form-item-dc-coverage label {
+	width: 100px;
 	padding-right: 0px;
 }
-.form-item-dc-identifier .description {
+.form-item-dc-identifier .description,
+.form-item-dc-coverage .description {
 	margin: 10px 0 0 132px !important;
 	float: left;
 }
@@ -1868,7 +1878,9 @@ h2.journal-block-title {
 .form-item-dc-language label,
 .form-item-dc-title label,
 .form-item-description-sub label,
-.form-item-description-en label {
+.form-item-description-en label,
+.form-item-dc-identifier label,
+.form-item-dc-coverage label {
 	position: relative;
 	float: left;
 }
@@ -1906,15 +1918,13 @@ h2.journal-block-title {
 	top: 7px;
 	right: 5px;
 }
-#edit-subject-sub .fieldset-legend .label-help:hover,
-#edit-subject-en .fieldset-legend .label-help:hover,
-#edit-dc-creator .fieldset-legend .label-help:hover,
-#edit-dc-publisher .fieldset-legend .label-help:hover,
-#edit-dc-contributor .fieldset-legend .label-help:hover,
-#edit-date .fieldset-legend .label-help:hover,
-.form-item-dc-language label .label-help:hover {
-	/* cursor: pointer; */
+
+.form-item-dc-identifier label .label-help,
+.form-item-dc-coverage label .label-help {
+	top: 7px;
+	margin-right: -2px;
 }
+
 #edit-subject-sub .fieldset-wrapper,
 #edit-subject-en .fieldset-wrapper,
 #edit-dc-creator .fieldset-wrapper,
@@ -1922,6 +1932,7 @@ h2.journal-block-title {
 #edit-dc-contributor .fieldset-wrapper,
 #edit-date .fieldset-wrapper,
 .form-item-dc-language #edit-dc-language,
+.form-item-dc-coverage #edit-dc-coverage,
 .form-item-dc-identifier #edit-dc-identifier {
 	width: 225px;
 	float: right;
@@ -1935,7 +1946,8 @@ h2.journal-block-title {
 	#edit-dc-publisher .fieldset-wrapper .form-item,
 	#edit-dc-contributor .fieldset-wrapper .form-item,
 	#edit-date .fieldset-wrapper .form-item,
-	.form-item-dc-identifier #edit-dc-identifier {
+	.form-item-dc-identifier #edit-dc-identifier,
+	.form-item-dc-coverage #edit-dc-coverage {
 		margin-bottom: 0;
 		padding-top: 0;
 	}
@@ -1945,6 +1957,7 @@ h2.journal-block-title {
 		#edit-dc-publisher .fieldset-wrapper .form-item .multi-textfield,
 		#edit-dc-contributor .fieldset-wrapper .form-item .multi-textfield,
 		.form-item-dc-identifier #edit-dc-identifier,
+		.form-item-dc-coverage #edit-dc-coverage,
 		.form-item-dc-title .form-text,
 		.form-item-description-sub .form-textarea,
 		.form-item-description-en .form-textarea {
@@ -1971,7 +1984,8 @@ h2.journal-block-title {
 		.form-item-description-en label {
 			margin-bottom: 10px;
 		}
-		.form-item-dc-identifier #edit-dc-identifier {
+		.form-item-dc-identifier #edit-dc-identifier,
+		.form-item-dc-coverage #edit-dc-coverage {
 			margin-right: 5px;
 		}
 #edit-date .form-type-select,
