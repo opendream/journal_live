@@ -93,7 +93,6 @@ function open_journal_menu() {
     'page arguments' => array($arg),
     'access arguments' => array('access open journal'),
     'type' => MENU_CALLBACK,
-    'file' => 'includes/open_journal_discussion_form.inc',
   ); 
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/discussion/add'] = array(
@@ -683,8 +682,8 @@ function open_journal_overview($data) {
   foreach($discussion as $row) {
     $user = user_load($row->uid);
     $discussion_data[$i]['user_info'] = open_journal_get_display_user_info($user);
-    $discussion_data[$i]['title'] = truncate_utf8($row->title, 20, '' ,'...' ,'');
-    $discussion_data[$i]['description'] = truncate_utf8($row->description, 100, '' ,'...' ,'');
+    $discussion_data[$i]['title'] = open_journal_trim($row->title, 50);
+    $discussion_data[$i]['description'] = open_journal_trim($row->description, 100);
     $discussion_data[$i]['url'] = '';
     $discussion_data[$i]['jid'] = $data->jid;
     $i++;
@@ -703,7 +702,7 @@ function open_journal_overview($data) {
   $people = open_journal_get_people_list($data->jid,$data->uid);
   $people_list = array();
 
-  $display_user_limit = 2;
+  $display_user_limit = 9;
   $i = 0;
   $more_people = FALSE;
   foreach($people as $row) {
@@ -773,8 +772,8 @@ function open_journal_discussion_add($journal) {
   open_journal_get_display_user_info( $GLOBALS['user']);
   return theme('open_journal_detail', array(
     'content' => drupal_render(drupal_get_form('open_journal_discussion_form', $journal)),
-    'sidebar' => theme('open_journal_status_form', array('jid' => 1)),
-    'jid' => 1
+    'sidebar' => theme('open_journal_status_form', array('jid' => $journal->jid)),
+    'jid' => $journal->jid
   ));
 }
 
@@ -961,4 +960,9 @@ function open_journal_get_display_user_info($account, $variables=array('image_st
     
   return $info;
 
+}
+function open_journal_trim($text, $size) {
+  $text = check_markup(truncate_utf8($text, $size, TRUE ,TRUE ,TRUE));
+  $text = strip_tags(preg_replace( '/\s+/', ' ', $text ));
+  return $text;
 }

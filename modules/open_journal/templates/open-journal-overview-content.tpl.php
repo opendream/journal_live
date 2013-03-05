@@ -39,9 +39,12 @@
           <?php print l($data['user_info']['display_picture'].'<span class="username">'.$data['user_info']['display_name'].'</span>', '', array('html' => TRUE) );?>
         </div>
         <div class="discus-title">
-          <?php print l($data['title'].'<span class="file-attach"><img src="/sites/all/modules/open_journal/images/ic-has-file.png" alt="has file attach" /></span>', '', array('html' => TRUE));?>
-          </div>
+          <?php  print l($data['title'].'<span class="file-attach"><img src="/sites/all/modules/open_journal/images/ic-has-file.png" alt="has file attach" /></span>','', array('html' => TRUE));?>
+          
+        </div>
         <div class="discus-content"><?php print $data['description'];?></div>
+        <?php //print open_journal_trim($title.$description);?>
+
       </li>
       <?php endforeach;?>
   	</ul>
