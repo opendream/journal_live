@@ -681,8 +681,7 @@ function open_journal_overview($data) {
   $i = 0;
   foreach($discussion as $row) {
     $user = user_load($row->uid);
-    $file = file_load($user->picture->fid);
-    $discussion_data[$i]['user_image'] = open_journal_display_user_image($user, $file);
+    $discussion_data[$i]['user_info'] = open_journal_get_display_user_info($user);
     $discussion_data[$i]['title'] = truncate_utf8($row->title, 20, '' ,'...' ,'');
     $discussion_data[$i]['description'] = truncate_utf8($row->description, 100, '' ,'...' ,'');
     $discussion_data[$i]['url'] = '';
@@ -702,16 +701,26 @@ function open_journal_overview($data) {
   // Prepare people list  send to theme
   $people = open_journal_get_people_list($data->jid);
   $people_list = array();
+
+  $display_user_limit = 2;
   $i = 0;
+  $more_people = FALSE;
   foreach($people as $row) {
-    $user_p = user_load($row->uid);
-    $file_p = file_load($user_p->picture->fid);
-    $people_list[$i]['user_image'] = open_journal_display_user_image($user_p, $file_p);
+
+    if($i < $display_user_limit) {
+      $user_p = user_load($row->uid);
+      $people_list[$i]['user_info'] = open_journal_get_display_user_info($user_p);
+      
+    }
+    else {
+      $people_list[$i]['user_info'] = array('display_picture' => 'more', 'display_name' => 'more people');
+      $more_people = TRUE;
+      break;
+    }
     $i++;
   }
 
 
-  open_journal_display_user_image($user, $file);
   if(OPEN_JOURNAL_SUB_LANG_ENABLE) {
     $abstract = $data->description_sub;
   }
@@ -720,7 +729,7 @@ function open_journal_overview($data) {
   }
   return theme('open_journal_detail', array(
     'content' => theme('open_journal_overview_content', array(
-      'jid' => 1,
+      'jid' => $data->jid,
       'abstract' => $abstract,
       'last_update' => date('d M Y', $data_d->created),
       'update_by' => $user->name,
@@ -730,10 +739,11 @@ function open_journal_overview($data) {
       )
     ),
     'sidebar' => theme('open_journal_overview_sidebar', array(
-      'jid' => 1,
+      'jid' => $data->jid,
       'status' => $status,
-      'people_list'=> $people_list,
-      'information'=> $data,
+      'people_list' => $people_list,
+      'information' => $data,
+      'more_people' => $more_people,
       )
     ),
     'jid' => 1
@@ -841,15 +851,6 @@ function open_journal_image_default_styles() {
   return $styles;
 }
 
-function open_journal_display_user_image($user, $file ) {
-  $data = array(
-    'image_url' => file_create_url($file->uri),
-    'user' => $user->name,
-  );
- 
-  return $data;
-
-}
 
 function open_journal_get_display_user_info($account, $variables=array('image_style' => 'open_journal_avatar_medium', 'user' => NULL)) {
 
@@ -904,7 +905,7 @@ function open_journal_get_display_user_info($account, $variables=array('image_st
     $real_name .= $account->data['lastname'];
   }
   else {
-    $real_name .= dummy_name;
+    $real_name .= $dummy_name;
   }
   
   

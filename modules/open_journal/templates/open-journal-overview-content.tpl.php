@@ -36,7 +36,7 @@
   	<ul id="overview-discussion">
       <?php foreach($discussion_data as $data):?>
       <li>
-        <div class="journal-user profile-picture-small"><a href="#"><img src="<?php print $data['user_image']['image_url'];?>" alt="" /><span class="username"><?php print $data['user_image']['user'];?></span></a></div>
+        <div class="journal-user profile-picture-small"><a href="#"><?php print $data['user_info']['display_picture'];?><span class="username"><?php print $data['user_info']['display_name'];?></span></a></div>
         <div class="discus-title"><a href="#"><?php print $data['title'];?><span class="file-attach"><img src="/sites/all/modules/open_journal/images/ic-has-file.png" alt="has file attach" /></span></a></div>
         <div class="discus-content"><?php print $data['description'];?></div>
       </li>

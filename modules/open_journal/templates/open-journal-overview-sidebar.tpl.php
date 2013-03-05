@@ -26,13 +26,20 @@
   <div class="journal-block-content">
   	<ul class="relate-peoples">
       <?php foreach($people_list as $list):?>
-      <li class="clickable-people owner profile-picture-small"><a href="#"><img src="<?php print $list['user_image']['image_url'];?>" alt="" /><span><?php print $list['user_image']['user'];?></span></a></li>
+        <?php if($list['user_info']['display_picture'] == 'more'):?>
+        <li class="more-people"><a >...</a></li>
+        <?php else:?>
+        <li class="clickable-people owner profile-picture-small"><a href="#"><?php print $list['user_info']['display_picture'];?><span><?php print $list['user_info']['display_name'];?></span></a></li>  
+        <?php endif;?>
       <?php endforeach;?>
+      
   		
   	</ul>	
   </div><!-- End Journal-block-content -->
   
-  <a class="view-all-people" href="#">View all people</a>	
+  <?php if($more_people):?>
+  <a class="view-all-people" href="#">View all people</a>
+  <?php endif;?>	
 
 </div> <!-- End People Block -->	
 
