@@ -460,13 +460,13 @@ function open_journal_journal_save($data, $change_status=FALSE) {
   if (!$pk) {
 
     // Active auto user
-    if(user_access('auto active when create journal')) {
+    global $user;
+    open_journal_journal_people_active($data->jid, $user->uid);
 
-      $user_auto_active_list = db_query("SELECT uid FROM users_roles ur, role_permission rp WHERE rp.permission = 'auto active when create journal' AND rp.rid = ur.rid")->fetchAllKeyed(0,0);
+    $user_auto_active_list = db_query("SELECT uid FROM users_roles ur, role_permission rp WHERE rp.permission = 'auto active when create journal' AND rp.rid = ur.rid")->fetchAllKeyed(0, 0);
 
-      foreach ($user_auto_active_list as $uid) {
-        open_journal_journal_people_active($data->jid, $uid);
-      }
+    foreach ($user_auto_active_list as $uid) {
+      open_journal_journal_people_active($data->jid, $uid);
     }
 
     // create first discussion.
@@ -797,8 +797,7 @@ function open_journal_discussion_add($journal) {
   ));
 }
 
-function open_journal_file($journal) {
-  
+function open_journal_get_file_list($jid, $limit=NULL) {
   $file_list = db_query(
    "SELECT 
       u.*, IF(d.fid IS NOT NULL, d.fid, c.fid) AS fid, f.filename, f.filesize, f.uri, f.timestamp
@@ -821,9 +820,16 @@ function open_journal_file($journal) {
     WHERE 
       d.jid = :jid AND 
       (c.fid IS NOT NULL OR d.fid IS NOT NULL)
-    ORDER BY c.created, d.created DESC", 
-    array(':jid' => $journal->jid)
+    ORDER BY c.created, d.created DESC".($limit? (' LIMIT 0, '.$limit): ''), 
+    array(':jid' => $jid)
   )->fetchAll();
+
+  return $file_list;
+}
+
+function open_journal_file($journal) {
+  
+  $file_list = open_journal_get_file_list($journal->jid);
   
   foreach ($file_list as &$file) {
     

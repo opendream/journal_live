@@ -1686,6 +1686,7 @@ h2.journal-block-title {
 	width: 160px;
 	float: right;
 	color: #333333;
+	word-wrap: break-word;
 }
 .information-field {
 	margin-bottom: 15px;
@@ -2014,16 +2015,21 @@ h2.journal-block-title {
   float: left;
 }
 #edit-file-ajax-wrapper .description,
-#edit-file-ajax-wrapper .form-type-managed-file {
+#edit-file-ajax-wrapper .form-type-managed-file,
+.form-type-managed-file {
   float: left;
 }
-
+.form-type-managed-file {
+	padding-left: 20px;
+	margin-bottom: 20px;
+}
 
 #edit-file {
 	width: 470px;
 	float: left;
 }
-#edit-file-upload-button {
+#edit-file-upload-button,
+#edit-file-remove-button {
 	float: none;
 	margin-left: 20px;
 }

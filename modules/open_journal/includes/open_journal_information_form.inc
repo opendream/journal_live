@@ -44,8 +44,12 @@ function open_journal_information_form($form, &$form_state , $data=NULL) {
   );
 
   if(isset($data->jid)) {
+
+    $latest_file = open_journal_get_file_list($data->jid, 1);
+    $latest_file = $latest_file[0];
+
     $form['main']['file_link'] = array(
-      '#markup' => 'Latest file : '.l('filename.doc', '').'<div class="description">'.t('When you create discussion or comment with upload file, The latest file will be update.').'</div>'
+      '#markup' => '<div class="form-type-managed-file">Latest file : '.l($latest_file->filename, file_create_url($latest_file->uri)).'<div class="description">'.t('When you create discussion or comment with upload file, The latest file will be update.').'</div></div>'
     );
   }
   else {
