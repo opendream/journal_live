@@ -67,13 +67,13 @@
         <?php print l($open_journal_logo1, '', array('html' => TRUE));?>
       </div>
       <div class="user-manage">
-        <a href="/journal/" class="view-all-journal">View My Journal</a>
+        <?php print l(t('View My Journal'), OPEN_JOURNAL_PREFIX_PATH, array('attributes' => array('class' => array('view-all-journal')))); ?>
         <div class="user-dropdown">
-          <img src="/sites/all/themes/clean_journal/images/dummy/benz-avatar.png" alt="benz-profile-image" />
-          <a href="#" class="dropdown-link">Benz Gimmik</a>
+          <?php print $user_info['display_picture_small']; ?>
+          <a href="" class="dropdown-link"><?php print $user_info['display_name']; ?></a>
           <ul class="dropdown active-dropdown">
-            <li><a href="#">แก้ไขข้อมูล</a></li>
-            <li><a href="/user/logout">ออกจากระบบ</a></li>
+            <li><?php print l(t('Settings'), OPEN_JOURNAL_PREFIX_PATH.'/account/setting'); ?></li>
+            <li><?php print l(t('Logout'), 'user/logout'); ?></li>
           </ul>
         </div>
       </div>

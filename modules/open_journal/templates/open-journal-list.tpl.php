@@ -17,7 +17,7 @@
 		<li class="journal-filter-item"><a href="#">Option 4</a></li>
 	</ul>
 	<div class="add-journal-btn">
-		<a href="#">Add New</a>
+		<?php print l(t('Add New'), OPEN_JOURNAL_PREFIX_PATH.'/add'); ?>
 	</div>
 </div>
 

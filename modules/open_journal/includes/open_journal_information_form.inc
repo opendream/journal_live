@@ -225,7 +225,6 @@ function open_journal_get_date_option($start_num , $end_num) {
 }
 
 function open_journal_multi_textfield($title='' , $values = FALSE, $name) {
-  
   $fs = open_journal_get_field_settings();
   
   $multi_textfield = array(

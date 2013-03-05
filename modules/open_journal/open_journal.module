@@ -113,9 +113,10 @@ function open_journal_menu() {
     'file' => 'includes/open_journal_discussion_form.inc',
   );  
 
-  $items[OPEN_JOURNAL_PREFIX_PATH.'/%/file'] = array(
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/file'] = array(
     'title' => t('Files'),
     'page callback' => 'open_journal_file',
+    'page arguments' => array($arg),
     'access arguments' => array('access open journal'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_file.inc',
@@ -154,6 +155,7 @@ function open_journal_theme() {
       'variables' => array(
         'jid' => NULL,
         'content' => NULL,
+        'sidebar' => NULL,
       ),
       'template' => 'templates/open-journal-detail',
     ),
@@ -198,8 +200,8 @@ function open_journal_theme() {
 
     'open_journal_file' => array(
       'variables' => array(
-        'jid' => NULL,
-        'file_list' => NULL,
+        'journal' => NULL,
+        'file_list' => array(),
       ),
       'template' => 'templates/open-journal-file',
     ),
@@ -245,6 +247,8 @@ function open_journal_permission() {
 }
 
 function open_journal_preprocess_html(&$vars) {
+  
+  
   if (user_is_logged_in()) {
     $vars['header_class'] = 'header-logged-in';
     $vars['logged_in'] = TRUE;
@@ -257,6 +261,7 @@ function open_journal_preprocess_html(&$vars) {
 }
 
 function open_journal_preprocess_page(&$vars) {
+  
 
   $mpath = drupal_get_path('module', 'open_journal');
 
@@ -290,7 +295,18 @@ function open_journal_preprocess_page(&$vars) {
     }
 
   }
+    
+  global $user;
   
+  $dummy = open_journal_get_display_user_info($user, array('image_style' => 'open_journal_avatar_small'));
+  $vars['user_info'] = $dummy;
+  $vars['user_info']['display_picture_small'] = $dummy['display_picture'];
+  
+  $dummy = open_journal_get_display_user_info($user, array('image_style' => 'open_journal_avatar_medium'));
+  $vars['user_info']['display_picture_medium'] = $dummy['display_picture'];
+  
+  $dummy = open_journal_get_display_user_info($user, array('image_style' => 'open_journal_avatar_large'));
+  $vars['user_info']['display_picture_large'] = $dummy['display_picture'];
 }
 
 function open_journal_login() {
@@ -772,15 +788,62 @@ function open_journal_discussion_add($journal) {
   open_journal_get_display_user_info( $GLOBALS['user']);
   return theme('open_journal_detail', array(
     'content' => drupal_render(drupal_get_form('open_journal_discussion_form', $journal)),
-    'sidebar' => theme('open_journal_status_form', array('jid' => $journal->jid)),
+
+    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', array('jid' => $journal->jid)),
     'jid' => $journal->jid
+
   ));
 }
 
-function open_journal_file() {
+function open_journal_file($journal) {
+  
+  $file_list = db_query(
+   "SELECT 
+      u.*, IF(d.fid IS NOT NULL, d.fid, c.fid) AS fid, f.filename, f.filesize, f.uri, f.timestamp
+    FROM 
+      open_journal_discussion d
+    LEFT JOIN
+      open_journal_comment c
+    ON
+      d.did = c.did
+    LEFT JOIN
+      users u
+    ON 
+      c.uid = u.uid OR
+      d.uid = u.uid
+    INNER JOIN
+      file_managed f
+    ON 
+      c.fid = f.fid OR
+      d.fid = f.fid
+    WHERE 
+      d.jid = :jid AND 
+      (c.fid IS NOT NULL OR d.fid IS NOT NULL)
+    ORDER BY c.created, d.created DESC", 
+    array(':jid' => $journal->jid)
+  )->fetchAll();
+  
+  foreach ($file_list as &$file) {
+    
+    $account = (object) array(
+      'uid' => $file->uid,
+      'name' => $file->name,
+      'picture' => $file->picture,
+      'data' => $file->data,
+    );
+    $file->user_info = open_journal_get_display_user_info($account);
+  }
+  
   return theme('open_journal_detail', array(
-    'content' => theme('open_journal_file'),
-    'jid' => 1
+    'content' => theme('open_journal_file', array(
+      'file_list' => $file_list,
+      'journal' => $journal,
+      'file_icon' => theme('image', array(
+        'path' => drupal_get_path('module', 'open_journal').'/images/ic-has-file.png',
+        'alt' => 'has file attach',
+      )),
+    )),
+    'jid' => $journal->jid
   ));
 }
 
@@ -861,7 +924,9 @@ function open_journal_image_default_styles() {
   return $styles;
 }
 
-
+/**
+ * $account require uid, name, (obj|str) data, (obj|int) picture
+ */
 function open_journal_get_display_user_info($account, $variables=array('image_style' => 'open_journal_avatar_medium', 'user' => NULL)) {
 
   $image_style = image_style_load($variables['image_style']);
@@ -903,6 +968,8 @@ function open_journal_get_display_user_info($account, $variables=array('image_st
     ));
   }
   
+  $account->data = !is_array($account->data)? unserialize($account->data): $account->data;
+  
   $real_name = '';
   if (isset($account->data['firstname']) && $account->data['firstname']) {
     $real_name .= $account->data['firstname'];
@@ -931,7 +998,7 @@ function open_journal_get_display_user_info($account, $variables=array('image_st
   
   
   // Check before return
-  if (!$variables['user']) {
+  if (!isset($variables['user']) || !$variables['user']) {
     global $user;
   }
   
