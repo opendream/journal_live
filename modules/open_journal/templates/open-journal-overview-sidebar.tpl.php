@@ -27,20 +27,22 @@
   	<ul class="relate-peoples">
       <?php foreach($people_list as $list):?>
         <?php if($list['user_info']['display_picture'] == 'more'):?>
-        <li class="more-people"><a >...</a></li>
+        <li class="more-people">
+          <?php print l('...', '', array('attributes' => array('title' => $list['user_info']['display_name'])));?>
+        </li>
         <?php else:?>
-        <li class="clickable-people owner profile-picture-small"><a href="#"><?php print $list['user_info']['display_picture'];?><span><?php print $list['user_info']['display_name'];?></span></a></li>  
+        <li class="clickable-people owner profile-picture-small">
+          <?php if($GLOBALS['user']->uid == $list['uid']):?>
+            <?php print l($list['user_info']['display_picture'].'<span>Owner</span>', '' ,array('html' => TRUE))?>
+          <?php else:?>
+            <?php print l($list['user_info']['display_picture'], '', array('html' => TRUE))?>  
+          <?php endif;?>
+        </li>  
         <?php endif;?>
-      <?php endforeach;?>
-      
-  		
+      <?php endforeach;?>	
   	</ul>	
   </div><!-- End Journal-block-content -->
-  
-  <?php if($more_people):?>
-  <a class="view-all-people" href="#">View all people</a>
-  <?php endif;?>	
-
+  <?php print l('View all people' ,'', array('attributes' => array('class' => 'view-all-people')));?>
 </div> <!-- End People Block -->	
 
 <!-- Start Information Block -->
@@ -53,7 +55,6 @@
   
     <?php if (OPEN_JOURNAL_SUB_LANG_ENABLE):?>
     <div class="information-field subject-sub-field">
-    <?php //dpm($information);?>
     <span class="label"><?php print OPEN_JOURNAL_SUB_LANG_KEYWORDS_LABEL ; ?>: </span>
     <span class="value"><?php print $information->subject_sub;?> </span>
     </div>

@@ -20,8 +20,7 @@
   	  <span class="label">By: </span>
   	  <span><?php print $update_by; ?></span>		
   	</div>
-  	
-  	<a class="file-download-btn" href="<?php print $latest_file;?>" target="_blank">Download</a>
+  	<?php print l(t('Download'), $latest_file, array('attributes' => array('class' => 'file-download-btn')));?>
   </div><!-- End Journal-file-download -->
   
 </div><!-- End Abstract Block -->	
@@ -36,8 +35,12 @@
   	<ul id="overview-discussion">
       <?php foreach($discussion_data as $data):?>
       <li>
-        <div class="journal-user profile-picture-small"><a href="#"><?php print $data['user_info']['display_picture'];?><span class="username"><?php print $data['user_info']['display_name'];?></span></a></div>
-        <div class="discus-title"><a href="#"><?php print $data['title'];?><span class="file-attach"><img src="/sites/all/modules/open_journal/images/ic-has-file.png" alt="has file attach" /></span></a></div>
+        <div class="journal-user profile-picture-small">
+          <?php print l($data['user_info']['display_picture'].'<span class="username">'.$data['user_info']['display_name'].'</span>', '', array('html' => TRUE) );?>
+        </div>
+        <div class="discus-title">
+          <?php print l($data['title'].'<span class="file-attach"><img src="/sites/all/modules/open_journal/images/ic-has-file.png" alt="has file attach" /></span>', '', array('html' => TRUE));?>
+          </div>
         <div class="discus-content"><?php print $data['description'];?></div>
       </li>
       <?php endforeach;?>
@@ -46,7 +49,5 @@
   
   <?php if($more_discussion > 0):?>
   <a class="view-all-discus" href=""><?php print $more_discussion;?> more discussion</a>	
-  <?php else:?>
-  <span> no more discustion</span>
   <?php endif;?>
 </div><!-- End Discussion Block -->	
