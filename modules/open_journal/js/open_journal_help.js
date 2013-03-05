@@ -64,8 +64,8 @@ jQuery(document).ready(function () {
         fieldset.find('input.multi-textfield').eq(0).focus();
       });
       
-      options.show.when.target = fieldset.find('input.multi-textfield');
-      options.hide.when.target = fieldset.find('input.multi-textfield');
+      options.show.when.target = fieldset.find('input.multi-textfield').eq(0);
+      options.hide.when.target = fieldset.find('input.multi-textfield').eq(0);
       $(this).qtip(options);
     }
 
