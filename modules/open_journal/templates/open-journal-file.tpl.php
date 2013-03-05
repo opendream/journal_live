@@ -6,84 +6,30 @@
   <!-- Journal-block-content -->
   <div class="journal-block-content">
   	<ul id="file-list-item">
-  		<li>
-  			<div class="journal-user profile-picture-small"><a href="#"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /><span class="username">Benz Gim…</span></a></div>
-  			<div class="file-name"><span class="file-attach"><img src="/sites/all/modules/open_journal/images/ic-has-file.png" alt="has file attach" /></span><a href="#">Document-2013-2-14.doc</a></div>
+  	  
+  	  
+  	  <?php foreach ($file_list as $file): ?>
+  	  <li>
+  			<div class="journal-user profile-picture-small">
+  			  <?php print l($file->user_info['display_picture'].'<span class="username">'.$file->user_info['display_name'].'</span>', '', array('html' => TRUE)); ?>
+  			</div>
+  			<div class="file-name">
+  			  <span class="file-attach">
+  			    <?php print $file_icon; ?>
+  			  </span>
+  			  <?php print l($file->filename, file_create_url($file->uri)); ?>
+  			</div>
   			<div class="upload-date">
   				<span class="label">Date: </span>
-  				<span>13 Feb 2013</span>
+  				<span><?php print date('d M Y', $file->timestamp); ?></span>
   			</div>
   			<div class="file-size">
   				<span class="label">Size: </span>
-  				<span>3.41 MB</span>		
+  				<span><?php print format_size($file->filesize); ?></span>	
   			</div>
-  			<a class="file-download-btn" href="#">Download</a>
+  			<?php print l(t('Download'), file_create_url($file->uri), array('attributes' => array('class' => array('file-download-btn')))); ?>
   		</li>
-  		<li>
-  			<div class="journal-user profile-picture-small"><a href="#"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /><span class="username">Benz Gim…</span></a></div>
-  			<div class="file-name"><span class="file-attach"><img src="/sites/all/modules/open_journal/images/ic-has-file.png" alt="has file attach" /></span><a href="#">Document-2013-2-14.doc</a></div>
-  			<div class="upload-date">
-  				<span class="label">Date: </span>
-  				<span>13 Feb 2013</span>
-  			</div>
-  			<div class="file-size">
-  				<span class="label">Size: </span>
-  				<span>3.41 MB</span>		
-  			</div>
-  			<a class="file-download-btn" href="#">Download</a>
-  		</li>
-  		<li>
-  			<div class="journal-user profile-picture-small"><a href="#"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /><span class="username">Benz Gim…</span></a></div>
-  			<div class="file-name"><span class="file-attach"><img src="/sites/all/modules/open_journal/images/ic-has-file.png" alt="has file attach" /></span><a href="#">Document-2013-2-14.doc</a></div>
-  			<div class="upload-date">
-  				<span class="label">Date: </span>
-  				<span>13 Feb 2013</span>
-  			</div>
-  			<div class="file-size">
-  				<span class="label">Size: </span>
-  				<span>3.41 MB</span>		
-  			</div>
-  			<a class="file-download-btn" href="#">Download</a>
-  		</li>
-  		<li>
-  			<div class="journal-user profile-picture-small"><a href="#"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /><span class="username">Benz Gim…</span></a></div>
-  			<div class="file-name"><span class="file-attach"><img src="/sites/all/modules/open_journal/images/ic-has-file.png" alt="has file attach" /></span><a href="#">Document-2013-2-14.doc</a></div>
-  			<div class="upload-date">
-  				<span class="label">Date: </span>
-  				<span>13 Feb 2013</span>
-  			</div>
-  			<div class="file-size">
-  				<span class="label">Size: </span>
-  				<span>3.41 MB</span>		
-  			</div>
-  			<a class="file-download-btn" href="#">Download</a>
-  		</li>
-  		<li>
-  			<div class="journal-user profile-picture-small"><a href="#"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /><span class="username">Benz Gim…</span></a></div>
-  			<div class="file-name"><span class="file-attach"><img src="/sites/all/modules/open_journal/images/ic-has-file.png" alt="has file attach" /></span><a href="#">Document-2013-2-14.doc</a></div>
-  			<div class="upload-date">
-  				<span class="label">Date: </span>
-  				<span>13 Feb 2013</span>
-  			</div>
-  			<div class="file-size">
-  				<span class="label">Size: </span>
-  				<span>3.41 MB</span>		
-  			</div>
-  			<a class="file-download-btn" href="#">Download</a>
-  		</li>
-  		<li>
-  			<div class="journal-user profile-picture-small"><a href="#"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /><span class="username">Benz Gim…</span></a></div>
-  			<div class="file-name"><span class="file-attach"><img src="/sites/all/modules/open_journal/images/ic-has-file.png" alt="has file attach" /></span><a href="#">Document-2013-2-14.doc</a></div>
-  			<div class="upload-date">
-  				<span class="label">Date: </span>
-  				<span>13 Feb 2013</span>
-  			</div>
-  			<div class="file-size">
-  				<span class="label">Size: </span>
-  				<span>3.41 MB</span>		
-  			</div>
-  			<a class="file-download-btn" href="#">Download</a>
-  		</li>
+  	  <?php endforeach ?>
   	</ul>
   </div><!-- End Journal-block-content -->	
   

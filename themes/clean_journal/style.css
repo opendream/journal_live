@@ -1125,6 +1125,12 @@ body {
 	width: 90px;
 	padding: 5px;
 }
+.user-manage .user-dropdown img {
+  border-radius: 50%;
+	-moz-border-radius: 50%;
+	-webkit-border-radius: 50%;
+}
+
 /* Page layout
 ----------------------------------------------------------------*/
 #page.page-sign {
@@ -1183,6 +1189,11 @@ h1.page-title {
 		width: 260px;
 	}
 	
+#open-journal-account-setting-form .user-picture img {
+  border-radius: 50%;
+	-moz-border-radius: 50%;
+	-webkit-border-radius: 50%;
+}
 /* Form Style
 ----------------------------------------------------------------*/
 #open-journal-login-form,
@@ -1486,15 +1497,13 @@ input.form-submit:hover {
   			-webkit-border-radius: 5px;
   		}
 
-.profile-picture-large {
-	border-radius: 36px;
-	-moz-border-radius: 36px;
-	-webkit-border-radius: 36px;
-}
-.profile-picture-small {
-	border-radius: 20px;
-	-moz-border-radius: 20px;
-	-webkit-border-radius: 20px;
+.profile-picture-large,
+.profile-picture-large img,
+.profile-picture-small,
+.profile-picture-small img {
+	border-radius: 50%;
+	-moz-border-radius: 50%;
+	-webkit-border-radius: 50%;
 }
 /* Journal list content */
 #journal-list {
@@ -1786,30 +1795,30 @@ h2.journal-block-title {
 	overflow: hidden;
 }
 
-#edit-data {
+#open-journal-information-form #edit-data {
 	padding: 0 20px;
 	float: left;
 }
-#edit-main {
+#open-journal-information-form #edit-main {
 	width: 510px;
 	float: left;
 }
-	#edit-main .form-item {
-		width: 470px;
-		padding: 0 20px;
-	}
-#edit-data {
+#open-journal-information-form #edit-main .form-item {
+	width: 470px;
+	padding: 0 20px;
+}
+#open-journal-information-form #edit-data {
 	width: 370px;
 	margin-top: 40px;
 }
-#edit-data h3 {
+#open-journal-information-form #edit-data h3 {
 	font-size: 22px;
 }
-#edit-data fieldset {
+#open-journal-information-form #edit-data fieldset {
 	border: none;
 	margin-top: 0;
 }
-#edit-data fieldset#edit-group {
+#open-journal-information-form #edit-data fieldset#edit-group {
 	border: 1px solid #C9C9C9;
 	padding: 25px 10px 20px 0;
 	margin-top: 0;
@@ -1817,7 +1826,7 @@ h2.journal-block-title {
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;	
 }
-#edit-data #edit-group .fieldset-wrapper {
+#open-journal-information-form #edit-data #edit-group .fieldset-wrapper {
 	padding: 0;
 }
 
