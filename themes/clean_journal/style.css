@@ -1675,7 +1675,7 @@ h2.journal-block-title {
 }
 .information-block .information-field .label {
 	text-align: right;
-	width: 70px;
+	width: 85px;
 	display: block;
 	padding-right: 15px;
 	float: left;
@@ -1683,7 +1683,7 @@ h2.journal-block-title {
 	font-weight: bold;
 }
 .information-block .information-field .value {
-	width: 175px;
+	width: 160px;
 	float: right;
 	color: #333333;
 }
