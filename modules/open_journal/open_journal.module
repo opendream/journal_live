@@ -25,6 +25,20 @@ define('OPEN_JOURNAL_MAX_MULTI_TEXTFIELD', 10);
 define('OPEN_JOURNAL_ALLOWED_FILE_TYPE', 'doc docx');
 
 define('OPEN_JOURNAL_STATUS_INFORMATION_APPROVE', 0);
+define('OPEN_JOURNAL_STATUS_DOCUMENT_APPROVE', 1);
+define('OPEN_JOURNAL_STATUS_CATLOGUED', 2);
+define('OPEN_JOURNAL_STATUS_PUBLISHED', 3);
+
+define('OPEN_JOURNAL_STATUS_INFORMATON_APPROVE_KEY', 0);
+define('OPEN_JOUNAL_STATUS', serialize (
+  array(
+    OPEN_JOURNAL_STATUS_INFORMATON_APPROVE_KEY => 'Information approve',
+    OPEN_JOURNAL_STATUS_DOCUMENT_APPROVE => 'Document approve', 
+    OPEN_JOURNAL_STATUS_CATLOGUED => 'Catalogued', 
+    OPEN_JOURNAL_STATUS_PUBLISHED => 'Published',
+  )
+));
+
 
 function open_journal_menu() {
 
@@ -78,7 +92,7 @@ function open_journal_menu() {
     'file' => 'includes/open_journal_information_form.inc',
   ); 
 
-  $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_overview/overview'] = array(
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/overview'] = array(
     'title' => t('Overview'),
     'page callback' => 'open_journal_overview',
     'page arguments' => array($arg),
@@ -397,20 +411,6 @@ function open_journal_journal_load($jid) {
   return $data;
 }
 
-function open_journal_overview_load($jid) {
-
-  // Query data from database for edit journal when have journal ID
-  $data = db_select('open_journal_journal', 'j')
-  ->fields('j')
-  ->condition('jid', $jid, '=')
-  ->execute()
-  ->fetchObject();
-
-  $data->title = $data->dc_title;
-
-  return $data;
-}
-
 function open_journal_journal_save($data, $change_status=FALSE) {
   
   if (empty($data->created)) {
@@ -686,14 +686,14 @@ function open_journal_information($data=NULL) {
   ));
 }
 
-function open_journal_overview($data) {
+function open_journal_overview($journal) {
 
   // get data from last discussion
-  $data_d = open_journal_discussion_get_last($data->jid);
+  $file_last = open_journal_get_file_list($journal->jid, 1);
 
   // get data from discussion limit for display overview page
   $limit_overview_page = 3;
-  $discussion = open_journal_discussion_load_limit($data->jid, $limit_overview_page);
+  $discussion = open_journal_discussion_load_limit($journal->jid, $limit_overview_page);
   // Prepare data send to theme 
   $discussion_data = array();
   $i = 0;
@@ -703,21 +703,23 @@ function open_journal_overview($data) {
     $discussion_data[$i]['title'] = open_journal_trim($row->title, 50);
     $discussion_data[$i]['description'] = open_journal_trim($row->description, 100);
     $discussion_data[$i]['url'] = '';
-    $discussion_data[$i]['jid'] = $data->jid;
+    $discussion_data[$i]['jid'] = $journal->jid;
     $i++;
   }
   // calculate total more link to discussion journal
-  $more_discussion = count(open_journal_discussion_load_all($data->jid))-$limit_overview_page;
+  $more_discussion = count(open_journal_discussion_load_all($journal->jid))-$limit_overview_page;
   // get user and file data
-  $user = user_load($data_d->uid);
-  $file = file_load($data_d->fid);
+  $user = user_load($file_last[0]->uid);
+  $file = file_load($file_last[0]->fid);
+  $status_tmp =unserialize(OPEN_JOUNAL_STATUS);
   $status = array(
-    'name' => 'Information Approve',
-    'updated' => date('d M Y', $data->status_changed),
-    'created' => date('d M Y', $data->created),
+    'name' => $status_tmp[$journal->status],
+    'updated' => date('d M Y', $journal->status_changed),
+    'created' => date('d M Y', $journal->created),
+    'status_id' => $journal->status,
   );
   // Prepare people list  send to theme
-  $people = open_journal_get_people_list($data->jid,$data->uid);
+  $people = open_journal_get_people_list($journal->jid,$journal->uid);
   $people_list = array();
 
   $display_user_limit = 9;
@@ -740,26 +742,90 @@ function open_journal_overview($data) {
   }
 
 
-  if(OPEN_JOURNAL_SUB_LANG_ENABLE) {
-    $abstract = $data->description_sub;
+  if(OPEN_JOURNAL_SUB_LANG_ENABLE && $journal->dc_language != 'en') {
+    $abstract = $journal->description_sub;
   }
   else {
-    $abstract = $data->description_en;
+    $abstract = $journal->description_en;
   }
-  $information = $data;
-  // TODO display language
-  if($information->dc_language == OPEN_JOURNAL_SUB_LANG_CODE) {
-    $information->dc_language = OPEN_JOURNAL_SUB_LANG_TEXT;
-  }
-  else {
-    $information->dc_language = 'Enligsh'; 
+  // Prepare information sidebar 
+  $information = (object) array();
+  $information_field = open_journal_get_field_settings();
+
+  if($information_field['dc_creator']) {
+    $information->dc_creator['value'] = implode(", ", $journal->dc_creator);
+    $information->dc_creator['label'] = 'Creators';
   }
 
+  if($information_field['dc_subject']) {
+    if(OPEN_JOURNAL_SUB_LANG_ENABLE) {
+      $information->subject_sub['value'] = implode(", ", $journal->subject_sub);
+      $information->subject_sub['label'] = OPEN_JOURNAL_SUB_LANG_KEYWORDS_LABEL;
+    }
+    $information->subject_en['value'] = implode(", ", $journal->subject_en);
+    $information->subject_en['label'] = 'Keywords';
+  }
+  if($information_field['dc_publisher']) {
+    $information->dc_publisher['value'] = implode(", ", $journal->dc_publisher);
+    $information->dc_publisher['label'] = 'Publisher';
+  }
+  if($information_field['dc_contributor']) {
+    $information->dc_contributor['value'] = implode(", ", $journal->dc_publisher);
+    $information->dc_contributor['label'] = 'Contributors';
+  }
+  if($information_field['dc_date']) {
+    $information->dc_date['value'] = date('d M Y',$journal->dc_date);
+    $information->dc_date['label'] = 'Date';
+  }
+  if($information_field['dc_type']) {
+    $information->dc_type['value'] = implode(", ", $journal->dc_type);
+    $information->dc_type['label'] = 'Type';
+  }
+  if($information_field['dc_format']) {
+    $information->dc_format['value'] = implode(", ", $journal->dc_format);
+    $information->dc_format['label'] = 'Format';
+  }
+  
+  if($information_field['dc_source']) {
+    $information->dc_source['value'] = implode(", ", $journal->dc_source);
+    $information->dc_source['label'] = 'Source';
+  }
+  if($information_field['dc_language']) {
+    $information->dc_language['value'] = $journal->dc_language;
+    $information->dc_language['label'] = 'language';
+  }
+  if($information_field['dc_relation']) {
+    $information->dc_relation = implode(", ", $journal->dc_relation);
+    $information->dc_relation['label'] = 'Relation';
+  }
+  if($information_field['dc_coverage']) {
+    $information->dc_coverage['value'] = $journal->dc_coverage;
+    $information->dc_coverage['label'] = 'Covreage';
+  }
+  if($information_field['dc_rights']) {
+    $information->dc_rights['value'] = implode(", ", $journal->dc_rights);
+    $information->dc_rights['label'] = 'Right';
+  }
+  if($information_field['dc_identifier']) {
+    $information->dc_identifier['value'] = $journal->dc_identifier;
+    $information->dc_identifier['label'] = 'Final URL';
+  }
+
+  
+  // TODO display language
+  if($information->dc_language == OPEN_JOURNAL_SUB_LANG_CODE) {
+    $information->dc_language['value'] = OPEN_JOURNAL_SUB_LANG_TEXT;
+  }
+  else {
+    $information->dc_language['value'] = 'Enligsh'; 
+  }
+ 
+  
   return theme('open_journal_detail', array(
     'content' => theme('open_journal_overview_content', array(
-      'jid' => $data->jid,
+      'jid' => $journal->jid,
       'abstract' => $abstract,
-      'last_update' => date('d M Y', $data_d->created),
+      'last_update' => date('d M Y', $file_last[0]->created),
       'update_by' => $user->name,
       'latest_file' => file_create_url($file->uri),
       'discussion_data' => $discussion_data,
@@ -767,14 +833,15 @@ function open_journal_overview($data) {
       )
     ),
     'sidebar' => theme('open_journal_overview_sidebar', array(
-      'jid' => $data->jid,
+      'jid' => $journal->jid,
       'status' => $status,
       'people_list' => $people_list,
-      'information' => $data,
+      'information' => $information,
       'more_people' => $more_people,
+      'uid' => $journal->uid,
       )
     ),
-    'jid' => $data->jid
+    'jid' => $journal->jid
   ));
 }
 

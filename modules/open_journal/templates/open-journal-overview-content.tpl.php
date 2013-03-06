@@ -12,8 +12,8 @@
   <div class="journal-file-download">
   
   	<div class="file-download-update">
-  	  <span class="label">Last update: </span>
-  	  <span><?php print $last_update;?></span>
+  	  <span class="label">Lastes file upload: </span>
+  	  <span> <?php print $last_update;?></span>
   	</div>
   	
   	<div class="file-download-create">
