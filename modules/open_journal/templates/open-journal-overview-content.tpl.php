@@ -1,7 +1,7 @@
 <!-- Abstract -->
 <div class="journal-block abstract-block block-bg-shadow">
 
-  <h2 class="journal-block-title">Abstract</h2>
+  <h2 class="journal-block-title"><?php print $abstract_label;?></h2>
   
   <!-- Journal-block-content -->
   <div class="journal-block-content">
@@ -29,6 +29,7 @@
 <div class="journal-block discussion-block block-bg-shadow">
 
   <h2 class="journal-block-title">Discussion</h2>
+  <?php print l('Add new journal', OPEN_JOURNAL_PREFIX_PATH.'/add');?>
   
   <!-- Journal-block-content -->
   <div class="journal-block-content">
@@ -36,10 +37,10 @@
       <?php foreach($discussion_data as $data):?>
       <li>
         <div class="journal-user profile-picture-small">
-          <?php print l($data['user_info']['display_picture'].'<span class="username">'.$data['user_info']['display_name'].'</span>', '', array('html' => TRUE) );?>
+          <?php print l($data['user_info']['display_picture'].'<span class="username">'.$data['user_info']['display_name'].'</span>', current_path(), array('html' => TRUE) );?>
         </div>
         <div class="discus-title">
-          <?php  print l($data['title'].'<span class="file-attach"><img src="/sites/all/modules/open_journal/images/ic-has-file.png" alt="has file attach" /></span>','', array('html' => TRUE));?>
+          <?php  print l($data['title'].'<span class="file-attach"><img src="/sites/all/modules/open_journal/images/ic-has-file.png" alt="has file attach" /></span>', current_path(), array('html' => TRUE));?>
           
         </div>
         <div class="discus-content"><?php print $data['description'];?></div>
