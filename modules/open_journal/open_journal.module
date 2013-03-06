@@ -128,7 +128,16 @@ function open_journal_menu() {
     'access arguments' => array('access open journal'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_people_form.inc',
-  ); 
+  );
+  
+  $items['open_journal/avatar/%/%'] = array(
+    'page callback' => 'open_journal_avatar_generate',
+    'page arguments' => array(2, 3),
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/identicon.inc',
+  );
+  
   return $items;
 }
 
@@ -424,16 +433,8 @@ function open_journal_overview_load($jid) {
 }
 
 function open_journal_journal_save($data, $change_status=FALSE) {
-  
-  if (empty($data->created)) {
-    $data->created = REQUEST_TIME;
-  }
 
   $data->changed = REQUEST_TIME;
-
-  if ($change_status || empty($data->status_changed)) {
-    $data->status_changed = REQUEST_TIME;
-  }
 
   open_journal_update_field($data, 'subject_en');
   open_journal_update_field($data, 'subject_sub');
@@ -460,7 +461,14 @@ function open_journal_journal_save($data, $change_status=FALSE) {
   
   // Importantly, save record before save file.
   $pk = (isset($data->jid) && $data->jid)? 'jid': array();
-
+  
+  if (!$pk) {
+    $data->created = REQUEST_TIME;
+  }
+  if (!$pk || $change_status) {
+    $data->status_changed = REQUEST_TIME;
+  }
+  
   $jid = drupal_write_record('open_journal_journal', $data, $pk);
   
   if (isset($data->file) && $data->file) {
@@ -591,10 +599,6 @@ function open_journal_get_people_list($jid, $uid=0) {
 
 function open_journal_discussion_save($data) {
   
-  if (empty($data->created)) {
-    $data->created = REQUEST_TIME;
-  }
-
   $data->changed = REQUEST_TIME;
 
 
@@ -604,7 +608,11 @@ function open_journal_discussion_save($data) {
   
   // Importantly, save record before save file.
   $pk = (isset($data->did) && $data->did)? 'did': array();
-
+  
+  if (!$pk) {
+    $data->created = REQUEST_TIME;
+  }
+  
   drupal_write_record('open_journal_discussion', $data, $pk);
   
   if ($data->fid) {
@@ -966,7 +974,8 @@ function open_journal_get_display_user_info($account, $variables=array('image_st
   // Prepare name and picture to display
   $dummy_name = $account->name;
   $dummy_picture = theme('image', array(
-    'path' => 'http://www.gravatar.com/avatar/'.md5(strtolower(trim($account->uid))).'?d=identicon&f=y&size='.$size,
+    //'path' => 'http://www.gravatar.com/avatar/'.md5(strtolower(trim($account->uid))).'?d=identicon&f=y&size='.$size,
+    'path' => 'open_journal/avatar/'.md5(strtolower(trim($account->name))).'/'.$size,
     'width' => $size,
     'height' => $size,
     'alt' => $dummy_name,
@@ -1050,6 +1059,7 @@ function open_journal_get_display_user_info($account, $variables=array('image_st
   return $info;
 
 }
+
 function open_journal_trim($text, $size) {
   $text = check_markup(truncate_utf8($text, $size, TRUE ,TRUE ,TRUE));
   $text = strip_tags(preg_replace( '/\s+/', ' ', $text ));
