@@ -32,8 +32,8 @@ define('OPEN_JOURNAL_STATUS_PUBLISHED', 3);
 define('OPEN_JOURNAL_STATUS_INFORMATON_APPROVE_KEY', 0);
 define('OPEN_JOUNAL_STATUS', serialize (
   array(
-    OPEN_JOURNAL_STATUS_INFORMATON_APPROVE_KEY => 'Information approve',
-    OPEN_JOURNAL_STATUS_DOCUMENT_APPROVE => 'Document approve', 
+    OPEN_JOURNAL_STATUS_INFORMATON_APPROVE_KEY => 'Information review',
+    OPEN_JOURNAL_STATUS_DOCUMENT_APPROVE => 'Document review', 
     OPEN_JOURNAL_STATUS_CATLOGUED => 'Catalogued', 
     OPEN_JOURNAL_STATUS_PUBLISHED => 'Published',
   )
@@ -835,11 +835,13 @@ function open_journal_overview($journal) {
 
   
   // TODO display language
-  if($information->dc_language == OPEN_JOURNAL_SUB_LANG_CODE) {
+  if($information->dc_language['value'] == OPEN_JOURNAL_SUB_LANG_CODE) {
     $information->dc_language['value'] = OPEN_JOURNAL_SUB_LANG_TEXT;
+    $abstract_label = OPEN_JOURNAL_SUB_LANG_ABSTRACT_LABEL;
   }
   else {
     $information->dc_language['value'] = 'Enligsh'; 
+    $abstract_label = 'Abstract';
   }
  
   
@@ -852,6 +854,7 @@ function open_journal_overview($journal) {
       'latest_file' => file_create_url($file->uri),
       'discussion_data' => $discussion_data,
       'more_discussion' => $more_discussion,
+      'abstract_label' => $abstract_label,
       )
     ),
     'sidebar' => theme('open_journal_overview_sidebar', array(
