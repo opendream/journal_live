@@ -975,7 +975,7 @@ function open_journal_get_display_user_info($account, $variables=array('image_st
   $dummy_name = $account->name;
   $dummy_picture = theme('image', array(
     //'path' => 'http://www.gravatar.com/avatar/'.md5(strtolower(trim($account->uid))).'?d=identicon&f=y&size='.$size,
-    'path' => 'open_journal/avatar/'.md5(strtolower(trim($account->name))).'/'.$size,
+    'path' => 'open_journal/avatar/'.md5(strtolower(trim($account->name))).'/'.$size.'.png',
     'width' => $size,
     'height' => $size,
     'alt' => $dummy_name,
