@@ -1773,7 +1773,8 @@ h2.journal-block-title {
 	#overview-discussion li .discus-title,
 	#overview-discussion li .discus-content {
 		float: right;
-		width: 420px;
+		width: 410px;
+		padding-left: 10px;
 	}
 	#overview-discussion li .discus-title {
 		margin-bottom: 7px;
@@ -1991,6 +1992,11 @@ h2.journal-block-title {
 			width: 470px;
 			max-width: 470px;
 			line-height: 1em;
+		}
+		#edit-description-sub,
+		#edit-description-en {
+			padding-top: 10px;
+			padding-bottom: 10px;
 		}
 		.form-item-dc-title .form-text {
 			width: 450px;
