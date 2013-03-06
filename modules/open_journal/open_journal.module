@@ -249,7 +249,13 @@ function open_journal_permission() {
 function open_journal_preprocess_html(&$vars) {
   
   
-  if (user_is_logged_in()) {
+  if (user_is_logged_in() && 
+      !(in_array($_GET['q'], array(
+      OPEN_JOURNAL_PREFIX_PATH.'/login', 
+      OPEN_JOURNAL_PREFIX_PATH.'/register',
+      'user/password')
+    ) || 
+    (arg(0) == 'user' && arg(1) == 'reset'))) {
     $vars['header_class'] = 'header-logged-in';
     $vars['logged_in'] = TRUE;
   }
@@ -261,13 +267,13 @@ function open_journal_preprocess_html(&$vars) {
 }
 
 function open_journal_preprocess_page(&$vars) {
-  
 
   $mpath = drupal_get_path('module', 'open_journal');
 
   if(in_array($_GET['q'], array(
       OPEN_JOURNAL_PREFIX_PATH.'/login', 
-      OPEN_JOURNAL_PREFIX_PATH.'/register')
+      OPEN_JOURNAL_PREFIX_PATH.'/register',
+      'user/password')
     ) || 
     (arg(0) == 'user' && arg(1) == 'reset')
   ) {
@@ -281,7 +287,6 @@ function open_journal_preprocess_page(&$vars) {
     $vars['page_class'] = 'page-sign';
   }
   else {
-
     $vars['open_journal_logo1'] = theme('image', array(
       'path' => $mpath.'/images/default_logo1.png',
       'alt' => variable_get('site_name', ''),
@@ -308,6 +313,13 @@ function open_journal_preprocess_page(&$vars) {
   
     $dummy = open_journal_get_display_user_info($user, array('image_style' => 'open_journal_avatar_large'));
     $vars['user_info']['display_picture_large'] = $dummy['display_picture'];
+  }
+}
+
+function open_journal_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'user_pass') {
+    drupal_add_js(drupal_get_path('module','open_journal').'/js/open_journal_compact.js');
+    $form['title'] = array('#markup' => '<h2>'.t('Forget password').'</h2>', '#weight' => -50);    
   }
 }
 
@@ -466,7 +478,9 @@ function open_journal_journal_save($data, $change_status=FALSE) {
     $user_auto_active_list = db_query("SELECT uid FROM users_roles ur, role_permission rp WHERE rp.permission = 'auto active when create journal' AND rp.rid = ur.rid")->fetchAllKeyed(0, 0);
 
     foreach ($user_auto_active_list as $uid) {
-      open_journal_journal_people_active($data->jid, $uid);
+      if ($user->uid != $uid) {
+        open_journal_journal_people_active($data->jid, $uid);
+      }
     }
 
     // create first discussion.
@@ -952,7 +966,7 @@ function open_journal_get_display_user_info($account, $variables=array('image_st
   // Prepare name and picture to display
   $dummy_name = $account->name;
   $dummy_picture = theme('image', array(
-    'path' => 'http://www.gravatar.com/avatar/1'.$account->uid.'?d=identicon&f=y&size='.$size,
+    'path' => 'http://www.gravatar.com/avatar/'.md5(strtolower(trim($account->uid))).'?d=identicon&f=y&size='.$size,
     'width' => $size,
     'height' => $size,
     'alt' => $dummy_name,
