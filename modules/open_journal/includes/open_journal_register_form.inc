@@ -42,7 +42,7 @@ function open_journal_register_form($form, &$form_state) {
     '#markup' => l(t('Login'), OPEN_JOURNAL_PREFIX_PATH.'/login', array('attributes' => array('class' => array('link-login')))),
   );
   $form['actions']['forget'] = array(
-    '#markup' => l(t('Forget password'), '#', array('attributes' => array('class' => array('link-forget')))),
+    '#markup' => l(t('Forget password'), 'user/password', array('attributes' => array('class' => array('link-forget')))),
   );
 
   $form['#validate'][] = 'user_register_validate';

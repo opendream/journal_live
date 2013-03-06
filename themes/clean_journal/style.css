@@ -1106,7 +1106,7 @@ body {
 	position: absolute;
 	top: 80px;
 	right: 0;
-	width: 100px;
+	width: 130px;
 	z-index: 10;
 	list-style: none;
 	margin: 0;
@@ -1114,7 +1114,7 @@ body {
 .user-manage .user-dropdown ul li {
 	line-height: 1.5em;
 	text-align: right;
-	width: 100px;
+	width: 130px;
 	padding: 5px;
 	padding: 0;
 	border-bottom: 1px solid #ccc;
@@ -1122,7 +1122,7 @@ body {
 .user-manage .user-dropdown ul li a {
 	background: #FFF;
 	display: block;
-	width: 90px;
+	width: 120px;
 	padding: 5px;
 }
 .user-manage .user-dropdown img {
@@ -1212,7 +1212,8 @@ h1.page-title {
 #open-journal-login-form h2,
 #open-journal-register-form h2,
 h2.journal-block-title,
-#open-journal-information-form h2 {
+#open-journal-information-form h2,
+form#user-pass h2 {
 	background: url(images/ic.png) no-repeat 2px 4px;
 	padding-left: 20px;
 	text-transform: uppercase;
@@ -1220,14 +1221,16 @@ h2.journal-block-title,
 	font-size: 22px;
 }
 #open-journal-login-form .form-item,
-#open-journal-register-form .form-item {
+#open-journal-register-form .form-item,
+form#user-pass .form-item {
 	position: relative;
 	margin: 0;
 	padding: 0;
 	margin-bottom: 20px;
 }
 #open-journal-login-form label,
-#open-journal-register-form label {
+#open-journal-register-form label,
+form#user-pass label {
 	color: #acacac;
 	position: absolute;
 	top: 16px;
@@ -1236,7 +1239,8 @@ h2.journal-block-title,
 	font-size: 24px;
 }
 #open-journal-login-form label .form-required,
-#open-journal-register-form label .form-required {
+#open-journal-register-form label .form-required,
+form#user-pass label .form-required {
 	display: none;
 }
 
@@ -1245,7 +1249,8 @@ h2.journal-block-title,
 #open-journal-register-form #edit-name,
 #open-journal-register-form #edit-mail,
 #open-journal-register-form #edit-data-firstname,
-#open-journal-register-form #edit-data-lastname {
+#open-journal-register-form #edit-data-lastname,
+form#user-pass #edit-name {
 	padding: 11px 20px;
 	border: none;
 	background: #f1f1f1;
@@ -1254,7 +1259,8 @@ h2.journal-block-title,
 	font-family: 'THSarabunNewRegular';
 	font-size: 22px;
 }
-#open-journal-login-form #edit-name {
+#open-journal-login-form #edit-name,
+form#user-pass #edit-name {
 	font-size: 28px;
 	padding: 8px 20px;
 }
@@ -1767,7 +1773,8 @@ h2.journal-block-title {
 	#overview-discussion li .discus-title,
 	#overview-discussion li .discus-content {
 		float: right;
-		width: 420px;
+		width: 410px;
+		padding-left: 10px;
 	}
 	#overview-discussion li .discus-title {
 		margin-bottom: 7px;
@@ -1985,6 +1992,11 @@ h2.journal-block-title {
 			width: 470px;
 			max-width: 470px;
 			line-height: 1em;
+		}
+		#edit-description-sub,
+		#edit-description-en {
+			padding-top: 10px;
+			padding-bottom: 10px;
 		}
 		.form-item-dc-title .form-text {
 			width: 450px;

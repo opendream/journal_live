@@ -27,6 +27,4 @@ jQuery(document).ready(function(){
     });
   }, 500);
 
-
-
 });

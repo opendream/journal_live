@@ -72,7 +72,8 @@
           <?php print $user_info['display_picture_small']; ?>
           <a href="" class="dropdown-link"><?php print $user_info['display_name']; ?></a>
           <ul class="dropdown active-dropdown">
-            <li><?php print l(t('Settings'), OPEN_JOURNAL_PREFIX_PATH.'/account/setting'); ?></li>
+            <li><?php print l(t('Add new journal'), OPEN_JOURNAL_PREFIX_PATH.'/add'); ?></li>
+            <li><?php print l(t('Account settings'), OPEN_JOURNAL_PREFIX_PATH.'/account/setting'); ?></li>
             <li><?php print l(t('Logout'), 'user/logout'); ?></li>
           </ul>
         </div>
