@@ -25,10 +25,11 @@
   <!-- Journal-block-content -->
   <div class="journal-block-content">
   	<ul class="relate-peoples">
-      <?php foreach($people_list as $list):?>
-        <?php if($list['user_info']['display_picture'] == 'more'):?>
+      <?php foreach($people_list as $key => $list):?>
+        <?php // this condition not clear ?>
+        <?php if($key == 'more_people' && $key != '0'):?>
         <li class="more-people">
-          <?php print l('...', '', array('attributes' => array('title' => $list['user_info']['display_name'])));?>
+          <?php //print l($list['user_info']['display_picture'], '', array('attributes' => array('title' => $list['user_info']['display_name'])));?>
         </li>
         <?php else:?>
         <li class="clickable-people owner profile-picture-small">
@@ -39,6 +40,7 @@
           <?php endif;?>
         </li>  
         <?php endif;?>
+        <?php dpm($key);?>
       <?php endforeach;?>	
   	</ul>	
   </div><!-- End Journal-block-content -->

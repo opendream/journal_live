@@ -28,6 +28,7 @@ define('OPEN_JOURNAL_STATUS_INFORMATION_APPROVE', 0);
 define('OPEN_JOURNAL_STATUS_DOCUMENT_APPROVE', 1);
 define('OPEN_JOURNAL_STATUS_CATLOGUED', 2);
 define('OPEN_JOURNAL_STATUS_PUBLISHED', 3);
+define('OPEN_JOURNAL_DISPLAY_IMAGE_USER_LIST_LIMIT', 3);
 
 define('OPEN_JOURNAL_STATUS_INFORMATON_APPROVE_KEY', 0);
 define('OPEN_JOUNAL_STATUS', serialize (
@@ -584,18 +585,7 @@ function open_journal_discussion_load_all($jid) {
 }
 
 
-function open_journal_get_people_list($jid, $uid=0) {
-  // Query data from database for display people list
-  $data = db_select('open_journal_journal_people', 'p')
-  ->fields('p')
-  ->condition('jid', $jid, '=')
-  ->orderBy('uid = '.$uid, 'DESC')
-  ->orderBy('jid', 'DESC')
-  ->execute()
-  ->fetchAll();
 
-  return $data;
-}
 
 function open_journal_discussion_save($data) {
   
@@ -677,19 +667,45 @@ function open_jounal_discussion_mail($data) {
 /**
  * People method
  */
-function open_journal_people_active_list($jid, $exclude=array()) {
+function open_journal_people_active_list($jid, $exclude=array() , $uid=FALSE, $limit=FALSE) {
     $exclude = !is_array($exclude)? array($exclude): $exclude;
   
-    $user_list = db_select('open_journal_journal_people', 'jp')
-    ->fields('jp', array('uid'))
-    ->condition('jid', $jid, '=')
-    ->execute()
-    ->fetchAllKeyed(0, 0);
+    $user_list = db_select('open_journal_journal_people', 'jp');
+    $user_list->fields('jp', array('uid'));
+    $user_list->condition('jid', $jid, '=');
+    if($uid) {
+      $user_list->orderBy('uid = '.$uid, 'DESC');
+    }
+    if($limit) {
+      $user_list->range(0, $limit);
+    }
+    $user_list = $user_list->execute();
+    $user_list = $user_list->fetchAllKeyed(0, 0);
     
     $user_list = array_values($user_list);
     $user_list = array_diff($user_list, $exclude);
     
     return user_load_multiple($user_list);
+}
+
+function open_journal_get_people_list($jid, $uid=0) {
+  // Query data from database for display people list order by owner
+  $data = db_select('open_journal_journal_people', 'p')
+  ->fields('p')
+  ->condition('jid', $jid, '=')
+  ->orderBy('uid = '.$uid, 'DESC')
+  ->orderBy('jid', 'DESC')
+  ->execute()
+  ->fetchAll();
+
+  return $data;
+}
+
+function open_journal_people() {
+  return theme('open_journal_detail', array(
+    'content' => theme('open_journal_people'),
+    'jid' => 1
+  ));
 }
 
 
@@ -741,29 +757,24 @@ function open_journal_overview($journal) {
     'status_id' => $journal->status,
   );
   // Prepare people list  send to theme
-  $people = open_journal_get_people_list($journal->jid,$journal->uid);
+  $people = open_journal_people_active_list($journal->jid, NULL, $journal->uid, OPEN_JOURNAL_DISPLAY_IMAGE_USER_LIST_LIMIT);
   $people_list = array();
+  $count_all_people = count(open_journal_people_active_list($journal->jid));
 
-  $display_user_limit = 9;
   $i = 0;
   $more_people = FALSE;
   foreach($people as $row) {
 
-    if($i < $display_user_limit) {
-      $user_p = user_load($row->uid);
-      $people_list[$i]['user_info'] = open_journal_get_display_user_info($user_p);
-      $people_list[$i]['uid'] = $row->uid;
+    $user_p = user_load($row->uid);
+    $people_list[$i]['user_info'] = open_journal_get_display_user_info($user_p);
+    $people_list[$i]['uid'] = $row->uid;
 
-    }
-    else {
-      $people_list[$i]['user_info'] = array('display_picture' => 'more', 'display_name' => 'more people');
-      $more_people = TRUE;
-      break;
-    }
     $i++;
   }
-
-
+  if($count_all_people > OPEN_JOURNAL_DISPLAY_IMAGE_USER_LIST_LIMIT) {
+    $people_list['more_people']['user_info'] = open_journal_get_display_user_info_more();
+    $more_people = TRUE;
+  }
   if(OPEN_JOURNAL_SUB_LANG_ENABLE && $journal->dc_language != 'en') {
     $abstract = $journal->description_sub;
   }
@@ -843,8 +854,8 @@ function open_journal_overview($journal) {
     $information->dc_language['value'] = 'Enligsh'; 
     $abstract_label = 'Abstract';
   }
+  dpm($people_list);
  
-  
   return theme('open_journal_detail', array(
     'content' => theme('open_journal_overview_content', array(
       'jid' => $journal->jid,
@@ -947,17 +958,64 @@ function open_journal_file($journal) {
   ));
 }
 
-function open_journal_people() {
-  return theme('open_journal_detail', array(
-    'content' => theme('open_journal_people'),
-    'jid' => 1
-  ));
-}
 
+
+function open_journal_get_journal_from_people($uid) {
+   // Query data from database for edit journal when have journal ID
+  $data = db_select('open_journal_journal', 'j')
+  ->fields('j')
+  //->join('open_journal_journal_people ', 'p', 'p.jid = j.jid')
+  ->condition('j.uid', $uid, '=')
+  ->execute()
+  ->fetchObject();
+
+  $result = db_query('SELECT j.jid, j.uid, j.dc_title, j.status, j.created, j.status_changed 
+    FROM open_journal_journal j JOIN open_journal_journal_people p ON j.jid = p.jid 
+    WHERE p.uid = :uid', array(':uid' => $uid))->fetchAll();
+  //$result->fetchAll();
+
+ 
+  return $result;
+}
 function open_journal_list() {
+
+  global $user;
+  $mpath = drupal_get_path('module', 'open_journal');
+  drupal_add_js($mpath.'/js/open_journal_list_compact.js');
+  $list = open_journal_get_journal_from_people($user->uid);
+  $status_tmp = unserialize(OPEN_JOUNAL_STATUS);
+  
+  // Get active list people
+  $i = 0;
+  foreach ($list as  $value) {
+    // Convers ststus id to word
+    $list[$i]->status_name = $status_tmp[$value->status];
+    // Get active list people each journal
+    $list[$i]->list_people = open_journal_people_active_list($value->jid, NULL, $value->uid, OPEN_JOURNAL_DISPLAY_IMAGE_USER_LIST_LIMIT);
+    $count_all_people = count(open_journal_people_active_list($value->jid));
+    
+    // Get user infomation each people
+    $j = 0;
+    foreach ($list[$i]->list_people as $key => $value) {
+      $list[$i]->list_people[$key]->user_info = open_journal_get_display_user_info($value);
+    $j++;  
+    }
+    // If have more people
+    if($count_all_people > OPEN_JOURNAL_DISPLAY_IMAGE_USER_LIST_LIMIT) {
+      $list[$i]->list_people['more'] = open_journal_get_display_user_info_more();
+    }
+    
+  $i++;
+  }
+
   drupal_set_title('');
+  $user_info = open_journal_get_display_user_info(user_load($user->uid) , array('image_style' => 'open_journal_avatar_large'));
+  
   return theme('open_journal_list', array(
-    'journal_list' => array(),
+    'journal_list' => array(
+      'user_info' => $user_info,
+      'list' => $list,
+    ),
   ));
 }
 
@@ -992,6 +1050,7 @@ function open_journal_image_default_styles() {
         'data' => array(
           'width' => 32,
           'height' => 32,
+          'class' => 'profile-picture-small',
         ),
         'weight' => 0,
       ),
@@ -1004,6 +1063,7 @@ function open_journal_image_default_styles() {
         'data' => array(
           'width' => 40,
           'height' => 40,
+          'class' => 'profile-picture-medium'
         ),
         'weight' => 0,
       ),
@@ -1016,8 +1076,10 @@ function open_journal_image_default_styles() {
         'data' => array(
           'width' => 73,
           'height' => 73,
+          'class' => 'profile-picture-large'
         ),
         'weight' => 0,
+
       ),
     ),
   );
@@ -1030,7 +1092,6 @@ function open_journal_image_default_styles() {
 function open_journal_get_display_user_info($account, $variables=array('image_style' => 'open_journal_avatar_medium', 'user' => NULL)) {
 
   $image_style = image_style_load($variables['image_style']);
-  
   $size = array();
   if ($width = $image_style['effects'][0]['data']['width']) {
     $size[] = $width;
@@ -1039,6 +1100,7 @@ function open_journal_get_display_user_info($account, $variables=array('image_st
     $size[] = $height;
   }
   $size = min($size);
+  $class = $image_style['effects'][0]['data']['class'];
   
   
   // Prepare name and picture to display
@@ -1050,6 +1112,7 @@ function open_journal_get_display_user_info($account, $variables=array('image_st
     'height' => $size,
     'alt' => $dummy_name,
     'title' => $dummy_name,
+    'class' => $class,
   ));
     
   if (!$account->picture) {
@@ -1066,6 +1129,7 @@ function open_journal_get_display_user_info($account, $variables=array('image_st
       'height' => $size,
       'alt' => $dummy_name,
       'title' => $dummy_name,
+      'class' => $class,
     ));
   }
   
@@ -1128,6 +1192,10 @@ function open_journal_get_display_user_info($account, $variables=array('image_st
     
   return $info;
 
+}
+
+function open_journal_get_display_user_info_more() {
+  return array('display_picture' => '...', 'display_name' => 'more people');
 }
 
 function open_journal_trim($text, $size) {
