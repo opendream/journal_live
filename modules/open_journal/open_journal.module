@@ -854,7 +854,6 @@ function open_journal_overview($journal) {
     $information->dc_language['value'] = 'Enligsh'; 
     $abstract_label = 'Abstract';
   }
-  dpm($people_list);
  
   return theme('open_journal_detail', array(
     'content' => theme('open_journal_overview_content', array(
