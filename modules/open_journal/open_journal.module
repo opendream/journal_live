@@ -1049,7 +1049,6 @@ function open_journal_image_default_styles() {
         'data' => array(
           'width' => 32,
           'height' => 32,
-          'class' => 'profile-picture-small',
         ),
         'weight' => 0,
       ),
@@ -1062,7 +1061,6 @@ function open_journal_image_default_styles() {
         'data' => array(
           'width' => 40,
           'height' => 40,
-          'class' => 'profile-picture-medium'
         ),
         'weight' => 0,
       ),
@@ -1075,7 +1073,6 @@ function open_journal_image_default_styles() {
         'data' => array(
           'width' => 73,
           'height' => 73,
-          'class' => 'profile-picture-large'
         ),
         'weight' => 0,
 
@@ -1099,7 +1096,6 @@ function open_journal_get_display_user_info($account, $variables=array('image_st
     $size[] = $height;
   }
   $size = min($size);
-  $class = $image_style['effects'][0]['data']['class'];
   
   
   // Prepare name and picture to display
@@ -1111,7 +1107,6 @@ function open_journal_get_display_user_info($account, $variables=array('image_st
     'height' => $size,
     'alt' => $dummy_name,
     'title' => $dummy_name,
-    'class' => $class,
   ));
     
   if (!$account->picture) {
@@ -1128,7 +1123,6 @@ function open_journal_get_display_user_info($account, $variables=array('image_st
       'height' => $size,
       'alt' => $dummy_name,
       'title' => $dummy_name,
-      'class' => $class,
     ));
   }
   
