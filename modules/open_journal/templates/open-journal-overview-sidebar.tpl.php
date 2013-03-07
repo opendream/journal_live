@@ -29,7 +29,7 @@
         <?php // this condition not clear ?>
         <?php if($key == 'more_people' && $key != '0'):?>
         <li class="more-people">
-          <?php //print l($list['user_info']['display_picture'], '', array('attributes' => array('title' => $list['user_info']['display_name'])));?>
+          <?php print l($list['user_info']['display_picture'], '', array('attributes' => array('title' => $list['user_info']['display_name'])));?>
         </li>
         <?php else:?>
         <li class="clickable-people owner profile-picture-small">
@@ -40,7 +40,6 @@
           <?php endif;?>
         </li>  
         <?php endif;?>
-        <?php dpm($key);?>
       <?php endforeach;?>	
   	</ul>	
   </div><!-- End Journal-block-content -->
