@@ -25,7 +25,7 @@
 	<ul>
 		<?php foreach ($journal_list['list'] as $value):?>
 		<li class="journal-item">
-			<div class="journal-status information-approve"><span><?php print $value->status;?></span></div>
+			<div class="journal-status status<?php echo $value->status;?>"><span><?php print $value->status_name;?></span></div>
 			<h3 class="journal-title"><a href="/journal/1/overview"><?php print $value->dc_title;?></a></h3>
 			<div class="journal-update">
 				<span class="label">Status update: </span>
@@ -36,111 +36,23 @@
 				<span><?php print date('d M Y', $value->created);?></span>		
 			</div>
 			<ul class="relate-peoples">
-				<?php foreach ($value->list_people as  $value_info):?>
+				<?php foreach ($value->list_people as $key_info => $value_info):?>
+				<?php if($key_info == 'more'):?>
+				<li class="more-people"><?php print l($value_info['display_picture'], '');?></li>
+				<?php elseif($value_info->uid == $value->uid):?>
 				<li class="clickable-people owner profile-picture-small">
-				<?php $user_info_tmp = open_journal_get_display_user_info($value_info);?>
-				<?php print $user_info_tmp['display_picture'];?>
+
+					<?php print l($value_info->user_info['display_picture'].'<span>Owner</span>', '' ,array('html' => TRUE))?>
+				<?php else:?>
+				<li class="clickable-people  profile-picture-small">
+					<?php print l($value_info->user_info['display_picture'], '' ,array('html' => TRUE))?>
+				<?php endif;?>
 				</li>
 				<?php endforeach;?>
 				
-				<li class="more-people"><a href="#">…</a></li>
 			</ul>
 		</li>
-		<?php endforeach;?>
-		
-		<li class="journal-item">
-			<div class="journal-status reject"><span>Reject</span></div>
-			<h3 class="journal-title"><a href="#">Risk Factor For Developing First</a></h3>
-			<div class="journal-update">
-				<span class="label">Status update: </span>
-				<span>13 Feb 2013</span>
-			</div>
-			<div class="journal-create">
-				<span class="label">Create Date: </span>
-				<span>1 Jan 2010</span>		
-			</div>
-			<ul class="relate-peoples">
-				<li class="clickable-people owner profile-picture-small"><a href="#"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /><span>Owner</span></a></li>
-				<li class="clickable-people"><img  class="profile-picture-small" src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /></li>
-				<li class="clickable-people"><img  class="profile-picture-small" src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-chatchai.png" alt="" /></li>
-				<li class="clickable-people"><img  class="profile-picture-small" src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /></li>
-				<li class="clickable-people"><img  class="profile-picture-small" src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /></li>
-				<li class="clickable-people"><img  class="profile-picture-small" src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-chatchai.png" alt="" /></li>
-				<li class="clickable-people"><img  class="profile-picture-small" src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /></li>
-				<li class="profile-picture-small"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-chatchai.png" alt="" /></li>
-				<li class="profile-picture-small"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-chatchai.png" alt="" /></li>
-			</ul>
-		</li>
-	
-		<li class="journal-item">
-			<div class="journal-status finish-publish"><span>Finish Publish</span></div>
-			<h3 class="journal-title"><a href="#">Risk Factor For Developing First</a></h3>
-			<div class="journal-update">
-				<span class="label">Status update: </span>
-				<span>13 Feb 2013</span>
-			</div>
-			<div class="journal-create">
-				<span class="label">Create Date: </span>
-				<span>1 Jan 2010</span>		
-			</div>
-			<ul class="relate-peoples">
-				<li><a href="#"><img  class="profile-picture-small" src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /></a></li>
-				<li class="clickable-people"><img  class="profile-picture-small" src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /></li>
-				<li class="clickable-people"><img  class="profile-picture-small" src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-chatchai.png" alt="" /></li>
-				<li class="clickable-people"><img  class="profile-picture-small" src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /></li>
-			</ul>
-		</li>
-	
-		<li class="journal-item">
-			<div class="journal-status information-approve"><span>Information Approve</span></div>
-			<h3 class="journal-title"><a href="#">Risk Factor For Developing First</a></h3>
-			<div class="journal-update">
-				<span class="label">Status update: </span>
-				<span>13 Feb 2013</span>
-			</div>
-			<div class="journal-create">
-				<span class="label">Create Date: </span>
-				<span>1 Jan 2010</span>		
-			</div>
-			<ul class="relate-peoples">
-				<li class="clickable-people owner profile-picture-small"><a href="#"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /><span>Owner</span></a></li>
-				<li class="profile-picture-small"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /></li>
-				<li class="profile-picture-small"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /></li>
-				<li class="profile-picture-small"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-chatchai.png" alt="" /></li>
-				<li class="profile-picture-small"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /></li>
-				<li class="profile-picture-small"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /></li>
-				<li class="profile-picture-small"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /></li>
-				<li class="profile-picture-small"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /></li>
-				<li class="profile-picture-small"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-chatchai.png" alt="" /></li>
-				<li class="more-people">…</li>
-			</ul>
-		</li>
-	
-		<li class="journal-item">
-			<div class="journal-status information-approve">Information Approve</div>
-			<h3 class="journal-title"><a href="#">Risk Factor For Developing First</a></h3>
-			<div class="journal-update">
-				<span class="label">Status update: </span>
-				<span>13 Feb 2013</span>
-			</div>
-			<div class="journal-create">
-				<span class="label">Create Date: </span>
-				<span>1 Jan 2010</span>		
-			</div>
-			<ul class="relate-peoples">
-				<li class="clickable-people owner profile-picture-small"><a href="#"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /><span>Owner</span></a></li>
-				<li class="profile-picture-small"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-chatchai.png" alt="" /></li>
-				<li class="profile-picture-small"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /></li>
-				<li class="profile-picture-small"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /></li>
-				<li class="profile-picture-small"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-chatchai.png" alt="" /></li>
-				<li class="profile-picture-small"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-chatchai.png" alt="" /></li>
-				<li class="profile-picture-small"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /></li>
-				<li class="profile-picture-small"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /></li>
-				<li class="profile-picture-small"><img src="/sites/all/themes/clean_journal/images/dummy/small-picture-profile-tavee.png" alt="" /></li>
-				<li class="more-people">…</li>
-			</ul>
-		</li>
-		
+		<?php endforeach;?>	
 	</ul>
 	<div class="load-more"><a href="#">Load More …</a></div>
 </div>
