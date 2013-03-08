@@ -1036,8 +1036,9 @@ function open_journal_list($after_jid=NULL, $limit=OPEN_JOURNAL_LIST_IPP) {
   
   $status_tmp = unserialize(OPEN_JOUNAL_STATUS);
 
-
+  
   $user_info = open_journal_get_display_user_info($user , array('image_style' => 'open_journal_avatar_large'));
+  
   $journal_list = open_journal_load_multiple($user, $after_jid, $limit);
 
 
@@ -1174,7 +1175,7 @@ function open_journal_get_display_user_info($account, $variables=array()) {
     'name_class' => TRUE
   );
   
-  $variables = array_merge($variables, $default_variables);
+  $variables = array_merge($default_variables, $variables);
   
 
   $image_style = image_style_load($variables['image_style']);
