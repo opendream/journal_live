@@ -645,11 +645,13 @@ function open_journal_mail($key, &$message, $data) {
       else {
       $body .= "\n".'Update discussion by : '.$data->sender->name;
       }
-      $body .= "\n".'Title: '.$data->title;
-      $body .= "\n".'------------------------------------------------------------------------';
-      $body .= "\n";
-      $body .= "\n".$data->description;
-      $body .= "\n";
+      $body .= "\n".'Title: '.open_journal_trim($data->title);
+      if (open_journal_trim($data->description)) {
+        $body .= "\n".'------------------------------------------------------------------------';
+        $body .= "\n";
+        $body .= "\n".$data->description;
+        $body .= "\n";
+      }
       $body .= "\n".'------------------------------------------------------------------------';
       $body .= "\n".'View more detail on '.$site_name.': ';
       $body .= "\n".url(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->journal->jid.'/discussion/'.$data->did, array('absolute' => TRUE));
@@ -1060,8 +1062,11 @@ function open_journal_get_display_user_info($account, $variables=array('image_st
 
 }
 
-function open_journal_trim($text, $size) {
-  $text = check_markup(truncate_utf8($text, $size, TRUE ,TRUE ,TRUE));
-  $text = strip_tags(preg_replace( '/\s+/', ' ', $text ));
+function open_journal_trim($text, $size=NULL) {
+
+  $text = preg_replace( '/\s+/', ' ', strip_tags($text));
+  if ($size) {
+    $text = truncate_utf8($text, $size, TRUE ,TRUE ,TRUE);
+  }
   return $text;
 }
