@@ -1504,7 +1504,8 @@ input.form-submit:hover {
   			-moz-border-radius: 5px;
   			-webkit-border-radius: 5px;
   		}
-
+.profile-picture-big,
+.profile-picture-big img,
 .profile-picture-large,
 .profile-picture-large img,
 .profile-picture-small,
@@ -2148,6 +2149,80 @@ h2.journal-block-title {
 		float: none;
 		padding: 10px 15px;
 	}
+
+/* People
+----------------------------------------------------------------*/
+.people-block h2.journal-block-title {
+	margin-bottom: 0;
+}
+.people-block .journal-block-content {
+	padding: 0 20px;
+	margin-top: 30px;
+	width: 100%;
+	float: left;
+}
+h3.people-section-title {
+  color: #111;
+  font-family: 'THSarabunNewBold';
+  font-size: 30px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.people-block .journal-block-content ul {
+	list-style: none;
+	margin: 0;
+	margin-top: 30px;
+}
+.people-block .journal-block-content ul li {
+	float: left;
+	width: 280px;
+	height: 100px;
+	padding-right: 20px;
+	margin-bottom: 40px;
+}
+.people-creator .journal-user {
+	width: 100%;
+}
+.people-block .journal-user {
+	float: left;
+}
+.people-block .journal-user .profile-picture-big {
+	float: left;
+	margin-right: 15px;
+}
+.people-block .journal-user h3 {
+	margin: 0;
+}
+.people-block .journal-user h3 a {
+	font-size: 30px;
+	color: #111;
+	font-family: 'THSarabunNewRegular';
+}
+.people-block .journal-user h3 a:hover {
+	text-decoration: none;
+}
+.people-contributor .join-date {
+	color: #666666;
+}
+a.active-people-btn,
+a.inactive-people-btn  {
+	display: block;
+	float: left;
+	text-transform: uppercase;
+	color: #FFF;
+	font-size: 10px;
+	line-height: 20px;
+	padding: 0 10px;
+	background-color: #a0dacc;
+	margin-top: 10px;
+}
+a.inactive-people-btn {
+	background-color: #c2c2c2;
+}
+a.active-people-btn:hover,
+a.inactive-people-btn:hover {
+	text-decoration: none;
+}
 /* Footer
 ----------------------------------------------------------------*/
 #footer {
