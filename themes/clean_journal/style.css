@@ -2060,6 +2060,10 @@ h2.journal-block-title {
 
 /* File List
 ----------------------------------------------------------------*/
+.files-block {
+	background: url(images/bg-new-file.png) #FFF no-repeat 0 77px;
+}
+
 #file-list-item { width: 880px; }
 	#file-list-item li .file-name {
 		width: 580px;
