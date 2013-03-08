@@ -9,4 +9,14 @@ jQuery(document).ready(function () {
     
     $('.user-dropdown .active-dropdown').toggle();
   })
+
+$('body').click(function(e){
+	console.log(e.target);
+	if(!$(e.target).hasClass('dropdown-link') && !$(e.target).hasClass('journal-filter-active')) {
+
+	  $('.user-dropdown .active-dropdown').hide();
+}
+});
+
+
 });

@@ -1018,20 +1018,19 @@ function open_journal_load_multiple($user, $after_jid=NULL, $limit=NULL) {
   return $result;
 }
 
-function open_journal_list($after_jid=NULL, $limit=1) {
+function open_journal_list($after_jid=NULL, $limit=OPEN_JOURNAL_LIST_IPP) {
 
   drupal_set_title('');
 
   global $user;
 
   $mpath = drupal_get_path('module', 'open_journal');
-  drupal_add_js($mpath.'/js/open_journal_list_compact.js');
   drupal_add_js($mpath.'/js/open_journal_list_load_more.js');
   
 
   // TODO: Refactor to use COUNT function in SQL
   $list = open_journal_load_multiple($user);
-  $count_journal = count($list);dpm($count_journal);
+  $count_journal = count($list);
   
   $status_tmp = unserialize(OPEN_JOUNAL_STATUS);
 
