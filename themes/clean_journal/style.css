@@ -1202,6 +1202,7 @@ h1.page-title {
 .page-user-password #page,
 #open-journal-account-setting-form,
 #open-journal-information-form,
+#open-journal-discussion-form,
 .block-bg-shadow {
 	padding: 20px;
 	background-color: #FFF;
@@ -1213,6 +1214,7 @@ h1.page-title {
 #open-journal-register-form h2,
 h2.journal-block-title,
 #open-journal-information-form h2,
+#open-journal-discussion-form h2,
 form#user-pass h2 {
 	background: url(images/ic.png) no-repeat 2px 4px;
 	padding-left: 20px;
@@ -1502,7 +1504,8 @@ input.form-submit:hover {
   			-moz-border-radius: 5px;
   			-webkit-border-radius: 5px;
   		}
-
+.profile-picture-big,
+.profile-picture-big img,
 .profile-picture-large,
 .profile-picture-large img,
 .profile-picture-small,
@@ -1988,7 +1991,7 @@ h2.journal-block-title {
 		}
 		.form-item-dc-title .form-text,
 		.form-item-description-sub .form-textarea,
-		.form-item-description-en .form-textarea {
+		.form-item-description-en .form-textarea  {
 			width: 470px;
 			max-width: 470px;
 			line-height: 1em;
@@ -2028,7 +2031,7 @@ h2.journal-block-title {
 }
 #edit-file-ajax-wrapper .description,
 #edit-file-ajax-wrapper .form-type-managed-file,
-.form-type-managed-file {
+.form-type-managed-file  {
   float: left;
 }
 .form-type-managed-file {
@@ -2057,7 +2060,62 @@ h2.journal-block-title {
 	color: #555;
 	line-height: 35px;
 }
-
+/* Add Discussion
+----------------------------------------------------------------*/
+.form-item-title .form-text,
+.form-item-description .form-textarea  {
+  width: 200px;
+  padding: 2px 10px 2px 10px;
+  border: none;
+  background: #f1f1f1;
+  color: #111;
+  font-family: 'THSarabunNewRegular';
+  font-size: 20px;
+}
+.form-item-title .form-text,
+.form-item-description .form-textarea {
+  width: 520px;
+  max-width: 520px;
+}
+.form-item-title .form-text {
+  width: 500px;
+}
+#edit-fid-ajax-wrapper {
+	margin-bottom: 20px;
+}
+#edit-fid-ajax-wrapper label {
+  position: relative;
+  float: left;
+}
+#open-journal-discussion-form label {
+	margin-bottom: 10px;
+}
+#edit-fid-ajax-wrapper .description,
+#edit-fid-ajax-wrapper .form-type-managed-file {
+  float: left;
+  padding-left: 0;
+}
+#edit-fid {
+	width: 520px;
+	float: left;
+}
+#edit-fid-upload-button,
+#edit-fid-remove-button {
+	float: none;
+	margin-left: 20px;
+}
+#open-journal-discussion-form .form-actions {
+  padding-left: 0;
+  margin-top: 30px;
+}
+#open-journal-discussion-form .form-actions a {
+	color: #555;
+	line-height: 35px;
+}
+#open-journal-discussion-form .form-item,
+#open-journal-discussion-form .form-actions {
+	padding: 0 20px;
+}
 /* File List
 ----------------------------------------------------------------*/
 .files-block {
@@ -2091,6 +2149,80 @@ h2.journal-block-title {
 		float: none;
 		padding: 10px 15px;
 	}
+
+/* People
+----------------------------------------------------------------*/
+.people-block h2.journal-block-title {
+	margin-bottom: 0;
+}
+.people-block .journal-block-content {
+	padding: 0 20px;
+	margin-top: 30px;
+	width: 100%;
+	float: left;
+}
+h3.people-section-title {
+  color: #111;
+  font-family: 'THSarabunNewBold';
+  font-size: 30px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.people-block .journal-block-content ul {
+	list-style: none;
+	margin: 0;
+	margin-top: 30px;
+}
+.people-block .journal-block-content ul li {
+	float: left;
+	width: 280px;
+	height: 100px;
+	padding-right: 20px;
+	margin-bottom: 40px;
+}
+.people-creator .journal-user {
+	width: 100%;
+}
+.people-block .journal-user {
+	float: left;
+}
+.people-block .journal-user .profile-picture-big {
+	float: left;
+	margin-right: 15px;
+}
+.people-block .journal-user h3 {
+	margin: 0;
+}
+.people-block .journal-user h3 a {
+	font-size: 30px;
+	color: #111;
+	font-family: 'THSarabunNewRegular';
+}
+.people-block .journal-user h3 a:hover {
+	text-decoration: none;
+}
+.people-contributor .join-date {
+	color: #666666;
+}
+a.active-people-btn,
+a.inactive-people-btn  {
+	display: block;
+	float: left;
+	text-transform: uppercase;
+	color: #FFF;
+	font-size: 10px;
+	line-height: 20px;
+	padding: 0 10px;
+	background-color: #a0dacc;
+	margin-top: 10px;
+}
+a.inactive-people-btn {
+	background-color: #c2c2c2;
+}
+a.active-people-btn:hover,
+a.inactive-people-btn:hover {
+	text-decoration: none;
+}
 /* Footer
 ----------------------------------------------------------------*/
 #footer {

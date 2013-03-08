@@ -16,13 +16,13 @@
 	<ul class="relate-peoples">
 		<?php foreach ($journal->people_list as $key_people => $people):?>
 		<?php if($key_people == 'more'):?>
-		<li class="more-people"><?php print l($people->display_info['display_picture'], '');?></li>
+		<li class="more-people"><?php $people->display_info['display_picture']; ?></li>
 		<?php elseif($people->uid == $journal->uid):?>
 		<li class="clickable-people owner profile-picture-small">
-			<?php print l($people->display_info['display_picture'].'<span>Owner</span>', '' ,array('html' => TRUE))?>
+			<?php print l($people->display_info['display_picture_text'].'<span>Owner</span>', '' ,array('html' => TRUE))?>
 		<?php else:?>
 		<li class="clickable-people  profile-picture-small">
-			<?php print l($people->display_info['display_picture'], '' ,array('html' => TRUE))?>
+			<?php print $people->display_info['display_picture']; ?>
 		<?php endif;?>
 		</li>
 		<?php endforeach;?>
