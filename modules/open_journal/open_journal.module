@@ -776,9 +776,9 @@ function open_journal_overview($journal) {
   // get user and file data
   $user = user_load($file_last[0]->uid);
   $file = file_load($file_last[0]->fid);
-  $status_tmp =unserialize(OPEN_JOUNAL_STATUS);
+  $status_list = unserialize(OPEN_JOUNAL_STATUS);
   $status = array(
-    'name' => $status_tmp[$journal->status],
+    'name' => $status_list[$journal->status],
     'updated' => date('d M Y', $journal->status_changed),
     'created' => date('d M Y', $journal->created),
     'status_id' => $journal->status,
@@ -1034,7 +1034,7 @@ function open_journal_list($after_jid=NULL, $limit=OPEN_JOURNAL_LIST_IPP) {
   $list = open_journal_load_multiple($user);
   $count_journal = count($list);
   
-  $status_tmp = unserialize(OPEN_JOUNAL_STATUS);
+  $status_list = unserialize(OPEN_JOUNAL_STATUS);
 
 
   $user_info = open_journal_get_display_user_info($user , array('image_style' => 'open_journal_avatar_large'));
@@ -1044,7 +1044,7 @@ function open_journal_list($after_jid=NULL, $limit=OPEN_JOURNAL_LIST_IPP) {
   foreach ($journal_list as &$journal) {
 
     // Convers ststus id to word
-    $journal->status_name = $status_tmp[$journal->status];
+    $journal->status_name = $status_list[$journal->status];
 
     $journal->people_list = open_journal_people_active_list($journal->jid, NULL, $journal->uid, OPEN_JOURNAL_DISPLAY_IMAGE_USER_LIST_LIMIT+1);
     foreach ($journal->people_list as &$people) {
@@ -1092,6 +1092,7 @@ function open_journal_list($after_jid=NULL, $limit=OPEN_JOURNAL_LIST_IPP) {
     'count_journal' => $count_journal,
     'limit' => OPEN_JOURNAL_LIST_IPP,
     'update_load_more_url' => $update_load_more_url,
+    'status_list' => $status_list,
   ));
 
 }

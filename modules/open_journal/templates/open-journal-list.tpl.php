@@ -11,10 +11,10 @@
 	</div>
 	<ul id="journal-filter-item-list">
 		<li class="journal-filter-item select-item"><a href="#">All Journals</a></li>
-		<li class="journal-filter-item"><a href="#">Option 1</a></li>
-		<li class="journal-filter-item"><a href="#">Option 2</a></li>
-		<li class="journal-filter-item"><a href="#">Option 3</a></li>
-		<li class="journal-filter-item"><a href="#">Option 4</a></li>
+		<?php foreach($status_list as $key_status => $status):?>
+		<li class="journal-filter-item"><?php print l($status, '');?></li>
+		<?php endforeach;?>
+		
 	</ul>
 	<div class="add-journal-btn">
 		<?php print l(t('Add New'), OPEN_JOURNAL_PREFIX_PATH.'/add'); ?>

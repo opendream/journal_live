@@ -16,11 +16,6 @@ jQuery(document).ready(function(){
     compact_blur(this);
   });
 
-  $('body').click(function(e){
-    if(!$(e.target).hasClass('journal-filter') && !$(e.target).hasClass('journal-filter-active')) {
-    
-    $('#journal-filter-item-list').hide();
-    }
-  });
+  
   
 });
