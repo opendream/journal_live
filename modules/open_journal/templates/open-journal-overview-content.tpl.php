@@ -29,15 +29,16 @@
 <div class="journal-block discussion-block block-bg-shadow">
 
   <h2 class="journal-block-title">Discussion</h2>
-  <?php print l('Add new journal', OPEN_JOURNAL_PREFIX_PATH.'/add');?>
-  
+  <div class="add-discussion-btn">
+    <?php print l('Add discussion', OPEN_JOURNAL_PREFIX_PATH.'/add');?>
+  </div>
   <!-- Journal-block-content -->
   <div class="journal-block-content">
   	<ul id="overview-discussion">
       <?php foreach($discussion_data as $data):?>
       <li>
         <div class="journal-user profile-picture-small">
-          <?php print l($data['user_info']['display_picture'].'<span class="username">'.$data['user_info']['display_name'].'</span>', current_path(), array('html' => TRUE) );?>
+          <?php print $data['user_info']['display_picture'].'<span class="username">'.$data['user_info']['display_name'].'</span>';?>
         </div>
         <div class="discus-title">
           <?php  print l($data['title'].'<span class="file-attach"><img src="/sites/all/modules/open_journal/images/ic-has-file.png" alt="has file attach" /></span>', current_path(), array('html' => TRUE));?>

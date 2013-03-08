@@ -1605,7 +1605,7 @@ input.form-submit:hover {
 		-moz-border-radius: 20px;
 		-webkit-border-radius: 20px;
 	}
-	.relate-peoples li.owner span {
+	span.owner-label {
 		position: absolute;
 		bottom: 0;
 		left: 0;
@@ -1657,6 +1657,21 @@ input.form-submit:hover {
 			text-decoration: none;
 		}
 
+.user-picture-wrapper {
+  position: relative;
+  border-radius: 50%;
+	-moz-border-radius: 50%;
+	-webkit-border-radius: 50%;
+	width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.user-picture-wrapper img {
+  -moz-border-radius: 50%;
+	-webkit-border-radius: 50%;
+}
+
 /* Journal Overview
 ----------------------------------------------------------------*/
 .journal-block {
@@ -1671,7 +1686,7 @@ input.form-submit:hover {
 h2.journal-block-title {
 	margin-bottom: 15px;
 }
-.people-block .relate-peoples {
+.people-block-overview .relate-peoples {
 	position: relative;
 	width: 260px;
 	margin: 0;
@@ -1679,7 +1694,7 @@ h2.journal-block-title {
 	display: block;
 	float: left;
 }
-.people-block .view-all-people {
+.people-block-overview .view-all-people {
 	float: right;
 }
 .information-block .information-field .label {
@@ -1798,6 +1813,23 @@ h2.journal-block-title {
 	margin-left: 20px;
 	margin-top: 20px;
 	float: left;
+}
+
+#journal-detail-wrapper .add-discussion-btn a {
+  display: block;
+	padding: 5px 10px 5px 30px;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	color: #7d7d7d;
+	background: url(images/ic-add-journal-btn.png) transparent no-repeat 7px 7px;
+	float: right;
+	margin-right: 10px;
+	margin-top: 5px;
+}
+
+#journal-detail-wrapper .discussion-block .journal-block-title {
+  float: left;
 }
 
 /* Journal Add

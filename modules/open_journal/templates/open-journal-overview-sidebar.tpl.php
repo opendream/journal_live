@@ -18,10 +18,9 @@
 </div> <!-- End Status Block -->	
 
 <!-- Start People Block -->	
-<div class="journal-block people-block block-bg-shadow">
+<div class="journal-block people-block-overview block-bg-shadow">
 
   <h2 class="journal-block-title">People</h2>
-  
   <!-- Journal-block-content -->
   <div class="journal-block-content">
   	<ul class="relate-peoples">
@@ -29,15 +28,11 @@
         <?php // this condition not clear ?>
         <?php if($key == 'more_people' && $key != '0'):?>
         <li class="more-people">
-          <?php print l($list['user_info']['display_picture'], '', array('attributes' => array('title' => $list['user_info']['display_name'])));?>
+          <?php print l($list['user_info']['display_picture'], 'journal/'.$jid.'/people', array('attributes' => array('title' => $list['user_info']['display_name'])));?>
         </li>
         <?php else:?>
         <li class="clickable-people owner profile-picture-small">
-          <?php if($uid == $list['uid']):?>
-            <?php print l($list['user_info']['display_picture'].'<span>Owner</span>', '' ,array('html' => TRUE))?>
-          <?php else:?>
-            <?php print l($list['user_info']['display_picture'], '', array('html' => TRUE))?>  
-          <?php endif;?>
+          <?php print $list['user_info']['display_picture']; ?>  
         </li>  
         <?php endif;?>
       <?php endforeach;?>	
