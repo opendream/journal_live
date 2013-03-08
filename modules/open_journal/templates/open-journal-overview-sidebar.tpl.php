@@ -32,11 +32,7 @@
         </li>
         <?php else:?>
         <li class="clickable-people owner profile-picture-small">
-          <?php if($uid == $list['uid']):?>
-            <?php print l($list['user_info']['display_picture_text'].'<span>Owner</span>', '', array('html' => TRUE))?>
-          <?php else:?>
-            <?php print $list['user_info']['display_picture']; ?>  
-          <?php endif;?>
+          <?php print $list['user_info']['display_picture']; ?>  
         </li>  
         <?php endif;?>
       <?php endforeach;?>	

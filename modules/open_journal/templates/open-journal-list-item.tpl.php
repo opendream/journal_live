@@ -1,7 +1,4 @@
-<?php
-// get journal data from user id 
 
-?>
 <li class="journal-item">
 	<div class="journal-status status<?php echo $journal->status;?>"><span><?php print $journal->status_name;?></span></div>
 	<h3 class="journal-title"><?php print l($journal->dc_title, 'journal/'.$journal->jid.'/overview');?></h3>
@@ -16,15 +13,14 @@
 	<ul class="relate-peoples">
 		<?php foreach ($journal->people_list as $key_people => $people):?>
 		<?php if($key_people == 'more'):?>
-		<li class="more-people"><?php $people->display_info['display_picture']; ?></li>
-		<?php elseif($people->uid == $journal->uid):?>
-		<li class="clickable-people owner profile-picture-small">
-			<?php print l($people->display_info['display_picture_text'].'<span>Owner</span>', '' ,array('html' => TRUE))?>
-		<?php else:?>
-		<li class="clickable-people  profile-picture-small">
-			<?php print $people->display_info['display_picture']; ?>
-		<?php endif;?>
+		<li class="more-people">
+		  <?php $people->display_info['display_picture']; ?>
 		</li>
+		<?php else:?>
+		<li class="clickable-people profile-picture-small">
+			<?php print $people->display_info['display_picture']; ?>
+		</li>
+		<?php endif;?>
 		<?php endforeach;?>
 	</ul>
 </li>

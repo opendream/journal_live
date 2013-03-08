@@ -793,7 +793,7 @@ function open_journal_overview($journal) {
   foreach($people as $row) {
 
     $user_p = user_load($row->uid);
-    $people_list[$i]['user_info'] = open_journal_get_display_user_info($user_p);
+    $people_list[$i]['user_info'] = open_journal_get_display_user_info($user_p, array('owner_uid' => $journal->uid));
     $people_list[$i]['uid'] = $row->uid;
 
     $i++;
@@ -1040,16 +1040,15 @@ function open_journal_list($after_jid=NULL, $limit=OPEN_JOURNAL_LIST_IPP) {
   $user_info = open_journal_get_display_user_info($user , array('image_style' => 'open_journal_avatar_large'));
   
   $journal_list = open_journal_load_multiple($user, $after_jid, $limit);
-
-
+  
+  //Loop for check if not journal result
   foreach ($journal_list as &$journal) {
 
     // Convers ststus id to word
     $journal->status_name = $status_tmp[$journal->status];
-
     $journal->people_list = open_journal_people_active_list($journal->jid, NULL, $journal->uid, OPEN_JOURNAL_DISPLAY_IMAGE_USER_LIST_LIMIT+1);
     foreach ($journal->people_list as &$people) {
-      $people->display_info = open_journal_get_display_user_info($people);
+      $people->display_info = open_journal_get_display_user_info($people, array('owner_uid' => $journal->uid));
     }
     
     if (count($journal->people_list) > OPEN_JOURNAL_DISPLAY_IMAGE_USER_LIST_LIMIT) {
@@ -1062,7 +1061,7 @@ function open_journal_list($after_jid=NULL, $limit=OPEN_JOURNAL_LIST_IPP) {
   
   // Check rander load more
   // TODO: has_more_page checker better performance
-  $has_more_page = count(open_journal_load_multiple($user, $journal->jid, $limit));
+  $has_more_page = $count_journal && open_journal_load_multiple($user, $journal->jid, $limit);
   $update_load_more_url = FALSE;
 
   if ($has_more_page) {
@@ -1172,7 +1171,8 @@ function open_journal_get_display_user_info($account, $variables=array()) {
     'image_style' => 'open_journal_avatar_medium', 
     'user' => NULL, 
     'picture_class' => array(), 
-    'name_class' => TRUE
+    'name_class' => TRUE,
+    'owner_uid' => NULL
   );
   
   $variables = array_merge($default_variables, $variables);
@@ -1234,19 +1234,30 @@ function open_journal_get_display_user_info($account, $variables=array()) {
     $real_name .= $dummy_name;
   }
   
+  if ($variables['owner_uid'] == $account->uid) {
+    $real_picture .= '<span class="owner-label">Owner</span>';
+    $dummy_picture = '<span class="user-picture-wrapper">'.$dummy_picture.'<span class="owner-label">Owner</span></span>';
+  }
+  
+  $variables['picture_class'][] = 'user-picture-wrapper';
+  
+  $real_picture = l($real_picture, '', array('html' => TRUE, 'attributes' => array('class' => $variables['picture_class'])));
+  $real_name = l($real_name, '', array('class' => $variables['name_class']));
+  
+  
   
   // Prepare info to return
   $info_real = array(
-    'display_picture' => l($real_picture, '', array('html' => TRUE, 'class' => $variables['picture_class'])),
-    'display_name' => l($real_name, '', array('class' => $variables['name_class'])),
-    'display_picture_text' => $real_picture,
-    'display_name_text' => $real_name,
+    'display_picture' => $real_picture,
+    'display_name' => $real_name,
   );
 
   $info_dummy = array(
     'display_picture' => $dummy_picture,
     'display_name' => $dummy_name,
   );
+  
+
   
   
   // Check before return

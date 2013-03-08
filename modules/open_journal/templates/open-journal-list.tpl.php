@@ -21,6 +21,7 @@
 	</div>
 </div>
 
+<?php if ($count_journal): ?>
 <div id="journal-list">
 	<ul id="journal-list-container">
 		<?php foreach ($journal_list as $journal): ?>
@@ -36,3 +37,8 @@
 
 
 </div>
+<?php else: ?>
+<div class="journal-list-empty">
+  TODO: add picture arrow to "Add new"
+</div>
+<?php endif ?>
