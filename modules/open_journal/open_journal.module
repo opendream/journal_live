@@ -48,22 +48,31 @@ function open_journal_menu() {
 
   $arg = count(explode('/', OPEN_JOURNAL_PREFIX_PATH));
 
-  $items[OPEN_JOURNAL_PREFIX_PATH]	= array(
+  $items[OPEN_JOURNAL_PREFIX_PATH]  = array(
     'title' => t('Journal list'),
     'page callback' => 'open_journal_list',
     'access arguments' => array('access open journal'),
     'type' => MENU_CALLBACK,
   );
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/list']     = $items[OPEN_JOURNAL_PREFIX_PATH];
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/list/all'] = $items[OPEN_JOURNAL_PREFIX_PATH];
 
-  $items[OPEN_JOURNAL_PREFIX_PATH.'/list/%/%']  = array(
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/list/%']  = array(
     'title' => t('Journal list'),
     'page callback' => 'open_journal_list',
-    'page arguments' => array($arg+1, $arg+2),
+    'page arguments' => array($arg+1),
     'access arguments' => array('access open journal'),
     'type' => MENU_CALLBACK,
   );
 
- 
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/list/%/%/%']  = array(
+    'title' => t('Journal list'),
+    'page callback' => 'open_journal_list',
+    'page arguments' => array($arg+1, $arg+2, $arg+3),
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+  );
+
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/login'] = array(
     'title' => t('Login'),
@@ -344,7 +353,7 @@ function open_journal_preprocess_page(&$vars) {
 
     if ($_GET['q'] == OPEN_JOURNAL_PREFIX_PATH || 
         $_GET['q'] == OPEN_JOURNAL_PREFIX_PATH.'/list'  || 
-        (strpos($_GET['q'], OPEN_JOURNAL_PREFIX_PATH) === 0 && is_numeric(arg($arg+1)) && is_numeric(arg($arg+2))) ){
+        (strpos($_GET['q'], OPEN_JOURNAL_PREFIX_PATH) === 0 && is_numeric(arg($arg+1)))){
       $vars['page_class'] = 'page-normal page-journal-list';
     }
 
@@ -986,12 +995,11 @@ function open_journal_file($journal) {
 
 
 
-function open_journal_load_multiple($user, $after_jid=NULL, $limit=NULL) {
+function open_journal_load_multiple($user, $after_jid=NULL, $limit=NULL, $status='all') {
    // Query data from database for edit journal when have journal ID
   $query_var = array(
   ':uid' => $user->uid,
   );
-
   $sql = 
    "SELECT j.* 
     FROM 
@@ -1003,6 +1011,11 @@ function open_journal_load_multiple($user, $after_jid=NULL, $limit=NULL) {
     WHERE 
       jp.uid = :uid";
 
+  if($status != 'all') {
+    $sql .= " AND j.status = :sid ";
+    $query_var[':sid'] = $status;
+  }    
+
   if($after_jid !== NULL) {
     $sql .= " AND j.jid < :jid ";
     $query_var[':jid'] = $after_jid;
@@ -1013,32 +1026,32 @@ function open_journal_load_multiple($user, $after_jid=NULL, $limit=NULL) {
     $sql .= " LIMIT 0, ".$limit;
   }
 
-  
   $result = db_query($sql, $query_var)->fetchAll();
  
   
   return $result;
 }
 
-function open_journal_list($after_jid=NULL, $limit=OPEN_JOURNAL_LIST_IPP) {
-
+function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_LIST_IPP) {
   drupal_set_title('');
 
   global $user;
-
   $mpath = drupal_get_path('module', 'open_journal');
   drupal_add_js($mpath.'/js/open_journal_list_load_more.js');
   
-
   // TODO: Refactor to use COUNT function in SQL
   $list = open_journal_load_multiple($user);
   $count_journal = count($list);
-  
   $status_list = unserialize(OPEN_JOUNAL_STATUS);
+
+  $current_status_name = isset($status_list[$status]) ? $status_list[$status]: 'All Journals';
 
 
   $user_info = open_journal_get_display_user_info($user , array('image_style' => 'open_journal_avatar_large'));
-  $journal_list = open_journal_load_multiple($user, $after_jid, $limit);
+  
+
+  $journal_list = open_journal_load_multiple($user, $after_jid, $limit, $status);
+
 
 
   foreach ($journal_list as &$journal) {
@@ -1058,15 +1071,16 @@ function open_journal_list($after_jid=NULL, $limit=OPEN_JOURNAL_LIST_IPP) {
     $count_all_people = count(open_journal_people_active_list($journal->jid));
 
   }
-  
   // Check rander load more
   // TODO: has_more_page checker better performance
-  $has_more_page = count(open_journal_load_multiple($user, $journal->jid, $limit));
+  $has_more_page = count(open_journal_load_multiple($user, $journal->jid, $limit, $status));
+  
   $update_load_more_url = FALSE;
 
   if ($has_more_page) {
-    $update_load_more_url = url(OPEN_JOURNAL_PREFIX_PATH.'/list/'.$journal->jid.'/'.$limit);
+    $update_load_more_url = url(OPEN_JOURNAL_PREFIX_PATH.'/list/'.$status.'/'.$journal->jid.'/'.$limit);
   }
+
 
 
   // render json respone for load mor ajax
@@ -1093,6 +1107,8 @@ function open_journal_list($after_jid=NULL, $limit=OPEN_JOURNAL_LIST_IPP) {
     'limit' => OPEN_JOURNAL_LIST_IPP,
     'update_load_more_url' => $update_load_more_url,
     'status_list' => $status_list,
+    'current_status_name' => $current_status_name,
+
   ));
 
 }

@@ -1424,7 +1424,7 @@ input.form-submit:hover {
   	left: 0;
   	list-style: none;
   	margin: 0;
-  	width: 150px;
+  	width: 170px;
   }
   	#page.page-journal-list .journal-filter-tab ul#journal-filter-item-list li {
   		background: url(images/bg-body.png) repeat-x;
@@ -1435,14 +1435,14 @@ input.form-submit:hover {
   	}
   		#page.page-journal-list .journal-filter-tab ul#journal-filter-item-list li a {
   			display: block;
-  			width: 110px;
+  			width: 130px;
   			padding: 5px 20px;
   			color: #333;
   		}
-  		#page.page-journal-list .journal-filter-tab ul#journal-filter-item-list li.select-item a {
+  		#page.page-journal-list .journal-filter-tab ul#journal-filter-item-list li a.active {
   			background: url(images/checkmark.png) no-repeat center left;
   			padding-left: 25px;
-  			width: 105px;
+  			width: 125px;
   		} 
   		#page.page-journal-list .journal-filter-tab ul#journal-filter-item-list li a:hover {
   			text-decoration: none;

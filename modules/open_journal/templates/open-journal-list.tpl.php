@@ -7,12 +7,12 @@
 
 <div class="journal-filter-tab">
 	<div class="journal-filter">
-		<div class="journal-filter-active">All Journals</div>
+		<div class="journal-filter-active"><?php print $current_status_name; ?></div>
 	</div>
 	<ul id="journal-filter-item-list">
-		<li class="journal-filter-item select-item"><a href="#">All Journals</a></li>
+		<li class="journal-filter-item"><?php print l('All Journals', OPEN_JOURNAL_PREFIX_PATH.'/list');?></li>
 		<?php foreach($status_list as $key_status => $status):?>
-		<li class="journal-filter-item"><?php print l($status, '');?></li>
+		<li class="journal-filter-item"><?php print l($status, OPEN_JOURNAL_PREFIX_PATH.'/list/'.$key_status);?></li>
 		<?php endforeach;?>
 		
 	</ul>

@@ -4,11 +4,11 @@ jQuery(document).ready(function(){
   
   $('.load-more-ajax').click(function (e){
     
+    var statusID = $('.select-item').attr('rel');
     e.preventDefault();
     var container_list = $('#' + $(this).attr('rel'));
     var load_more_link = $(this);
-
-    $.getJSON($(this).attr('href'), {'ajax': 1}, function (resp) {
+    $.getJSON($(this).attr('href'), {'ajax': 1 ,'status': statusID}, function (resp) {
 
       $.each(resp.item_list, function (i, item) {
         container_list.append($(item));

@@ -2,7 +2,7 @@
 // get journal data from user id 
 
 ?>
-<li class="journal-item">
+<li class="journal-item journal-item-status<?php print $journal->status;?>">
 	<div class="journal-status status<?php echo $journal->status;?>"><span><?php print $journal->status_name;?></span></div>
 	<h3 class="journal-title"><?php print l($journal->dc_title, 'journal/'.$journal->jid.'/overview');?></h3>
 	<div class="journal-update">
