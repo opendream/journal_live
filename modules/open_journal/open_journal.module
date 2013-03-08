@@ -6,7 +6,7 @@ define('OPEN_JOURNAL_PREFIX_PATH', 'journal');
 
 define('OPEN_JOURNAL_SUB_LANG_ENABLE', TRUE);
 define('OPEN_JOURNAL_SUB_LANG_CODE', 'th');
-define('OPEN_JOURNAL_SUB_LANG_TEXT', 'ไทย');
+define('OPEN_JOURNAL_SUB_LANG_TEXT', 'Thai');
 define('OPEN_JOURNAL_SUB_LANG_ABSTRACT_LABEL', 'บทคัดย่อ');
 define('OPEN_JOURNAL_SUB_LANG_KEYWORDS_LABEL', 'คำสำคัญ');
 
@@ -55,13 +55,15 @@ function open_journal_menu() {
     'type' => MENU_CALLBACK,
   );
 
-  $items[OPEN_JOURNAL_PREFIX_PATH.'/ajax/journal/list/%/%']  = array(
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/list/%/%']  = array(
     'title' => t('Journal list'),
-    'page callback' => 'open_journal_ajax_journal_list',
-    'page arguments' => array($arg+4, $arg+5),
+    'page callback' => 'open_journal_list',
+    'page arguments' => array($arg+1, $arg+2),
     'access arguments' => array('access open journal'),
     'type' => MENU_CALLBACK,
   );
+
+ 
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/login'] = array(
     'title' => t('Login'),
@@ -338,7 +340,11 @@ function open_journal_preprocess_page(&$vars) {
     $vars['disabled_title'] = FALSE;
     $vars['page_class'] = 'page-normal';
 
-    if ($_GET['q'] == OPEN_JOURNAL_PREFIX_PATH || $_GET['q'] == OPEN_JOURNAL_PREFIX_PATH.'/list') {
+    $arg = count(explode('/', OPEN_JOURNAL_PREFIX_PATH));
+
+    if ($_GET['q'] == OPEN_JOURNAL_PREFIX_PATH || 
+        $_GET['q'] == OPEN_JOURNAL_PREFIX_PATH.'/list'  || 
+        (strpos($_GET['q'], OPEN_JOURNAL_PREFIX_PATH) === 0 && is_numeric(arg($arg+1)) && is_numeric(arg($arg+2))) ){
       $vars['page_class'] = 'page-normal page-journal-list';
     }
 
@@ -978,9 +984,12 @@ function open_journal_file($journal) {
 
 
 
-function open_journal_load_multiple($user, $after_jid=0, $limit=NULL) {
+function open_journal_load_multiple($user, $after_jid=NULL, $limit=NULL) {
    // Query data from database for edit journal when have journal ID
-  
+  $query_var = array(
+  ':uid' => $user->uid,
+  );
+
   $sql = 
    "SELECT j.* 
     FROM 
@@ -990,23 +999,26 @@ function open_journal_load_multiple($user, $after_jid=0, $limit=NULL) {
     ON 
       jp.jid = j.jid
     WHERE 
-      jp.uid = :uid AND 
-      j.jid > :jid 
-    ORDER BY j.jid DESC";
+      jp.uid = :uid";
+
+  if($after_jid !== NULL) {
+    $sql .= " AND j.jid < :jid ";
+    $query_var[':jid'] = $after_jid;
+  }
+  $sql .= " ORDER BY j.jid DESC";
 
   if($limit) {
     $sql .= " LIMIT 0, ".$limit;
   }
 
-
-  $result = db_query($sql, array(
-    ':uid' => $user->uid,
-    ':jid' => $after_jid
-  ))->fetchAll();
-
+  
+  $result = db_query($sql, $query_var)->fetchAll();
+ 
+  
   return $result;
 }
-function open_journal_list() {
+
+function open_journal_list($after_jid=NULL, $limit=1) {
 
   drupal_set_title('');
 
@@ -1019,13 +1031,13 @@ function open_journal_list() {
 
   // TODO: Refactor to use COUNT function in SQL
   $list = open_journal_load_multiple($user);
-  $count_journal = count($list);
+  $count_journal = count($list);dpm($count_journal);
   
   $status_tmp = unserialize(OPEN_JOUNAL_STATUS);
 
 
   $user_info = open_journal_get_display_user_info($user , array('image_style' => 'open_journal_avatar_large'));
-  $journal_list = open_journal_load_multiple($user, 0, OPEN_JOURNAL_LIST_IPP);
+  $journal_list = open_journal_load_multiple($user, $after_jid, $limit);
 
 
   foreach ($journal_list as &$journal) {
@@ -1045,7 +1057,32 @@ function open_journal_list() {
     $count_all_people = count(open_journal_people_active_list($journal->jid));
 
   }
+  
+  // Check rander load more
+  // TODO: has_more_page checker better performance
+  $has_more_page = count(open_journal_load_multiple($user, $journal->jid, $limit));
+  $update_load_more_url = FALSE;
 
+  if ($has_more_page) {
+    $update_load_more_url = url(OPEN_JOURNAL_PREFIX_PATH.'/list/'.$journal->jid.'/'.$limit);
+  }
+
+
+  // render json respone for load mor ajax
+  if (isset($_GET['ajax']) && $_GET['ajax']) {
+
+    foreach ($journal_list as &$journal) {
+      $journal = theme('open_journal_list_item', array('journal' => $journal));
+    }
+
+    $response = array(
+      'item_list' => $journal_list,
+      'update_load_more_url' => $update_load_more_url
+    );
+
+    drupal_json_output($response);
+    exit();
+  }
 
   // TODO: Edit hook theme with default value foward
   return theme('open_journal_list', array(
@@ -1053,56 +1090,12 @@ function open_journal_list() {
     'user_info' => $user_info,
     'count_journal' => $count_journal,
     'limit' => OPEN_JOURNAL_LIST_IPP,
+    'update_load_more_url' => $update_load_more_url,
   ));
 
 }
 
-function open_journal_ajax_journal_list($lasted_jid, $limit) {
-/*
-  // $json_list get by query with latest_jid and limit
-  global $user;
-  $list = open_journal_get_journal_from_people($user->uid, $lasted_jid, $limit);
-  $count_journal = count($list);
-  $status_tmp = unserialize(OPEN_JOUNAL_STATUS);
-  
-  // Get active list people
-  $i = 0;
-  foreach ($list as  $value) {
-  // Convers ststus id to word
-  $list[$i]->status_name = $status_tmp[$value->status];
-  // Get active list people each journal
-  $list[$i]->list_people = open_journal_people_active_list($value->jid, NULL, $value->uid, OPEN_JOURNAL_DISPLAY_IMAGE_USER_LIST_LIMIT);
-  $count_all_people = count(open_journal_people_active_list($value->jid));
-  
-  // Get user infomation each people
-  $j = 0;
-  foreach ($list[$i]->list_people as $key => $value) {
-    $list[$i]->list_people[$key]->user_info = open_journal_get_display_user_info($value);
-  $j++;  
-  }
-  // If have more people
-  if($count_all_people > OPEN_JOURNAL_DISPLAY_IMAGE_USER_LIST_LIMIT) {
-    $list[$i]->list_people['more'] = open_journal_get_display_user_info_more();
-  }
-  
-  $i++;
-  }
 
-  $journal_json = array('item_list' => array(), 'update_load_more_url' => FALSE);
-  foreach ($journal_list as $journal) {
-    $journal_json['item_list'][] = theme('open_journal_list_item', $journal);
-  }
-
-  if ($more) {
-    $journal_json['update_load_more_url'] = url(OPEN_JOURNAL_PREFIX_PATH.'/ajax/journal/list/'.$journal->jid.'/'.$limit);
-  }
-
-  print drupal_json_xxx($journal_json);
-  exit();
-
-
-  return  theme('open_journal_list_item', $journal);*/
-}
 
 function open_journal_get_field_settings() {
   // DC field settings

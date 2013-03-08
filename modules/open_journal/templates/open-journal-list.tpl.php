@@ -22,18 +22,17 @@
 </div>
 
 <div id="journal-list">
-	<ul>
+	<ul id="journal-list-container">
 		<?php foreach ($journal_list as $journal): ?>
-			<li class="journal-item"><?php print theme('open_journal_list_item', array('journal' => $journal)); ?><li>
+			<?php print theme('open_journal_list_item', array('journal' => $journal)); ?>
 		<?php endforeach ?>
 	</ul>
+
+	<?php if ($update_load_more_url): ?>
 	<div class="load-more">
-		<?php print l('Load More ...', url(OPEN_JOURNAL_PREFIX_PATH.'/ajax/journal/list/'.$journal->jid.'/'.$limit) ,array(
-			'attributes' => array(
-				'id' => 'journal-list-load-more',
-		 	))
-		);
-		?>
-	</div>
+		<a class="load-more-ajax" rel="journal-list-container" href="<?php print $update_load_more_url; ?>">Load More ...</a>
+	</div>	
+	<?php endif; ?>
+
 
 </div>
