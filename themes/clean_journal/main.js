@@ -3,7 +3,7 @@ jQuery(document).ready(function () {
   
   $('.user-dropdown .active-dropdown').hide();
   
-  $('.user-dropdown a.dropdown-link').click(function (e) {
+  $('.user-dropdown .dropdown-link a').click(function (e) {
     
     e.preventDefault();
 
@@ -11,7 +11,7 @@ jQuery(document).ready(function () {
   })
 
 	$('body').click(function(e){
-		if(!$(e.target).hasClass('dropdown-link')) {
+		if(!$(e.target).hasClass('dropdown-link') && !$(e.target).parent().hasClass('dropdown-link')) {
 
 		  $('.user-dropdown .active-dropdown').hide();
 		}
