@@ -11,14 +11,16 @@ jQuery(document).ready(function(){
     
   }
 
-  $('.journal-filter ')
+  $('.journal-filter')
   .click(function () {
-    //$(this).siblings('ul').hide();
     compact_blur(this);
-  })
-  .blur(function () {
-    $(this).siblings('ul').hide();
   });
 
+  $('body').click(function(e){
+    if(!$(e.target).hasClass('journal-filter') && !$(e.target).hasClass('journal-filter-active')) {
+    
+    $('#journal-filter-item-list').hide();
+    }
+  });
   
 });
