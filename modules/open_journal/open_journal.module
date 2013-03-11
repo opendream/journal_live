@@ -739,7 +739,7 @@ function open_journal_comment_save($data) {
 
 
   if ($data->fid) {
-    $file = file_load($data->did);
+    $file = file_load($data->fid);
   }
   
   // Importantly, save record before save file.
