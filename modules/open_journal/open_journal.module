@@ -791,6 +791,7 @@ function open_journal_overview($journal) {
   $i = 0;
   foreach($discussion as $row) {
     $user = user_load($row->uid);
+    $discussion_data[$i]['did'] = $row->did;
     $discussion_data[$i]['user_info'] = open_journal_get_display_user_info($user);
     $discussion_data[$i]['title'] = open_journal_trim($row->title, 50);
     $discussion_data[$i]['description'] = open_journal_trim($row->description, 100);

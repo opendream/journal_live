@@ -1103,7 +1103,8 @@ body {
 	padding-right: 20px;
 }
 .user-manage .user-dropdown .user-picture-wrapper,
-#file-list-item .user-picture-wrapper {
+#file-list-item .user-picture-wrapper,
+#overview-discussion .user-picture-wrapper {
   display: inline;
 }
 .user-manage .user-dropdown ul {
