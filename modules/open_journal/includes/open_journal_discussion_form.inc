@@ -33,7 +33,7 @@ function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL)
     '#description' => t('Allowed file types: %s',array('%s' => OPEN_JOURNAL_ALLOWED_FILE_TYPE)),
     '#upload_validators' => array(
       'file_validate_extensions' => array(OPEN_JOURNAL_ALLOWED_FILE_TYPE),
-      //'file_validate_size' => array(2 * 1048576),\
+      //'file_validate_size' => array(2 * 1048576),
     ),
     '#upload_location' => "public://journal/",
     '#default_value' => open_journal_get_field($data, 'fid'),
@@ -85,6 +85,18 @@ function open_journal_discussion_form_submit($form, &$form_state) {
   
   $data = (object) $form_state['values'];
   open_journal_discussion_save($data);
+  
+  $is_new = (isset($data->did) && $data->did)? FALSE: TRUE;
+  
+  if ($is_new) {
+    drupal_set_message(t('You has been start new disscussion completed.'));
+  }
+  else {
+    drupal_set_message(t('This disscussion has been updated.'));
+  }
+  
   drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->jid.'/discussion/'.$data->did);
+  
+  
 
 }
