@@ -89,14 +89,16 @@ function open_journal_information_form($form, &$form_state , $data=NULL) {
 
   $form['data']['group'] = array('#type' => 'fieldset');
 
+//open_journal_multi_textfield($title='' , $values = FALSE, $name, $add_more_text='Add another', $add_more_text_show=TRUE ,$initail_show_field=2)
+
   if (OPEN_JOURNAL_SUB_LANG_ENABLE) {
     $form['data']['group']['subject_sub'] = open_journal_multi_textfield(OPEN_JOURNAL_SUB_LANG_KEYWORDS_LABEL,open_journal_get_field($data, 'subject_sub'), 'dc_subject');
   }
   $form['data']['group']['subject_en'] = open_journal_multi_textfield('Keywords',open_journal_get_field($data, 'subject_en'), 'dc_subject');
 
-  $form['data']['group']['dc_creator'] = open_journal_multi_textfield('Creators' ,open_journal_get_field($data, 'dc_creator'), 'dc_creator');
-  $form['data']['group']['dc_publisher'] = open_journal_multi_textfield('Publishers' ,open_journal_get_field($data, 'dc_publisher'), 'dc_publisher');
-  $form['data']['group']['dc_contributor'] = open_journal_multi_textfield('Contributors', open_journal_get_field($data, 'dc_contributor'), 'dc_contributor');
+  $form['data']['group']['dc_creator'] = open_journal_multi_textfield('Author' ,open_journal_get_field($data, 'dc_creator'), 'dc_creator', 'add co-Authors', TRUE, 1);
+  $form['data']['group']['dc_publisher'] = open_journal_multi_textfield('Publishers' ,open_journal_get_field($data, 'dc_publisher'), 'dc_publisher', '', FALSE, 1);
+  $form['data']['group']['dc_contributor'] = open_journal_multi_textfield('Contributors', open_journal_get_field($data, 'dc_contributor'), 'dc_contributor','', FALSE, 1);
 
   // Setting date to display form
   if(isset($data->jid)) {
@@ -146,7 +148,7 @@ function open_journal_information_form($form, &$form_state , $data=NULL) {
       '#type' => 'select',
       '#options' => array(
         OPEN_JOURNAL_SUB_LANG_CODE => t(OPEN_JOURNAL_SUB_LANG_TEXT),
-        'en' => 'English',
+        'en' => 'en',
       ),
       '#default_value' => open_journal_get_field($data, 'dc_language'),
       '#access' => $fs['dc_language'],
@@ -168,33 +170,38 @@ function open_journal_information_form($form, &$form_state , $data=NULL) {
   );
 
   $form['data']['group']['dc_identifier'] = array(
-    '#title' => open_journal_label_help('Final URL', 'Help me please.'),
+    '#title' => open_journal_label_help('Final URL', 'For librarian only.'),
     '#type' => 'textfield',
-    '#description' => t('For librarian only'),
     '#access' => user_access('update final url field') && $fs['dc_identifier'],
     '#default_value' => open_journal_get_field($data, 'dc_identifier'),
   );
   
-
-  // Hidden field
-
   $form['data']['group']['dc_type'] = array(
-    '#type' => 'hidden',
-    '#value' => 'Journal',
-    '#access' => FALSE,
+    '#title' => open_journal_label_help('Type', 'For librarian only.'),
+    '#type' => 'textfield',
+    '#default_value' => 'Text.Serial.Journal',
+    '#access' => user_access('update final url field') && $fs['dc_identifier'],
   );
 
   $form['data']['group']['dc_format'] = array(
-    '#type' => 'hidden',
-    '#value' => 'application/doc',
-    '#access' => FALSE,
+    '#title' => open_journal_label_help('Format', 'For librarian only.'),
+    '#type' => 'textfield',
+    '#default_value' => 'TEXT/HTML',
+    '#access' => user_access('update final url field') && $fs['dc_identifier'],
   );
 
   $form['data']['group']['dc_right'] = array(
-    '#type' => 'hidden',
-    '#value' => '',
-    '#access' => FALSE,
+    '#title' => open_journal_label_help('Right', 'For librarian only.'),
+    '#type' => 'textfield',
+    '#default_value' => '',
+    '#access' => user_access('update final url field') && $fs['dc_identifier'],
   );
+
+  // Hidden field
+
+ 
+
+  
 
   if (open_journal_get_field($data, 'jid')) {
     $form['jid'] = array(
@@ -228,7 +235,7 @@ function open_journal_get_date_option($start_num , $end_num) {
   return $option;
 }
 
-function open_journal_multi_textfield($title='' , $values = FALSE, $name) {
+function open_journal_multi_textfield($title='' , $values = FALSE, $name, $add_more_text='Add another', $add_more_text_show=TRUE ,$initail_show_field=2) {
   $fs = open_journal_get_field_settings();
   
   $multi_textfield = array(
@@ -239,16 +246,29 @@ function open_journal_multi_textfield($title='' , $values = FALSE, $name) {
   );
 
   for ($i = 0; $i < OPEN_JOURNAL_MAX_MULTI_TEXTFIELD; $i++) {
-    if(!isset($values[$i])) {
+    if($i < $initail_show_field) {
+      $alt = 'show';
+    }
+    else {
+      $alt = 'hide';
+      
+    }
+    if(!isset($values[$i]) && $name == 'dc_publisher' && $i == 0) {
+      $values[$i] = OPEN_JOURNAL_DEFAULT_PUBLISHER_NAME;
+
+    } 
+    else{
       $values[$i] = '';
     }
     $multi_textfield[] = array(
       '#type' => 'textfield',
-      '#attributes' => array('class' => array('multi-textfield', 'multi-textfield-'.$i)),
+      '#attributes' => array('class' => array('multi-textfield', 'multi-textfield-'.$i) ,'alt' => $alt),
       '#default_value' => $values[$i],
     );
   }
-  $multi_textfield[] = array('#markup' => '<button class="add-multi-textfield">'.t('Add another').'</button>');
+  if($add_more_text_show) {
+    $multi_textfield[] = array('#markup' => '<button class="add-multi-textfield">'.t($add_more_text).'</button>');
+  }
 
   return $multi_textfield;
 }

@@ -6,9 +6,10 @@ define('OPEN_JOURNAL_PREFIX_PATH', 'journal');
 
 define('OPEN_JOURNAL_SUB_LANG_ENABLE', TRUE);
 define('OPEN_JOURNAL_SUB_LANG_CODE', 'th');
-define('OPEN_JOURNAL_SUB_LANG_TEXT', 'Thai');
+define('OPEN_JOURNAL_SUB_LANG_TEXT', 'th');
 define('OPEN_JOURNAL_SUB_LANG_ABSTRACT_LABEL', 'บทคัดย่อ');
 define('OPEN_JOURNAL_SUB_LANG_KEYWORDS_LABEL', 'คำสำคัญ');
+define('OPEN_JOURNAL_DEFAULT_PUBLISHER_NAME', 'Health Systems Research Institute');
 
 define('OPEN_JOURNAL_SUB_LANG_ABSTRACT_REQUIRED', TRUE);
 define('OPEN_JOURNAL_SUB_LANG_KEYWORDS_REQUIRED', TRUE);
@@ -1163,11 +1164,11 @@ function open_journal_get_field_settings() {
   // DC field settings
   return array(
     'dc_title'       => 1,
-    'dc_creator'     => 0,
+    'dc_creator'     => 1,
     'dc_subject'     => 1,
     'dc_description' => 1,
     'dc_publisher'   => 1,
-    'dc_contributor' => 0,
+    'dc_contributor' => 1,
     'dc_date'        => 1,
     'dc_type'        => 0,
     'dc_format'      => 0,

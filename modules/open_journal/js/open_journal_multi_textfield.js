@@ -17,7 +17,7 @@ jQuery(document).ready(function () {
     $.each($.makeArray($(this).siblings('.form-type-textfield')).reverse(), function (i, item) {
       
       var input = $(item).find('input');
-      if (input.val() || input.hasClass('multi-textfield-1')) {
+      if (input.val()  || input.attr('alt') == 'show') {
         return false;
       }
       else {
