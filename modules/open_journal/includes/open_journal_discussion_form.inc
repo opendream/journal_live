@@ -2,20 +2,29 @@
 function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL) {
 
   global $user; 
-
-  $form['head_title'] = array(
-    '#markup' => '<h2>'.t('Add new topic').'</h2>',
-  );
-
+  
+  if ($data && $data->did) {
+    $form['head_title'] = array(
+      '#markup' => '<h2>'.t('Edit topic').'</h2>',
+    );
+  }
+  else {
+    $form['head_title'] = array(
+      '#markup' => '<h2>'.t('Add new topic').'</h2>',
+    );
+  }
+  
   $form['title'] = array(
     '#type' => 'textfield',
     '#title' => t('Title'),
-    '#required' => TRUE
+    '#required' => TRUE,
+    '#default_value' => open_journal_get_field($data, 'title')
   );
 
   $form['description'] = array(
     '#type' => 'textarea',
     '#title' => t('Detail'),
+    '#default_value' => open_journal_get_field($data, 'description')
   );
 
   $form['fid'] = array(
@@ -27,12 +36,14 @@ function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL)
       //'file_validate_size' => array(2 * 1048576),\
     ),
     '#upload_location' => "public://journal/",
+    '#default_value' => open_journal_get_field($data, 'fid'),
   );
-
+    
   $form['contributor_only'] = array(
     '#title' => t('Contributor only'),
     '#type' => 'checkbox',
     '#description' => t('If checked this box, only contributor can access this discussion.'),
+    '#default_value' => open_journal_get_field($data, 'contributor_only')
   );
 
   $form['main']['actions'] = array('#type' => 'actions');
@@ -43,25 +54,24 @@ function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL)
   $form['main']['actions']['cancel'] = array(
     '#markup' => l(t('Cancel'), $_SERVER['HTTP_REFERER']),
   );
+  
+  $form['uid'] = array(
+    '#type' => 'hidden',
+    '#value' => $user->uid,
+    '#access' => FALSE,
+  );
+
+  $form['jid'] = array(
+    '#type' => 'hidden',
+    '#value' => $journal->jid,
+    '#access' => FALSE,
+  );
 
   // Hidden field
   if (open_journal_get_field($data, 'did')) {
     $form['did'] = array(
       '#type' => 'hidden',
       '#value' => $data->did,
-      '#access' => FALSE,
-    );
-  }
-  else {
-    $form['uid'] = array(
-      '#type' => 'hidden',
-      '#value' => $user->uid,
-      '#access' => FALSE,
-    );
-
-    $form['jid'] = array(
-      '#type' => 'hidden',
-      '#value' => $journal->jid,
       '#access' => FALSE,
     );
   }
@@ -75,5 +85,6 @@ function open_journal_discussion_form_submit($form, &$form_state) {
   
   $data = (object) $form_state['values'];
   open_journal_discussion_save($data);
+  drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->jid.'/discussion/'.$data->did);
 
 }

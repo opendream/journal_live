@@ -1102,7 +1102,8 @@ body {
 	background: url(images/arrow-dropdown.png) no-repeat bottom right;
 	padding-right: 20px;
 }
-.user-manage .user-dropdown .user-picture-wrapper {
+.user-manage .user-dropdown .user-picture-wrapper,
+#file-list-item .user-picture-wrapper {
   display: inline;
 }
 .user-manage .user-dropdown ul {
@@ -1643,7 +1644,7 @@ input.form-submit:hover {
 		}
 #journal-list .load-more {
 	display: block;
-	width: 135px;
+	width: 140px;
 	margin: 0 auto;
 	text-align: center;
 	overflow: hidden;
