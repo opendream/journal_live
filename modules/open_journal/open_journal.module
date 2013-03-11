@@ -148,7 +148,8 @@ function open_journal_menu() {
     'page callback' => 'open_journal_discussion_detail',
     'page arguments' => array($arg, $arg+2),
     'access arguments' => array('access open journal'),
-    'type' => MENU_CALLBACK
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_comment_form.inc',
   );
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/discussion/%open_journal_discussion/edit'] = array(
@@ -158,7 +159,16 @@ function open_journal_menu() {
     'access arguments' => array('access open journal'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_discussion_form.inc',
-  );  
+  );
+  
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/discussion/%open_journal_discussion/delete'] = array(
+    'title' => t('Edit discussion'),
+    'page callback' => 'open_journal_discussion_delete',
+    'page arguments' => array($arg, $arg+2),
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_discussion_form.inc',
+  );
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/file'] = array(
     'title' => t('Files'),
@@ -786,6 +796,7 @@ function open_journal_overview($journal) {
   $i = 0;
   foreach($discussion as $row) {
     $user = user_load($row->uid);
+    $discussion_data[$i]['did'] = $row->did;
     $discussion_data[$i]['user_info'] = open_journal_get_display_user_info($user);
     $discussion_data[$i]['title'] = open_journal_trim($row->title, 50);
     $discussion_data[$i]['description'] = open_journal_trim($row->description, 100);
@@ -970,9 +981,28 @@ function open_journal_discussion_edit($journal, $discussion) {
   ));
 }
 
+function open_journal_discussion_delete($journal, $discussion) {
+
+  return theme('open_journal_detail', array(
+    'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
+    'content' => drupal_render(drupal_get_form('open_journal_discussion_delete_form', $journal, $discussion)),
+    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', array('jid' => $journal->jid)),
+    'jid' => $journal->jid
+
+  ));
+}
+
+function open_journal_discussion_remove($did) {
+  db_delete('open_journal_discussion')
+    ->condition('did', $did)
+    ->execute();
+}
+
 function open_journal_discussion_detail($journal, $discussion) {
   
   global $user;
+  
+  drupal_add_js(drupal_get_path('module', 'open_journal').'/js/open_journal_compact.js');
   
   $discussion->user_info = open_journal_get_display_user_info($discussion->uid);
   $discussion->description = check_markup($discussion->description);
@@ -986,6 +1016,8 @@ function open_journal_discussion_detail($journal, $discussion) {
     'content' => theme('open_journal_discussion_detail', array(
       'journal' => $journal,
       'discussion' => $discussion,
+      'current_user_info' => open_journal_get_display_user_info($user),
+      'comment_form' => drupal_render(drupal_get_form('open_journal_comment_form', $discussion)),
     )),
     'sidebar' => theme('open_journal_status_form', array('jid' => 1)),
     'jid' => 1
