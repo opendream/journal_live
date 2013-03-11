@@ -127,11 +127,12 @@ function open_journal_menu() {
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/discussion'] = array(
     'title' => t('Discussions'),
-    'page callback' => 'open_journal_discussion',
+    'page callback' => 'open_journal_discussion_list',
     'page arguments' => array($arg),
     'access arguments' => array('access open journal'),
     'type' => MENU_CALLBACK,
-  ); 
+  );
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/discussion/list'] = $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/discussion'];
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/discussion/add'] = array(
     'title' => t('Add new discussion'),
@@ -141,11 +142,19 @@ function open_journal_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_discussion_form.inc',
   );
+  
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/discussion/%open_journal_discussion'] = array(
+    'title' => t('Discussion detail'),
+    'page callback' => 'open_journal_discussion_detail',
+    'page arguments' => array($arg, $arg+2),
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK
+  );
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/discussion/%open_journal_discussion/edit'] = array(
     'title' => t('Edit discussion'),
-    'page callback' => 'open_journal_discussion_add',
-    'page arguments' => array($arg),
+    'page callback' => 'open_journal_discussion_edit',
+    'page arguments' => array($arg, $arg+2),
     'access arguments' => array('access open journal'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_discussion_form.inc',
@@ -203,8 +212,16 @@ function open_journal_theme() {
         'jid' => NULL,
         'content' => NULL,
         'sidebar' => NULL,
+        'menu_active_url' => NULL,
       ),
       'template' => 'templates/open-journal-detail',
+    ),
+    
+    'open_journal_item' => array(
+      'variables' => array(
+        'item' => NULL,
+      ),
+      'template' => 'templates/open-journal-item',
     ),
 
     'open_journal_overview_content' => array(
@@ -229,12 +246,12 @@ function open_journal_theme() {
       'template' => 'templates/open-journal-overview-sidebar',
     ),
 
-    'open_journal_discussion' => array(
+    'open_journal_discussion_detail' => array(
       'variables' => array(
         'jid' => NULL,
         'discussion_list' => NULL,
       ),
-      'template' => 'templates/open-journal-discussion',
+      'template' => 'templates/open-journal-discussion-detail',
     ),
 
     'open_journal_status_form' => array(
@@ -581,22 +598,6 @@ function open_journal_discussion_load($did) {
   return $data;
 }
 
-function open_journal_discussion_get_last($jid) {
-
-  // Query data from database from discussion for display last updated and last file.
-  $data = db_select('open_journal_discussion', 'd')
-  ->fields('d')
-  ->condition('jid', $jid, '=')
-  ->condition('fid', 0, '!=')
-  ->range(0,1)
-  ->orderBy('did', 'DESC')
-  ->execute()
-  ->fetchObject();
-
-  return $data;
-}
-
-
 function open_journal_discussion_load_limit($jid, $limit=NULL) {
 
   // Query data from database for overview discussion
@@ -648,10 +649,14 @@ function open_journal_discussion_save($data) {
   if ($data->fid) {
     $file->status = FILE_STATUS_PERMANENT;
     file_save($file);
+    file_usage_add($file, 'open_journal', 'discussion', $data->did);
+    
   }
   
   $data->is_new = !$pk;
-  open_jounal_discussion_mail($data);
+  if ($data->is_new) {
+    open_jounal_discussion_mail($data);
+  }
 
   return $data;
 }
@@ -926,23 +931,64 @@ function open_journal_overview($journal) {
   ));
 }
 
-function open_journal_discussion() {
+function open_journal_discussion_list($journal) {
   return theme('open_journal_detail', array(
-    'content' => drupal_render(drupal_get_form('open_journal_discussion_form')),
+    'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
+    'content' => 'Discussion list page',
     'sidebar' => theme('open_journal_status_form', array('jid' => 1)),
     'jid' => 1
   ));
 }
 
 function open_journal_discussion_add($journal) {
-  open_journal_get_display_user_info( $GLOBALS['user']);
-  return theme('open_journal_detail', array(
-    'content' => drupal_render(drupal_get_form('open_journal_discussion_form', $journal)),
 
+  return theme('open_journal_detail', array(
+    'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
+    'content' => drupal_render(drupal_get_form('open_journal_discussion_form', $journal)),
     'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', array('jid' => $journal->jid)),
     'jid' => $journal->jid
 
   ));
+}
+
+function open_journal_discussion_edit($journal, $discussion) {
+
+  return theme('open_journal_detail', array(
+    'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
+    'content' => drupal_render(drupal_get_form('open_journal_discussion_form', $journal, $discussion)),
+    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', array('jid' => $journal->jid)),
+    'jid' => $journal->jid
+
+  ));
+}
+
+function open_journal_discussion_detail($journal, $discussion) {
+  
+  global $user;
+  
+  $discussion->user_info = open_journal_get_display_user_info($discussion->uid);
+  $discussion->description = check_markup($discussion->description);
+  $discussion->file = $discussion->fid? file_load($discussion->fid): NULL;
+  $discussion->type = 'discussion';
+  $discussion->id = $discussion->did;
+  $discussion->can_edit = $user->uid == $discussion->uid;
+    
+  return theme('open_journal_detail', array(
+    'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
+    'content' => theme('open_journal_discussion_detail', array(
+      'journal' => $journal,
+      'discussion' => $discussion,
+    )),
+    'sidebar' => theme('open_journal_status_form', array('jid' => 1)),
+    'jid' => 1
+  ));
+}
+
+function open_journal_get_active_menu_attributes($menu_active_url) {
+  if (strpos($_GET['q'], $menu_active_url) === 0) {
+    return array('attributes' => array('class' => array('active')));
+  }
+  return array();
 }
 
 function open_journal_get_file_list($jid, $limit=NULL) {
@@ -1192,11 +1238,14 @@ function open_journal_image_default_styles() {
  */
 function open_journal_get_display_user_info($account, $variables=array()) {
   
+  $account = is_numeric($account)? user_load($account): $account;
+  
   $default_variables = array(
     'image_style' => 'open_journal_avatar_medium', 
     'user' => NULL, 
     'picture_class' => array(), 
-    'name_class' => TRUE,
+    'name_class' => array(), 
+    'name_class' => array(),
     'owner_uid' => NULL
   );
   
@@ -1265,9 +1314,23 @@ function open_journal_get_display_user_info($account, $variables=array()) {
   }
   
   $variables['picture_class'][] = 'user-picture-wrapper';
+  $variables['name_class'][] = 'user-name-wrapper';
   
-  $real_picture = l($real_picture, '', array('html' => TRUE, 'attributes' => array('class' => $variables['picture_class'])));
-  $real_name = l($real_name, '', array('class' => $variables['name_class']));
+  $user_profile_url = drupal_get_destination();
+  $user_profile_url = $user_profile_url['destination'];
+  $user_profile_url = 'journal';
+    
+  $real_picture = l($real_picture, $user_profile_url, array(
+    'html' => TRUE, 
+    'attributes' => array('class' => $variables['picture_class']),
+    'fragment' => 'link-to-user-profile',
+  ));
+  
+  $real_name = l($real_name, $user_profile_url, array(
+    'attributes' => array('class' => $variables['name_class']),
+    'fragment' => 'link-to-user-profile',
+  ));
+  
   
   
   
