@@ -87,7 +87,7 @@ function open_journal_comment_form_submit($form, &$form_state) {
 }
 
 
-function open_journal_comment_delete_form($form, &$form_state, $journal, $data) {
+function open_journal_comment_delete_form($form, &$form_state, $journal, $discussion, $data) {
   
   $form['jid'] = array(
     '#type' => 'hidden',

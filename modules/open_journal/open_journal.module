@@ -1149,7 +1149,6 @@ function open_journal_discussion_detail($journal, $discussion) {
   
   global $user;
   
-  
   $discussion->user_info = open_journal_get_display_user_info($discussion->uid);
   $discussion->description = check_markup($discussion->description);
   $discussion->file = $discussion->fid? file_load($discussion->fid): NULL;
