@@ -8,7 +8,7 @@
         <?php if ($item->description): ?>
         <div class="discussion-item-description">
             <?php print $item->description; ?>
-        </div>    
+        </div> 
         <?php endif ?>
         
         <?php if ($item->fid): ?>
@@ -19,9 +19,9 @@
         
         <?php if ($item->can_edit): ?>
         <div class="discussion-item-edit-link">
-            <?php print l('Edit', OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/'.$item->type.'/'.$item->id.'/edit'); ?>
+            <?php print l('Edit', OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion/'.$item->did.'/edit'); ?>
              · 
-            <?php print l('Delete', OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/'.$item->type.'/'.$item->id.'/delete'); ?>
+            <?php print l('Delete', OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion/'.$item->did.'/delete'); ?>
         </div>
         <?php endif ?>
 

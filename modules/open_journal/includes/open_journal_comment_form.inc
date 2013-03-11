@@ -1,13 +1,27 @@
 <?php
 
-function open_journal_comment_form($form, &$form_state, $journal, $discussion, $data=NULL) {
+function open_journal_comment_form($form, $form_state, $journal, $discussion, $data=NULL) {
   
   global $user;
+  
+  $form['#attached']['js'][] = drupal_get_path('module', 'open_journal').'/js/open_journal_compact.js';
+  
+  $submit_text = t('Add this comment');
+  if (open_journal_get_field($data, 'cid')) {
+    $form['cid'] = array(
+      '#type' => 'hidden',
+      '#value' => $data->cid,
+      '#access' => FALSE,
+    );
+    
+    $submit_text = t('Save changes');
+  }
   
   $form['message'] = array(
     '#type' => 'textarea',
     '#title' => t('Comment'),
     '#required' => TRUE,
+    '#default_value' => open_journal_get_field($data, 'message'),
   );
   
   $form['fid'] = array(
@@ -25,7 +39,7 @@ function open_journal_comment_form($form, &$form_state, $journal, $discussion, $
   $form['actions'] = array('#type' => 'actions');
   $form['actions']['submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Submit'),
+    '#value' => $submit_text,
   );
   $form['actions']['cancel'] = array(
     '#markup' => l(t('Cancel'), $_SERVER['HTTP_REFERER']),
@@ -49,14 +63,6 @@ function open_journal_comment_form($form, &$form_state, $journal, $discussion, $
     '#access' => FALSE,
   );
 
-  // Hidden field
-  if (open_journal_get_field($data, 'cid')) {
-    $form['cid'] = array(
-      '#type' => 'hidden',
-      '#value' => $data->cid,
-      '#access' => FALSE,
-    );
-  }
   
   return $form;
 }

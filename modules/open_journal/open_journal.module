@@ -245,13 +245,23 @@ function open_journal_theme() {
       'template' => 'templates/open-journal-detail',
     ),
     
-    'open_journal_item' => array(
+    'open_journal_discussion_item' => array(
       'variables' => array(
         'item' => NULL,
+        'journal' => NULL,
       ),
-      'template' => 'templates/open-journal-item',
+      'template' => 'templates/open-journal-discussion-item',
     ),
 
+    'open_journal_comment_item' => array(
+      'variables' => array(
+        'item' => NULL,
+        'journal' => NULL,
+        'discussion' => NULL,
+      ),
+      'template' => 'templates/open-journal-comment-item',
+    ),
+    
     'open_journal_overview_content' => array(
       'variables' => array(
         'jid' => NULL,
@@ -422,13 +432,13 @@ function open_journal_preprocess_page(&$vars) {
 
 function open_journal_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'user_pass') {
-    drupal_add_js(drupal_get_path('module','open_journal').'/js/open_journal_compact.js');
-    $form['title'] = array('#markup' => '<h2>'.t('Forget password').'</h2>', '#weight' => -50);    
+    $form['title'] = array('#markup' => '<h2>'.t('Forget password').'</h2>', '#weight' => -50);
+    $form['#attached']['js'][] = drupal_get_path('module', 'open_journal').'/js/open_journal_compact.js';
+    
   }
 }
 
 function open_journal_login() {
-  drupal_add_js(drupal_get_path('module','open_journal').'/js/open_journal_compact.js');
   return theme('open_journal_login', array(
     'form' => drupal_render(drupal_get_form('open_journal_login_form')),
     'condition' => 'CONDITION',
@@ -436,7 +446,6 @@ function open_journal_login() {
 }
 
 function open_journal_register() {
-  drupal_add_js(drupal_get_path('module','open_journal').'/js/open_journal_compact.js');
   return theme('open_journal_register', array(
     'form' => drupal_render(drupal_get_form('open_journal_register_form')),
     'condition' => 'CONDITION',
@@ -712,7 +721,7 @@ function open_journal_comment_load($cid) {
 
   // Query data from database for edit journal when have journal ID
   $data = db_select('open_journal_comment', 'c')
-  ->fields('d')
+  ->fields('c')
   ->condition('cid', $cid, '=')
   ->execute()
   ->fetchObject();
@@ -891,10 +900,7 @@ function open_journal_people() {
 
 function open_journal_information($data=NULL) {
 
-  $mpath = drupal_get_path('module', 'open_journal');
-  drupal_add_js($mpath.'/js/open_journal_multi_textfield.js');
-  drupal_add_js(drupal_get_path('module','open_journal').'/js/jquery.qtip.min.js');
-  drupal_add_js(drupal_get_path('module','open_journal').'/js/open_journal_help.js');
+
   
   return theme('open_journal_detail', array(
     'content' => drupal_render(drupal_get_form('open_journal_information_form',$data)),
@@ -1111,6 +1117,28 @@ function open_journal_discussion_delete($journal, $discussion) {
   ));
 }
 
+function open_journal_comment_edit($journal, $discussion, $comment) {
+
+  return theme('open_journal_detail', array(
+    'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
+    'content' => drupal_render(drupal_get_form('open_journal_comment_form', $journal, $discussion, $comment)),
+    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', array('jid' => $journal->jid)),
+    'jid' => $journal->jid
+
+  ));
+}
+
+function open_journal_comment_delete($journal, $discussion, $comment) {
+
+  return theme('open_journal_detail', array(
+    'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
+    'content' => drupal_render(drupal_get_form('open_journal_comment_delete_form', $journal, $discussion, $comment)),
+    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', array('jid' => $journal->jid)),
+    'jid' => $journal->jid
+
+  ));
+}
+
 function open_journal_discussion_remove($did) {
   db_delete('open_journal_discussion')
     ->condition('did', $did)
@@ -1121,14 +1149,19 @@ function open_journal_discussion_detail($journal, $discussion) {
   
   global $user;
   
-  drupal_add_js(drupal_get_path('module', 'open_journal').'/js/open_journal_compact.js');
   
   $discussion->user_info = open_journal_get_display_user_info($discussion->uid);
   $discussion->description = check_markup($discussion->description);
   $discussion->file = $discussion->fid? file_load($discussion->fid): NULL;
-  $discussion->type = 'discussion';
-  $discussion->id = $discussion->did;
   $discussion->can_edit = $user->uid == $discussion->uid;
+  
+  $comment_list = open_journal_comment_load_all($discussion->did);
+  foreach ($comment_list as &$comment) {
+    $comment->user_info = open_journal_get_display_user_info($comment->uid);
+    $comment->message = check_markup($comment->message);
+    $comment->file = $comment->fid? file_load($comment->fid): NULL;
+    $comment->can_edit = $user->uid == $comment->uid;
+  }
     
   return theme('open_journal_detail', array(
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
@@ -1137,6 +1170,7 @@ function open_journal_discussion_detail($journal, $discussion) {
       'discussion' => $discussion,
       'current_user_info' => open_journal_get_display_user_info($user),
       'comment_form' => drupal_render(drupal_get_form('open_journal_comment_form', $journal, $discussion)),
+      'comment_list' => $comment_list,
     )),
     'sidebar' => theme('open_journal_status_form', array('jid' => 1)),
     'jid' => 1
