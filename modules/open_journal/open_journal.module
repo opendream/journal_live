@@ -162,12 +162,30 @@ function open_journal_menu() {
   );
   
   $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/discussion/%open_journal_discussion/delete'] = array(
-    'title' => t('Edit discussion'),
+    'title' => t('Delete discussion'),
     'page callback' => 'open_journal_discussion_delete',
     'page arguments' => array($arg, $arg+2),
     'access arguments' => array('access open journal'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_discussion_form.inc',
+  );
+  
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/discussion/%open_journal_discussion/comment/%open_journal_comment/edit'] = array(
+    'title' => t('Edit comment'),
+    'page callback' => 'open_journal_comment_edit',
+    'page arguments' => array($arg, $arg+2, $arg+4),
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_comment_form.inc',
+  );
+  
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/discussion/%open_journal_discussion/comment/%open_journal_comment/delete'] = array(
+    'title' => t('Delete comment'),
+    'page callback' => 'open_journal_comment_delete',
+    'page arguments' => array($arg, $arg+2, $arg+4),
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_comment_form.inc',
   );
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/file'] = array(
@@ -671,6 +689,103 @@ function open_journal_discussion_save($data) {
   return $data;
 }
 
+// Send mail function 
+function open_jounal_discussion_mail($data) {
+  
+  $user_list = open_journal_people_active_list($data->jid, $data->uid);
+  $sender = user_load($data->uid);
+  $data->journal = open_journal_journal_load($data->jid);
+  $data->sender = $sender;
+
+  foreach ($user_list as $user) {
+    // TODO: check valid name for permission to dee the sender name
+    drupal_mail('open_journal', 'open_journal_discussion_add', $user->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
+  }
+
+} 
+
+
+/**
+ * Comment method
+ */
+function open_journal_comment_load($cid) {
+
+  // Query data from database for edit journal when have journal ID
+  $data = db_select('open_journal_comment', 'c')
+  ->fields('d')
+  ->condition('cid', $cid, '=')
+  ->execute()
+  ->fetchObject();
+
+  return $data;
+}
+
+function open_journal_comment_load_all($did) {
+
+  // Query data from database for overview discussion
+  $data = db_select('open_journal_comment', 'c')
+  ->fields('c')
+  ->condition('did', $did, '=')
+  ->orderBy('cid', 'ASC')
+  ->execute()
+  ->fetchAll();
+
+  return $data;
+}
+
+function open_journal_comment_save($data) {
+  
+  $data->changed = REQUEST_TIME;
+
+
+  if ($data->fid) {
+    $file = file_load($data->did);
+  }
+  
+  // Importantly, save record before save file.
+  $pk = (isset($data->cid) && $data->cid)? 'cid': array();
+  
+  if (!$pk) {
+    $data->created = REQUEST_TIME;
+  }
+  
+  drupal_write_record('open_journal_comment', $data, $pk);
+  
+  if ($data->fid) {
+    $file->status = FILE_STATUS_PERMANENT;
+    file_save($file);
+    file_usage_add($file, 'open_journal', 'comment', $data->cid);
+    
+  }
+  
+  $data->is_new = !$pk;
+  if ($data->is_new) {
+    open_jounal_comment_mail($data);
+  }
+
+  return $data;
+}
+
+function open_jounal_comment_mail($data) {
+  
+  $sender = user_load($data->uid);
+  $data->discussion = open_journal_discussion_load($data->did);
+  $data->journal = open_journal_journal_load($data->discussion->jid);
+  $data->sender = $sender;
+  
+  $user_list = open_journal_people_active_list($data->journal->jid, $data->uid);
+  
+
+  foreach ($user_list as $user) {
+    // TODO: check valid name for permission to dee the sender name
+    drupal_mail('open_journal', 'open_journal_comment_add', $user->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
+  }
+
+}
+
+/**
+ * Mail method
+ */
 function open_journal_mail($key, &$message, $data) {
 
   $site_name = variable_get('site_name', t('E-Journal'));
@@ -678,7 +793,7 @@ function open_journal_mail($key, &$message, $data) {
   switch ($key) {
     case 'open_journal_discussion_add':
       //$message['subject'] = '['.truncate_utf8($data->journal->title, 10, FALSE, TRUE).']'.$data->title;
-      $message['subject'] = truncate_utf8($data->journal->title, 20, FALSE, TRUE).' - '.$data->title;
+      $message['subject'] = open_journal_trim($data->journal->title, 20).' - '.open_journal_trim($data->title);
 
       $body = "\n";
       $body .= "\n".'Journal: '.$data->journal->title;
@@ -703,23 +818,27 @@ function open_journal_mail($key, &$message, $data) {
 
 
       $message['body'][] = $body;
+    
+    case 'open_journal_comment_add':
+      $message['subject'] = 'Re: '.open_journal_trim($data->journal->title, 20).' - '.open_journal_trim($data->discussion->title);
+
+      $body = "\n";
+      $body .= "\n".'Journal: '.$data->journal->title;
+      $body .= "\n";
+      $body .= "\n".'Re: '.$data->discussion->title;
+      $body .= "\n".'------------------------------------------------------------------------';
+      $body .= "\n";
+      $body .= "\n".$data->sender->name.': '.$data->message;
+      $body .= "\n";
+      $body .= "\n".'------------------------------------------------------------------------';
+      $body .= "\n".'View more detail on '.$site_name.': ';
+      $body .= "\n".url(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->journal->jid.'/discussion/'.$data->did, array('absolute' => TRUE));
+
+
+      $message['body'][] = $body;
   }
 }
 
-// Send mail function 
-function open_jounal_discussion_mail($data) {
-  
-  $user_list = open_journal_people_active_list($data->jid, $data->uid);
-  $sender = user_load($data->uid);
-  $data->journal = open_journal_journal_load($data->jid);
-  $data->sender = $sender;
-
-  foreach ($user_list as $user) {
-    // TODO: check valid name for permission to dee the sender name
-    drupal_mail('open_journal', 'open_journal_discussion_add', $user->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
-  }
-
-} 
 
 /**
  * People method
@@ -1009,7 +1128,7 @@ function open_journal_discussion_detail($journal, $discussion) {
       'journal' => $journal,
       'discussion' => $discussion,
       'current_user_info' => open_journal_get_display_user_info($user),
-      'comment_form' => drupal_render(drupal_get_form('open_journal_comment_form', $discussion)),
+      'comment_form' => drupal_render(drupal_get_form('open_journal_comment_form', $journal, $discussion)),
     )),
     'sidebar' => theme('open_journal_status_form', array('jid' => 1)),
     'jid' => 1

@@ -1,13 +1,13 @@
 <?php
 
-function open_journal_comment_form($form, &$form_state, $discussion, $data=NULL) {
+function open_journal_comment_form($form, &$form_state, $journal, $discussion, $data=NULL) {
   
   global $user;
   
   $form['message'] = array(
     '#type' => 'textarea',
     '#title' => t('Comment'),
-    
+    '#required' => TRUE,
   );
   
   $form['fid'] = array(
@@ -36,6 +36,12 @@ function open_journal_comment_form($form, &$form_state, $discussion, $data=NULL)
     '#value' => $user->uid,
     '#access' => FALSE,
   );
+  
+  $form['jid'] = array(
+    '#type' => 'hidden',
+    '#value' => $journal->jid,
+    '#access' => FALSE,
+  );
 
   $form['did'] = array(
     '#type' => 'hidden',
@@ -53,4 +59,57 @@ function open_journal_comment_form($form, &$form_state, $discussion, $data=NULL)
   }
   
   return $form;
+}
+
+
+function open_journal_comment_form_submit($form, &$form_state) {
+  
+  $data = (object) $form_state['values'];
+  open_journal_comment_save($data);
+  
+  $is_new = (isset($data->cid) && $data->cid)? FALSE: TRUE;
+  
+  if ($is_new) {
+    drupal_set_message(t('You has been reply new comment.'));
+  }
+  else {
+    drupal_set_message(t('This comment has been updated.'));
+  }
+  
+  drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->jid.'/discussion/'.$data->did.'/comment/'.$data->cid);
+  
+}
+
+
+function open_journal_comment_delete_form($form, &$form_state, $journal, $data) {
+  
+  $form['jid'] = array(
+    '#type' => 'hidden',
+    '#value' => $journal->jid,
+    '#access' => FALSE
+  );
+  $form['did'] = array(
+    '#type' => 'hidden',
+    '#value' => $data->did,
+    '#access' => FALSE
+  );
+  $form['cid'] = array(
+    '#type' => 'hidden',
+    '#value' => $data->cid,
+    '#access' => FALSE,
+  );
+  
+  $title = t('Are you sure you want to delete the comment?');
+  
+  $form['title'] = array(
+    '#markup' => '<h2>'.$title.'</h2>',
+  );
+  
+  return confirm_form($form, $title, OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion/'.$data->did.'/comment/'.$data->cid);
+}
+
+function open_journal_comment_delete_form_submit($form, &$form_state) {
+  open_journal_discussion_remove($form_state['values']['cid']);
+  drupal_set_message(t('The comment has been deleted.'));
+  drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$form_state['values']['jid'].'/discussion/'.$form_state['values']['did']);
 }
