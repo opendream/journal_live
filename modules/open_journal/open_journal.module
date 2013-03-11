@@ -489,6 +489,8 @@ function open_journal_journal_load($jid) {
   $data->dc_publisher = explode(',' ,$data->dc_publisher);
   $data->dc_contributor = explode(',' ,$data->dc_contributor);
 
+  
+
   $data->title = $data->dc_title;
 
   return $data;
@@ -516,9 +518,12 @@ function open_journal_journal_save($data, $change_status=FALSE) {
     open_journal_update_field($data, 'dc_date');
   }
 
+  
   if (isset($data->file) && $data->file) {
     $file = file_load($data->file);
-    $data->dc_format = $file->filemime;
+    if(!isset($data->dc_format)) {
+     $data->dc_format = $file->filemime; 
+    }
   }
   
   // Importantly, save record before save file.
@@ -767,7 +772,6 @@ function open_journal_information($data=NULL) {
   drupal_add_js(drupal_get_path('module','open_journal').'/js/jquery.qtip.min.js');
   drupal_add_js(drupal_get_path('module','open_journal').'/js/open_journal_help.js');
   
-
   return theme('open_journal_detail', array(
     'content' => drupal_render(drupal_get_form('open_journal_information_form',$data)),
     'sidebar' => '',
@@ -779,7 +783,6 @@ function open_journal_overview($journal) {
 
   // get data from last discussion
   $file_last = open_journal_get_file_list($journal->jid, 1);
-
   // get data from discussion limit for display overview page
   $limit_overview_page = 3;
   $discussion = open_journal_discussion_load_limit($journal->jid, $limit_overview_page);
@@ -837,8 +840,12 @@ function open_journal_overview($journal) {
   $information_field = open_journal_get_field_settings();
 
   if($information_field['dc_creator']) {
-    $information->dc_creator['value'] = implode(", ", $journal->dc_creator);
-    $information->dc_creator['label'] = 'Creators';
+    $author = array_shift($journal->dc_creator);
+    $information->dc_author['value'] = $author;
+    $information->dc_author['label'] = 'Author';
+
+    $information->dc_co_author['value'] = implode(", ", $journal->dc_creator);
+    $information->dc_co_author['label'] = 'Co-Author';
   }
 
   if($information_field['dc_subject']) {
@@ -854,19 +861,20 @@ function open_journal_overview($journal) {
     $information->dc_publisher['label'] = 'Publisher';
   }
   if($information_field['dc_contributor']) {
-    $information->dc_contributor['value'] = implode(", ", $journal->dc_publisher);
+    $information->dc_contributor['value'] = implode(", ", $journal->dc_contributor);
     $information->dc_contributor['label'] = 'Contributors';
   }
   if($information_field['dc_date']) {
     $information->dc_date['value'] = date('d M Y',$journal->dc_date);
     $information->dc_date['label'] = 'Date';
   }
+
   if($information_field['dc_type']) {
-    $information->dc_type['value'] = implode(", ", $journal->dc_type);
+    $information->dc_type['value'] = $journal->dc_type;
     $information->dc_type['label'] = 'Type';
   }
   if($information_field['dc_format']) {
-    $information->dc_format['value'] = implode(", ", $journal->dc_format);
+    $information->dc_format['value'] = $journal->dc_format;
     $information->dc_format['label'] = 'Format';
   }
   
@@ -886,9 +894,9 @@ function open_journal_overview($journal) {
     $information->dc_coverage['value'] = $journal->dc_coverage;
     $information->dc_coverage['label'] = 'Covreage';
   }
-  if($information_field['dc_rights']) {
-    $information->dc_rights['value'] = implode(", ", $journal->dc_rights);
-    $information->dc_rights['label'] = 'Right';
+  if($information_field['dc_right']) {
+    $information->dc_right['value'] = $journal->dc_right;
+    $information->dc_right['label'] = 'Right';
   }
   if($information_field['dc_identifier']) {
     $information->dc_identifier['value'] = $journal->dc_identifier;
@@ -896,7 +904,7 @@ function open_journal_overview($journal) {
   }
 
   
-  // TODO display language
+  //  display language
   if($information->dc_language['value'] == OPEN_JOURNAL_SUB_LANG_CODE) {
     $information->dc_language['value'] = OPEN_JOURNAL_SUB_LANG_TEXT;
     $abstract_label = OPEN_JOURNAL_SUB_LANG_ABSTRACT_LABEL;
@@ -905,6 +913,7 @@ function open_journal_overview($journal) {
     $information->dc_language['value'] = 'Enligsh'; 
     $abstract_label = 'Abstract';
   }
+
  
   return theme('open_journal_detail', array(
     'content' => theme('open_journal_overview_content', array(
@@ -1196,14 +1205,14 @@ function open_journal_get_field_settings() {
     'dc_publisher'   => 1,
     'dc_contributor' => 1,
     'dc_date'        => 1,
-    'dc_type'        => 0,
-    'dc_format'      => 0,
+    'dc_type'        => 1,
+    'dc_format'      => 1,
     'dc_identifier'  => 1,
     'dc_source'      => 0,
     'dc_language'    => 1,
     'dc_relation'    => 0,
     'dc_coverage'    => 1,
-    'dc_rights'      => 0,
+    'dc_right'      => 1,
   );
 }
 
