@@ -97,6 +97,32 @@ function open_journal_discussion_form_submit($form, &$form_state) {
   
   drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->jid.'/discussion/'.$data->did);
   
-  
+}
 
+function open_journal_discussion_delete_form($form, &$form_state, $journal, $data) {
+  
+  $form['jid'] = array(
+    '#type' => 'hidden',
+    '#value' => $journal->jid,
+    '#access' => FALSE
+  );
+  $form['did'] = array(
+    '#type' => 'hidden',
+    '#value' => $data->did,
+    '#access' => FALSE
+  );
+  
+  $title = t('Are you sure you want to delete the discussion %title?', array('%title' => $data->title));
+  
+  $form['title'] = array(
+    '#markup' => '<h2>'.$title.'</h2>',
+  );
+  
+  return confirm_form($form, $title, OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion/'.$data->did);
+}
+
+function open_journal_discussion_delete_form_submit($form, &$form_state) {
+  open_journal_discussion_remove($form_state['values']['did']);
+  drupal_set_message(t('The discussion has been deleted.'));
+  drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$form_state['values']['jid'].'/discussion');
 }
