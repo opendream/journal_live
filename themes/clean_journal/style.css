@@ -1229,7 +1229,8 @@ form#user-pass h2 {
 }
 #open-journal-login-form .form-item,
 #open-journal-register-form .form-item,
-form#user-pass .form-item {
+form#user-pass .form-item,
+#open-journal-comment-form .form-item{
 	position: relative;
 	margin: 0;
 	padding: 0;
@@ -1237,7 +1238,8 @@ form#user-pass .form-item {
 }
 #open-journal-login-form label,
 #open-journal-register-form label,
-form#user-pass label {
+form#user-pass label,
+#open-journal-comment-form .form-item-message label {
 	color: #acacac;
 	position: absolute;
 	top: 16px;
@@ -1247,7 +1249,8 @@ form#user-pass label {
 }
 #open-journal-login-form label .form-required,
 #open-journal-register-form label .form-required,
-form#user-pass label .form-required {
+form#user-pass label .form-required,
+#open-journal-comment-form .form-required {
 	display: none;
 }
 
