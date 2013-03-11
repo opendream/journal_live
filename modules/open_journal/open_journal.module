@@ -730,7 +730,7 @@ function open_journal_people_active_list($jid, $exclude=array() , $uid=FALSE, $l
       $user_list->range(0, $limit);
     }
     $user_list = $user_list->execute();
-    
+
     $user_list = $user_list->fetchAllKeyed(0, 0);
     
     $user_list = array_values($user_list);
@@ -834,6 +834,16 @@ function open_journal_overview($journal) {
   $information = (object) array();
   $information_field = open_journal_get_field_settings();
 
+  
+  if($information_field['dc_subject']) {
+    if(OPEN_JOURNAL_SUB_LANG_ENABLE) {
+      $information->subject_sub['value'] = implode(", ", $journal->subject_sub);
+      $information->subject_sub['label'] = OPEN_JOURNAL_SUB_LANG_KEYWORDS_LABEL;
+    }
+    $information->subject_en['value'] = implode(", ", $journal->subject_en);
+    $information->subject_en['label'] = 'Keywords';
+  }
+
   if($information_field['dc_creator']) {
     $author = array_shift($journal->dc_creator);
     $information->dc_author['value'] = $author;
@@ -843,14 +853,6 @@ function open_journal_overview($journal) {
     $information->dc_co_author['label'] = 'Co-Author';
   }
 
-  if($information_field['dc_subject']) {
-    if(OPEN_JOURNAL_SUB_LANG_ENABLE) {
-      $information->subject_sub['value'] = implode(", ", $journal->subject_sub);
-      $information->subject_sub['label'] = OPEN_JOURNAL_SUB_LANG_KEYWORDS_LABEL;
-    }
-    $information->subject_en['value'] = implode(", ", $journal->subject_en);
-    $information->subject_en['label'] = 'Keywords';
-  }
   if($information_field['dc_publisher']) {
     $information->dc_publisher['value'] = implode(", ", $journal->dc_publisher);
     $information->dc_publisher['label'] = 'Publisher';
@@ -863,7 +865,18 @@ function open_journal_overview($journal) {
     $information->dc_date['value'] = date('d M Y',$journal->dc_date);
     $information->dc_date['label'] = 'Date';
   }
-
+  if($information_field['dc_language']) {
+    $information->dc_language['value'] = $journal->dc_language;
+    $information->dc_language['label'] = 'language';
+  }
+  if($information_field['dc_coverage']) {
+    $information->dc_coverage['value'] = $journal->dc_coverage;
+    $information->dc_coverage['label'] = 'Covreage';
+  }
+  if($information_field['dc_identifier']) {
+    $information->dc_identifier['value'] = $journal->dc_identifier;
+    $information->dc_identifier['label'] = 'Final URL';
+  }
   if($information_field['dc_type']) {
     $information->dc_type['value'] = $journal->dc_type;
     $information->dc_type['label'] = 'Type';
@@ -877,26 +890,17 @@ function open_journal_overview($journal) {
     $information->dc_source['value'] = implode(", ", $journal->dc_source);
     $information->dc_source['label'] = 'Source';
   }
-  if($information_field['dc_language']) {
-    $information->dc_language['value'] = $journal->dc_language;
-    $information->dc_language['label'] = 'language';
-  }
+  
   if($information_field['dc_relation']) {
     $information->dc_relation = implode(", ", $journal->dc_relation);
     $information->dc_relation['label'] = 'Relation';
   }
-  if($information_field['dc_coverage']) {
-    $information->dc_coverage['value'] = $journal->dc_coverage;
-    $information->dc_coverage['label'] = 'Covreage';
-  }
+  
   if($information_field['dc_right']) {
     $information->dc_right['value'] = $journal->dc_right;
     $information->dc_right['label'] = 'Right';
   }
-  if($information_field['dc_identifier']) {
-    $information->dc_identifier['value'] = $journal->dc_identifier;
-    $information->dc_identifier['label'] = 'Final URL';
-  }
+  
 
   
   //  display language
