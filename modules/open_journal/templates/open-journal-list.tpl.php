@@ -10,7 +10,7 @@
 		<div class="journal-filter-active"><?php print $current_status_name; ?></div>
 	</div>
 	<ul id="journal-filter-item-list">
-		<li class="journal-filter-item"><?php print l('All Journals', OPEN_JOURNAL_PREFIX_PATH.'/list');?></li>
+		<li class="journal-filter-item"><?php print l('All Journals', OPEN_JOURNAL_PREFIX_PATH);?></li>
 		<?php foreach($status_list as $key_status => $status):?>
 		<li class="journal-filter-item"><?php print l($status, OPEN_JOURNAL_PREFIX_PATH.'/list/'.$key_status);?></li>
 		<?php endforeach;?>

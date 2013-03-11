@@ -28,7 +28,7 @@ define('OPEN_JOURNAL_STATUS_INFORMATION_APPROVE', 0);
 define('OPEN_JOURNAL_STATUS_DOCUMENT_APPROVE', 1);
 define('OPEN_JOURNAL_STATUS_CATLOGUED', 2);
 define('OPEN_JOURNAL_STATUS_PUBLISHED', 3);
-define('OPEN_JOURNAL_DISPLAY_IMAGE_USER_LIST_LIMIT', 3);
+define('OPEN_JOURNAL_DISPLAY_IMAGE_USER_LIST_LIMIT', 2);
 define('OPEN_JOURNAL_LIST_IPP', 2);
 
 
@@ -1105,6 +1105,7 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
     'update_load_more_url' => $update_load_more_url,
     'status_list' => $status_list,
     'current_status_name' => $current_status_name,
+    'status' => $status,
 
   ));
 
