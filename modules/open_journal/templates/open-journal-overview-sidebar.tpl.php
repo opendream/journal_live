@@ -18,6 +18,7 @@
 </div> <!-- End Status Block -->	
 
 <!-- Start People Block -->	
+
 <div class="journal-block people-block-overview block-bg-shadow">
 
   <h2 class="journal-block-title">People</h2>

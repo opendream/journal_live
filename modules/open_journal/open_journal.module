@@ -715,6 +715,7 @@ function open_jounal_discussion_mail($data) {
  * People method
  */
 function open_journal_people_active_list($jid, $exclude=array() , $uid=FALSE, $limit=FALSE) {
+    global $user;
     $exclude = !is_array($exclude)? array($exclude): $exclude;
   
     $user_list = db_select('open_journal_journal_people', 'jp');
@@ -723,10 +724,13 @@ function open_journal_people_active_list($jid, $exclude=array() , $uid=FALSE, $l
     if($uid) {
       $user_list->orderBy('uid = '.$uid, 'DESC');
     }
+    $user_list->orderBy(' uid = '.$user->uid, 'DESC');
+
     if($limit) {
       $user_list->range(0, $limit);
     }
     $user_list = $user_list->execute();
+    
     $user_list = $user_list->fetchAllKeyed(0, 0);
     
     $user_list = array_values($user_list);
