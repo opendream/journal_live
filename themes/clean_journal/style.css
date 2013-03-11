@@ -1102,6 +1102,9 @@ body {
 	background: url(images/arrow-dropdown.png) no-repeat bottom right;
 	padding-right: 20px;
 }
+.user-manage .user-dropdown .user-picture-wrapper {
+  display: inline;
+}
 .user-manage .user-dropdown ul {
 	position: absolute;
 	top: 80px;
