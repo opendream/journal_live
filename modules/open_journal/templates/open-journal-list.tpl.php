@@ -38,7 +38,10 @@
 
 </div>
 <?php else: ?>
-<div class="journal-list-empty">
-  TODO: add picture arrow to "Add new"
+<div class="journal-list-empty block-bg-shadow">
+  <h2>Create Your First Journal</h2>
+  <div class="add-journal-btn">
+		<a href="/journal/add">Add New</a>
+	</div>
 </div>
 <?php endif ?>
