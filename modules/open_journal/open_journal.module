@@ -728,6 +728,14 @@ function open_journal_discussion_save($data) {
   
   $data->changed = REQUEST_TIME;
 
+  // Default value
+  $data->fid = isset($data->fid)? $data->fid: 0;
+  $data->contributor_only = isset($data->contributor_only)? $data->contributor_only: 0;
+  $data->permanent = isset($data->permanent)? $data->permanent: 1;
+
+  global $user;
+  $data->uid = isset($data->uid)? $data->uid: $user->uid;
+
 
   if ($data->fid) {
     $file = file_load($data->fid);
