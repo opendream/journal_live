@@ -7,14 +7,14 @@
   <div class="journal-block-content people-creator">
   
   	<h3 class="people-section-title">Creator</h3>
-  	
-  	<!-- People item -->
-  	<div class="journal-user">
-    	<a href="/"><img class="profile-picture-big" src="/sites/all/themes/clean_journal/images/dummy/big-picture-profile-tarongpong.png" alt="researcher1" title="researcher1"></a>
-    	<h3 class="username"><a href="/">Benz Gimmik</a></h3>
+    
+    <!-- People item -->
+    <div class="journal-user">
+      <?php print $people_creator->user_info['display_picture']; ?>
+      <h3 class="username"><?php print $people_creator->user_info['display_name']; ?></h3>
     	<div class="join-date">
   			<span class="label">Join Date: </span>
-  			<span>05 Mar 2013</span>		
+  			<span><?php print date('d M Y', $people_creator->joined); ?></span>		
   		</div>
     </div><!-- End People item -->
     

@@ -11,7 +11,7 @@
         </div> 
         <?php endif ?>
         
-        <?php if ($item->fid): ?>
+        <?php if ($item->fid && $item->file): ?>
         <div class="discussion-item-file">
             <?php print $item->file->filename; ?>
         </div>

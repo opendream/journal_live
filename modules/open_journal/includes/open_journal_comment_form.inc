@@ -19,7 +19,7 @@ function open_journal_comment_form($form, $form_state, $journal, $discussion, $d
   
   $form['message'] = array(
     '#type' => 'textarea',
-    '#title' => t('Comment'),
+    '#title' => t('Add a comment'),
     '#required' => TRUE,
     '#default_value' => open_journal_get_field($data, 'message'),
   );

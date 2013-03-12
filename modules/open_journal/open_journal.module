@@ -29,8 +29,8 @@ define('OPEN_JOURNAL_STATUS_INFORMATION_APPROVE', 0);
 define('OPEN_JOURNAL_STATUS_DOCUMENT_APPROVE', 1);
 define('OPEN_JOURNAL_STATUS_CATLOGUED', 2);
 define('OPEN_JOURNAL_STATUS_PUBLISHED', 3);
-define('OPEN_JOURNAL_DISPLAY_IMAGE_USER_LIST_LIMIT', 2);
-define('OPEN_JOURNAL_LIST_IPP', 2);
+define('OPEN_JOURNAL_DISPLAY_IMAGE_USER_LIST_LIMIT', 9);
+define('OPEN_JOURNAL_LIST_IPP', 20);
 
 
 
@@ -197,9 +197,10 @@ function open_journal_menu() {
     'file' => 'includes/open_journal_file.inc',
   ); 
 
-  $items[OPEN_JOURNAL_PREFIX_PATH.'/%/people'] = array(
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/people'] = array(
     'title' => t('Peoples'),
     'page callback' => 'open_journal_people',
+    'page arguments' => array($arg),
     'access arguments' => array('access open journal'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_people_form.inc',
@@ -311,7 +312,7 @@ function open_journal_theme() {
     'open_journal_people' => array(
       'variables' => array(
         'jid' => NULL,
-        'people_creator_list' => NULL,
+        'people_creator' => NULL,
         'people_contributor_list' => NULL,
       ),
       'template' => 'templates/open-journal-people',
@@ -853,47 +854,107 @@ function open_journal_mail($key, &$message, $data) {
  * People method
  */
 function open_journal_people_active_list($jid, $exclude=array() , $uid=FALSE, $limit=FALSE) {
-    global $user;
-    $exclude = !is_array($exclude)? array($exclude): $exclude;
+  global $user;
+  $exclude = !is_array($exclude)? array($exclude): $exclude;
+
+  $user_list = db_select('open_journal_journal_people', 'jp');
+  $user_list->fields('jp', array('uid'));
+  $user_list->condition('jid', $jid, '=');
+  if($uid) {
+    $user_list->orderBy('uid = '.$uid, 'DESC');
+  }
+  $user_list->orderBy(' uid = '.$user->uid, 'DESC');
+
+  if($limit) {
+    $user_list->range(0, $limit);
+  }
+  $user_list = $user_list->execute();
+
+  $user_list = $user_list->fetchAllKeyed(0, 0);
   
-    $user_list = db_select('open_journal_journal_people', 'jp');
-    $user_list->fields('jp', array('uid'));
-    $user_list->condition('jid', $jid, '=');
-    if($uid) {
-      $user_list->orderBy('uid = '.$uid, 'DESC');
-    }
-    $user_list->orderBy(' uid = '.$user->uid, 'DESC');
-
-    if($limit) {
-      $user_list->range(0, $limit);
-    }
-    $user_list = $user_list->execute();
-
-    $user_list = $user_list->fetchAllKeyed(0, 0);
-    
-    $user_list = array_values($user_list);
-    $user_list = array_diff($user_list, $exclude);
-    
-    return user_load_multiple($user_list);
+  $user_list = array_values($user_list);
+  $user_list = array_diff($user_list, $exclude);
+  
+  return array_values(user_load_multiple($user_list));
 }
 
-function open_journal_get_people_list($jid, $uid=0) {
-  // Query data from database for display people list order by owner
-  $data = db_select('open_journal_journal_people', 'p')
-  ->fields('p')
-  ->condition('jid', $jid, '=')
-  ->orderBy('uid = '.$uid, 'DESC')
-  ->orderBy('jid', 'DESC')
-  ->execute()
-  ->fetchAll();
-
-  return $data;
+function open_journal_people_active_with_joined($jid) {
+  $user_list = db_select('open_journal_journal_people', 'jp');
+  $user_list->fields('jp', array('uid', 'joined'));
+  $user_list->condition('jid', $jid, '=');
+  $user_list = $user_list->execute();
+  $user_list = $user_list->fetchAll();
+  
+  return $user_list;
 }
 
-function open_journal_people() {
+function open_journal_people_contributor_list($journal) {
+  
+  $user_contributor_list = db_query(
+   "SELECT 
+      uid 
+    FROM 
+      users_roles ur, role_permission rp 
+    WHERE 
+      rp.permission = 'access contributor process' AND 
+      rp.rid = ur.rid")->fetchAllKeyed(0, 0);
+
+  foreach ($user_contributor_list as $key => $uid) {
+    if ($journal->uid == $uid) {
+      unset($user_contributor_list[$key]);
+    }
+  }
+  
+  return array_values(user_load_multiple($user_contributor_list));
+  
+}
+
+function open_journal_people_sort($people1, $people2) {
+    if ($people1->joined == $people2->joined) {
+        return 0;
+    }
+    if ($people1->joined === 0) {
+      return 1;
+    }
+    return ($people1->joined < $people2->joined) ? -1 : 1;
+}
+
+function open_journal_people($journal) {
+  $people_contributor_list = open_journal_people_contributor_list($journal);
+  $people_active_list = open_journal_people_active_with_joined($journal->jid);
+  
+
+  $people_active_uid_key_list = array();
+  foreach ($people_active_list as $people) {
+    $people_active_uid_key_list[$people->uid] = $people;
+  }
+  
+  foreach ($people_contributor_list as &$people) {
+    
+    $people->active_in_journal = isset($people_active_uid_key_list[$people->uid])? TRUE: FALSE;
+    $people->user_info = open_journal_get_display_user_info($people, array('image_style' => 'open_journal_avatar_large'));
+    
+    if ($people->active_in_journal) {
+      $people->add_class = ' active-people';
+      $people->joined = $people_active_uid_key_list[$people->uid]->joined;
+    }
+    else {
+      $people->joined = 0;
+    }
+  }
+  
+  $people_creator = user_load($journal->uid);
+  $people_creator->user_info = open_journal_get_display_user_info($people_creator, array('image_style' => 'open_journal_avatar_large'));
+  $people_creator->joined = isset($people_active_uid_key_list[$people_creator->uid])? $people_active_uid_key_list[$people_creator->uid]->joined: $journal->created;
+  
+  usort($people_contributor_list, 'open_journal_people_sort');
+  
   return theme('open_journal_detail', array(
-    'content' => theme('open_journal_people'),
-    'jid' => 1
+    'content' => theme('open_journal_people', array(
+      'jid' => $journal->jid,
+      'people_creator' => $people_creator,
+      'people_contributor_list' => $people_contributor_list,
+    )),
   ));
 }
 

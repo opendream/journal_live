@@ -9,7 +9,7 @@
             <?php print $item->message; ?>
         </div> 
         
-        <?php if ($item->fid): ?>
+        <?php if ($item->fid && $item->file): ?>
         <div class="comment-item-file">
             <?php print $item->file->filename; ?>
         </div>
