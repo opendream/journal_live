@@ -665,11 +665,15 @@ function open_journal_people_mail($data) {
   global $user;
   
   $sender = $user;
-  $data->sender = $sender;
-  
   $reciver = user_load($data->uid);
   
-  if ($data->sender->uid != $reciver->uid) {
+  if ($sender->uid != $reciver->uid) {
+    
+    $sender_info = open_journal_get_display_user_info($sender, array('user' => $reciver));
+    $sender->name = $sender_info['display_name_text'];
+
+    $data->sender = $sender;
+    
     drupal_mail('open_journal', 'open_journal_people_invite', $reciver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
   }
   
@@ -759,13 +763,19 @@ function open_jounal_discussion_mail($data) {
   $user_list = open_journal_people_active_list($data->jid, $data->uid);
   $sender = user_load($data->uid);
   $data->journal = open_journal_journal_load($data->jid);
-  $data->sender = $sender;
+  
+  $org_name = $sender->name;
 
-  foreach ($user_list as $user) {
-    // TODO: check valid name for permission to dee the sender name
+  foreach ($user_list as $reciver) {
     
-    if ($data->contributor_only && !user_access('access contributor process', $user)) {
-      drupal_mail('open_journal', 'open_journal_discussion_add', $user->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
+    $sender->name = $org_name;
+    $sender_info = open_journal_get_display_user_info($sender, array('user' => $reciver));
+    $sender->name = $sender_info['display_name_text'];
+    
+    $data->sender = $sender;
+    
+    if ($data->contributor_only && !user_access('access contributor process', $reciver)) {
+      drupal_mail('open_journal', 'open_journal_discussion_add', $reciver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
     }
   }
 
@@ -838,14 +848,22 @@ function open_jounal_comment_mail($data) {
   $sender = user_load($data->uid);
   $data->discussion = open_journal_discussion_load($data->did);
   $data->journal = open_journal_journal_load($data->discussion->jid);
-  $data->sender = $sender;
   
   $user_list = open_journal_people_active_list($data->journal->jid, $data->uid);
   
+  $org_name = $sender->name;
 
-  foreach ($user_list as $user) {
-    // TODO: check valid name for permission to dee the sender name
-    drupal_mail('open_journal', 'open_journal_comment_add', $user->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
+  foreach ($user_list as $reciver) {
+    
+    $sender->name = $org_name;
+    $sender_info = open_journal_get_display_user_info($sender, array('user' => $reciver));
+    $sender->name = $sender_info['display_name_text'];
+    
+    $data->sender = $sender;
+    
+    if ($data->discussion->contributor_only && !user_access('access contributor process', $reciver)) {
+      drupal_mail('open_journal', 'open_journal_comment_add', $reciver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
+    }
   }
 
 }
@@ -1683,6 +1701,7 @@ function open_journal_get_display_user_info($account, $variables=array()) {
   
   // Prepare name and picture to display
   $dummy_name = $account->name;
+  $dummy_name_text = $dummy_name;
   $dummy_picture = theme('image', array(
     //'path' => 'http://www.gravatar.com/avatar/'.md5(strtolower(trim($account->uid))).'?d=identicon&f=y&size='.$size,
     'path' => 'open_journal/avatar/'.md5(strtolower(trim($account->name))).'/'.$size.'.png',
@@ -1730,6 +1749,10 @@ function open_journal_get_display_user_info($account, $variables=array()) {
     $real_picture .= '<span class="owner-label">Owner</span>';
     $dummy_picture = '<span class="user-picture-wrapper">'.$dummy_picture.'<span class="owner-label">Owner</span></span>';
   }
+  else {
+    $dummy_picture = '<span class="user-picture-wrapper">'.$dummy_picture.'</span>';
+    
+  }
   
   $variables['picture_class'][] = 'user-picture-wrapper';
   $variables['name_class'][] = 'user-name-wrapper';
@@ -1743,6 +1766,7 @@ function open_journal_get_display_user_info($account, $variables=array()) {
     'fragment' => 'link-to-user-profile',
   ));
   
+  $real_name_text = $real_name;
   $real_name = l($real_name, $user_profile_url, array(
     'attributes' => array('class' => $variables['name_class']),
     'fragment' => 'link-to-user-profile',
@@ -1755,11 +1779,13 @@ function open_journal_get_display_user_info($account, $variables=array()) {
   $info_real = array(
     'display_picture' => $real_picture,
     'display_name' => $real_name,
+    'display_name_text' =>  $real_name_text,
   );
 
   $info_dummy = array(
     'display_picture' => $dummy_picture,
     'display_name' => $dummy_name,
+    'display_name_text' =>  $dummy_name_text,
   );
   
 
