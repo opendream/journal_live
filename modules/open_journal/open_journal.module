@@ -1422,8 +1422,8 @@ function open_journal_discussion_detail($journal, $discussion) {
       'comment_form' => drupal_render(drupal_get_form('open_journal_comment_form', $journal, $discussion)),
       'comment_list' => $comment_list,
     )),
-    'sidebar' => theme('open_journal_status_form', array('jid' => 1)),
-    'jid' => 1
+    'sidebar' => theme('open_journal_status_form', array('jid' => $journal->jid)),
+    'jid' => $journal->jid,
   ));
 }
 
