@@ -67,7 +67,6 @@ function open_journal_approve_sidebar_form($form, &$form_state, $journal , $next
 }
 
 function open_journal_approve_sidebar_form_submit($form, &$form_state) {
-	global $user;
 	$next_status = $form['next_status']['#value'];
 	$jid = $form_state['build_info']['args'][0]->jid;
 	$sql = "UPDATE open_journal_journal SET status = ".$next_status." WHERE jid = ".$jid;
@@ -75,9 +74,12 @@ function open_journal_approve_sidebar_form_submit($form, &$form_state) {
 	drupal_set_message('This journal is approve ');
 	
 	// Create new discustion
+	$status_list = unserialize(OPEN_JOUNAL_STATUS);
+	$status_name = $status_list[$next_status];
+	
 	$discussion = array(
       'jid' => $jid,
-      'title' => t('This journal has been approve.'),
+      'title' => t('This journal has been approve to status '.$status_name),
       'description' => ' You can view discussion journal this link.'."\n".url('journal/'.$jid.'/discussion', array('absolute' => TRUE)),
     );
 
