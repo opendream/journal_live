@@ -2201,6 +2201,7 @@ h2.journal-block-title {
   padding-left: 0;
   margin-top: 30px;
 }
+#open-journal-comment-form .form-actions a,
 #open-journal-discussion-form .form-actions a {
 	color: #555;
 	line-height: 35px;
@@ -2305,6 +2306,8 @@ ul.discussion-list {
 		}
 		.discussion-item-submited {
 			font-weight: bold;
+			float: left;
+			margin-right: 15px;
 		}
 		.discussion-item-content,
 		.comment-item-content {
@@ -2315,7 +2318,7 @@ ul.discussion-list {
 
 		.discussion-item-edit-link,
 		.comment-item-edit-link {
-			float: right;
+			
 		}
 			.discussion-item-edit-link a,
 			.comment-item-edit-link a {
