@@ -223,11 +223,25 @@ function open_journal_menu() {
     'file' => 'includes/identicon.inc',
   );
 
+  // Issue paths.
   $items['issue/add'] = array(
     'page callback' => 'open_journal_issue_add',
     'access arguments' => array('create issue'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_issue.inc',
+  );
+
+  $items['issue/%open_journal_issue'] = array(
+    'page callback' => 'open_journal_issue_view',
+    'page arguments' => array(1),
+    'access arguments' => array('create issue'),
+    'file' => 'includes/open_journal_issue.inc',
+  );
+
+  $items['issue/%open_journal_issue/view'] = array(
+    'title' => 'View',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -10,
   );
   
   return $items;
@@ -373,6 +387,9 @@ function open_journal_theme() {
   );
 }
 
+/**
+ * Implements hook_permission().
+ */
 function open_journal_permission() {
   return array(
     'access open journal' => array(
@@ -1748,6 +1765,34 @@ function open_journal_trim($text, $size=NULL) {
 
 function open_journal_get_display_user_info_more() {
   return array('display_picture' => '...', 'display_name' => 'more people');
+}
+
+/**
+ * Issue load.
+ */
+function open_journal_issue_load($issue_id) {
+  $issue = &drupal_static(__FUNCTION__);
+
+  if (!isset($issue)) {
+    $issue = array();
+
+    if (!isset($issue[$issue_id])) {
+      $issue[$issue_id] = db_query("SELECT * FROM {open_journal_issue} WHERE issue_id = :issue_id", array('issue_id' => $issue_id))->fetch();
+      if ($issue[$issue_id]) {
+        $result = db_query("SELECT jid, weight FROM {open_journal_issue_journal} WHERE issue_id = :issue_id ORDER BY weight ASC", array('issue_id' => $issue_id));
+        $journals = array();
+        foreach ($result as $row) {
+          if ($journal = open_journal_journal_load($row->jid)) {
+            $journal->weight = $row->weight;
+            $journals[] = $journal;
+          }
+        }
+        $issue[$issue_id]->journals = $journals;
+      }
+    }
+  }
+
+  return $issue[$issue_id];
 }
 
 /**

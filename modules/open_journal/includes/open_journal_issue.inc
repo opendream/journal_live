@@ -245,3 +245,27 @@ function open_journal_issue_add() {
   $form = drupal_get_form('open_journal_issue_form');
   return $form;
 }
+
+/**
+ * View issue.
+ */
+function open_journal_issue_view($issue) {
+  global $user;
+
+  // Set title.
+  drupal_set_title($issue->title);
+
+  // List journals.
+  $items = array();
+  foreach ($issue->journals as $journal) {
+    $items[] = l($journal->dc_title, 'journal/'. $journal->jid);
+  }
+
+  $output = theme('item_list', array('items' => $items));
+
+  // Edit link.
+  if ($user->uid == $issue->uid || $user->uid == 1) {
+    $output .= l(t('Edit'), 'issue/'. $issue->issue_id .'/edit', array('query' => drupal_get_destination()));
+  }
+  return $output;
+}
