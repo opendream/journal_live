@@ -2264,6 +2264,11 @@ h3.people-section-title {
 	float: left;
 	margin-right: 15px;
 }
+
+.people-block .journal-user .user-picture-wrapper {
+  display: inline;
+}
+
 .people-block .journal-user h3 {
 	margin: 0;
 }

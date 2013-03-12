@@ -15,7 +15,7 @@
 		<?php foreach ($journal->people_list as $key_people => $people):?>
 		<?php if($key_people == 'more'):?>
 		<li class="more-people">
-		  <?php print $people['display_picture']; ?>
+		  <?php print $people->display_info['display_picture']; ?>
 		</li>
 		<?php else:?>
 		<li class="clickable-people profile-picture-small">

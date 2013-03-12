@@ -939,6 +939,7 @@ function open_journal_people($journal) {
       $people->joined = $people_active_uid_key_list[$people->uid]->joined;
     }
     else {
+      $people->add_class = '';
       $people->joined = 0;
     }
   }
@@ -948,10 +949,10 @@ function open_journal_people($journal) {
   $people_creator->joined = isset($people_active_uid_key_list[$people_creator->uid])? $people_active_uid_key_list[$people_creator->uid]->joined: $journal->created;
   
   usort($people_contributor_list, 'open_journal_people_sort');
-  
+    
   return theme('open_journal_detail', array(
+    'jid' => $journal->jid,
     'content' => theme('open_journal_people', array(
-      'jid' => $journal->jid,
       'people_creator' => $people_creator,
       'people_contributor_list' => $people_contributor_list,
     )),
@@ -1571,7 +1572,6 @@ function open_journal_get_display_user_info($account, $variables=array()) {
   
   $user_profile_url = drupal_get_destination();
   $user_profile_url = $user_profile_url['destination'];
-  $user_profile_url = 'journal';
     
   $real_picture = l($real_picture, $user_profile_url, array(
     'html' => TRUE, 
