@@ -1422,7 +1422,7 @@ input.form-submit:hover {
   display: block;
   width: 940px;
   height: 30px;
-  float: left;
+  /* float: left; */
   padding: 10px 0 10px 20px;
   position: relative;
 }
@@ -1568,6 +1568,15 @@ input.form-submit:hover {
 		margin-left: -5px;
 		margin-top: 10px;
 	}
+		#journal-list .journal-item .status1 {
+			background-color: #ff5f65;
+		}
+		#journal-list .journal-item .status2 {
+			background-color: #ff5f65;
+		}
+		#journal-list .journal-item .status3 {
+			background-color: #69c5ae;
+		}
 	#journal-list .journal-item .reject {
 		background-color: #ff5f65;
 	}
@@ -2497,6 +2506,30 @@ h3.people-section-title {
   opacity: 0.8;
 }
 
+/* No Journal Page
+----------------------------------------------------------------*/
+.journal-list-empty {
+	width: 400px;
+	margin: 20px auto;
+	text-align: center;
+}
+.journal-list-empty h2 {
+	font-size: 30px;
+	margin: 20px 0;
+	text-transform: uppercase;
+}
+.journal-list-empty .add-journal-btn a {
+	width: 65px;
+	display: block;
+	padding: 5px 10px 5px 30px;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	color: #FFF;
+	text-transform: uppercase;
+	background: url(images/ic-add-journal-btn.png) #55b0d6 no-repeat 7px 7px;
+	margin: 20px auto;
+}
 /* Footer
 ----------------------------------------------------------------*/
 #footer {

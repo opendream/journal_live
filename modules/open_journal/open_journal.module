@@ -1267,16 +1267,23 @@ function open_journal_discussion_list($journal) {
   $discussion_list = db_query($sql)->fetchAll();
 
   foreach ($discussion_list as &$discussion_item) {
-    if(isset($discussion_item->user)) {
-      $discussion_item->user = open_journal_get_display_user_info($discussion_item->user);
-    } 
+    
+    $discussion = open_journal_discussion_load($discussion_item->did);
+    
     if(isset($discussion_item->cid)) {
-     $discussion_item->description = open_journal_trim(open_journal_get_comment_field($discussion_item->cid, 'message'), 100);
+     $latest_comment = open_journal_comment_load($discussion_item->cid);
+     $discussion->description = $latest_comment->message;
     }
-    else {
-      $discussion_item->description = open_journal_trim(open_journal_get_discussion_field($discussion_item->did, 'description'), 100);
+    
+    $discussion->description = open_journal_trim($discussion->description, 100);
+    $discussion->title = open_journal_trim($discussion->title, 50);
+    
+    if(isset($discussion_item->user)) {
+      $discussion->user = open_journal_get_display_user_info($discussion_item->user);
     }
-    $discussion_item->title = open_journal_trim(open_journal_get_discussion_field($discussion_item->did, 'title'), 50);
+    
+    $discussion_item = $discussion;
+    
   }
 
   // Prepare data to status side bar form
