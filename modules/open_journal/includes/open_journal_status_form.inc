@@ -76,11 +76,11 @@ function open_journal_approve_sidebar_form_submit($form, &$form_state) {
 	// Create new discustion
 	$status_list = unserialize(OPEN_JOUNAL_STATUS);
 	$status_name = $status_list[$next_status];
-	
+
 	$discussion = array(
       'jid' => $jid,
-      'title' => t('This journal has been approve to status '.$status_name),
-      'description' => ' You can view discussion journal this link.'."\n".url('journal/'.$jid.'/discussion', array('absolute' => TRUE)),
+      'title' => t('Congratulation! Status changed to '.$status_name ),
+      'description' => 'Talk on discussion if you have some question?',
     );
 
     $discussion = (object) $discussion;
