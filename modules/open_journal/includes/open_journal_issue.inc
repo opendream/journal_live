@@ -13,77 +13,52 @@ function open_journal_issue_form($form, $form_state, $issue = NULL) {
     '#default_value' => isset($issue['title']) ? $issue['title'] : '',
   );
 
-  // $form['journal'] = array(
-  //   '#type' => 'textfield',
-  //   '#title' => t('Journal'),
-  //   '#autocomplete_path' => OPEN_JOURNAL_PREFIX_PATH .'/autocomplete',
-  // );
+  $form['journal_wrapper'] = array(
+    '#prefix' => '<div class="clearfix" id="poll-choice-wrapper">',
+    '#suffix' => '</div>',
+  );
 
-  $form['journals'] = array(
+  $form['journal_wrapper']['journals'] = array(
     '#prefix' => '<div id="journals-list">',
     '#suffix' => '</div>',
     '#tree' => TRUE,
     '#theme' => 'open_journal_issue_journals_form',
   );
 
+  if (isset($form_state['values']['journals'])) {
+    $issue['journals'] = $form_state['values']['journals'];
+  }
+
   $delta = 0;
   $weight = 0;
-  $additional_journal = 2;
+  $additional_journal = 1;
   if (isset($issue['journals'])) {
     foreach ($issue['journals'] as $key => $journal) {
-      $form['journals'][$key]['journal'] = _open_journal_issue_journal_form($journal);
+      $form['journal_wrapper']['journals'][$key]['journal'] = _open_journal_issue_journal_form($journal);
       $weight = max($journal['weight'], $weight);
     }
-    $additional_journal = 1;
   }
 
   $existing_delta = $delta;
   for ($delta; $delta < $additional_journal; $delta++) {
     $weight++;
-    $form['journals'][$weight]['journal'] = _open_journal_issue_journal_form(array(
+    $form['journal_wrapper']['journals'][$weight]['journal'] = _open_journal_issue_journal_form(array(
       'weight' => $weight,
     ));
   }
 
-  // $form['journal_wrapper'] = array(
-  //   '#tree' => FALSE,
-  //   '#prefix' => '<div class="clearfix" id="journal-wrapper">',
-  //   '#suffix' => '</div>',
-  // );
-
-  // // Container for just the poll choices.
-  // $form['journal_wrapper']['journals'] = array(
-  //   '#prefix' => '<div id="journals-list">',
-  //   '#suffix' => '</div>',
-  //   '#theme' => 'open_journal_issue_journals_list',
-  // );
-
-  // $delta = 0;
-  // $weight = 0;
-
-  // $existing_delta = $delta;
-  // for ($delta; $delta < 2; $delta++) {
-  //   $key = 'new:' . ($delta - $existing_delta);
-  //   // Increase the weight of each new choice.
-  //   $weight++;
-  //   $form['journal_wrapper']['journals'][$key] = _open_journal_issue_journal_form($key, '', '', $weight);
-  // }
-
-  // $form['journal_wrapper']['more'] = array(
-  //   '#type' => 'submit',
-  //   '#value' => t('Add more journal'),
-  //   '#attributes' => array(
-  //     'title' => t("If the amount of boxes above isn't enough, click here to add more journal."),
-  //   ),
-  //   '#weight' => 1,
-  //   '#limit_validation_errors' => array(array('journals')),
-  //   '#submit' => array('poll_more_choices_submit'),
-  //   '#ajax' => array(
-  //     'callback' => 'open_journal_issue_journals_js',
-  //     'wrapper' => 'journals-list',
-  //     'effect' => 'fade',
-  //   ),
-  // );
+  $form['journal_wrapper']['more'] = array(
+    '#type' => 'submit',
+    '#value' => t('Add more journal'),
+    '#weight' => 1,
+    '#limit_validation_errors' => array(array('journals')),
+    '#submit' => array('open_journal_issue_more_submit'),
+    '#ajax' => array(
+      'callback' => 'open_journal_issue_journals_js',
+      'wrapper' => 'journals-list',
+      'effect' => 'fade',
+    ),
+  );
 
   $form['submit'] = array(
     '#type' => 'submit',
@@ -91,6 +66,31 @@ function open_journal_issue_form($form, $form_state, $issue = NULL) {
   );
 
   return $form;
+}
+
+/**
+ * Submit handler to add more choices to a poll form.
+ *
+ * This handler is run regardless of whether JS is enabled or not. It makes
+ * changes to the form state. If the button was clicked with JS disabled, then
+ * the page is reloaded with the complete rebuilt form. If the button was
+ * clicked with JS enabled, then ajax_form_callback() calls open_journal_issue_journals_js() to
+ * return just the changed part of the form.
+ */
+function open_journal_issue_more_submit($form, &$form_state) {
+  $form_state['rebuild'] = TRUE;
+}
+
+/**
+ * Ajax callback in response to new choices being added to the form.
+ *
+ * This returns the new page content to replace the page content made obsolete
+ * by the form submission.
+ *
+ * @see open_journal_issue_more_submit()
+ */
+function open_journal_issue_journals_js($form, $form_state) {
+  return $form['journal_wrapper']['journals'];
 }
 
 /**
@@ -148,7 +148,6 @@ function open_journal_issue_form_submit($form, $form_state) {
     ->execute();
 
   if ($issue_id) {
-    dpm($values['journals']);
     foreach ($values['journals'] as $journal) {
       if (!isset($journal['jid'])) {
         continue;
@@ -215,6 +214,10 @@ function theme_open_journal_issue_journals_form($variables) {
   $headers = array(t('Journal'), t('Weight'));
 
   foreach (element_children($form) as $key) {
+    if ($key === 'more') {
+      continue;
+    }
+
     $delta++;
 
     $row = array();
