@@ -13,7 +13,9 @@
 
 <div id="journal-detail-wrapper" class="journal-detail-normal<?php if ($sidebar): ?> journal-detail-has-sidebar<?php endif; ?> ">
   <div id="journal-detail-content">
-    <?php print $content; ?>    
+
+    <?php print $content;?>
+
   </div>
   <div id="journal-detail-sidebar">
     <?php print $sidebar; ?>    

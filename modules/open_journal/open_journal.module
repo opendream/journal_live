@@ -25,10 +25,13 @@ define('OPEN_JOURNAL_MAX_MULTI_TEXTFIELD', 10);
 
 define('OPEN_JOURNAL_ALLOWED_FILE_TYPE', 'doc docx');
 
+// Status
 define('OPEN_JOURNAL_STATUS_INFORMATION_APPROVE', 0);
 define('OPEN_JOURNAL_STATUS_DOCUMENT_APPROVE', 1);
 define('OPEN_JOURNAL_STATUS_CATLOGUED', 2);
 define('OPEN_JOURNAL_STATUS_PUBLISHED', 3);
+
+
 define('OPEN_JOURNAL_DISPLAY_IMAGE_USER_LIST_LIMIT', 9);
 define('OPEN_JOURNAL_LIST_IPP', 20);
 
@@ -332,6 +335,18 @@ function open_journal_theme() {
       ),
       'template' => 'templates/open-journal-list-item',
     ),
+    'open_journal_discussion_list' =>array(
+      'variables' => array(
+        'discussion_list' => NULL,
+        ),
+      'template' => 'templates/open-journal-discussion-list'
+      ),
+    'open_journal_discussion_list_sidebar' =>array(
+      'variables' => array(
+        'journal' => NULL,
+        ),
+      'template' => 'templates/open-journal-discussion-list-sidebar'
+      ),
 
   );
 }
@@ -1185,14 +1200,81 @@ function open_journal_overview($journal) {
 }
 
 function open_journal_discussion_list($journal) {
+
+  // Query discussion list 
+  $sql = " SELECT 
+    max(d.did) as  did,
+    max(c.cid) as cid,
+    if(c.cid IS NOT NULL, c.uid, d.uid) as user
+    
+    FROM 
+      open_journal_discussion d
+    LEFT JOIN
+      open_journal_comment c
+    ON
+      d.did = c.did
+    LEFT JOIN
+      users u
+    ON 
+      c.uid = u.uid OR
+      d.uid = u.uid
+    
+    WHERE 
+      d.jid = ".$journal->jid." 
+
+  GROUP BY d.did
+  ORDER BY d.did DESC";
+
+  $discussion_list = db_query($sql)->fetchAll();
+
+  foreach ($discussion_list as &$discussion_item) {
+    if(isset($discussion_item->user)) {
+      $discussion_item->user = open_journal_get_display_user_info($discussion_item->user);
+    } 
+    if(isset($discussion_item->cid)) {
+     $discussion_item->description = open_journal_trim(open_journal_get_comment_field($discussion_item->cid, 'message'), 100);
+    }
+    else {
+      $discussion_item->description = open_journal_trim(open_journal_get_discussion_field($discussion_item->did, 'description'), 100);
+    }
+    $discussion_item->title = open_journal_trim(open_journal_get_discussion_field($discussion_item->did, 'title'), 50);
+  }
+
   return theme('open_journal_detail', array(
+    'content' => theme('open_journal_discussion_list', array(
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
-    'content' => 'Discussion list page',
-    'sidebar' => theme('open_journal_status_form', array('jid' => 1)),
-    'jid' => 1
+    'discussion_list' => $discussion_list,
+    //'sidebar' => theme('open_journal_status_form', array('jid' => $journal->jid)),
+    'jid' => $journal->jid,
+      )
+    ),
+    'sidebar' => theme('open_journal_discussion_list_sidebar', array(
+      'journal' => $journal,
+      'status_list' => unserialize(OPEN_JOUNAL_STATUS),
+      )
+    ),
+    'jid' => $journal->jid
+  ));
+
+  return theme('open_journal_discussion_list', array(
+    'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
+    'discussion_list' => $discussion_list,
+    'sidebar' => theme('open_journal_status_form', array('jid' => $journal->jid)),
+    'jid' => $journal->jid,
   ));
 }
 
+function open_journal_get_comment_field($cid, $field) {
+  $sql = " SELECT ".$field."  FROM open_journal_comment WHERE  cid=".$cid."  ";
+  $result = db_query($sql)->fetchAll();
+  return $result[0]->$field;
+}
+
+function open_journal_get_discussion_field($did, $field) {
+  $sql = " SELECT ".$field."  FROM open_journal_discussion WHERE  did=".$did."  ";
+  $result = db_query($sql)->fetchAll();
+  return $result[0]->$field;
+}
 function open_journal_discussion_add($journal) {
 
   return theme('open_journal_detail', array(

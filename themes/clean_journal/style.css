@@ -1841,6 +1841,11 @@ h2.journal-block-title {
   float: left;
 }
 
+.journal-detail-content-item {
+  border-bottom:1px solid #aaa;
+  padding: 10px 5px;
+}
+
 /* Journal Add
 ----------------------------------------------------------------*/
 #open-journal-information-form {
