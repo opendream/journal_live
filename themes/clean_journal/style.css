@@ -1185,6 +1185,16 @@ h1.page-title {
 	float: right;
 	margin-top: 20px;
 }
+	.journal-detail-has-sidebar #journal-detail-sidebar .block-bg-shadow {
+		padding-top: 5px;
+	}
+	.journal-detail-has-sidebar #journal-detail-sidebar h3 {
+		font-size: 22px;
+	}
+	.journal-detail-has-sidebar #journal-detail-sidebar p {
+		color: #979797;
+		font-size: 0.9em;
+	}
 	.journal-detail-has-sidebar #journal-detail-content {
 		width: 640px;
 	}
@@ -2304,6 +2314,10 @@ ul.discussion-list {
 			width: 40px;
 			margin-right: 15px;
 		}
+		ul.discussion-list li img {
+			float: left;
+			margin-right: 15px;
+		}
 		.discussion-item-submited {
 			font-weight: bold;
 			float: left;
@@ -2314,6 +2328,15 @@ ul.discussion-list {
 			float: left;
 			width: 504px;
 			margin-top: 8px;
+		}
+		.discussion-item-description,
+		.comment-item-message {
+			width: 504px;
+			float: left;
+		}
+		.discussion-item-file,
+		.comment-item-file {
+			float: left;
 		}
 
 		.discussion-item-edit-link,
@@ -2412,11 +2435,15 @@ h3.people-section-title {
 	float: left;
 }
 
-.people-block .journal-user .profile-picture-big, 
-.people-block .journal-user .user-picture-wrapper img,
-.people-block .journal-user img.user-picture-wrapper {
+.people-block .people-contributor .journal-user img,
+.people-block .people-creator .journal-user img {
 	float: left;
 	margin-right: 15px;
+	border-radius: 50%;
+	-moz-border-radius: 50%;
+	-webkit-border-radius: 50%;
+	-ms-border-radius: 50%;
+	-o-border-radius: 50%;
 }
 
 .people-block .journal-user .user-picture-wrapper {
@@ -2426,7 +2453,8 @@ h3.people-section-title {
 .people-block .journal-user h3 {
 	margin: 0;
 }
-.people-block .journal-user h3 a {
+.people-block .journal-user h3 a,
+.people-block .journal-user h3  {
 	font-size: 30px;
 	color: #111;
 	font-family: 'THSarabunNewRegular';
@@ -2437,8 +2465,8 @@ h3.people-section-title {
 .people-contributor .join-date {
 	color: #666666;
 }
-a.active-people-btn,
-a.inactive-people-btn  {
+.journal-user .active-people-btn,
+.journal-user .inactive-people-btn  {
 	display: block;
 	float: left;
 	text-transform: uppercase;
@@ -2449,13 +2477,22 @@ a.inactive-people-btn  {
 	background-color: #a0dacc;
 	margin-top: 10px;
 }
-a.inactive-people-btn {
+.journal-user .inactive-people-btn {
 	background-color: #c2c2c2;
 }
-a.active-people-btn:hover,
-a.inactive-people-btn:hover {
+.journal-user .active-people-btn:hover,
+.journal-user .inactive-people-btn:hover {
 	text-decoration: none;
 }
+.people-block .inactive-people img {
+  filter: grayscale(100%);
+  -webkit-filter: grayscale(100%); 
+  -moz-filter: grayscale(100%);
+  -ms-filter: grayscale(100%); 
+  -o-filter: grayscale(100%);
+  opacity: 0.8;
+}
+
 /* Footer
 ----------------------------------------------------------------*/
 #footer {
