@@ -348,7 +348,7 @@ function open_journal_theme() {
       'variables' => array(
         'journal' => NULL,
         ),
-      'template' => 'templates/open-journal-discussion-list-sidebar'
+      'template' => 'templates/open-journal-status-form'
       ),
 
   );
