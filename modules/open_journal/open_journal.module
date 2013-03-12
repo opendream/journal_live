@@ -579,6 +579,8 @@ function open_journal_journal_save($data, $change_status=FALSE) {
     $data->status_changed = REQUEST_TIME;
   }
   
+  $data->title = $data->dc_title;
+  
   $jid = drupal_write_record('open_journal_journal', $data, $pk);
   
   if (isset($data->file) && $data->file) {
@@ -646,6 +648,7 @@ function open_journal_journal_people_active($journal, $uid) {
   
   $data = (object) $data;
   $data->journal = $journal;
+  
   open_journal_people_mail($data);
 }
 
