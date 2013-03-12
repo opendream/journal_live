@@ -45,6 +45,9 @@ define('OPEN_JOUNAL_STATUS', serialize (
 ));
 
 
+/**
+ * Implements of hook_menu().
+ */
 function open_journal_menu() {
 
   $arg = count(explode('/', OPEN_JOURNAL_PREFIX_PATH));
@@ -74,6 +77,12 @@ function open_journal_menu() {
     'type' => MENU_CALLBACK,
   );
 
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/autocomplete/%'] = array(
+    'page callback' => 'open_journal_list_autocomplete',
+    'page arguments' => array(2),
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+  );
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/login'] = array(
     'title' => t('Login'),
@@ -213,10 +222,20 @@ function open_journal_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'includes/identicon.inc',
   );
+
+  $items['issue/add'] = array(
+    'page callback' => 'open_journal_issue_add',
+    'access arguments' => array('create issue'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_issue.inc',
+  );
   
   return $items;
 }
 
+/**
+ * Implements hook_theme().
+ */
 function open_journal_theme() {
 
   return array(
@@ -335,15 +354,21 @@ function open_journal_theme() {
     'open_journal_discussion_list' =>array(
       'variables' => array(
         'discussion_list' => NULL,
-        ),
-      'template' => 'templates/open-journal-discussion-list'
       ),
+      'template' => 'templates/open-journal-discussion-list'
+    ),
     'open_journal_discussion_list_sidebar' =>array(
       'variables' => array(
         'journal' => NULL,
-        ),
-      'template' => 'templates/open-journal-discussion-list-sidebar'
       ),
+      'template' => 'templates/open-journal-discussion-list-sidebar'
+    ),
+
+    // Issue
+    'open_journal_issue_journals_form' => array(
+      'render element' => 'form',
+      'path' => drupal_get_path('module', 'open_journal') .'/includes',
+    ),
 
   );
 }
@@ -1725,5 +1750,25 @@ function open_journal_get_display_user_info_more() {
   return array('display_picture' => '...', 'display_name' => 'more people');
 }
 
+/**
+ * Return JSON of journals list for autocomplete.
+ */
+function open_journal_list_autocomplete($string = '') {
+  $matches = array();
+
+  if ($string) {
+    $result = db_select('open_journal_journal', 'j')
+      ->fields('j', array('jid', 'dc_title'))
+      ->condition('j.dc_title', '%'. db_like($string) . '%', 'LIKE')
+      ->range(0, 10)
+      ->execute();
+
+    foreach ($result as $row) {
+      $matches[$row->dc_title .' [id:'. $row->jid .']'] = check_plain($row->dc_title);
+    }
+  }
+
+  drupal_json_output($matches);
+}
 
 

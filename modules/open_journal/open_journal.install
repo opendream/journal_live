@@ -236,6 +236,69 @@ function open_journal_schema() {
     'primary key' => array('cid'),
   );
 
+  $schema['open_journal_issue'] = array(
+    'fields' => array(
+      'issue_id' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'title' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'status' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 1,
+      ),
+      'uid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'created' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'changed' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('issue_id'),
+  );
+
+  $schema['open_journal_issue_journal'] = array(
+    'fields' => array(
+      'jid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'issue_id' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'weight' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ), 
+    ),
+    'primary key' => array('jid', 'issue_id'),
+  );
+
   return $schema;
 
+}
+
+/**
+ * Implements hook_update_N().
+ */
+function open_journal_update_7001(&$sandbox) {
+  // TODO Add tables open_journal_issue, open_journal_issue_journal
 }
