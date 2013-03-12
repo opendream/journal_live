@@ -1809,6 +1809,9 @@ function open_journal_get_display_user_info($account, $variables=array()) {
   if (!isset($variables['user']) || !$variables['user']) {
     global $user;
   }
+  else {
+    $user = $variables['user'];
+  }
   
   // Editor
   if (user_access('auto active when create journal')) {
