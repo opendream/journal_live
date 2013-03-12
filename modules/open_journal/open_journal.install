@@ -124,6 +124,10 @@ function open_journal_schema() {
         'not null' => TRUE,
         'default' => 0,
       ),
+      'reject_reason' => array(
+        'type' => 'text',
+        'not null' => FALSE,
+      ),
     ),
     'primary key' => array('jid'),
   );

@@ -12,7 +12,7 @@
 	</div>
 
 	<?php print $value_status;?>
-	<?php if($journal->status == $key_status && $journal->status != count($status_list)-1):?>
+	<?php if($journal->status == $key_status && $journal->status != count($status_list)-1 && !$journal->reject):?>
 		<?php print $approve_form;?>
 	<?php endif;?>	
 	</div>
