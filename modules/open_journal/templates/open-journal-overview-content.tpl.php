@@ -53,6 +53,6 @@
   </div><!-- End Journal-block-content -->
   
   <?php if($more_discussion > 0):?>
-  <a class="view-all-discus" href=""><?php print $more_discussion;?> more discussion</a>	
+  <?php print l($more_discussion.' more discussion', OPEN_JOURNAL_PREFIX_PATH.'/'.$jid.'/discussion', array('attributes' => array('class' => 'view-all-discus')));?>
   <?php endif;?>
 </div><!-- End Discussion Block -->	
