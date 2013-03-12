@@ -1,5 +1,9 @@
 <div class="journal-block discussion-block block-bg-shadow">
     <h2 class="journal-block-title">Discussion</h2>
+    
+    <?php if ($discussion->contributor_only): ?>
+    <span class="contributor-only">contributor only.</span>
+    <?php endif ?>
   
     <h3><?php print $discussion->title; ?></h3>
   
