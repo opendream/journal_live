@@ -2515,9 +2515,11 @@ h3.people-section-title {
 }
 .journal-list-empty h2 {
 	font-size: 30px;
+	margin: 20px 0;
+	text-transform: uppercase;
 }
 .journal-list-empty .add-journal-btn a {
-	width: 100px;
+	width: 65px;
 	display: block;
 	padding: 5px 10px 5px 30px;
 	border-radius: 5px;
@@ -2526,6 +2528,7 @@ h3.people-section-title {
 	color: #FFF;
 	text-transform: uppercase;
 	background: url(images/ic-add-journal-btn.png) #55b0d6 no-repeat 7px 7px;
+	margin: 20px auto;
 }
 /* Footer
 ----------------------------------------------------------------*/
