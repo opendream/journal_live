@@ -134,6 +134,7 @@ function open_journal_menu() {
     'page arguments' => array($arg),
     'access arguments' => array('access open journal'),
     'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_status_sidebar_form.inc'
   );
   $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/discussion/list'] = $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/discussion'];
 
@@ -190,6 +191,8 @@ function open_journal_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_comment_form.inc',
   );
+
+
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/file'] = array(
     'title' => t('Files'),
@@ -1233,6 +1236,9 @@ function open_journal_overview($journal) {
 }
 
 function open_journal_discussion_list($journal) {
+  $mpath = drupal_get_path('module', 'open_journal');
+  drupal_add_js($mpath.'/js/open_journal_status_sidebar.js');
+  drupal_add_js($mpath.'/js/jquery.qtip.min.js');
 
   // Query discussion list 
   $sql = " SELECT 
@@ -1273,28 +1279,42 @@ function open_journal_discussion_list($journal) {
     $discussion_item->title = open_journal_trim(open_journal_get_discussion_field($discussion_item->did, 'title'), 50);
   }
 
+  // Prepare data to status side bar form
+  $status_list = unserialize(OPEN_JOUNAL_STATUS);
+  $next_status = open_journal_next_status($journal->status);
+  $reject_form = drupal_render(drupal_get_form('open_journal_reject_sidebar_form', $journal));
+  $approve_form = drupal_render(drupal_get_form('open_journal_approve_sidebar_form', $journal, $next_status));
+
   return theme('open_journal_detail', array(
     'content' => theme('open_journal_discussion_list', array(
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
     'discussion_list' => $discussion_list,
-    //'sidebar' => theme('open_journal_status_form', array('jid' => $journal->jid)),
     'jid' => $journal->jid,
       )
     ),
     'sidebar' => theme('open_journal_discussion_list_sidebar', array(
       'journal' => $journal,
-      'status_list' => unserialize(OPEN_JOUNAL_STATUS),
+      'status_list' => $status_list,
+      'reject_form' => $reject_form,
+      'approve_form' => $approve_form,
+
       )
     ),
     'jid' => $journal->jid
   ));
 
-  return theme('open_journal_discussion_list', array(
-    'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
-    'discussion_list' => $discussion_list,
-    'sidebar' => theme('open_journal_status_form', array('jid' => $journal->jid)),
-    'jid' => $journal->jid,
-  ));
+  
+}
+
+function open_journal_next_status($status) {
+  $status_list = unserialize(OPEN_JOUNAL_STATUS);
+  if($status == count($status_list)-1) {
+  }
+  else {
+    $status++;
+  }
+  return $status;
+
 }
 
 function open_journal_get_comment_field($cid, $field) {
