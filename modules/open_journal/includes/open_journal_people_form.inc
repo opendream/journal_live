@@ -5,17 +5,14 @@ function open_journal_people_form($form, &$form_state, $jid, $uid, $is_active) {
   $form['jid'] = array(
     '#type' => 'hidden',
     '#value' => $jid,
-    //'#access' => FALSE,
   );
   $form['uid'] = array(
     '#type' => 'hidden',
     '#value' => $uid,
-    //'#access' => FALSE,
   );
   $form['operation'] = array(
     '#type' => 'hidden',
     '#value' => $is_active? 'deactive': 'active',
-    //'#access' => FALSE,
   );
   
   $button_class = $is_active? 'active-people-btn': 'inactive-people-btn';
