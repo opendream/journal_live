@@ -3,11 +3,20 @@ function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL)
 
   global $user; 
   
+  if (open_journal_get_field($data, 'contributor_only')) {
+    drupal_set_message('!!! This discussion for contributor only.');
+  }
+  
+  drupal_set_message('Contributor only.');
+  
+  $form['#attached']['js']['jquery-ui'] = drupal_get_path('module', 'open_journal').'/js/jquery-ui-1.10.1.custom.min.js';
+  $form['#attached']['js']['hallo'] = drupal_get_path('module', 'open_journal').'/js/hallo.js';
   
   if ($data && $data->did) {
     $form['head_title'] = array(
       '#markup' => '<h2>'.t('Edit topic').'</h2>',
     );
+
     $submit_text = t('Save changes');
   }
   else {
