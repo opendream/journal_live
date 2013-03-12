@@ -380,6 +380,16 @@ function open_journal_permission() {
       'title' => t('Informal approve journal'),
       'description' => t('Perform user can informal approve journal for that user only. Recommented for reviewer role.'),
     ),
+    
+    // Backend permission
+    'create update delete issue' => array(
+      'title' => t('Create update delete issue'),
+      'description' => t('Perform user can administrator issue. Recommented for webmaster role.'),
+    ),
+    'export issue to ojs xml format' => array(
+      'title' => t('Export issue to OJS xml format'),
+      'description' => t('Perform user can administrator OJS export. Recommented for webmaster role.'),
+    ),
   );
 }
 
