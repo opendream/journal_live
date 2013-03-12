@@ -5,7 +5,7 @@ function open_journal_login_form($form_state) {
 
   // Display login form:
     
-  $form['#attached']['js'][] = drupal_add_js(drupal_get_path('module', 'open_journal').'/js/open_journal_compact.js');
+  $form['#attached']['js']= drupal_add_js(drupal_get_path('module', 'open_journal').'/js/open_journal_compact.js');
 
   $form['title'] = array(
     '#markup' => '<h2>'.t('Login').'</h2>',

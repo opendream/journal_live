@@ -630,13 +630,22 @@ function open_journal_journal_people_active($journal, $uid) {
     
   $journal = is_numeric($journal)? open_journal_journal_load($journal): $journal;
   
-  $data = (object) array(
+  $data = array(
     'joined' => REQUEST_TIME,
     'jid' => $journal->jid,
     'uid' => $uid,
   );
-  drupal_write_record('open_journal_journal_people', $data);
-
+  
+  db_merge('open_journal_journal_people')
+    ->key(array(
+      'jid' => $journal->jid,
+      'uid' => $uid,
+    ))
+    ->fields($data)
+    ->execute();
+  
+  
+  $data = (object) $data;
   $data->journal = $journal;
   open_journal_people_mail($data);
 }
@@ -751,7 +760,10 @@ function open_jounal_discussion_mail($data) {
 
   foreach ($user_list as $user) {
     // TODO: check valid name for permission to dee the sender name
-    drupal_mail('open_journal', 'open_journal_discussion_add', $user->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
+    
+    if ($data->contributor_only && !user_access('access contributor process', $user)) {
+      drupal_mail('open_journal', 'open_journal_discussion_add', $user->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
+    }
   }
 
 } 
@@ -974,7 +986,10 @@ function open_journal_people_sort($people1, $people2) {
         return 0;
     }
     if ($people1->joined === 0) {
-      return 1;
+      $people1->joined = 999999999999;
+    }
+    if ($people2->joined === 0) {
+      $people2->joined = 999999999999;
     }
     return ($people1->joined < $people2->joined) ? -1 : 1;
 }
@@ -1011,7 +1026,7 @@ function open_journal_people($journal) {
   $people_creator->joined = isset($people_active_uid_key_list[$people_creator->uid])? $people_active_uid_key_list[$people_creator->uid]->joined: $journal->created;
   
   usort($people_contributor_list, 'open_journal_people_sort');
-    
+      
   return theme('open_journal_detail', array(
     'jid' => $journal->jid,
     'content' => theme('open_journal_people', array(

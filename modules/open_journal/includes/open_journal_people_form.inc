@@ -2,6 +2,8 @@
 
 function open_journal_people_form($form, &$form_state, $jid, $uid, $is_active) {
   
+  $form['#attached']['js'][] = drupal_get_path('module', 'open_journal').'/js/open_journal_toggle.js';
+  
   $form['jid'] = array(
     '#type' => 'hidden',
     '#value' => $jid,
@@ -15,11 +17,13 @@ function open_journal_people_form($form, &$form_state, $jid, $uid, $is_active) {
     '#value' => $is_active? 'deactive': 'active',
   );
   
-  $button_class = $is_active? 'active-people-btn': 'inactive-people-btn';
+  $button_class = array('toggle-people-btn');
+  $button_class[] = $is_active? 'active-people-btn': 'inactive-people-btn';
+  
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => $is_active? 'active': 'deactive',
-    '#attributes' => array('class' => array($button_class))
+    '#attributes' => array('class' => $button_class)
   );
   
   return $form;
