@@ -134,7 +134,7 @@ function open_journal_menu() {
     'page arguments' => array($arg),
     'access arguments' => array('access open journal'),
     'type' => MENU_CALLBACK,
-    'file' => 'includes/open_journal_status_sidebar_form.inc'
+    'file' => 'includes/open_journal_status_form.inc'
   );
   $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/discussion/list'] = $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/discussion'];
 
