@@ -3,8 +3,6 @@ function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL)
 
   global $user; 
   
-  $form['#attached']['js'][] = drupal_get_path('module', 'open_journal').'/js/open_journal_compact.js';
-  
   
   if ($data && $data->did) {
     $form['head_title'] = array(

@@ -1,7 +1,6 @@
 <li class="discussion-item">
     <?php print $item->user_info['display_picture']; ?>
     <div class="discussion-item-content">
-        
         <div class="discussion-item-submited">
             <?php print $item->user_info['display_name']; ?> - <?php print date('d M Y', $item->created); ?>
         </div>        
@@ -22,7 +21,7 @@
         
         <?php if ($item->fid && $item->file): ?>
         <div class="discussion-item-file">
-            <a href=""><?php print $item->file->filename; ?></a>
+            <?php print $item->file->filename; ?>
         </div>
         <?php endif ?>
 
