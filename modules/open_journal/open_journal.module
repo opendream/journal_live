@@ -360,10 +360,6 @@ function open_journal_permission() {
       'title' => t('Access open journal'),
       'description' => t('Perform user can lonin to join open journal.'),
     ),
-    'update final url field' => array(
-      'title' => t('Update final URL field'),
-      'description' => t('Perform user can update URL field. Recommented for librarian role.'),
-    ),
     'auto active when create journal' => array(
       'title' => t('Auto active when create journal'),
       'description' => t('Perform user force to active for review abstract first. Recommented for editor role.'),

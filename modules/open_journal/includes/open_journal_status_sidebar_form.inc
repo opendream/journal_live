@@ -1,7 +1,9 @@
 <?php
 function open_journal_reject_sidebar_form($form, &$form_state, $journal) {
 	
+	
 	$form['reject_reason'] = array(
+	  '#title' => t('Write your reject reason.'),
 		'#type' => 'textarea',
 	);
 

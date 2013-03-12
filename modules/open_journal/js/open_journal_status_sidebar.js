@@ -12,7 +12,6 @@ jQuery(document).ready(function () {
       content: $('#open-journal-reject-sidebar-form'),
       show: {
       	when: {
-      		//target: $('.reject-cancel-link'),
       		'event': 'click'
       	}
       },
