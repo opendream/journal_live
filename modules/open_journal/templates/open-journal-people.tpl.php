@@ -7,14 +7,14 @@
   <div class="journal-block-content people-creator">
   
   	<h3 class="people-section-title">Creator</h3>
-  	
-  	<!-- People item -->
-  	<div class="journal-user">
-    	<a href="/"><img class="profile-picture-big" src="/sites/all/themes/clean_journal/images/dummy/big-picture-profile-tarongpong.png" alt="researcher1" title="researcher1"></a>
-    	<h3 class="username"><a href="/">Benz Gimmik</a></h3>
+    
+    <!-- People item -->
+    <div class="journal-user">
+      <?php print $people_creator->user_info['display_picture']; ?>
+      <h3 class="username"><?php print $people_creator->user_info['display_name']; ?></h3>
     	<div class="join-date">
   			<span class="label">Join Date: </span>
-  			<span>05 Mar 2013</span>		
+  			<span><?php print date('d M Y', $people_creator->joined); ?></span>		
   		</div>
     </div><!-- End People item -->
     
@@ -27,80 +27,29 @@
   	
   	<!-- People item -->
   	<ul>
-  	
-  		<li class="journal-user active-people">
-  			<a href="/"><img class="profile-picture-big" src="/sites/all/themes/clean_journal/images/dummy/big-picture-profile-panu.png" alt="researcher1" title="researcher1"></a>
-  			<h3 class="username"><a href="/">Panu Meesuk</a></h3>
-    		<div class="join-date">
-  				<span class="label">Join Date: </span>
-  				<span>05 Mar 2013</span>		
-  			</div>
-  			<a class="active-people-btn" href="/">active</a>
-  		</li>
-  		
-  		<li class="journal-user active-people">
-  			<a href="/"><img class="profile-picture-big" src="/sites/all/themes/clean_journal/images/dummy/big-picture-profile-panu.png" alt="researcher1" title="researcher1"></a><h3 class="username"><a href="/">Panu Meesukdeemak</a></h3>
-    		<div class="join-date">
-  				<span class="label">Join Date: </span>
-  				<span>05 Mar 2013</span>		
-  			</div>
-  			<a class="active-people-btn" href="/">active</a>
-  		</li>
-  		
-  		<li class="journal-user active-people">
-  			<a href="/"><img class="profile-picture-big" src="/sites/all/themes/clean_journal/images/dummy/big-picture-profile-panu.png" alt="researcher1" title="researcher1"></a><h3 class="username"><a href="/">Panu Meesuk</a></h3>
-    		<div class="join-date">
-  				<span class="label">Join Date: </span>
-  				<span>05 Mar 2013</span>		
-  			</div>
-  			<a class="active-people-btn" href="/">active</a>
-  		</li>  
-  				
-  		<li class="journal-user active-people">
-  			<a href="/"><img class="profile-picture-big" src="/sites/all/themes/clean_journal/images/dummy/big-picture-profile-pirapa.png" alt="researcher1" title="researcher1"></a><h3 class="username"><a href="/">Pirapa Sonmeesoap</a></h3>
-    		<div class="join-date">
-  				<span class="label">Join Date: </span>
-  				<span>05 Mar 2013</span>		
-  			</div>
-  			<a class="active-people-btn" href="/">active</a>
-  		</li>
-  		
-  		<li class="journal-user active-people">
-  			<a href="/"><img class="profile-picture-big" src="/sites/all/themes/clean_journal/images/dummy/big-picture-profile-pirapa-gray.png" alt="researcher1" title="researcher1"></a><h3 class="username"><a href="/">Pirapa Sonmeesoap</a></h3>
-    		<div class="join-date">
-  				<span class="label">Join Date: </span>
-  				<span>05 Mar 2013</span>		
-  			</div>
-  			<a class="inactive-people-btn" href="/">inactive</a>
-  		</li>
-  		
-  		<li class="journal-user">
-  			<a href="/"><img class="profile-picture-big" src="/sites/all/themes/clean_journal/images/dummy/big-picture-profile-pirapa-gray.png" alt="researcher1" title="researcher1"></a><h3 class="username"><a href="/">Pirapa Sonmeesoap</a></h3>
-    		<div class="join-date">
-  				<span class="label">Join Date: </span>
-  				<span>05 Mar 2013</span>		
-  			</div>
-  			<a class="inactive-people-btn" href="/">inactive</a>
-  		</li>
-  		
-  		<li class="journal-user">
-  			<a href="/"><img class="profile-picture-big" src="/sites/all/themes/clean_journal/images/dummy/big-picture-profile-nutchaya-gray.png" alt="researcher1" title="researcher1"></a><h3 class="username"><a href="/">Nutchaya Nawapornpaipan</a></h3>
-    		<div class="join-date">
-  				<span class="label">Join Date: </span>
-  				<span>05 Mar 2013</span>		
-  			</div>
-  			<a class="inactive-people-btn" href="/">inactive</a>
-  		</li>
-  		
-  		<li class="journal-user">
-  			<a href="/"><img class="profile-picture-big" src="/sites/all/themes/clean_journal/images/dummy/big-picture-profile-nutchaya-gray.png" alt="researcher1" title="researcher1"></a><h3 class="username"><a href="/">Nutchaya Nawapornpaipan</a></h3>
-    		<div class="join-date">
-  				<span class="label">Join Date: </span>
-  				<span>05 Mar 2013</span>		
-  			</div>
-  			<a class="inactive-people-btn" href="/">inactive</a>
-  		</li>
-  		
+  	  <?php foreach ($people_contributor_list as $contributor): ?>
+  	  <li class="journal-user<?php print $contributor->add_class; ?>">
+  	    
+  	    <?php print $contributor->user_info['display_picture']; ?>
+  	    <h3 class="username"><?php print $contributor->user_info['display_name']; ?></h3>
+  	    
+  	    <div class="join-date">
+    			<span class="label">Join Date: </span>
+    			<?php if ($contributor->active_in_journal && $contributor->joined): ?>
+    			<span><?php print date('d M Y', $contributor->joined); ?></span>
+    			<?php else: ?>
+    			<span>&nbsp;&nbsp;-&nbsp;&nbsp;</span>
+    			<?php endif ?>
+    		</div>
+    		
+    		<?php if ($contributor->active_in_journal): ?>
+    		<a class="active-people-btn" href="/">active</a>
+    		<?php else: ?>
+    		<a class="inactive-people-btn" href="/">inactive</a>
+    		<?php endif ?>
+
+  	  </li>
+  	  <?php endforeach ?>
   	</ul><!-- End People item -->
     
   </div><!-- End Creator Section -->

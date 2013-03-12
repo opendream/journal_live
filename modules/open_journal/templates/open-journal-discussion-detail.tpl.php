@@ -4,10 +4,18 @@
     <h3><?php print $discussion->title; ?></h3>
   
     <ul class="discussion-list">
-        <?php print theme('open_journal_item', array(
+        <?php print theme('open_journal_discussion_item', array(
             'item' => $discussion,
             'journal' => $journal
         )); ?>
+        
+        <?php foreach ($comment_list as $comment): ?>
+        <?php print theme('open_journal_comment_item', array(
+          'item' => $comment,
+          'journal' => $journal,
+          'discussion' => $discussion,
+        )); ?>
+        <?php endforeach ?>
     </ul>
   
     <div class="journal-comment-form-wrapper">

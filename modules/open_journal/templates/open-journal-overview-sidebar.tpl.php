@@ -39,7 +39,7 @@
       <?php endforeach;?>	
   	</ul>	
   </div><!-- End Journal-block-content -->
-  <?php print l('View all people' ,'', array('attributes' => array('class' => 'view-all-people')));?>
+  <?php print l('View all people' , 'journal/'.$jid.'/people', array('attributes' => array('class' => 'view-all-people')));?>
 </div> <!-- End People Block -->	
 
 <!-- Start Information Block -->

@@ -1107,6 +1107,7 @@ body {
 #overview-discussion .user-picture-wrapper {
   display: inline;
 }
+
 .user-manage .user-dropdown ul {
 	position: absolute;
 	top: 80px;
@@ -2261,10 +2262,18 @@ h3.people-section-title {
 .people-block .journal-user {
 	float: left;
 }
-.people-block .journal-user .profile-picture-big {
+
+.people-block .journal-user .profile-picture-big, 
+.people-block .journal-user .user-picture-wrapper img,
+.people-block .journal-user img.user-picture-wrapper {
 	float: left;
 	margin-right: 15px;
 }
+
+.people-block .journal-user .user-picture-wrapper {
+  display: inline;
+}
+
 .people-block .journal-user h3 {
 	margin: 0;
 }

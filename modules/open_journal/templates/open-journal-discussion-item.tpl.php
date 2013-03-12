@@ -8,10 +8,10 @@
         <?php if ($item->description): ?>
         <div class="discussion-item-description">
             <?php print $item->description; ?>
-        </div>    
+        </div> 
         <?php endif ?>
         
-        <?php if ($item->fid): ?>
+        <?php if ($item->fid && $item->file): ?>
         <div class="discussion-item-file">
             <?php print $item->file->filename; ?>
         </div>
@@ -19,9 +19,9 @@
         
         <?php if ($item->can_edit): ?>
         <div class="discussion-item-edit-link">
-            <?php print l('Edit', OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/'.$item->type.'/'.$item->id.'/edit'); ?>
+            <?php print l('Edit', OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion/'.$item->did.'/edit', array('attributes' => array('class' => array('open-journal-ajax-edit-link')))); ?>
              · 
-            <?php print l('Delete', OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/'.$item->type.'/'.$item->id.'/delete'); ?>
+            <?php print l('Delete', OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion/'.$item->did.'/delete', array('attributes' => array('class' => array('open-journal-ajax-delete-link')))); ?>
         </div>
         <?php endif ?>
 

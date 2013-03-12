@@ -3,8 +3,12 @@
 function open_journal_information_form($form, &$form_state , $data=NULL) {
 
   global $user;
-
+  
   $mpath = drupal_get_path('module', 'open_journal');
+  
+  $form['#attached']['js'][] = $mpath.'/js/open_journal_multi_textfield.js';
+  $form['#attached']['js'][] = $mpath.'/js/jquery.qtip.min.js';
+  $form['#attached']['js'][] = $mpath.'/js/open_journal_help.js';
   
   $fs = open_journal_get_field_settings();
 
@@ -51,6 +55,8 @@ function open_journal_information_form($form, &$form_state , $data=NULL) {
     $form['main']['file_link'] = array(
       '#markup' => '<div class="form-type-managed-file">Latest file : '.l($latest_file->filename, file_create_url($latest_file->uri)).'<div class="description">'.t('When you create discussion or comment with upload file, The latest file will be update.').'</div></div>'
     );
+    
+    $submit_text = t('Save changes');
   }
   else {
     $form['main']['file'] = array(
@@ -70,12 +76,14 @@ function open_journal_information_form($form, &$form_state , $data=NULL) {
       '#type' => 'checkbox',
       '#required' => TRUE,
     );
+    
+    $submit_text = t('Submit');
   }
 
   $form['main']['actions'] = array('#type' => 'actions');
   $form['main']['actions']['submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Submit'),
+    '#value' => $submit_text,
   );
   $form['main']['actions']['cancel'] = array(
     '#markup' => l(t('Cancel'), $_SERVER['HTTP_REFERER']),
