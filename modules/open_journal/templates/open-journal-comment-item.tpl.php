@@ -1,9 +1,10 @@
 <li class="comment-item">
     <?php print $item->user_info['display_picture']; ?>
     <div class="comment-item-content">
-        <div class="comment-item-submited">
+        
+        <div class="discussion-item-submited">
             <?php print $item->user_info['display_name']; ?> - <?php print date('d M Y', $item->created); ?>
-        </div>
+        </div>        
         
         <div class="comment-item-message">
             <?php print $item->message; ?>
@@ -11,7 +12,7 @@
         
         <?php if ($item->fid && $item->file): ?>
         <div class="comment-item-file">
-            <?php print $item->file->filename; ?>
+            <a href="#"><?php print $item->file->filename; ?></a>
         </div>
         <?php endif ?>
         

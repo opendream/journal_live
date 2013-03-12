@@ -1,5 +1,5 @@
-<div>
-	<h2>Status</h2>
+<div class="block-bg-shadow">
+	<h2 class="journal-block-title">Status</h2>
 	<?php foreach($status_list as $key_status => $value_status):?>
 	<?php if($key_status != 4):?>	
 		<div 
