@@ -2530,6 +2530,95 @@ h3.people-section-title {
 	background: url(images/ic-add-journal-btn.png) #55b0d6 no-repeat 7px 7px;
 	margin: 20px auto;
 }
+
+/* Status Sidebar
+----------------------------------------------------------------*/
+.sidebar-status-block .status-active,
+.sidebar-status-block .status-disabled {
+	width: 260px;
+	/* height: 55px; */
+	float: left;
+	font-family: 'THSarabunNewRegular';
+	font-size: 28px;
+	line-height: 50px;
+	color: #626262;
+	margin-bottom: 10px;
+}
+.sidebar-status-block .status-active.current {
+	line-height: 25px;
+}
+
+.sidebar-status-block .status-active > div,
+.sidebar-status-block .status-disabled > div {
+	width: 40px;
+	height: 40px;
+	float: left;
+	border-radius: 50%;
+	-moz-border-radius: 50%;
+	-webkit-border-radius: 50%;
+	text-align: center;
+	line-height: 45px;
+	margin: 5px;
+	color: #FFF;
+	font-family: 'THSarabunNewRegular';
+	font-size: 30px;
+	margin-right: 15px;
+}
+.sidebar-status-block .status-disabled > div {
+	background-color: #dedede;
+}
+.sidebar-status-block .status-active .discussion-sidebar-status-0 {
+	background-color: #55b0d6;
+}
+.sidebar-status-block .status-active.current .discussion-sidebar-status-0 {
+	border: 5px solid #4084a0;
+}
+.sidebar-status-block .status-active .discussion-sidebar-status-1 {
+	background-color: #c6aadd;
+}
+.sidebar-status-block .status-active.current .discussion-sidebar-status-1 {
+	border: 5px solid #9982ac;
+}
+.sidebar-status-block .status-active .discussion-sidebar-status-2 {
+	background-color: #cd935e;
+}
+.sidebar-status-block .status-active.current .discussion-sidebar-status-2 {
+	border: 5px solid #ac7a4b;
+}
+.sidebar-status-block .status-active .discussion-sidebar-status-3 {
+	background-color: #62c9ae;
+}
+.sidebar-status-block .status-active.finish .discussion-sidebar-status-3 {
+	border: 5px solid #59a192;
+}
+.sidebar-status-block .status-active.current .discussion-sidebar-status-0,
+.sidebar-status-block .status-active.current .discussion-sidebar-status-1,
+.sidebar-status-block .status-active.current .discussion-sidebar-status-2,
+.sidebar-status-block .status-active.finish .discussion-sidebar-status-3 {
+	margin: 0 10px 0 0;
+}
+#open-journal-approve-sidebar-form .form-submit,
+#reject_bottom {
+	font-size: 10px;
+	padding: 5px 10px;
+	background-color: #888;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	text-shadow: -1px -1px 1px #6d6d6d;
+	color: #FFF;
+	text-transform: uppercase;
+}
+#open-journal-approve-sidebar-form .form-submit:hover,
+#reject_bottom:hover {
+	background-color: #55b0d6;
+	text-decoration: none;
+}
+
+.reject-button {
+	display: block;
+	text-align: center;
+}
 /* Footer
 ----------------------------------------------------------------*/
 #footer {
