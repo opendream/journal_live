@@ -620,6 +620,12 @@ function open_journal_journal_people_active($jid, $uid) {
   drupal_write_record('open_journal_journal_people', $data);
 }
 
+function open_journal_journal_people_deactive($jid, $uid) {
+  db_delete('open_journal_journal_people')
+    ->condition('jid', $jid)
+    ->condition('uid', $uid)
+    ->execute();
+}
 
 /**
  * Discussion method
@@ -777,7 +783,7 @@ function open_journal_comment_save($data) {
 }
 
 function open_jounal_comment_mail($data) {
-  
+    
   $sender = user_load($data->uid);
   $data->discussion = open_journal_discussion_load($data->did);
   $data->journal = open_journal_journal_load($data->discussion->jid);
@@ -828,8 +834,11 @@ function open_journal_mail($key, &$message, $data) {
 
 
       $message['body'][] = $body;
+      
+      break;
     
     case 'open_journal_comment_add':
+      dpm($data);
       $message['subject'] = 'Re: '.open_journal_trim($data->journal->title, 20).' - '.open_journal_trim($data->discussion->title);
 
       $body = "\n";
@@ -846,6 +855,8 @@ function open_journal_mail($key, &$message, $data) {
 
 
       $message['body'][] = $body;
+      
+      break;
   }
 }
 
@@ -939,9 +950,11 @@ function open_journal_people($journal) {
       $people->joined = $people_active_uid_key_list[$people->uid]->joined;
     }
     else {
-      $people->add_class = '';
+      $people->add_class = ' inactive-people';
       $people->joined = 0;
     }
+    
+    $people->form = drupal_render(drupal_get_form('open_journal_people_form', $journal->jid, $people->uid, $people->active_in_journal));
   }
   
   $people_creator = user_load($journal->uid);

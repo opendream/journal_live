@@ -42,12 +42,8 @@
     			<?php endif ?>
     		</div>
     		
-    		<?php if ($contributor->active_in_journal): ?>
-    		<a class="active-people-btn" href="/">active</a>
-    		<?php else: ?>
-    		<a class="inactive-people-btn" href="/">inactive</a>
-    		<?php endif ?>
-
+        <?php print $contributor->form; ?>
+        
   	  </li>
   	  <?php endforeach ?>
   	</ul><!-- End People item -->
