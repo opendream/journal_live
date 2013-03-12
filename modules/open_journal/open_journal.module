@@ -1732,7 +1732,7 @@ function open_journal_get_display_user_info($account, $variables=array()) {
     
     $picture = file_load(is_numeric($account->picture)? $account->picture: $account->picture->fid);
         
-    $real_picture = $dummy_picture = theme('image_style', array(
+    $real_picture = theme('image_style', array(
       'style_name' => $image_style['name'],
       'path' => $picture->uri,
       'width' => $size,
