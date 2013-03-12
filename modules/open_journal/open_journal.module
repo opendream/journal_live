@@ -595,13 +595,13 @@ function open_journal_journal_save($data, $change_status=FALSE) {
 
     // Active auto user
     global $user;
-    open_journal_journal_people_active($data->jid, $user->uid);
+    open_journal_journal_people_active($data, $user->uid);
 
     $user_auto_active_list = db_query("SELECT uid FROM users_roles ur, role_permission rp WHERE rp.permission = 'auto active when create journal' AND rp.rid = ur.rid")->fetchAllKeyed(0, 0);
 
     foreach ($user_auto_active_list as $uid) {
       if ($user->uid != $uid) {
-        open_journal_journal_people_active($data->jid, $uid);
+        open_journal_journal_people_active($data, $uid);
       }
     }
 
@@ -629,15 +629,51 @@ function open_journal_journal_save($data, $change_status=FALSE) {
 /**
  * Journal people method
  */
-function open_journal_journal_people_active($jid, $uid) {
-  $data = (object) array(
+function open_journal_journal_people_active($journal, $uid) {
+    
+  $journal = is_numeric($journal)? open_journal_journal_load($journal): $journal;
+  
+  $data = array(
     'joined' => REQUEST_TIME,
-    'jid' => $jid,
+    'jid' => $journal->jid,
     'uid' => $uid,
   );
-  drupal_write_record('open_journal_journal_people', $data);
+  
+  db_merge('open_journal_journal_people')
+    ->key(array(
+      'jid' => $journal->jid,
+      'uid' => $uid,
+    ))
+    ->fields($data)
+    ->execute();
+  
+  
+  $data = (object) $data;
+  $data->journal = $journal;
+  open_journal_people_mail($data);
 }
 
+function open_journal_journal_people_deactive($jid, $uid) {
+  db_delete('open_journal_journal_people')
+    ->condition('jid', $jid)
+    ->condition('uid', $uid)
+    ->execute();
+}
+
+function open_journal_people_mail($data) {
+  
+  global $user;
+  
+  $sender = $user;
+  $data->sender = $sender;
+  
+  $reciver = user_load($data->uid);
+  
+  if ($data->sender->uid != $reciver->uid) {
+    drupal_mail('open_journal', 'open_journal_people_invite', $reciver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
+  }
+  
+}
 
 /**
  * Discussion method
@@ -727,7 +763,10 @@ function open_jounal_discussion_mail($data) {
 
   foreach ($user_list as $user) {
     // TODO: check valid name for permission to dee the sender name
-    drupal_mail('open_journal', 'open_journal_discussion_add', $user->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
+    
+    if ($data->contributor_only && !user_access('access contributor process', $user)) {
+      drupal_mail('open_journal', 'open_journal_discussion_add', $user->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
+    }
   }
 
 } 
@@ -795,7 +834,7 @@ function open_journal_comment_save($data) {
 }
 
 function open_jounal_comment_mail($data) {
-  
+    
   $sender = user_load($data->uid);
   $data->discussion = open_journal_discussion_load($data->did);
   $data->journal = open_journal_journal_load($data->discussion->jid);
@@ -846,8 +885,11 @@ function open_journal_mail($key, &$message, $data) {
 
 
       $message['body'][] = $body;
+      
+      break;
     
     case 'open_journal_comment_add':
+    
       $message['subject'] = 'Re: '.open_journal_trim($data->journal->title, 20).' - '.open_journal_trim($data->discussion->title);
 
       $body = "\n";
@@ -864,7 +906,22 @@ function open_journal_mail($key, &$message, $data) {
 
 
       $message['body'][] = $body;
+      
+      break;
+    
+    case 'open_journal_people_invite':
+    
+      $message['subject'] = "You're invited to journal: ".open_journal_trim($data->journal->title, 20);
+      
+      $body = "\n";
+      $body .= "\n".$data->sender->name. " invited you to a journal named '".$data->journal->title."'";
+      $body .= "\n";
+      $body .= "\n".'Visit the journal to get started:';
+      $body .= "\n".url(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->journal->jid, array('absolute' => TRUE));
+      
+      break;
   }
+  
 }
 
 
@@ -932,7 +989,10 @@ function open_journal_people_sort($people1, $people2) {
         return 0;
     }
     if ($people1->joined === 0) {
-      return 1;
+      $people1->joined = 999999999999;
+    }
+    if ($people2->joined === 0) {
+      $people2->joined = 999999999999;
     }
     return ($people1->joined < $people2->joined) ? -1 : 1;
 }
@@ -957,9 +1017,11 @@ function open_journal_people($journal) {
       $people->joined = $people_active_uid_key_list[$people->uid]->joined;
     }
     else {
-      $people->add_class = '';
+      $people->add_class = ' inactive-people';
       $people->joined = 0;
     }
+    
+    $people->form = drupal_render(drupal_get_form('open_journal_people_form', $journal->jid, $people->uid, $people->active_in_journal));
   }
   
   $people_creator = user_load($journal->uid);
@@ -967,7 +1029,7 @@ function open_journal_people($journal) {
   $people_creator->joined = isset($people_active_uid_key_list[$people_creator->uid])? $people_active_uid_key_list[$people_creator->uid]->joined: $journal->created;
   
   usort($people_contributor_list, 'open_journal_people_sort');
-    
+      
   return theme('open_journal_detail', array(
     'jid' => $journal->jid,
     'content' => theme('open_journal_people', array(

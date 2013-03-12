@@ -2,7 +2,7 @@
 function open_journal_register_form($form, &$form_state) {
   global $user;
   
-  $form['#attached']['js'][] = drupal_add_js(drupal_get_path('module', 'open_journal').'/js/open_journal_compact.js');
+  $form['#attached']['js']['open_journal_compact'] = drupal_add_js(drupal_get_path('module', 'open_journal').'/js/open_journal_compact.js');
   
   $admin = user_access('administer users');
 

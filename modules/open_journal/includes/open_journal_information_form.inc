@@ -1,6 +1,6 @@
 <?php
 
-function open_journal_information_form($form, &$form_state , $data=NULL) {
+function open_journal_information_form($form, &$form_state, $data=NULL) {
 
   global $user;
   
