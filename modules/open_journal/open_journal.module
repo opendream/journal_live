@@ -360,10 +360,6 @@ function open_journal_permission() {
       'title' => t('Access open journal'),
       'description' => t('Perform user can lonin to join open journal.'),
     ),
-    'update final url field' => array(
-      'title' => t('Update final URL field'),
-      'description' => t('Perform user can update URL field. Recommented for librarian role.'),
-    ),
     'auto active when create journal' => array(
       'title' => t('Auto active when create journal'),
       'description' => t('Perform user force to active for review abstract first. Recommented for editor role.'),
@@ -583,6 +579,8 @@ function open_journal_journal_save($data, $change_status=FALSE) {
     $data->status_changed = REQUEST_TIME;
   }
   
+  $data->title = $data->dc_title;
+  
   $jid = drupal_write_record('open_journal_journal', $data, $pk);
   
   if (isset($data->file) && $data->file) {
@@ -650,6 +648,7 @@ function open_journal_journal_people_active($journal, $uid) {
   
   $data = (object) $data;
   $data->journal = $journal;
+  
   open_journal_people_mail($data);
 }
 
@@ -1430,8 +1429,8 @@ function open_journal_discussion_detail($journal, $discussion) {
       'comment_form' => drupal_render(drupal_get_form('open_journal_comment_form', $journal, $discussion)),
       'comment_list' => $comment_list,
     )),
-    'sidebar' => theme('open_journal_status_form', array('jid' => 1)),
-    'jid' => 1
+    'sidebar' => theme('open_journal_status_form', array('jid' => $journal->jid)),
+    'jid' => $journal->jid,
   ));
 }
 

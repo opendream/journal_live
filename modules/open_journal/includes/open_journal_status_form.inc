@@ -26,30 +26,28 @@ function open_journal_reject_sidebar_form_submit($form, &$form_state) {
 	$jid = $form_state['build_info']['args'][0]->jid;
 	$sql = "UPDATE open_journal_journal SET reject = 1, reject_reason = '".$reject_reason."' WHERE jid = ".$jid;
 	db_query($sql);
-	drupal_set_message('This journal is rejected ');
-
 
 	// Create new discustion
 	$reject_reason = open_journal_trim($reject_reason)? $reject_reason:'We are sorry. If you want to more information to rejected, you can talk on this discussion.' ;
 	$discussion = array(
-      'jid' => $jid,
-      'title' => t('This journal has been rejected.'),
-      'description' => $reject_reason,
-      
-    );
-
+    'jid' => $jid,
+    'title' => t('This journal has been rejected.'),
+    'description' => $reject_reason,
     
+  );
 
-    $discussion = (object) $discussion;
-    open_journal_discussion_save($discussion);
-
+  $discussion = (object) $discussion;
+  open_journal_discussion_save($discussion);
+  
+  drupal_set_message('This journal is rejected.');
+  drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$jid .'/discussion/'.$discussion->did);
+	
 	
 }
 
 
 function open_journal_approve_sidebar_form($form, &$form_state, $journal , $next_status) {
 	
-
 	$form['submit'] = array(
 		'#type' => 'submit',
 		'#value' => 'approve',
@@ -67,21 +65,25 @@ function open_journal_approve_sidebar_form($form, &$form_state, $journal , $next
 }
 
 function open_journal_approve_sidebar_form_submit($form, &$form_state) {
-	global $user;
 	$next_status = $form['next_status']['#value'];
 	$jid = $form_state['build_info']['args'][0]->jid;
 	$sql = "UPDATE open_journal_journal SET status = ".$next_status." WHERE jid = ".$jid;
 	db_query($sql);
-	drupal_set_message('This journal is approve ');
 	
 	// Create new discustion
-	$discussion = array(
-      'jid' => $jid,
-      'title' => t('This journal has been approve.'),
-      'description' => ' You can view discussion journal this link.'."\n".url('journal/'.$jid.'/discussion', array('absolute' => TRUE)),
-    );
+	$status_list = unserialize(OPEN_JOUNAL_STATUS);
+	$status_name = $status_list[$next_status];
 
-    $discussion = (object) $discussion;
-    open_journal_discussion_save($discussion);
+	$discussion = array(
+    'jid' => $jid,
+    'title' => t('Congratulation! Status changed to '.$status_name ),
+    'description' => 'Talk on discussion if you have some question?',
+  );
+
+  $discussion = (object) $discussion;
+  open_journal_discussion_save($discussion);
+  
+  drupal_set_message(t('Please, invite contributors to join on this journal.'));
+  drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$jid .'/people');
 
 }
