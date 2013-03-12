@@ -1687,7 +1687,8 @@ input.form-submit:hover {
   display: block;
 }
 
-.user-picture-wrapper img {
+.user-picture-wrapper img,
+.journal-discussion-list-item .journal-user img {
   -moz-border-radius: 50%;
 	-webkit-border-radius: 50%;
 }
@@ -1789,12 +1790,13 @@ h2.journal-block-title {
 		width: 140px;
 		height: 40px;
 		float: left;
-		line-height: 40px;
+		/* line-height: 40px; */
 	}
 	#file-list-item li .journal-user {
 		width: 190px;
 	}
 		#overview-discussion li .journal-user a img,
+		#overview-discussion li .journal-user img,
 		#file-list-item li .journal-user a img {
 			float: left;
 			margin-right: 10px;
@@ -2258,10 +2260,11 @@ h2.journal-block-title {
 		width: 130px;
 		height: 40px;
 		float: left;
-		line-height: 40px;
+		/* line-height: 40px; */
 		margin-right: 10px;
 	}
-		.journal-discussion-list-item .user-picture-wrapper {
+		.journal-discussion-list-item .user-picture-wrapper,
+		.journal-discussion-list-item .journal-user img {
 			float: left;
 			margin-right: 10px;
 			width: 40px;
