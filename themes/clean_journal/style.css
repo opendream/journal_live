@@ -2280,14 +2280,11 @@ h2.journal-block-title {
 
 /* Discussion Detail
 ----------------------------------------------------------------*/
-.discussion-block h2.journal-block-title {
-	width: 560px;
-	float: left;
-}
 .discussion-block h3 {
 	width: 560px;
 	font-size: 22px;
 	padding-left: 20px;
+	float: left;
 }
 ul.discussion-list {
 	margin: 0;
@@ -2437,9 +2434,8 @@ h3.people-section-title {
 .people-contributor .join-date {
 	color: #666666;
 }
-
-.journal-user .active-people-btn,
-.journal-user .inactive-people-btn  {
+a.active-people-btn,
+a.inactive-people-btn  {
 	display: block;
 	float: left;
 	text-transform: uppercase;
@@ -2450,21 +2446,12 @@ h3.people-section-title {
 	background-color: #a0dacc;
 	margin-top: 10px;
 }
-.journal-user .inactive-people-btn {
+a.inactive-people-btn {
 	background-color: #c2c2c2;
 }
-.journal-user .active-people-btn:hover,
-.journal-user .inactive-people-btn:hover {
+a.active-people-btn:hover,
+a.inactive-people-btn:hover {
 	text-decoration: none;
-}
-
-.people-block .inactive-people img {
-  filter: grayscale(100%);
-  -webkit-filter: grayscale(100%); 
-  -moz-filter: grayscale(100%);
-  -ms-filter: grayscale(100%); 
-  -o-filter: grayscale(100%);
-  opacity: 0.8;
 }
 /* Footer
 ----------------------------------------------------------------*/
