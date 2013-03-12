@@ -1708,6 +1708,25 @@ function open_journal_image_default_styles() {
   return $styles;
 }
 
+function open_journal_get_real_name($account) {
+  $real_name = '';
+  if (isset($account->data['firstname']) && $account->data['firstname']) {
+    $real_name .= $account->data['firstname'];
+  }
+  
+  if (isset($account->data['lastname']) && $account->data['lastname'] && $real_name) {
+    $real_name .= ' '.truncate_utf8($account->data['lastname'], 1).'.';
+  }
+  elseif (isset($account->data['lastname']) && $account->data['lastname'] && !$real_name) {
+    $real_name .= $account->data['lastname'];
+  }
+  else {
+    $real_name .= $account->name;
+  }
+  
+  return $real_name;
+}
+
 /**
  * $account require uid, name, (obj|str) data, (obj|int) picture
  */
@@ -1739,6 +1758,8 @@ function open_journal_get_display_user_info($account, $variables=array()) {
   
   
   // Prepare name and picture to display
+  $real_name = open_journal_get_real_name($account);
+    
   $dummy_name = $account->name;
   $dummy_name_text = $dummy_name;
   $dummy_picture = theme('image', array(
@@ -1749,9 +1770,17 @@ function open_journal_get_display_user_info($account, $variables=array()) {
     'alt' => $dummy_name,
     'title' => $dummy_name,
   ));
+  
     
   if (!$account->picture) {
-    $real_picture = $dummy_picture;
+    $real_picture = theme('image', array(
+      //'path' => 'http://www.gravatar.com/avatar/'.md5(strtolower(trim($account->uid))).'?d=identicon&f=y&size='.$size,
+      'path' => 'open_journal/avatar/'.md5(strtolower(trim($account->name))).'/'.$size.'.png',
+      'width' => $size,
+      'height' => $size,
+      'alt' => $real_name,
+      'title' => $real_name,
+    ));
   }
   else {
     
@@ -1762,27 +1791,14 @@ function open_journal_get_display_user_info($account, $variables=array()) {
       'path' => $picture->uri,
       'width' => $size,
       'height' => $size,
-      'alt' => $dummy_name,
-      'title' => $dummy_name,
+      'alt' => $real_name,
+      'title' => $real_name,
     ));
   }
   
   $account->data = !is_array($account->data)? unserialize($account->data): $account->data;
   
-  $real_name = '';
-  if (isset($account->data['firstname']) && $account->data['firstname']) {
-    $real_name .= $account->data['firstname'];
-  }
-  
-  if (isset($account->data['lastname']) && $account->data['lastname'] && $real_name) {
-    $real_name .= ' '.truncate_utf8($account->data['lastname'], 1).'.';
-  }
-  elseif (isset($account->data['lastname']) && $account->data['lastname'] && !$real_name) {
-    $real_name .= $account->data['lastname'];
-  }
-  else {
-    $real_name .= $dummy_name;
-  }
+
   
   if ($variables['owner_uid'] == $account->uid) {
     $real_picture .= '<span class="owner-label">Owner</span>';
