@@ -2166,6 +2166,7 @@ h2.journal-block-title {
 #open-journal-discussion-form .form-textarea,
 #open-journal-comment-form .form-textarea {
 	width: 504px;
+	max-width: 504px;
 }
 .form-item-title .form-text,
 .form-item-description .form-textarea {
@@ -2263,8 +2264,8 @@ h2.journal-block-title {
 		/* line-height: 40px; */
 		margin-right: 10px;
 	}
-		.journal-discussion-list-item .user-picture-wrapper,
-		.journal-discussion-list-item .journal-user img {
+		.journal-discussion-list-item .user-picture-wrapper
+		/* .journal-discussion-list-item .journal-user img */ {
 			float: left;
 			margin-right: 10px;
 			width: 40px;

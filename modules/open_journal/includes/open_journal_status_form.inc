@@ -30,19 +30,22 @@ function open_journal_reject_sidebar_form_submit($form, &$form_state) {
 
 
 	// Create new discustion
-	/*$discussion = array(
+	$discussion = array(
       'uid' => $user->uid,
       'jid' => $jid,
       'title' => t('This journal has been rejected.'),
-      'description' => 'You can view reject reason this link.'."\n".url('journal/'.$data->jid.'/discussion', array('absolute' => TRUE)),
+      'description' => 'You can view reject reason this link.'."\n".url('journal/'.$jid.'/discussion', array('absolute' => TRUE)),
+      'fid' => 0,
       'contributor_only' => 0,
       'created' => mktime(0, 0, 0, date('m'), date('d'), date('Y')),
       'permanent' => 1
     );
 
+    
+
     $discussion = (object) $discussion;
     open_journal_discussion_save($discussion);
-    */
+
 	
 }
 
