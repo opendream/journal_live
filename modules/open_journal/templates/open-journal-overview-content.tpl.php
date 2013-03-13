@@ -30,7 +30,7 @@
 
   <h2 class="journal-block-title">Discussion</h2>
   <div class="add-discussion-btn">
-    <?php print l('Add discussion', OPEN_JOURNAL_PREFIX_PATH.'/add');?>
+    <?php print l('Add discussion', OPEN_JOURNAL_PREFIX_PATH.'/'.$jid.'/discussion/add');?>
   </div>
   <!-- Journal-block-content -->
   <div class="journal-block-content">

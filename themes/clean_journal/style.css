@@ -1185,8 +1185,18 @@ h1.page-title {
 	float: right;
 	margin-top: 20px;
 }
+	.journal-detail-has-sidebar #journal-detail-sidebar .block-bg-shadow {
+		padding-top: 5px;
+	}
+	.journal-detail-has-sidebar #journal-detail-sidebar h3 {
+		font-size: 22px;
+	}
+	.journal-detail-has-sidebar #journal-detail-sidebar p {
+		color: #979797;
+		font-size: 0.9em;
+	}
 	.journal-detail-has-sidebar #journal-detail-content {
-		width: 600px;
+		width: 640px;
 	}
 	.journal-detail-has-sidebar #journal-detail-content .journal-block-content {
 		width: 600px;
@@ -1412,7 +1422,7 @@ input.form-submit:hover {
   display: block;
   width: 940px;
   height: 30px;
-  float: left;
+  /* float: left; */
   padding: 10px 0 10px 20px;
   position: relative;
 }
@@ -1434,6 +1444,7 @@ input.form-submit:hover {
   	list-style: none;
   	margin: 0;
   	width: 170px;
+  	box-shadow: 3px 3px 5px 0 #ccc;
   }
   	#page.page-journal-list .journal-filter-tab ul#journal-filter-item-list li {
   		background: url(images/bg-body.png) repeat-x;
@@ -1557,12 +1568,21 @@ input.form-submit:hover {
 		margin-left: -5px;
 		margin-top: 10px;
 	}
-	#journal-list .journal-item .reject {
-		background-color: #ff5f65;
-	}
-	#journal-list .journal-item .finish-publish {
-		background-color: #69c5ae;
-	}	
+		#journal-list .journal-item .status1 {
+			background-color: #c6aadd;
+		}
+		#journal-list .journal-item .status2 {
+			background-color: #cd935e;
+		}
+		#journal-list .journal-item .status3 {
+			background-color: #69c5ae;
+		}
+		#journal-list .journal-item .statusreject {
+			background-color: #ff5f65;
+		}
+		#journal-list .journal-item .finish-publish {
+			background-color: #69c5ae;
+		}	
 	/* Journal title */
 	#journal-list .journal-item .journal-title {
 		width: 650px;
@@ -1676,7 +1696,9 @@ input.form-submit:hover {
   display: block;
 }
 
-.user-picture-wrapper img {
+.user-picture-wrapper img,
+.journal-discussion-list-item .journal-user img {
+	border-radius: 50%;
   -moz-border-radius: 50%;
 	-webkit-border-radius: 50%;
 }
@@ -1732,7 +1754,8 @@ h2.journal-block-title {
 	background-color: #ebebeb;
 	display: block;
 	overflow: hidden;
-	width: 540px;
+	/* width: 540px; */
+	width: 550px;
 	margin: 0 20px;
 	padding-left: 10px;
 }
@@ -1750,14 +1773,26 @@ h2.journal-block-title {
 .status-block {
 	width: 260px;
 }
-	.status-block h2.journal-block-title {
-		width: 271px;
+	.status-block .h2-wrapper {
+		width: 316px; 
+		margin-left: -28px;
 		background: url(images/bg-header-block.png) no-repeat;
-		margin: 0 0 0 -28px;
-		padding: 17px 15px 23px 30px;
+		padding-bottom: 15px;
+	}
+	.status-block h2 {
+		width: 271px;
+		background-image: none;
+		background-color: #55b0d6;
+		margin: 0;
+		padding: 17px 15px 13px 30px;
 		color: #FFF;
 		font-family: 'THSarabunNewRegular';
 	}
+	.status-block h2.status1 {background-color: #c6aadd;}
+	.status-block h2.status2 {background-color: #cd935e;}
+	.status-block h2.status3 {background-color: #69c5ae;}
+	.status-block h2.statusreject {background-color: #fc6064;}
+	
 #overview-discussion,
 #file-list-item {
 	list-style: none;
@@ -1777,12 +1812,13 @@ h2.journal-block-title {
 		width: 140px;
 		height: 40px;
 		float: left;
-		line-height: 40px;
+		/* line-height: 40px; */
 	}
 	#file-list-item li .journal-user {
 		width: 190px;
 	}
 		#overview-discussion li .journal-user a img,
+		#overview-discussion li .journal-user img,
 		#file-list-item li .journal-user a img {
 			float: left;
 			margin-right: 10px;
@@ -2139,7 +2175,8 @@ h2.journal-block-title {
 /* Add Discussion
 ----------------------------------------------------------------*/
 .form-item-title .form-text,
-.form-item-description .form-textarea  {
+.form-item-description .form-textarea,
+#open-journal-comment-form .form-textarea {
   width: 200px;
   padding: 2px 10px 2px 10px;
   border: none;
@@ -2148,10 +2185,23 @@ h2.journal-block-title {
   font-family: 'THSarabunNewRegular';
   font-size: 20px;
 }
+#open-journal-discussion-form .form-textarea,
+#open-journal-comment-form .form-textarea {
+	width: 504px;
+	max-width: 504px;
+}
 .form-item-title .form-text,
 .form-item-description .form-textarea {
   width: 520px;
   max-width: 520px;
+}
+#open-journal-discussion-form .form-textarea {
+	width: 560px;
+	max-width: 560px;
+}
+#open-journal-discussion-form .form-text {
+	width: 540px;
+	max-width: 540px;
 }
 .form-item-title .form-text {
   width: 500px;
@@ -2165,6 +2215,8 @@ h2.journal-block-title {
 }
 #open-journal-discussion-form label {
 	margin-bottom: 10px;
+	line-height: 30px;
+	margin-right: 10px;
 }
 #edit-fid-ajax-wrapper .description,
 #edit-fid-ajax-wrapper .form-type-managed-file {
@@ -2184,6 +2236,7 @@ h2.journal-block-title {
   padding-left: 0;
   margin-top: 30px;
 }
+#open-journal-comment-form .form-actions a,
 #open-journal-discussion-form .form-actions a {
 	color: #555;
 	line-height: 35px;
@@ -2191,6 +2244,179 @@ h2.journal-block-title {
 #open-journal-discussion-form .form-item,
 #open-journal-discussion-form .form-actions {
 	padding: 0 20px;
+}
+
+/* Discussion List
+----------------------------------------------------------------*/
+.journal-discussion-list-block {
+	padding: 53px 40px 40px 40px;
+	position: relative;
+	float: left;
+}
+.journal-discussion-list-block .add-discussion-btn {
+	position: absolute;
+	right: 40px;
+	top: 10px;
+}
+	.journal-discussion-list-block .add-discussion-btn a {
+	  display: block;
+	  padding: 5px 10px 5px 30px;
+	  border-radius: 5px;
+	  -moz-border-radius: 5px;
+	  -webkit-border-radius: 5px;
+	  color: #FFF !important;
+	  text-transform: uppercase;
+	  background: url(images/ic-add-journal-btn.png) #55b0d6 no-repeat 7px 7px !important;
+	  margin-right: 0 !important;
+	}
+		.journal-discussion-list-block .add-discussion-btn a:hover {
+		  text-decoration: none;
+		  background-color: #4084a0 !important;
+		}
+.journal-discussion-list-item {
+	border-top: 1px solid #aaa;
+	border-bottom: 0;
+	padding: 10px 0;
+	float: left;
+	position: relative;
+}
+	.journal-discussion-list-item .journal-user {
+		width: 130px;
+		height: 40px;
+		float: left;
+		/* line-height: 40px; */
+		margin-right: 10px;
+	}
+		.journal-discussion-list-item .user-picture-wrapper
+		/* .journal-discussion-list-item .journal-user img */ {
+			float: left;
+			margin-right: 10px;
+			width: 40px;
+			height: 40px;
+		}
+		.journal-discussion-list-item a.user-name-wrapper {
+			color: #000;
+		}
+	.journal-discussion-list-item .discus-title,
+	.journal-discussion-list-item .discus-content {
+		width: 410px;
+		float: left;
+		padding-left: 10px;
+	}
+	.journal-discussion-list-item .discus-title {
+		margin-bottom: 7px;
+	}
+	.journal-discussion-list-item .discus-title a {
+		font-weight: bold;
+		color: #111;
+		float: left;
+		margin-right: 5px;
+	}
+		.journal-discussion-list-item .discus-title a:hover {
+			text-decoration: none;
+		}
+
+/* Discussion Detail
+----------------------------------------------------------------*/
+.discussion-block h3 {
+	width: 560px;
+	font-size: 22px;
+	padding-left: 20px;
+	float: left;
+}
+ul.discussion-list {
+	margin: 0;
+	list-style: none;
+	padding: 0 20px;
+}
+	ul.discussion-list li {
+		border-top: 1px solid #aaa;
+		padding: 10px 0;
+		float: left;
+		width: 560px;
+	}
+		ul.discussion-list li .user-picture-wrapper,
+		.journal-comment-form-wrapper .user-picture-wrapper {
+			float: left;
+			width: 40px;
+			margin-right: 15px;
+		}
+		ul.discussion-list li img {
+			float: left;
+			margin-right: 15px;
+		}
+		.discussion-item-submited {
+			font-weight: bold;
+			float: left;
+			margin-right: 15px;
+		}
+		.discussion-item-content,
+		.comment-item-content {
+			float: left;
+			width: 504px;
+			margin-top: 8px;
+		}
+		.discussion-item-description,
+		.comment-item-message {
+			width: 504px;
+			float: left;
+		}
+		.discussion-item-file,
+		.comment-item-file {
+			float: left;
+		}
+
+		.discussion-item-edit-link,
+		.comment-item-edit-link {
+			
+		}
+			.discussion-item-edit-link a,
+			.comment-item-edit-link a {
+				color: #aa9c84;
+				font-size: 0.8em;
+			}
+.journal-comment-form-wrapper {
+	margin: 0 20px;
+	width: 560px;
+	float: left;
+	padding: 10px 0 10px 0;
+	border-top: 1px solid #aaa;
+}
+	.journal-comment-form-submited {
+		margin-bottom: 17px;
+	}
+	.journal-comment-form-submited,
+	.journal-comment-form-submited a {
+		font-weight: bold;
+		color: #000;
+	}
+
+.discussion-block .contributor-only {
+	float: left;
+	margin: 7px 0 0 0;
+	line-height: 20px;
+	margin-left: 20px;
+	color: red;
+	font-size: 16px;
+	background: url(images/ic-lock.png) no-repeat;
+	padding-left: 30px;
+}
+.contributor-only-icon {
+	position: absolute;
+	display: block;
+	width: 22px;
+	height: 22px;
+	left: -30px;
+	top: 20px;
+	background: url(images/ic-lock.png) no-repeat;
+	text-indent: -999em;
+}
+.discussion-item-content .discussion-item-edit-link {
+	width: 50px;
+	position: absolute;
+	right: 40px;
+	top: 45px;
+	text-align: right;
 }
 /* File List
 ----------------------------------------------------------------*/
@@ -2228,6 +2454,11 @@ h2.journal-block-title {
 
 /* People
 ----------------------------------------------------------------*/
+.people-block .people-block-inner {
+	width: 920px;
+	overflow: hidden;
+}
+
 .people-block h2.journal-block-title {
 	margin-bottom: 0;
 }
@@ -2263,11 +2494,15 @@ h3.people-section-title {
 	float: left;
 }
 
-.people-block .journal-user .profile-picture-big, 
-.people-block .journal-user .user-picture-wrapper img,
-.people-block .journal-user img.user-picture-wrapper {
+.people-block .people-contributor .journal-user img,
+.people-block .people-creator .journal-user img {
 	float: left;
 	margin-right: 15px;
+	border-radius: 50%;
+	-moz-border-radius: 50%;
+	-webkit-border-radius: 50%;
+	-ms-border-radius: 50%;
+	-o-border-radius: 50%;
 }
 
 .people-block .journal-user .user-picture-wrapper {
@@ -2277,7 +2512,8 @@ h3.people-section-title {
 .people-block .journal-user h3 {
 	margin: 0;
 }
-.people-block .journal-user h3 a {
+.people-block .journal-user h3 a,
+.people-block .journal-user h3  {
 	font-size: 30px;
 	color: #111;
 	font-family: 'THSarabunNewRegular';
@@ -2288,8 +2524,8 @@ h3.people-section-title {
 .people-contributor .join-date {
 	color: #666666;
 }
-a.active-people-btn,
-a.inactive-people-btn  {
+.journal-user .active-people-btn,
+.journal-user .inactive-people-btn  {
 	display: block;
 	float: left;
 	text-transform: uppercase;
@@ -2300,12 +2536,148 @@ a.inactive-people-btn  {
 	background-color: #a0dacc;
 	margin-top: 10px;
 }
-a.inactive-people-btn {
+.journal-user .inactive-people-btn {
 	background-color: #c2c2c2;
 }
-a.active-people-btn:hover,
-a.inactive-people-btn:hover {
+.journal-user .active-people-btn:hover,
+.journal-user .inactive-people-btn:hover {
 	text-decoration: none;
+}
+.people-block .inactive-people img {
+  filter: grayscale(100%);
+  -webkit-filter: grayscale(100%); 
+  -moz-filter: grayscale(100%);
+  -ms-filter: grayscale(100%); 
+  -o-filter: grayscale(100%);
+  opacity: 0.8;
+}
+
+/* No Journal Page
+----------------------------------------------------------------*/
+.journal-list-empty {
+	width: 400px;
+	margin: 20px auto;
+	text-align: center;
+}
+.journal-list-empty h2 {
+	font-size: 30px;
+	margin: 20px 0;
+	text-transform: uppercase;
+}
+.journal-list-empty .add-journal-btn a {
+	width: 65px;
+	display: block;
+	padding: 5px 10px 5px 30px;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	color: #FFF;
+	text-transform: uppercase;
+	background: url(images/ic-add-journal-btn.png) #55b0d6 no-repeat 7px 7px;
+	margin: 20px auto;
+}
+
+/* Status Sidebar
+----------------------------------------------------------------*/
+.sidebar-status-block {
+	width: 260px;
+	float: left;
+}
+.sidebar-status-block .status-active,
+.sidebar-status-block .status-disabled {
+	width: 260px;
+	/* height: 55px; */
+	float: left;
+	font-family: 'THSarabunNewRegular';
+	font-size: 28px;
+	line-height: 50px;
+	color: #626262;
+	margin-bottom: 10px;
+}
+.sidebar-status-block .status-active.current .can-approve {
+	line-height: 28px;
+}
+
+.sidebar-status-block .status-active .status-number,
+.sidebar-status-block .status-disabled .status-number {
+	width: 40px;
+	height: 40px;
+	float: left;
+	border-radius: 50%;
+	-moz-border-radius: 50%;
+	-webkit-border-radius: 50%;
+	text-align: center;
+	line-height: 45px;
+	margin: 5px;
+	color: #FFF;
+	font-family: 'THSarabunNewRegular';
+	font-size: 30px;
+	margin-right: 15px;
+}
+.sidebar-status-block .status-disabled .status-number {
+	background-color: #dedede;
+}
+.sidebar-status-block .status-active .discussion-sidebar-status-0 {
+	background-color: #55b0d6;
+}
+.sidebar-status-block .status-active.current .discussion-sidebar-status-0 {
+	border: 5px solid #4084a0;
+}
+.sidebar-status-block .status-active .discussion-sidebar-status-1 {
+	background-color: #c6aadd;
+}
+.sidebar-status-block .status-active.current .discussion-sidebar-status-1 {
+	border: 5px solid #9982ac;
+}
+.sidebar-status-block .status-active .discussion-sidebar-status-2 {
+	background-color: #cd935e;
+}
+.sidebar-status-block .status-active.current .discussion-sidebar-status-2 {
+	border: 5px solid #ac7a4b;
+}
+.sidebar-status-block .status-active .discussion-sidebar-status-3 {
+	background-color: #62c9ae;
+}
+.sidebar-status-block .status-active.finish .discussion-sidebar-status-3 {
+	border: 5px solid #59a192;
+}
+.sidebar-status-block .status-active.current .discussion-sidebar-status-0,
+.sidebar-status-block .status-active.current .discussion-sidebar-status-1,
+.sidebar-status-block .status-active.current .discussion-sidebar-status-2,
+.sidebar-status-block .status-active.finish .discussion-sidebar-status-3 {
+	margin: 0 10px 0 0;
+}
+#open-journal-approve-sidebar-form .form-submit,
+#reject_bottom {
+	font-size: 10px;
+	padding: 5px 10px;
+	background-color: #888;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	text-shadow: -1px -1px 1px #6d6d6d;
+	color: #FFF;
+	text-transform: uppercase;
+}
+#open-journal-approve-sidebar-form .form-submit:hover,
+#reject_bottom:hover {
+	background-color: #55b0d6;
+	text-decoration: none;
+}
+
+.reject-button {
+	display: block;
+	text-align: center;
+}
+.reject-tag {
+	float: left;
+	width: 252px;
+	padding: 10px 0;
+	text-align: center;
+	border: 4px solid rgb(175, 30, 30);
+	color: rgb(175, 30, 30);
+	text-transform: uppercase;
+	font-size: 22px;
 }
 /* Footer
 ----------------------------------------------------------------*/

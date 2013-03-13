@@ -1,6 +1,6 @@
 <?php
 
-function open_journal_information_form($form, &$form_state , $data=NULL) {
+function open_journal_information_form($form, &$form_state, $data=NULL) {
 
   global $user;
   
@@ -104,7 +104,7 @@ function open_journal_information_form($form, &$form_state , $data=NULL) {
   }
   $form['data']['group']['subject_en'] = open_journal_multi_textfield('Keywords',open_journal_get_field($data, 'subject_en'), 'dc_subject');
 
-  $form['data']['group']['dc_creator'] = open_journal_multi_textfield('Author' ,open_journal_get_field($data, 'dc_creator'), 'dc_creator', 'add co-Authors', TRUE, 1);
+  $form['data']['group']['dc_creator'] = open_journal_multi_textfield('Author' ,open_journal_get_field($data, 'dc_creator'), 'dc_creator', 'co-Author', TRUE, 1);
   $form['data']['group']['dc_publisher'] = open_journal_multi_textfield('Publishers' ,open_journal_get_field($data, 'dc_publisher'), 'dc_publisher', '', FALSE, 1);
   $form['data']['group']['dc_contributor'] = open_journal_multi_textfield('Contributors', open_journal_get_field($data, 'dc_contributor'), 'dc_contributor','', FALSE, 1);
 
@@ -176,13 +176,6 @@ function open_journal_information_form($form, &$form_state , $data=NULL) {
     '#default_value' => open_journal_get_field($data, 'dc_coverage'),
     '#access' => $fs['dc_coverage'],
   );
-
-  $form['data']['group']['dc_identifier'] = array(
-    '#title' => open_journal_label_help('Final URL', 'For librarian only.'),
-    '#type' => 'textfield',
-    '#access' => user_access('access contributor process') && $fs['dc_identifier'],
-    '#default_value' => open_journal_get_field($data, 'dc_identifier'),
-  );
   
   $form['data']['group']['dc_type'] = array(
     '#title' => open_journal_label_help('Type', 'For librarian only.'),
@@ -203,6 +196,13 @@ function open_journal_information_form($form, &$form_state , $data=NULL) {
     '#type' => 'textfield',
     '#default_value' => open_journal_get_field($data, 'dc_right'),
     '#access' => user_access('access contributor process') && $fs['dc_identifier'],
+  );
+  
+  $form['data']['group']['dc_identifier'] = array(
+    '#title' => open_journal_label_help('Final URL', 'For librarian only.'),
+    '#type' => 'textfield',
+    '#access' => user_access('access contributor process') && $fs['dc_identifier'],
+    '#default_value' => open_journal_get_field($data, 'dc_identifier'),
   );
 
   // Hidden field
@@ -276,7 +276,7 @@ function open_journal_multi_textfield($title='' , $values = FALSE, $name, $add_m
     );
   }
   if($add_more_text_show) {
-    $multi_textfield[] = array('#markup' => '<button class="add-multi-textfield">'.t($add_more_text).'</button>');
+    $multi_textfield[] = array('#markup' => '<button class="add-multi-textfield">add '.t($add_more_text).'</button>');
   }
 
   return $multi_textfield;

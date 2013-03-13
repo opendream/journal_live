@@ -4,7 +4,7 @@ function open_journal_comment_form($form, $form_state, $journal, $discussion, $d
   
   global $user;
   
-  $form['#attached']['js'][] = drupal_get_path('module', 'open_journal').'/js/open_journal_compact.js';
+  $form['#attached']['js']['open_journal_compact'] = drupal_get_path('module', 'open_journal').'/js/open_journal_compact.js';
   
   $submit_text = t('Add this comment');
   if (open_journal_get_field($data, 'cid')) {

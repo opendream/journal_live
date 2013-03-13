@@ -5,7 +5,7 @@ function open_journal_login_form($form_state) {
 
   // Display login form:
     
-  $form['#attached']['js'][] = drupal_add_js(drupal_get_path('module', 'open_journal').'/js/open_journal_compact.js');
+  $form['#attached']['js']['open_journal_compact'] = drupal_add_js(drupal_get_path('module', 'open_journal').'/js/open_journal_compact.js');
 
   $form['title'] = array(
     '#markup' => '<h2>'.t('Login').'</h2>',
@@ -97,10 +97,13 @@ function open_journal_login_validate($form, &$form_state) {
         $form_state['flood_control_triggered'] = 'user';
         return;
       }
+      
+      // We are not limited by flood control, so try to authenticate.
+      // Set $form_state['uid'] as a flag for user_login_final_validate().
+      $form_state['uid'] = user_authenticate($account->name, $password);
+      
     }
-    // We are not limited by flood control, so try to authenticate.
-    // Set $form_state['uid'] as a flag for user_login_final_validate().
-    $form_state['uid'] = user_authenticate($account->name, $password);
+
   }
 
 
