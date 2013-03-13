@@ -148,6 +148,11 @@ function open_journal_schema() {
         'type' => 'int',
         'not null' => TRUE,
       ),
+      'informal_approve_status' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
     ),
     'primary key' => array('jid', 'uid'),
   );
