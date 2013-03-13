@@ -97,10 +97,13 @@ function open_journal_login_validate($form, &$form_state) {
         $form_state['flood_control_triggered'] = 'user';
         return;
       }
+      
+      // We are not limited by flood control, so try to authenticate.
+      // Set $form_state['uid'] as a flag for user_login_final_validate().
+      $form_state['uid'] = user_authenticate($account->name, $password);
+      
     }
-    // We are not limited by flood control, so try to authenticate.
-    // Set $form_state['uid'] as a flag for user_login_final_validate().
-    $form_state['uid'] = user_authenticate($account->name, $password);
+
   }
 
 

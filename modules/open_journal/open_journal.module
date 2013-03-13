@@ -299,14 +299,6 @@ function open_journal_theme() {
       'template' => 'templates/open-journal-discussion-detail',
     ),
 
-    'open_journal_status_form' => array(
-      'variables' => array(
-        'jid' => NULL,
-        'form' => NULL,
-      ),
-      'template' => 'templates/open-journal-status-form',
-    ),
-
     'open_journal_file' => array(
       'variables' => array(
         'journal' => NULL,
@@ -344,7 +336,7 @@ function open_journal_theme() {
         ),
       'template' => 'templates/open-journal-discussion-list'
       ),
-    'open_journal_discussion_list_sidebar' =>array(
+    'open_journal_status_form' =>array(
       'variables' => array(
         'journal' => NULL,
         ),
@@ -1330,9 +1322,17 @@ function open_journal_discussion_list($journal) {
 
   // Prepare data to status side bar form
   $status_list = unserialize(OPEN_JOUNAL_STATUS);
-  $next_status = open_journal_next_status($journal->status);
-  $reject_form = drupal_render(drupal_get_form('open_journal_reject_sidebar_form', $journal));
-  $approve_form = drupal_render(drupal_get_form('open_journal_approve_sidebar_form', $journal, $next_status));
+  
+  if (user_access('approve with unanimity and reject journal')) {
+    $next_status = open_journal_next_status($journal->status);
+    $reject_form = drupal_render(drupal_get_form('open_journal_reject_sidebar_form', $journal));
+    $approve_form = drupal_render(drupal_get_form('open_journal_approve_sidebar_form', $journal, $next_status));
+  }
+  else {
+    $reject_form = '';
+    $approve_form = '';
+  }
+
 
   return theme('open_journal_detail', array(
     'content' => theme('open_journal_discussion_list', array(
@@ -1341,7 +1341,7 @@ function open_journal_discussion_list($journal) {
     'jid' => $journal->jid,
       )
     ),
-    'sidebar' => theme('open_journal_discussion_list_sidebar', array(
+    'sidebar' => theme('open_journal_status_form', array(
       'journal' => $journal,
       'status_list' => $status_list,
       'reject_form' => $reject_form,

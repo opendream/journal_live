@@ -2539,6 +2539,10 @@ h3.people-section-title {
 
 /* Status Sidebar
 ----------------------------------------------------------------*/
+
+.sidebar-status-block {
+  overflow: hidden;
+}
 .sidebar-status-block .status-active,
 .sidebar-status-block .status-disabled {
 	width: 260px;
