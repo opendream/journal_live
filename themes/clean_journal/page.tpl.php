@@ -4,8 +4,10 @@
       <?php print l($open_journal_logo2, '', array('html' => TRUE));?>
     </div>
   <?php endif;?>
-
-  <?php if ($title && !$disabled_title): ?>
+  
+  <?php if (isset($journal) && !$disabled_title): ?>
+    <h1 class="page-title"><?php print $journal->title; ?></h1>
+  <?php elseif ($title && !$disabled_title): ?>
     <h1 class="page-title"><?php print $title; ?></h1>
   <?php endif; ?>
 

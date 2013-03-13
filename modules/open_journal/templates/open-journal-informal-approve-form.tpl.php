@@ -1,5 +1,5 @@
-
-<div class="block-bg-shadow">
+<?php if ($informal_list): ?>
+<div class="informal-status-block block-bg-shadow">
   
   <h2 class="journal-block-title">Informal status</h2>
   
@@ -14,10 +14,10 @@
           <?php print $informal->form; ?>
         </div>
         
-
       </li>
       <?php endforeach ?>
     </ul>
   </div>
 
 </div>
+<?php endif ?>

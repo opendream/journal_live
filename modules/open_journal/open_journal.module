@@ -500,6 +500,10 @@ function open_journal_preprocess_page(&$vars) {
         (strpos($_GET['q'], OPEN_JOURNAL_PREFIX_PATH) === 0 && is_numeric(arg($arg+1)))){
       $vars['page_class'] = 'page-normal page-journal-list';
     }
+    
+    if (strpos($_GET['q'], OPEN_JOURNAL_PREFIX_PATH) === 0 && is_numeric(arg($arg))) {
+      $vars['journal'] = open_journal_journal_load(arg($arg));
+    }
 
   }
    
@@ -614,7 +618,9 @@ function open_journal_journal_load($jid) {
 
 function open_journal_journal_save($data, $change_status=FALSE) {
 
-  $data->changed = REQUEST_TIME;
+  if(!$change_status) {
+    $data->changed = REQUEST_TIME;
+  }
 
   open_journal_update_field($data, 'subject_en');
   open_journal_update_field($data, 'subject_sub');
@@ -626,7 +632,7 @@ function open_journal_journal_save($data, $change_status=FALSE) {
   open_journal_update_field($data, 'dc_publisher');
   open_journal_update_field($data, 'dc_contributor');
 
-  if (is_array($data->date)) {
+  if (isset($data->date) && is_array($data->date)) {
     $date = (object) $data->date;
     open_journal_update_field($data, 'dc_date', mktime(0, 0, 0, $date->month, $date->day, $date->year));
   }
@@ -683,8 +689,6 @@ function open_journal_journal_save($data, $change_status=FALSE) {
       'title' => t('New journal has been created.'),
       'description' => 'Submit new journal has been completed. Now, status is "information review".'."\n\n".'See information with abstract field and journal file on "Information" tab.'."\n".url('journal/'.$data->jid.'/information', array('absolute' => TRUE)),
       'fid' => $data->file,
-      'contributor_only' => 0,
-      'created' => $data->created,
       'permanent' => 1
     );
     $discussion = (object) $discussion;
@@ -759,11 +763,13 @@ function open_journal_discussion_load($did) {
   // Query data from database for edit journal when have journal ID
   $data = db_select('open_journal_discussion', 'd')
   ->fields('d')
-  ->condition('did', $did, '=')
-  ->execute()
-  ->fetchObject();
-
-  return $data;
+  ->condition('did', $did, '=');
+  
+  if (!user_access('access contributor process')) {
+    $data->condition('contributor_only', 0, '=');
+  }
+  
+  return $data->execute()->fetchObject();
 }
 
 function open_journal_discussion_load_limit($jid, $limit=NULL) {
@@ -773,11 +779,13 @@ function open_journal_discussion_load_limit($jid, $limit=NULL) {
   ->fields('d')
   ->condition('jid', $jid, '=')
   ->orderBy('did', 'DESC')
-  ->range(0,$limit)
-  ->execute()
-  ->fetchAll();
+  ->range(0,$limit);
+  
+  if (!user_access('access contributor process')) {
+    $data->condition('contributor_only', 0, '=');
+  }
 
-  return $data;
+  return $data->execute()->fetchAll();
 }
 
 function open_journal_discussion_load_all($jid) {
@@ -786,11 +794,14 @@ function open_journal_discussion_load_all($jid) {
   $data = db_select('open_journal_discussion', 'd')
   ->fields('d')
   ->condition('jid', $jid, '=')
-  ->orderBy('did', 'DESC')
-  ->execute()
-  ->fetchAll();
+  ->orderBy('did', 'DESC');
+  
+  
+  if (!user_access('access contributor process')) {
+    $data->condition('contributor_only', 0, '=');
+  }
 
-  return $data;
+  return $data->execute()->fetchAll();
 }
 
 
@@ -803,7 +814,7 @@ function open_journal_discussion_save($data) {
   // Default value
   $data->fid = isset($data->fid)? $data->fid: 0;
   $data->contributor_only = isset($data->contributor_only)? $data->contributor_only: 0;
-  $data->permanent = isset($data->permanent)? $data->permanent: 1;
+  $data->permanent = isset($data->permanent)? $data->permanent: 0;
 
   global $user;
   $data->uid = isset($data->uid)? $data->uid: $user->uid;
@@ -1233,6 +1244,7 @@ function open_journal_overview($journal) {
     $discussion_data[$i]['description'] = open_journal_trim($row->description, 100);
     $discussion_data[$i]['url'] = '';
     $discussion_data[$i]['jid'] = $journal->jid;
+    $discussion_data[$i]['contributor_only'] = $row->contributor_only;
     $i++;
   }
   // calculate total more link to discussion journal
@@ -1411,12 +1423,14 @@ function open_journal_discussion_list($journal) {
       d.uid = u.uid
     
     WHERE 
-      d.jid = ".$journal->jid." 
+      d.jid = :jid";
+      
+  if (!user_access('access contributor process')) {
+    $sql .= " AND d.contributor_only = 0";
+  }
+  $sql .= " GROUP BY d.did ORDER BY d.did DESC";
 
-  GROUP BY d.did
-  ORDER BY d.did DESC";
-
-  $discussion_list = db_query($sql)->fetchAll();
+  $discussion_list = db_query($sql, array(':jid' => $journal->jid))->fetchAll();
 
   foreach ($discussion_list as &$discussion_item) {
     
@@ -1616,8 +1630,8 @@ function open_journal_get_active_menu_attributes($menu_active_url) {
 }
 
 function open_journal_get_file_list($jid, $limit=NULL) {
-  $file_list = db_query(
-   "SELECT 
+  
+  $sql = "SELECT 
       u.*, IF(d.fid IS NOT NULL, d.fid, c.fid) AS fid, f.filename, f.filesize, f.uri, f.timestamp
     FROM 
       open_journal_discussion d
@@ -1637,10 +1651,17 @@ function open_journal_get_file_list($jid, $limit=NULL) {
       d.fid = f.fid
     WHERE 
       d.jid = :jid AND 
-      (c.fid IS NOT NULL OR d.fid IS NOT NULL)
-    ORDER BY c.created, d.created DESC".($limit? (' LIMIT 0, '.$limit): ''), 
-    array(':jid' => $jid)
-  )->fetchAll();
+      (c.fid IS NOT NULL OR d.fid IS NOT NULL)";
+      
+  
+  if (!user_access('access contributor process')) {
+    $sql .= " AND d.contributor_only = 0";
+  }
+  
+  $sql .= " ORDER BY c.created, d.created DESC".($limit? (' LIMIT 0, '.$limit): '');
+  
+  $file_list = db_query($sql, array(':jid' => $jid))->fetchAll();
+
 
   return $file_list;
 }
