@@ -529,6 +529,40 @@ function open_journal_issue_edit($issue) {
 }
 
 /**
+ * Issue confirm delete form.
+ */
+function open_journal_issue_delete_confirm($form, $form_state, $issue) {
+  $form['#issue'] = $issue;
+  // Always provide entity id in the same form key as in the entity edit form.
+  $form['iid'] = array('#type' => 'value', '#value' => $issue->iid);
+  return confirm_form($form,
+    t('Are you sure you want to delete issue %title?', array('%title' => $issue->title)),
+    'issue/' . $issue->iid .'/view',
+    t('This action cannot be undone.'),
+    t('Delete'),
+    t('Cancel')
+  );
+}
+
+/**
+ * Execute node deletion
+ */
+function open_journal_issue_delete_confirm_submit($form, &$form_state) {
+  if ($form_state['values']['confirm']) {
+    $issue = open_journal_issue_load($form_state['values']['iid']);
+
+    db_query("DELETE FROM {open_journal_issue} WHERE iid = :iid", array(':iid' => $issue->iid));
+    db_query("DELETE FROM {open_journal_issue_section} WHERE iid = :iid", array(':iid' => $issue->iid));
+    db_query("DELETE FROM {open_journal_issue_journal} WHERE iid = :iid", array(':iid' => $issue->iid));
+
+    watchdog('issue', 'Issue deleted %title.', array('%title' => $issue->title));
+    drupal_set_message(t('Issue %title has been deleted.', array('%title' => $issue->title)));
+  }
+
+  $form_state['redirect'] = '<front>';
+}
+
+/**
  * View issue.
  */
 function open_journal_issue_view($issue) {
@@ -543,7 +577,12 @@ function open_journal_issue_view($issue) {
     $item['data'] = '<h3>'. $section->title .'</h3>';
     $item['children'] = array();
     foreach ($section->journals as $journal) {
-      $item['children'][] = l($journal->dc_title, 'journal/'. $journal->jid);
+      $title = l($journal->dc_title, 'journal/'. $journal->jid);
+      if ($journal->dc_identifier) {
+        $options['attributes']['target'] = '_blank';
+        $title .= ' ('. l(t('Published URL'), $journal->dc_identifier, $options) .')';
+      }
+      $item['children'][] = $title;
     }
     $items[] = $item;
   }
@@ -552,7 +591,15 @@ function open_journal_issue_view($issue) {
 
   // Edit link.
   if ($user->uid == $issue->uid || $user->uid == 1) {
-    $output .= l(t('Edit'), 'issue/'. $issue->iid .'/edit', array('query' => drupal_get_destination()));
+    $links = array();
+    $links[] = l(t('Edit'), 'issue/'. $issue->iid .'/edit', array('query' => drupal_get_destination()));
+    $links[] = l(t('Delete'), 'issue/'. $issue->iid .'/delete');
+    $output .= theme('item_list', array(
+      'items' => $links, 
+      'attributes' => array(
+        'class' => array('admin-links'),
+      ),
+    ));
   }
 
   return $output;

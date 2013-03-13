@@ -256,6 +256,14 @@ function open_journal_menu() {
     'file' => 'includes/open_journal_issue.inc',
     'weight' => -9,
   );
+
+  $items['issue/%open_journal_issue/delete'] = array(
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('open_journal_issue_delete_confirm', 1),
+    'access arguments' => array('create issue'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_issue.inc',
+  );
   
   return $items;
 }
