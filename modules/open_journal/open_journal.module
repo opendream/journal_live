@@ -1995,6 +1995,10 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
   global $user;
   $mpath = drupal_get_path('module', 'open_journal');
   drupal_add_js($mpath.'/js/open_journal_list_load_more.js');
+
+  // Get checkbox not reject form
+  module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
+  //$not_reject_form = drupal_render(drupal_get_form('open_journal_not_reject_form', $journal));
   
   // TODO: Refactor to use COUNT function in SQL
   $list = open_journal_load_multiple($user);

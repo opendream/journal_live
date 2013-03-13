@@ -44,6 +44,16 @@ function open_journal_reject_sidebar_form_submit($form, &$form_state) {
 	
 	
 }
+function open_journal_not_reject_form($form, &$form_state) {
+
+	$form['not_reject'] = array(
+		'title' => 'Not include reject status',
+		'type' => 'checkbox',
+
+	);
+
+	return $form;
+}
 
 
 function open_journal_approve_sidebar_form($form, &$form_state, $journal , $next_status) {
