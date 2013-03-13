@@ -2164,10 +2164,6 @@ function open_journal_image_default_styles() {
 
 function open_journal_get_real_name($account) {
   $real_name = '';
-<<<<<<< HEAD
-=======
-
->>>>>>> 147930abae35fbe7ccf1fa062a035a332c3297aa
   if (!is_array($account->data)) {
     $account->data = unserialize($account->data);
   }
