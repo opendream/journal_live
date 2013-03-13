@@ -344,6 +344,10 @@ ul.secondary li.active a.active {
   clear: left;
 }
 
+#header-profile {
+  position: relative;
+  z-index: 50;
+}
 /**
  * Page layout.
  */
