@@ -11,7 +11,8 @@
   	  <?php foreach ($file_list as $file): ?>
   	  <li>
   			<div class="journal-user profile-picture-small">
-  			  <?php print l($file->user_info['display_picture'].'<span class="username">'.$file->user_info['display_name'].'</span>', '', array('html' => TRUE)); ?>
+  			  <?php print $file->user_info['display_picture']; ?>
+  			  <?php print $file->user_info['display_name']; ?>
   			</div>
   			<div class="file-name">
   			  <span class="file-attach">
