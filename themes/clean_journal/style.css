@@ -1772,11 +1772,18 @@ h2.journal-block-title {
 .status-block {
 	width: 260px;
 }
+	.status-block .h2-wrapper {
+		width: 316px; 
+		margin-left: -28px;
+		background: url(images/bg-header-block.png) no-repeat;
+		padding-bottom: 15px;
+	}
 	.status-block h2.journal-block-title {
 		width: 271px;
-		background: url(images/bg-header-block.png) no-repeat;
-		margin: 0 0 0 -28px;
-		padding: 17px 15px 23px 30px;
+		background-image: none;
+		background-color: #55b0d6;
+		margin: 0;
+		padding: 17px 15px 13px 30px;
 		color: #FFF;
 		font-family: 'THSarabunNewRegular';
 	}
