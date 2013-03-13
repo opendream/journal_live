@@ -300,6 +300,15 @@ function open_journal_menu() {
     'file' => 'includes/open_journal_issue.inc',
   );
 
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/feed/%'] = array(
+    'title' => t('Export Issues'),
+    'page arguments' => array(2),
+    'page callback' => 'open_journal_feed_generator',
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/feed.inc',
+  );
+
   return $items;
 }
 
