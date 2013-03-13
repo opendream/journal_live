@@ -287,31 +287,58 @@ function open_journal_issue_form_validate($form, &$form_state) {
 
   // Check journal pattern and journal is exists.
   $pattern = '/^(?:\s*|(.*) )?\[\s*id\s*:\s*(\d+)\s*\]$/';
-  foreach ($values['journals'] as $delta => $journal) {
-    $journal_title = trim($journal['title']);
 
-    if (empty($journal_title)) {
-      unset($form_state['values']['journals'][$delta]);
-      continue;
-    }
+  foreach ($values['sections'] as $delta => $section) {
+    $empty_journal = TRUE;
+    $deltas = array();
+    foreach ($section['journals'] as $delta2 => $journal) {
+      $journal_title = trim($journal['title']);
 
-    preg_match($pattern, $journal_title, $matches);
+      if (empty($deltas)) {
+        $deltas = array($delta, $delta2);
+      }
 
-    if (!empty($matches)) {
-      // Explicit nid. Check that the 'title' part matches the actual title for
-      // the nid.
-      list(, $title, $jid) = $matches;
-      if (!empty($title)) {
-        $real_title = db_select('open_journal_journal', 'j')
-          ->fields('j', array('dc_title'))
-          ->condition('j.jid', $jid)
-          ->execute()
-          ->fetchField();
-        if (trim($title) != trim($real_title)) {
-          form_set_error('journals]['. $delta .'][title', 'xxxx');
+      if (empty($journal_title)) {
+        unset($form_state['values']['sections'][$delta]['journals'][$delta2]);
+        continue;
+      }
+
+      preg_match($pattern, $journal_title, $matches);
+
+      if (!empty($matches)) {
+        // Explicit nid. Check that the 'title' part matches the actual title for
+        // the nid.
+        list(, $title, $jid) = $matches;
+
+        if (!empty($title)) {
+          $real_title = db_select('open_journal_journal', 'j')
+            ->fields('j', array('dc_title'))
+            ->condition('j.jid', $jid)
+            ->execute()
+            ->fetchField();
+
+          if (trim($title) === trim($real_title)) {
+            $empty_journal = FALSE;
+            $form_state['values']['sections'][$delta]['journals'][$delta2]['jid'] = $jid;
+          }
+          else {
+            form_set_error('sections]['. $delta .'][journals]['. $delta2 .'][title', t('Journal not found. Please choose from autocomplete again.'));
+          }
         }
       }
-      $form_state['values']['journals'][$delta]['jid'] = $jid;
+      else {
+        form_set_error('sections]['. $delta .'][journals]['. $delta2 .'][title', t('Journal not found. Please choose from autocomplete again.'));
+      }
+    }
+
+
+    $section_title = trim($section['title']);
+    if (empty($section_title) && !$empty_journal) {
+      form_set_error('sections]['. $delta .'][title', t('Please enter section title'));
+    }
+
+    if (!empty($section_title) && $empty_journal && $deltas) {
+      form_set_error('sections]['. $deltas[0] .'][journals][' .$deltas[1] .'][title', t('ddd'));
     }
   }
 }
@@ -322,6 +349,7 @@ function open_journal_issue_form_validate($form, &$form_state) {
 function open_journal_issue_form_submit($form, $form_state) {
   global $user;
   $values = $form_state['values'];
+  dpm($values);
 
   // $issue_id = db_insert('open_journal_issue')
   //   ->fields(array(
