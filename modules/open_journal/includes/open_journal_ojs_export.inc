@@ -16,12 +16,14 @@ function generate_xml_element( $dom, $data ) {
 
     // Any other items in the data array should be child elements
     foreach ( $data as $data_key => $child_data ) {
-        if ( ! is_numeric( $data_key ) )
+        if ( ! is_numeric( $data_key ) ) {
             continue;
+        }
 
         $child = generate_xml_element( $dom, $child_data );
-        if ( $child )
+        if ( $child ) {
             $element->appendChild( $child );
+        }
     }
 
     return $element;
