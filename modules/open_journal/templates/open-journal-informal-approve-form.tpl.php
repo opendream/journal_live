@@ -1,5 +1,4 @@
-
-<div class="block-bg-shadow">
+<div class="informal-status-block block-bg-shadow">
   
   <h2 class="journal-block-title">Informal status</h2>
   
@@ -14,7 +13,6 @@
           <?php print $informal->form; ?>
         </div>
         
-
       </li>
       <?php endforeach ?>
     </ul>

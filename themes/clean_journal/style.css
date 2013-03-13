@@ -1425,6 +1425,7 @@ input.form-submit:hover {
   /* float: left; */
   padding: 10px 0 10px 20px;
   position: relative;
+  z-index: 10;
 }
   #page.page-journal-list .journal-filter-tab .journal-filter .journal-filter-active,
   #journal-menu-item-list li a {
@@ -1803,6 +1804,7 @@ h2.journal-block-title {
 }
 	#overview-discussion li,
 	#file-list-item li {
+		position: relative;
 		float:left;
 		padding: 10px 0;
 		border-bottom: 1px solid #e1e1e1;
@@ -1819,7 +1821,7 @@ h2.journal-block-title {
 	}
 		#overview-discussion li .journal-user a img,
 		#overview-discussion li .journal-user img,
-		#file-list-item li .journal-user a img {
+		#file-list-item li .journal-user .user-picture-wrapper img {
 			float: left;
 			margin-right: 10px;
 		}
@@ -2607,7 +2609,7 @@ h3.people-section-title {
 	-moz-border-radius: 50%;
 	-webkit-border-radius: 50%;
 	text-align: center;
-	line-height: 45px;
+	line-height: 42px;
 	margin: 5px;
 	color: #FFF;
 	font-family: 'THSarabunNewRegular';
@@ -2678,6 +2680,50 @@ h3.people-section-title {
 	color: rgb(175, 30, 30);
 	text-transform: uppercase;
 	font-size: 22px;
+}
+
+/* Informal Status
+----------------------------------------------------------------*/
+.informal-status-block {
+	width: 260px;
+	float: left;
+}
+ul.journal-informal-approve-list {
+	margin: 0;
+	list-style-type: none;
+}
+ul.journal-informal-approve-list li {
+	float: left;
+	width: 100%;
+	margin-bottom: 10px;
+}
+ul.journal-informal-approve-list li .user-picture-wrapper {
+	float: left;
+	margin-right: 10px;
+	width: 40px;
+}
+ul.journal-informal-approve-list li .user-name-wrapper {
+	font-weight: bold;
+}
+.informal-action {
+	width: 210px;
+	float: right;
+}
+.informal-action .active-status {
+	float: left;
+	width: 210px;
+	margin-bottom: 5px;
+}
+.informal-action .form-submit {
+	display: block;
+	float: left;
+	text-transform: uppercase;
+	color: #FFF;
+	/* text-shadow: -1px -1px 1px #666; */
+	font-size: 12px;
+	line-height: 20px;
+	padding: 5px 10px;
+	background-color: #62C9AE;
 }
 /* Footer
 ----------------------------------------------------------------*/
