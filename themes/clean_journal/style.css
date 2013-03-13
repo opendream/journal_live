@@ -1402,9 +1402,10 @@ input.form-submit:hover {
 			height: 0;
 			margin: 0;
 		}
-		#page.page-journal-list #user-heading img {
+		#page.page-journal-list #user-heading .user-picture-wrapper {
 			float: left;
 			margin-right: 20px;
+			width: 73px;
 		}
 		#page.page-journal-list #user-heading h2 {
 			font-size: 30px;
