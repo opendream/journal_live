@@ -273,6 +273,18 @@ function open_journal_menu() {
   );
 
   // Issue paths.
+  $items['issue'] = array(
+    'title' => 'My Issue',
+    'page callback' => 'open_journal_issue_list',
+    'access arguments' => array('create update delete issue'),
+    'file' => 'includes/open_journal_issue.inc',
+  );
+
+  $items['issue/list'] = array(
+    'title' => 'List',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+
   $items['issue/add'] = array(
     'page callback' => 'open_journal_issue_add',
     'access arguments' => array('create update delete issue'),
@@ -300,6 +312,14 @@ function open_journal_menu() {
     'type' => MENU_LOCAL_TASK,
     'file' => 'includes/open_journal_issue.inc',
     'weight' => -9,
+  );
+
+  $items['issue/%open_journal_issue/delete'] = array(
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('open_journal_issue_delete_confirm', 1),
+    'access arguments' => array('create update delete issue'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_issue.inc',
   );
   
   $items['issue/%open_journal_issue/delete'] = array(
@@ -2320,29 +2340,32 @@ function open_journal_issue_load($issue_id) {
 
   if (!isset($issue)) {
     $issue = array();
+  }
 
-    if (!isset($issue[$issue_id])) {
-      // Load issue.
-      $issue[$issue_id] = db_query("SELECT * FROM {open_journal_issue} WHERE iid = :iid", array(':iid' => $issue_id))->fetch();
-      if ($issue[$issue_id]) {
+  if (!isset($issue[$issue_id])) {
+    // Load issue.
+    $issue[$issue_id] = db_query("SELECT * FROM {open_journal_issue} WHERE iid = :iid", array(':iid' => $issue_id))->fetch();
 
-        // Load sections
-        $section_result = db_query("SELECT * FROM {open_journal_issue_section} WHERE iid = :iid ORDER BY weight ASC", array(':iid' => $issue_id));
-        $sections = array();
-        foreach ($section_result as $section) {
-          $journal_result = db_query("SELECT jid, weight FROM {open_journal_issue_journal} WHERE sid = :sid ORDER BY weight ASC", array(':sid' => $section->sid));
-          $journals = array();
-          foreach ($journal_result as $journal) {
-            if ($_journal = open_journal_journal_load($journal->jid)) {
-              $_journal->weight = $journal->weight;
-              $journals[] = $_journal;
-            }
+    if ($issue[$issue_id]) {
+      // Load sections.
+      $section_result = db_query("SELECT * FROM {open_journal_issue_section} WHERE iid = :iid ORDER BY weight ASC", array(':iid' => $issue_id));
+
+      $sections = array();
+      foreach ($section_result as $section) {
+        // Load journals.
+        $journal_result = db_query("SELECT jid, weight FROM {open_journal_issue_journal} WHERE sid = :sid ORDER BY weight ASC", array(':sid' => $section->sid));
+
+        $journals = array();
+        foreach ($journal_result as $journal) {
+          if ($_journal = open_journal_journal_load($journal->jid)) {
+            $_journal->weight = $journal->weight;
+            $journals[] = $_journal;
           }
-          $section->journals = $journals;
-          $sections[] = $section;
         }
-        $issue[$issue_id]->sections = $sections;
+        $section->journals = $journals;
+        $sections[] = $section;
       }
+      $issue[$issue_id]->sections = $sections;
     }
   }
 
