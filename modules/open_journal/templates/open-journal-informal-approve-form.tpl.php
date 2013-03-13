@@ -9,7 +9,11 @@
       <li class="journal-informal-approve-item<?php print $informal->add_class; ?>">
         <?php print $informal->user_info['display_picture']; ?>
         <?php print $informal->user_info['display_name']; ?>
-        <?php print $informal->form; ?>
+        
+        <div class="informal-action">
+          <?php print $informal->form; ?>
+        </div>
+        
 
       </li>
       <?php endforeach ?>

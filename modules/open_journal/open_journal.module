@@ -1057,10 +1057,10 @@ function open_journal_people_informal_approve_list($journal) {
         role_permission rp 
       ON
         rp.rid = ur.rid
-      LEFT JOIN
+      INNER JOIN
         open_journal_journal_people jp
       ON
-        jp.uid = jp.uid
+        ur.uid = jp.uid
       WHERE 
         rp.permission = 'informal approve journal' AND
         jp.jid = :jid";
@@ -1071,16 +1071,16 @@ function open_journal_people_informal_approve_list($journal) {
   global $user;
   
   $status_list = unserialize(OPEN_JOUNAL_INFORMAL_STATUS);
-  
-  foreach ($informal_list as &$informal) {
     
+  foreach ($informal_list as &$informal) {
+        
     $informal->user = user_load($informal->uid);
     $informal->user_info = open_journal_get_display_user_info($informal->user);
     
 
     if ($informal->uid == $user->uid) {
       $informal->add_class = ' informal-form';
-      $informal->form = drupal_render(drupal_get_form('open_journal_informal_approve_sidebar_form', $journal, $informal, $status_list));
+      $informal->form = drupal_render(drupal_get_form('open_journal_informal_approve_sidebar_form', $journal, $informal));
     }
     else {
       $informal->add_class = '';
@@ -1825,6 +1825,10 @@ function open_journal_image_default_styles() {
 
 function open_journal_get_real_name($account) {
   $real_name = '';
+  
+  if (!is_array($account->data)) {
+    $account->data = unserialize($account->data);
+  }
   if (isset($account->data['firstname']) && $account->data['firstname']) {
     $real_name .= $account->data['firstname'];
   }

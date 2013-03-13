@@ -87,7 +87,13 @@ function open_journal_approve_sidebar_form_submit($form, &$form_state) {
 
 }
 
-function open_journal_informal_approve_sidebar_form($form, &$form_state, $journal, $informal, $status_list) {
+function open_journal_informal_approve_sidebar_form($form, &$form_state, $journal, $informal) {
+  
+  $status_list = array(
+    0 => 'Reviewing',
+    1 => 'Agree', 
+    2 => 'Fail', 
+  );
   
   $form['jid'] = array(
     '#type' => 'hidden',
@@ -98,6 +104,7 @@ function open_journal_informal_approve_sidebar_form($form, &$form_state, $journa
   if ($informal->informal_approve_status == 0) {
     $form['reviewing'] = array(
   		'#markup' => '<span class="active-status">'.$status_list[0].'</span>',
+  		'#weight' => -10,
   	);
   }
   else {
@@ -110,6 +117,7 @@ function open_journal_informal_approve_sidebar_form($form, &$form_state, $journa
 	if ($informal->informal_approve_status == 1) {
   	$form['agree'] = array(
   		'#markup' => '<span class="active-status">'.$status_list[1].'</span>',
+  		'#weight' => -10,
   	);
   }
   else {
@@ -122,6 +130,7 @@ function open_journal_informal_approve_sidebar_form($form, &$form_state, $journa
   if ($informal->informal_approve_status == 2) {  
   	$form['fail'] = array(
   		'#markup' => '<span class="active-status">'.$status_list[2].'</span>',
+  		'#weight' => -10,
   	);
   }
   else {  
@@ -137,7 +146,24 @@ function open_journal_informal_approve_sidebar_form($form, &$form_state, $journa
 }
 
 function open_journal_informal_approve_sidebar_form_submit($form, &$form_state) {
-  $status = unserialize(OPEN_JOUNAL_INFORMAL_STATUS);
-  dpm($form_state);
+  
+  global $user;
+  
+  
+  $data = $form_state['values'];
+  $op = $data['op'];
+  
+  // TODO use constant
+  $status_list = array('Reviewing' => 0, 'Agree' => 1, 'Fail' => 2);
+  $status = $status_list[$op];
+  
+  db_update('open_journal_journal_people')
+    ->fields(array(
+      'informal_approve_status' => $status
+    ))
+    ->condition('jid', $data['jid'], '=')
+    ->condition('uid', $user->uid, '=')
+    ->execute();
+  
 }
 
