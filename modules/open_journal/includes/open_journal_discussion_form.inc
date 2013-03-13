@@ -44,12 +44,13 @@ function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL)
     '#upload_location' => "public://journal/",
     '#default_value' => open_journal_get_field($data, 'fid'),
   );
-    
+      
   $form['contributor_only'] = array(
     '#title' => t('Contributor only'),
     '#type' => 'checkbox',
     '#description' => t('If checked this box, only contributor can access this discussion.'),
-    '#default_value' => open_journal_get_field($data, 'contributor_only')
+    '#default_value' => open_journal_get_field($data, 'contributor_only'),
+    '#access' => !open_journal_get_field($data, 'permanent')
   );
 
   $form['main']['actions'] = array('#type' => 'actions');

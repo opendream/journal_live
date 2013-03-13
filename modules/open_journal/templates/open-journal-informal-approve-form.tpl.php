@@ -1,4 +1,4 @@
-
+<?php if ($informal_list): ?>
 <div class="block-bg-shadow">
   
   <h2 class="journal-block-title">Informal status</h2>
@@ -21,3 +21,4 @@
   </div>
 
 </div>
+<?php endif ?>
