@@ -247,6 +247,15 @@ function open_journal_menu() {
     'type' => MENU_DEFAULT_LOCAL_TASK,
     'weight' => -10,
   );
+
+  $items['issue/%open_journal_issue/edit'] = array(
+    'page callback' => 'open_journal_issue_edit',
+    'page arguments' => array(1),
+    'access arguments' => array('create issue'),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'includes/open_journal_issue.inc',
+    'weight' => -9,
+  );
   
   return $items;
 }

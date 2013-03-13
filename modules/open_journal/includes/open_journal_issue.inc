@@ -8,6 +8,13 @@ function open_journal_issue_form($form, $form_state, $issue = NULL) {
 
   $form['#attached']['css'][] = drupal_get_path('module', 'open_journal') . '/css/open_journal_issue.css';
 
+  if ($issue) {
+    $form['iid'] = array(
+      '#type' => 'value',
+      '#value' => $issue->iid,
+    );
+  }
+
   $form['title'] = array(
     '#type' => 'textfield',
     '#title' => t('Issue title'),
@@ -37,16 +44,32 @@ function open_journal_issue_form($form, $form_state, $issue = NULL) {
     '#weight' => -2,
   );
 
+  $publish_date = array();
+  if (isset($issue) && isset($issue->publish_date)) {
+    $publish_date = array(
+      'year' => date('Y', $issue->publish_date),
+      'month' => date('n', $issue->publish_date),
+      'day' => date('j', $issue->publish_date),
+    );
+  }
   $form['publish_date'] = array(
     '#type' => 'date',
     '#title' => t('Publish date'),
-    '#default_value' => isset($issue) ? $issue->publish_date : '',
+    '#default_value' => $publish_date,
   );
 
+  $access_date = array();
+  if (isset($issue) && isset($issue->access_date)) {
+    $access_date = array(
+      'year' => date('Y', $issue->access_date),
+      'month' => date('n', $issue->access_date),
+      'day' => date('j', $issue->access_date),
+    );
+  }
   $form['access_date'] = array(
     '#type' => 'date',
     '#title' => t('Access date'),
-    '#default_value' => isset($issue) ? $issue->access_date : '',
+    '#default_value' => $access_date,
   );
 
   $form['current'] = array(
@@ -89,8 +112,19 @@ function open_journal_issue_form($form, $form_state, $issue = NULL) {
     $sections = $form_state['sections'];
   }
   elseif (isset($issue->sections)) {
-    $sections = $issue->sections;
+    $sections = (array) $issue->sections;
+    foreach ($sections as $delta => $section) {
+      $sections[$delta]->id = $section->sid;
+      foreach ($section->journals as $delta2 => $journal) {
+        $sections[$delta]->journals[$delta2]->id = $journal->jid;
+        $sections[$delta]->journals[$delta2]->title = $journal->dc_title .' [id:'. $journal->jid .']';
+        $sections[$delta]->journals[$delta2] = (array) $sections[$delta]->journals[$delta2];
+      }
+      $sections[$delta] = (array) $sections[$delta];
+    }
   }
+
+  // return array();
 
   if (!empty($sections)) {
     $delta = count($sections);
@@ -396,27 +430,54 @@ function open_journal_issue_form_submit($form, $form_state) {
   global $user;
   $values = $form_state['values'];
 
-  dpm($values);
+  // Update.
+  $num_update = 0;
+  if (isset($values['iid']) && is_numeric($values['iid'])) {
+    $issue_id = $values['iid'];
 
-  $issue_id = db_insert('open_journal_issue')
-    ->fields(array(
-      'title' => $values['title'],
-      'uid' => $user->uid,
-      'volume' => $values['volume'],
-      'number' => $values['number'],
-      'year' => $values['year'],
-      'publish_date' => _date_to_timestamp($values['publish_date']),
-      'access_date' => _date_to_timestamp($values['access_date']),
-      'current' => $values['current'],
-      'status' => 1,
-      'published' => $values['published'],
-      'created' => time(),
-      'changed' => time(),
-    ))
-    ->execute();
+    $num_update = db_update('open_journal_issue')
+      ->fields(array(
+        'title' => $values['title'],
+        'volume' => $values['volume'],
+        'number' => $values['number'],
+        'year' => $values['year'],
+        'publish_date' => _date_to_timestamp($values['publish_date']),
+        'access_date' => _date_to_timestamp($values['access_date']),
+        'current' => $values['current'],
+        'status' => 1,
+        'published' => $values['published'],
+        'changed' => time(),
+      ))
+      ->condition('iid', $issue_id, '=')
+      ->execute();
+  }
+  // New.
+  else {
+    $issue_id = db_insert('open_journal_issue')
+      ->fields(array(
+        'title' => $values['title'],
+        'uid' => $user->uid,
+        'volume' => $values['volume'],
+        'number' => $values['number'],
+        'year' => $values['year'],
+        'publish_date' => _date_to_timestamp($values['publish_date']),
+        'access_date' => _date_to_timestamp($values['access_date']),
+        'current' => $values['current'],
+        'status' => 1,
+        'published' => $values['published'],
+        'created' => time(),
+        'changed' => time(),
+      ))
+      ->execute();
+  }
 
   if ($issue_id) {
-    // dpm('SELECT * FROM open_journal_issue_section WHERE iid = '. $issue_id);
+
+    if ($num_update > 0) {
+      db_query("DELETE FROM open_journal_issue_section WHERE iid = :iid", array(':iid' => $issue_id));
+      db_query("DELETE FROM open_journal_issue_journal WHERE iid = :iid", array(':iid' => $issue_id));
+    }
+
     foreach ($values['sections'] as $section) {
       $section_id = db_insert('open_journal_issue_section')
         ->fields(array(
@@ -446,7 +507,6 @@ function open_journal_issue_form_submit($form, $form_state) {
             ->execute();
         }
       }
-      // dpm('SELECT * FROM open_journal_issue_journal WHERE sid = '. $section_id);
     }
     drupal_goto('issue/'. $issue_id .'/view');
   }
