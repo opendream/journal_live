@@ -17,7 +17,7 @@ define('OPEN_JOURNAL_ABSTRACT_REQUIRED', TRUE);
 define('OPEN_JOURNAL_KEYWORDS_REQUIRED', TRUE);
 
 
-define('OPEN_JOURNAL_ABSTRACT_MAX_LENGTH', 500);
+define('OPEN_JOURNAL_ABSTRACT_MAX_LENGTH', 2000);
 define('OPEN_JOURNAL_MAX_MULTI_TEXTFIELD', 10);
 
 
@@ -1006,11 +1006,16 @@ function open_journal_people_contributor_list($journal) {
   
   $user_contributor_list = db_query(
    "SELECT 
-      uid 
+      DISTINCT(uid) 
     FROM 
       users_roles ur, role_permission rp 
     WHERE 
-      rp.permission = 'access contributor process' AND 
+      (
+        rp.permission = 'access contributor process' OR 
+        rp.permission = 'auto active when create journal' OR 
+        rp.permission = 'approve with unanimity and reject journal' OR 
+        rp.permission = 'informal approve journal'
+      ) AND 
       rp.rid = ur.rid")->fetchAllKeyed(0, 0);
 
   foreach ($user_contributor_list as $key => $uid) {
