@@ -1569,10 +1569,10 @@ input.form-submit:hover {
 		margin-top: 10px;
 	}
 		#journal-list .journal-item .status1 {
-			background-color: #ff5f65;
+			background-color: #c6aadd;
 		}
 		#journal-list .journal-item .status2 {
-			background-color: #ff5f65;
+			background-color: #cd935e;
 		}
 		#journal-list .journal-item .status3 {
 			background-color: #69c5ae;
@@ -2413,12 +2413,6 @@ ul.discussion-list {
 
 /* People
 ----------------------------------------------------------------*/
-.people-block {
-  width: 100%;
-}
-.people-block-inner {
-  overflow: hidden;
-}
 .people-block h2.journal-block-title {
 	margin-bottom: 0;
 }
@@ -2539,10 +2533,6 @@ h3.people-section-title {
 
 /* Status Sidebar
 ----------------------------------------------------------------*/
-
-.sidebar-status-block {
-  overflow: hidden;
-}
 .sidebar-status-block .status-active,
 .sidebar-status-block .status-disabled {
 	width: 260px;
@@ -2555,11 +2545,11 @@ h3.people-section-title {
 	margin-bottom: 10px;
 }
 .sidebar-status-block .status-active.current {
-	line-height: 25px;
+	line-height: 28px;
 }
 
-.sidebar-status-block .status-active > div,
-.sidebar-status-block .status-disabled > div {
+.sidebar-status-block .status-active .status-number,
+.sidebar-status-block .status-disabled .status-number {
 	width: 40px;
 	height: 40px;
 	float: left;
@@ -2574,7 +2564,7 @@ h3.people-section-title {
 	font-size: 30px;
 	margin-right: 15px;
 }
-.sidebar-status-block .status-disabled > div {
+.sidebar-status-block .status-disabled .status-number {
 	background-color: #dedede;
 }
 .sidebar-status-block .status-active .discussion-sidebar-status-0 {

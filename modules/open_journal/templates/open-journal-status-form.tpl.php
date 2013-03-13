@@ -7,7 +7,7 @@
 	elseif($key_status == $journal->status):print " class='status-active current' ";
 	else:print " class='status-disabled' ";endif;?>>
 	
-		<div class="discussion-sidebar-status-<?php print $key_status;?>" >
+		<div class="status-number discussion-sidebar-status-<?php print $key_status;?>" >
 		<?php print $key_status+1;?>
 		</div>
 
