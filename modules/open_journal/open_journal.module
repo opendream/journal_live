@@ -2065,17 +2065,26 @@ function open_journal_issue_load($issue_id) {
     $issue = array();
 
     if (!isset($issue[$issue_id])) {
-      $issue[$issue_id] = db_query("SELECT * FROM {open_journal_issue} WHERE issue_id = :issue_id", array('issue_id' => $issue_id))->fetch();
+      // Load issue.
+      $issue[$issue_id] = db_query("SELECT * FROM {open_journal_issue} WHERE iid = :iid", array(':iid' => $issue_id))->fetch();
       if ($issue[$issue_id]) {
-        $result = db_query("SELECT jid, weight FROM {open_journal_issue_journal} WHERE issue_id = :issue_id ORDER BY weight ASC", array('issue_id' => $issue_id));
-        $journals = array();
-        foreach ($result as $row) {
-          if ($journal = open_journal_journal_load($row->jid)) {
-            $journal->weight = $row->weight;
-            $journals[] = $journal;
+
+        // Load sections
+        $section_result = db_query("SELECT * FROM {open_journal_issue_section} WHERE iid = :iid ORDER BY weight ASC", array(':iid' => $issue_id));
+        $sections = array();
+        foreach ($section_result as $section) {
+          $journal_result = db_query("SELECT jid, weight FROM {open_journal_issue_journal} WHERE sid = :sid ORDER BY weight ASC", array(':sid' => $section->sid));
+          $journals = array();
+          foreach ($journal_result as $journal) {
+            if ($_journal = open_journal_journal_load($journal->jid)) {
+              $_journal->weight = $journal->weight;
+              $journals[] = $_journal;
+            }
           }
+          $section->journals = $journals;
+          $sections[] = $section;
         }
-        $issue[$issue_id]->journals = $journals;
+        $issue[$issue_id]->sections = $sections;
       }
     }
   }

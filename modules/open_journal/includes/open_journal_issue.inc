@@ -448,6 +448,7 @@ function open_journal_issue_form_submit($form, $form_state) {
       }
       // dpm('SELECT * FROM open_journal_issue_journal WHERE sid = '. $section_id);
     }
+    drupal_goto('issue/'. $issue_id .'/view');
   }
 }
 
@@ -478,16 +479,22 @@ function open_journal_issue_view($issue) {
 
   // List journals.
   $items = array();
-  foreach ($issue->journals as $journal) {
-    $items[] = l($journal->dc_title, 'journal/'. $journal->jid);
+  foreach ($issue->sections as $section) {
+    $item['data'] = '<h3>'. $section->title .'</h3>';
+    $item['children'] = array();
+    foreach ($section->journals as $journal) {
+      $item['children'][] = l($journal->dc_title, 'journal/'. $journal->jid);
+    }
+    $items[] = $item;
   }
 
   $output = theme('item_list', array('items' => $items));
 
   // Edit link.
   if ($user->uid == $issue->uid || $user->uid == 1) {
-    $output .= l(t('Edit'), 'issue/'. $issue->issue_id .'/edit', array('query' => drupal_get_destination()));
+    $output .= l(t('Edit'), 'issue/'. $issue->iid .'/edit', array('query' => drupal_get_destination()));
   }
+
   return $output;
 }
 
