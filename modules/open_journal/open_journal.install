@@ -274,12 +274,14 @@ function open_journal_schema() {
         'default' => 1,
       ),
       'volume' => array(
-        'type' => 'int',
+        'type' => 'varchar',
+        'length' => 255,
         'not null' => TRUE,
         'default' => 0,
       ),
       'number' => array(
-        'type' => 'int',
+        'type' => 'varchar',
+        'length' => 255,
         'not null' => TRUE,
         'default' => 0,
       ),

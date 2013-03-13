@@ -16,6 +16,51 @@ function open_journal_issue_form($form, $form_state, $issue = NULL) {
     '#weight' => -5,
   );
 
+  $form['volume'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Volume'),
+    '#default_value' => isset($issue) ? $issue->volume : '',
+    '#weight' => -4,
+  );
+
+  $form['number'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Number'),
+    '#default_value' => isset($issue) ? $issue->number : '',
+    '#weight' => -3,
+  );
+
+  $form['year'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Year'),
+    '#default_value' => isset($issue) ? $issue->year : date('Y'),
+    '#weight' => -2,
+  );
+
+  $form['publish_date'] = array(
+    '#type' => 'date',
+    '#title' => t('Publish date'),
+    '#default_value' => isset($issue) ? $issue->publish_date : '',
+  );
+
+  $form['access_date'] = array(
+    '#type' => 'date',
+    '#title' => t('Access date'),
+    '#default_value' => isset($issue) ? $issue->access_date : '',
+  );
+
+  $form['current'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Current'),
+    '#default_value' => isset($issue) ? $issue->current : 1,
+  );
+
+  $form['published'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Published'),
+    '#default_value' => isset($issue) ? $issue->published : 1,
+  );
+
   if (isset($form_state['section_count'])) {
     $section_count = $form_state['section_count'];
   }
@@ -25,7 +70,7 @@ function open_journal_issue_form($form, $form_state, $issue = NULL) {
 
   $form['sections_wrapper'] = array(
     '#tree' => FALSE,
-    '#weight' => -4,
+    '#weight' => 10,
     '#prefix' => '<div class="clearfix" id="sections-wrapper">',
     '#suffix' => '</div>',
   );
@@ -84,6 +129,7 @@ function open_journal_issue_form($form, $form_state, $issue = NULL) {
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
+    '#weight' => 11,
   );
 
   return $form;
@@ -349,33 +395,60 @@ function open_journal_issue_form_validate($form, &$form_state) {
 function open_journal_issue_form_submit($form, $form_state) {
   global $user;
   $values = $form_state['values'];
+
   dpm($values);
 
-  // $issue_id = db_insert('open_journal_issue')
-  //   ->fields(array(
-  //     'title' => $values['title'],
-  //     'uid' => $user->uid,
-  //     'status' => 1,
-  //     'created' => time(),
-  //     'changed' => time(),
-  //   ))
-  //   ->execute();
+  $issue_id = db_insert('open_journal_issue')
+    ->fields(array(
+      'title' => $values['title'],
+      'uid' => $user->uid,
+      'volume' => $values['volume'],
+      'number' => $values['number'],
+      'year' => $values['year'],
+      'publish_date' => _date_to_timestamp($values['publish_date']),
+      'access_date' => _date_to_timestamp($values['access_date']),
+      'current' => $values['current'],
+      'status' => 1,
+      'published' => $values['published'],
+      'created' => time(),
+      'changed' => time(),
+    ))
+    ->execute();
 
-  // if ($issue_id) {
-  //   foreach ($values['journals'] as $journal) {
-  //     if (!isset($journal['jid'])) {
-  //       continue;
-  //     }
+  if ($issue_id) {
+    // dpm('SELECT * FROM open_journal_issue_section WHERE iid = '. $issue_id);
+    foreach ($values['sections'] as $section) {
+      $section_id = db_insert('open_journal_issue_section')
+        ->fields(array(
+          'iid' => $issue_id,
+          'title' => $section['title'],
+          'weight' => $section['weight'],
+        ))
+        ->execute();
+      if ($section_id) {
+        $journals = array();
+        foreach ($section['journals'] as $journal) {
+          if (!isset($journal['jid']) && !$journal['jid']) {
+            continue;
+          }
+          $journals[$journal['jid']] = $journal;
+        }
+        $journals = array_values($journals);
 
-  //     db_insert('open_journal_issue_journal')
-  //       ->fields(array(
-  //         'issue_id' => $issue_id,
-  //         'jid' => $journal['jid'],
-  //         'weight' => $journal['weight'],
-  //       ))
-  //       ->execute();
-  //   }
-  // }
+        foreach ($journals as $journal) {
+          db_insert('open_journal_issue_journal')
+            ->fields(array(
+              'sid' => $section_id,
+              'jid' => $journal['jid'],
+              'iid' => $issue_id,
+              'weight' => $journal['weight'],
+            ))
+            ->execute();
+        }
+      }
+      // dpm('SELECT * FROM open_journal_issue_journal WHERE sid = '. $section_id);
+    }
+  }
 }
 
 /**
@@ -506,4 +579,8 @@ function theme_open_journal_issue_journals_form($variables) {
   ));
   $output .= drupal_render_children($form);
   return $output;
+}
+
+function _date_to_timestamp($date) {
+  return strtotime(implode('-', array($date['year'], $date['month'], $date['day'])));
 }
