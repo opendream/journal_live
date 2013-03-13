@@ -1876,6 +1876,10 @@ h2.journal-block-title {
 	margin-top: 5px;
 }
 
+#journal-detail-wrapper .discussion-block .add-discussion-btn a {
+	background: url(images/ic-add-journal-btn-gray.png) transparent no-repeat 7px 7px;
+}
+
 #journal-detail-wrapper .discussion-block .journal-block-title {
   float: left;
 }
