@@ -8,7 +8,6 @@
         <?php if ($item->can_edit): ?>
         <div class="discussion-item-edit-link">
             <?php print l('Edit', OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion/'.$item->did.'/edit', array('attributes' => array('class' => array('open-journal-ajax-edit-link')))); ?>
-             · 
             <?php print l('Delete', OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion/'.$item->did.'/delete', array('attributes' => array('class' => array('open-journal-ajax-delete-link')))); ?>
         </div>
         <?php endif ?>

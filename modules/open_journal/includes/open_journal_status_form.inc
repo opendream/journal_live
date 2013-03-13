@@ -59,6 +59,10 @@ function open_journal_approve_sidebar_form($form, &$form_state, $journal , $next
 		'#access' => FALSE,
   );
 
+	$form['#attached']['js'] = array(
+	  drupal_get_path('module', 'open_journal') . '/js/open_journal_status_sidebar.js',
+	  drupal_get_path('module', 'open_journal') . '/js/jquery.qtip.min.js',
+	);
 	
 	return $form;
 }
