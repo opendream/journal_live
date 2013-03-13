@@ -2064,8 +2064,7 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
   }
   // Check rander load more
   // TODO: has_more_page checker better performance
-
-  $has_more_page = $count_journal && open_journal_load_multiple($user, $journal->jid, $limit, $status);
+  $has_more_page = $count_journal && open_journal_load_multiple($user, isset($journal->jid), $limit, $status);
   $update_load_more_url = FALSE;
 
   if ($has_more_page) {
