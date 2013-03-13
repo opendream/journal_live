@@ -461,6 +461,7 @@ function open_journal_theme() {
         'account' => NULL,
       ),
       'template' => 'templates/open-journal-account'
+    ),
     'open_journal_issue_journals_form' => array(
       'render element' => 'form',
       'path' => drupal_get_path('module', 'open_journal') .'/includes',
