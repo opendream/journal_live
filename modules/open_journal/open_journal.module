@@ -510,12 +510,16 @@ function open_journal_permission() {
       'description' => t('Perform user can see contributor real name, avatar and create contributor only discussion. Recommented for editor, reviewer, librarian roles.'),
     ),
     'invite people to journal' => array(
-      'title' => t('Iinvite people to journal'),
+      'title' => t('Invite people to journal'),
       'description' => t('Perform user can active and deactive people to journal. Recommented for editor and some reviewer roles.'),
     ),
-    'approve with unanimity and reject journal' => array(
-      'title' => t('Approve with unanimity and reject journal'),
-      'description' => t('Perform user can change status or reject of any journals and can see informal approved. Recommented for editor role.'),
+    'approve with unanimity' => array(
+      'title' => t('Approve with unanimity'),
+      'description' => t('Perform user can change status of any journals and can see informal approved. Recommented for editor and librarian roles.'),
+    ),
+    'reject journal' => array(
+      'title' => t('Reject journal'),
+      'description' => t('Perform user can reject of any journals and can see informal approved. Recommented for editor role.'),
     ),
     'informal approve journal' => array(
       'title' => t('Informal approve journal'),
@@ -1554,7 +1558,7 @@ function open_journal_discussion_list($journal) {
 
   $sidebar = theme('open_journal_status_form', open_journal_get_status_form_variables($journal));
 
-  if (TRUE || user_access('approve with unanimity and reject journal') || user_access('informal approve journal')) {
+  if (user_access('access contributor process') || user_access('informal approve journal')) {
     $informal_list = open_journal_people_informal_approve_list($journal);
     $sidebar .= theme('open_journal_informal_approve_form', array('informal_list' => $informal_list));
   }
@@ -1581,16 +1585,21 @@ function open_journal_get_status_form_variables($journal) {
 
   $vars['status_list'] = $status_list;
   $vars['journal'] = $journal;
-
-  if (user_access('approve with unanimity and reject journal') && !$journal->reject) {
+  
+  $vars['reject_form'] = '';
+  $vars['approve_form'] = '';
+  
+  if ((user_access('approve with unanimity') || user_access('reject journal')) && !$journal->reject) {
     $vars['next_status'] = open_journal_next_status($journal->status);
-    $vars['reject_form'] = drupal_render(drupal_get_form('open_journal_reject_sidebar_form', $journal));
-    $vars['approve_form'] = drupal_render(drupal_get_form('open_journal_approve_sidebar_form', $journal, $vars['next_status']));
+    if (user_access('reject journal')) {
+      $vars['reject_form'] = drupal_render(drupal_get_form('open_journal_reject_sidebar_form', $journal));
+    }
+    if (user_access('approve with unanimity')) {
+      $vars['approve_form'] = drupal_render(drupal_get_form('open_journal_approve_sidebar_form', $journal, $vars['next_status']));
+    }
     $vars['status_add_class'] = ' can-approve';
   }
   else {
-    $vars['reject_form'] = '';
-    $vars['approve_form'] = '';
     $vars['status_add_class'] = ' no-approve';
   }
 
@@ -1624,7 +1633,7 @@ function open_journal_discussion_add($journal) {
   module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
 
   $sidebar = theme('open_journal_status_form', open_journal_get_status_form_variables($journal));
-  if (TRUE || user_access('approve with unanimity and reject journal') || user_access('informal approve journal')) {
+  if (user_access('access contributor process') || user_access('informal approve journal')) {
     $informal_list = open_journal_people_informal_approve_list($journal);
     $sidebar .= theme('open_journal_informal_approve_form', array('informal_list' => $informal_list));
   }
@@ -1643,7 +1652,7 @@ function open_journal_discussion_edit($journal, $discussion) {
   module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
 
   $sidebar = theme('open_journal_status_form', open_journal_get_status_form_variables($journal));
-  if (TRUE || user_access('approve with unanimity and reject journal') || user_access('informal approve journal')) {
+  if (user_access('access contributor process') || user_access('informal approve journal')) {
     $informal_list = open_journal_people_informal_approve_list($journal);
     $sidebar .= theme('open_journal_informal_approve_form', array('informal_list' => $informal_list));
   }
@@ -1662,7 +1671,7 @@ function open_journal_discussion_delete($journal, $discussion) {
   module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
 
   $sidebar = theme('open_journal_status_form', open_journal_get_status_form_variables($journal));
-  if (TRUE || user_access('approve with unanimity and reject journal') || user_access('informal approve journal')) {
+  if (user_access('access contributor process') || user_access('informal approve journal')) {
     $informal_list = open_journal_people_informal_approve_list($journal);
     $sidebar .= theme('open_journal_informal_approve_form', array('informal_list' => $informal_list));
   }
@@ -1681,7 +1690,7 @@ function open_journal_comment_edit($journal, $discussion, $comment) {
   module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
 
   $sidebar = theme('open_journal_status_form', open_journal_get_status_form_variables($journal));
-  if (TRUE || user_access('approve with unanimity and reject journal') || user_access('informal approve journal')) {
+  if (user_access('access contributor process') || user_access('informal approve journal')) {
     $informal_list = open_journal_people_informal_approve_list($journal);
     $sidebar .= theme('open_journal_informal_approve_form', array('informal_list' => $informal_list));
   }
@@ -1699,7 +1708,7 @@ function open_journal_comment_delete($journal, $discussion, $comment) {
 
   module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
   $sidebar = theme('open_journal_status_form', open_journal_get_status_form_variables($journal));
-  if (TRUE || user_access('approve with unanimity and reject journal') || user_access('informal approve journal')) {
+  if (user_access('access contributor process') || user_access('informal approve journal')) {
     $informal_list = open_journal_people_informal_approve_list($journal);
     $sidebar .= theme('open_journal_informal_approve_form', array('informal_list' => $informal_list));
   }
@@ -1738,7 +1747,7 @@ function open_journal_discussion_detail($journal, $discussion) {
   }
 
   $sidebar = theme('open_journal_status_form', open_journal_get_status_form_variables($journal));
-  if (TRUE || user_access('approve with unanimity and reject journal') || user_access('informal approve journal')) {
+  if (user_access('access contributor process') || user_access('informal approve journal')) {
     $informal_list = open_journal_people_informal_approve_list($journal);
     $sidebar .= theme('open_journal_informal_approve_form', array('informal_list' => $informal_list));
   }
