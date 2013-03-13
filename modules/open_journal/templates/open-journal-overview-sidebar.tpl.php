@@ -2,7 +2,7 @@
 <div class="journal-block status-block block-bg-shadow">
 	
 	<div class="h2-wrapper">
-		<h2 class="journal-block-title status<?php print $status['status_id'];?>"><?php print $status['name']?></h2>
+		<h2 class="journal-block-title status<?php print $status['class'];?>"><?php print $status['name']?></h2>
 	</div>
   
   <!-- Journal-block-content -->
