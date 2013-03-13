@@ -1126,7 +1126,9 @@ function open_journal_mail($key, &$message, $data) {
       $body .= "\n";
       $body .= "\n".'Visit the journal to get started:';
       $body .= "\n".url(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->journal->jid, array('absolute' => TRUE));
-
+      
+      $message['body'][] = $body;
+      
       break;
   }
 
