@@ -2763,6 +2763,42 @@ ul.journal-informal-approve-list li .user-name-wrapper {
 	padding: 5px 10px;
 	background-color: #62C9AE;
 }
+
+/* Account Profile
+----------------------------------------------------------------*/
+.account-profile {
+	font-family: 'THSarabunNewRegular';
+	font-size: 32px;
+	line-height: 32px;
+	float: left;
+	width: 880px;
+	padding: 20px 40px;
+}
+.account-profile .user-picture-wrapper {
+	margin-bottom: 10px;
+	width: 73px;
+	float: left;
+	margin-right: 47px;
+}
+.account-profile-content {
+	width: 636px;
+	float: left;
+	border-left: 2px solid #ccc;
+	padding-left: 60px;
+}
+.account-profile-item {
+	float: left;
+	width: 636px;
+	margin-bottom: 10px;
+	
+}
+.account-profile-label {
+	float: left;
+	margin-right: 10px;
+	font-weight: bold;	
+	margin-bottom: 10px;
+}
+
 /* Footer
 ----------------------------------------------------------------*/
 #footer {
