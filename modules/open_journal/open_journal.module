@@ -795,9 +795,9 @@ function open_journal_journal_save($data, $change_status=FALSE) {
  * Journal people method
  */
 function open_journal_account($uid) {
-
   $account = user_load($uid);
   $account->user_info = open_journal_get_display_user_info($uid, array('image_style' => 'open_journal_avatar_large'));
+  
   return theme('open_journal_account', array(
     'account' => $account,
   ));
@@ -2164,10 +2164,7 @@ function open_journal_image_default_styles() {
 
 function open_journal_get_real_name($account) {
   $real_name = '';
-<<<<<<< HEAD
-=======
 
->>>>>>> 147930abae35fbe7ccf1fa062a035a332c3297aa
   if (!is_array($account->data)) {
     $account->data = unserialize($account->data);
   }
