@@ -160,11 +160,24 @@ function open_journal_issue_form($form, $form_state, $issue = NULL) {
     ),
   );
 
-  $form['submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Save'),
+  $form['actions'] = array(
+    '#type' => 'actions',
     '#weight' => 11,
   );
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+  );
+
+  if ($issue) {
+    $url = 'issue/'. $issue->iid .'/delete';
+    $form['actions']['delete'] = array(
+      '#type' => 'link',
+      '#title' => t('Delete'),
+      '#href' => $url,
+      '#options' => array('path' => $url),
+    );
+  }
 
   return $form;
 }
@@ -513,9 +526,37 @@ function open_journal_issue_form_submit($form, $form_state) {
 }
 
 /**
+ * Issue list.
+ */
+function open_journal_issue_list() {
+  global $user;
+  $result = db_query("SELECT iid FROM {open_journal_issue} WHERE uid = :uid ORDER BY created DESC", array(':uid' => $user->uid));
+
+  $header = array(t('Title'), t('Created date'), array('data' => t('Operations'), 'colspan' => 2));
+
+  $rows = array();
+  foreach ($result as $row) {
+    $issue = open_journal_issue_load($row->iid);
+    $row = array();
+
+    $row[] = l($issue->title, 'issue/'. $issue->iid. '/view');
+    $row[] = format_date($issue->created, 'short');
+    $row[] = l(t('edit'), 'issue/'. $issue->iid. '/edit', array('query' => drupal_get_destination()));
+    $row[] = l(t('delete'), 'issue/'. $issue->iid. '/delete');
+
+    $rows[] = $row;
+  }
+
+  $output = theme('table', array('header' => $header, 'rows' => $rows));
+
+  return $output;
+}
+
+/**
  * Issue add form.
  */
 function open_journal_issue_add() {
+  drupal_set_title(t('Create new issue'));
   $form = drupal_get_form('open_journal_issue_form');
   return $form;
 }
@@ -524,6 +565,7 @@ function open_journal_issue_add() {
  * Issue edit form.
  */
 function open_journal_issue_edit($issue) {
+  drupal_set_title(t('Edit issue !title', array('!title' => $issue->title)));
   $form = drupal_get_form('open_journal_issue_form', $issue);
   return $form;
 }
@@ -666,7 +708,6 @@ function theme_open_journal_issue_journals_form($variables) {
   drupal_add_tabledrag('issue-journals-form-table-'. $form['#section_key'], 'order', 'sibling', 'journal-weight');
 
   $rows = array();
-  // $headers = array(t('Journal'), t('Remove'), t('Weight'));
   $headers = array(t('Journal'), t('Weight'));
 
   foreach (element_children($form) as $key) {
@@ -679,7 +720,6 @@ function theme_open_journal_issue_journals_form($variables) {
     $row = array();
     $row['data'] = array();
     $row['data'][] = drupal_render($form[$key]['title']);
-    // $row['data'][] = drupal_render($form[$key]['remove']);
     $row['data'][] = drupal_render($form[$key]['weight']);
     $row['class'] = array('draggable');
 
