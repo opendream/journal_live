@@ -1400,7 +1400,7 @@ function open_journal_discussion_add($journal) {
   return theme('open_journal_detail', array(
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
     'content' => drupal_render(drupal_get_form('open_journal_discussion_form', $journal)),
-    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', array('jid' => $journal->jid)),
+    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', open_journal_get_status_form_variables($journal)),
     'jid' => $journal->jid
 
   ));
@@ -1411,7 +1411,7 @@ function open_journal_discussion_edit($journal, $discussion) {
   return theme('open_journal_detail', array(
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
     'content' => drupal_render(drupal_get_form('open_journal_discussion_form', $journal, $discussion)),
-    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', array('jid' => $journal->jid)),
+    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', open_journal_get_status_form_variables($journal)),
     'jid' => $journal->jid
 
   ));
@@ -1422,7 +1422,7 @@ function open_journal_discussion_delete($journal, $discussion) {
   return theme('open_journal_detail', array(
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
     'content' => drupal_render(drupal_get_form('open_journal_discussion_delete_form', $journal, $discussion)),
-    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', array('jid' => $journal->jid)),
+    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', open_journal_get_status_form_variables($journal)),
     'jid' => $journal->jid
 
   ));
@@ -1433,7 +1433,7 @@ function open_journal_comment_edit($journal, $discussion, $comment) {
   return theme('open_journal_detail', array(
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
     'content' => drupal_render(drupal_get_form('open_journal_comment_form', $journal, $discussion, $comment)),
-    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', array('jid' => $journal->jid)),
+    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', open_journal_get_status_form_variables($journal)),
     'jid' => $journal->jid
 
   ));
@@ -1444,7 +1444,7 @@ function open_journal_comment_delete($journal, $discussion, $comment) {
   return theme('open_journal_detail', array(
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
     'content' => drupal_render(drupal_get_form('open_journal_comment_delete_form', $journal, $discussion, $comment)),
-    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', array('jid' => $journal->jid)),
+    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', open_journal_get_status_form_variables($journal)),
     'jid' => $journal->jid
 
   ));
@@ -1482,7 +1482,7 @@ function open_journal_discussion_detail($journal, $discussion) {
       'comment_form' => drupal_render(drupal_get_form('open_journal_comment_form', $journal, $discussion)),
       'comment_list' => $comment_list,
     )),
-    'sidebar' => theme('open_journal_status_form', array('jid' => $journal->jid)),
+    'sidebar' => theme('open_journal_status_form', open_journal_get_status_form_variables($journal)),
     'jid' => $journal->jid,
   ));
 }
