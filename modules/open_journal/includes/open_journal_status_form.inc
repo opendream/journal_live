@@ -123,8 +123,15 @@ function open_journal_approve_sidebar_form_submit($form, &$form_state) {
   $discussion = (object) $discussion;
   open_journal_discussion_save($discussion);
   
-  drupal_set_message(t('Please, invite contributors to join on this journal.'));
-  drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$jid .'/people');
+  if (user_access('invite people to journal')) {
+    drupal_set_message(t('Please, invite contributors to join on this journal.'));
+    drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$jid .'/people');
+  }
+  else {
+    drupal_set_message(t('Approve complete.'));
+    drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$jid .'/overview');
+  }
+
 
 }
 
