@@ -148,6 +148,7 @@ function open_journal_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_overview.inc',
   );
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal'] = $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/overview'];
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/discussion'] = array(
     'title' => t('Discussions'),

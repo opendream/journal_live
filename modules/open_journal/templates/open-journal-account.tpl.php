@@ -1,11 +1,26 @@
 <div class="account-profile block-bg-shadow">
-	<div><?php print $account->user_info['display_picture'];?></div>
-	<div>Username: </div><div><?php print $account->name;?></div>
-	<div>First name: </div>
-	<div><?php if(isset($account->data['firstname'])):?><?php print $account->data['firstname'];?><?php endif;?></div>
+	<?php print $account->user_info['display_picture'];?>
+	<div class="account-profile-content">
+		
+    <div class="account-profile-item">
+			<div class="account-profile-label label">Username: </div><div><?php print $account->name;?></div>
+		</div>
+    
+    <?php if(isset($account->data['firstname'])):?>
+		<div class="account-profile-item">
+			<div class="account-profile-label label">First name: </div><div><?php print $account->data['firstname'];?></div>
+		</div>
+    <?php endif;?>
 
-	<div>Last name: </div>
-	<div><?php if(isset($account->data['lastname'])):?><?php print $account->data['lastname'];?><?php endif;?></div>
+    <?php if(isset($account->data['lastname'])):?>
+		<div class="account-profile-item">
+			<div class="account-profile-label label">Last name: </div><div><?php print $account->data['lastname'];?></div>
+		</div>
+    <?php endif;?>
+		
+    <div class="account-profile-item">
+			<div class="account-profile-label label">E-mail address: </div><div><?php print $account->mail;?></div>
+		</div>
 
-	<div>E-mail address: </div><div><?php print $account->mail;?></div>
+	</div>
 </div>
