@@ -16,12 +16,14 @@ function generate_xml_element( $dom, $data ) {
 
     // Any other items in the data array should be child elements
     foreach ( $data as $data_key => $child_data ) {
-        if ( ! is_numeric( $data_key ) )
+        if ( ! is_numeric( $data_key ) ) {
             continue;
+        }
 
         $child = generate_xml_element( $dom, $child_data );
-        if ( $child )
+        if ( $child ) {
             $element->appendChild( $child );
+        }
     }
 
     return $element;
@@ -56,7 +58,11 @@ function generate_author( $author ){
 
 function generate_article( $article, $file_absolute_url ){
   $author = generate_author(user_load($article->uid));
-
+  
+  $article->dc_subject = explode(',', $article->dc_subject);
+  $article->dc_subject = array_filter($article->dc_subject);
+  $article->dc_subject = implode(', ', $article->dc_subject);
+  
   $article = array(
         'name' => 'article',
         array(
@@ -76,7 +82,7 @@ function generate_article( $article, $file_absolute_url ){
         array(
             'name' => 'abstract',
             'attributes' => array(
-                'locale' => 'en_US',
+                'locale' => 'th_TH',
             ),
             'value' => $article->description_sub,
         ),
@@ -162,6 +168,40 @@ function generate_article( $article, $file_absolute_url ){
         return $article;
 }
 
+function generate_article_feed( $article ){
+  $author = generate_author(user_load($article->uid));
+
+  $article = array(
+    'name' => 'article',
+    array(
+      'name' => 'title',
+      'attributes' => array(
+          'locale' => 'en_US',
+      ),
+      'value' =>  $article->dc_title,
+    ),
+    array(
+      'name' => 'date',
+      'value' => date('Y-m-d', $article->dc_date),
+    ),
+    array(
+      'name' => 'created',
+      'value' => date('Y-m-d', $article->created),
+    ),
+    array(
+      'name' => 'identifier',
+      'value' => $article->dc_identifier,
+    ),
+    array(
+      'name' => 'link',
+      'value' => $article->dc_identifier,
+    )
+  );
+
+  $article[] = $author;
+  return $article;
+}
+
 function generate_section( $section, $articles ) {
   $section = array(
     'name' => 'section',
@@ -240,6 +280,7 @@ function generate_issue( $issue, $sections ) {
 }
 
 function get_journal_section( $section_id ) {
+
   $section = open_journal_load_section( $section_id );
   // $all_journal = open_journal_load_multiple( $section_id );
 
@@ -249,18 +290,22 @@ function get_journal_section( $section_id ) {
     $file = file_load($file_last[0]->fid);
     $file_url = file_create_url($file->uri);
     $file_absolute_url = url($file_url, array('absolute' => TRUE));
-    $articles[]= generate_article($section->articles[$i], $file_absolute_url);
+    $articles[]= generate_article_feed($section->articles[$i], $file_absolute_url);
   }
   return generate_section( $section, $articles );
 }
 
 function get_journal_issue( $issue_id ) {
+  
+  
   $issue = open_journal_load_issue($issue_id);
-
+  
   $sections = array();
   for ($i=0; $i < count($issue->sections); $i++) {
     $sections[] = get_journal_section($issue->sections[$i]);
   }
+  
+
 
   return generate_issue( $issue, $sections );
 }
@@ -274,13 +319,12 @@ function get_journal_all() {
   for ($i=0; $i < count($issue_list->issues); $i++) {
     $issues[] = get_journal_issue($issue_list->issues[$i]);
   }
-  dpm($issues);
 
   return $issues;
 }
 
 function open_journal_ojs_export() {
-  drupal_add_http_header('Content-Type: text/xml; charset=utf-8');
+  drupal_add_http_header('Content-Type', 'text/xml; charset=utf-8');
   global $user;
 
   $issues = get_journal_all();
@@ -293,10 +337,28 @@ function open_journal_ojs_export() {
   $doc->formatOutput = true; // Add whitespace to make easier to read XML
   $xml = $doc->saveXML();
 
-  // dpm('---------------------');
-  // dpm(user_load(1));
-  // dpm($issues);
-  // dpm($xml);
+  print $xml;
+}
+
+
+function open_journal_feed_generator($id) {
+  $limit = 30;
+  $journals = open_journal_load_multiple(NULL, NULL, $limit, OPEN_JOURNAL_STATUS_PUBLISHED);
+  $articles = array('name' => 'articles');
+  $article_size = count($journals);
+
+  for ($i=0; $i < $article_size; $i++) {
+    $articles[]= generate_article_feed($journals[$i]);
+  }
+
+  drupal_add_http_header('Content-Type', 'text/xml; charset=utf-8');
+  $data = $articles;
+  $doc = new DOMDocument();
+  $child = generate_xml_element( $doc, $data );
+  if ( $child )
+      $doc->appendChild( $child );
+  $doc->formatOutput = true; // Add whitespace to make easier to read XML
+  $xml = $doc->saveXML();
 
   print $xml;
 }

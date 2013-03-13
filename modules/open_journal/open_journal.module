@@ -60,6 +60,9 @@ define('OPEN_JOUNAL_INFORMAL_STATUS', serialize (
 ));
 
 
+/**
+ * Implements of hook_menu().
+ */
 function open_journal_menu() {
 
   $arg = count(explode('/', OPEN_JOURNAL_PREFIX_PATH));
@@ -89,6 +92,12 @@ function open_journal_menu() {
     'type' => MENU_CALLBACK,
   );
 
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/autocomplete/%'] = array(
+    'page callback' => 'open_journal_list_autocomplete',
+    'page arguments' => array(2),
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+  );
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/login'] = array(
     'title' => t('Login'),
@@ -249,9 +258,95 @@ function open_journal_menu() {
     'file' => 'includes/open_journal_ojs_export.inc',
   );
 
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/autocomplete/%'] = array(
+    'page callback' => 'open_journal_list_autocomplete',
+    'page arguments' => array(2),
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+  );
+  /*
+  $items['issue'] = array(
+    'title' => 'My Issue',
+    'page callback' => 'open_journal_issue_overview',
+    'access arguments' => array('create update delete issue'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_issue.inc',
+  );
+  */
+
+  // Issue paths.
+  $items['issue'] = array(
+    'title' => 'All issue',
+    'page callback' => 'open_journal_issue_list',
+    'access arguments' => array('create update delete issue'),
+    'file' => 'includes/open_journal_issue.inc',
+  );
+
+  $items['issue/list'] = array(
+    'title' => 'List',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+
+  $items['issue/add'] = array(
+    'page callback' => 'open_journal_issue_add',
+    'access arguments' => array('create update delete issue'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_issue.inc',
+  );
+
+  $items['issue/%open_journal_issue'] = array(
+    'page callback' => 'open_journal_issue_view',
+    'page arguments' => array(1),
+    'access arguments' => array('create update delete issue'),
+    'file' => 'includes/open_journal_issue.inc',
+  );
+
+  $items['issue/%open_journal_issue/view'] = array(
+    'title' => 'View',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -10,
+  );
+
+  $items['issue/%open_journal_issue/edit'] = array(
+    'page callback' => 'open_journal_issue_edit',
+    'page arguments' => array(1),
+    'access arguments' => array('create update delete issue'),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'includes/open_journal_issue.inc',
+    'weight' => -9,
+  );
+
+  $items['issue/%open_journal_issue/delete'] = array(
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('open_journal_issue_delete_confirm', 1),
+    'access arguments' => array('create update delete issue'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_issue.inc',
+  );
+
+  $items['issue/%open_journal_issue/delete'] = array(
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('open_journal_issue_delete_confirm', 1),
+    'access arguments' => array('create update delete issue'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_issue.inc',
+  );
+
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/feed/%'] = array(
+    'title' => t('Export Issues'),
+    'page arguments' => array(2),
+    'page callback' => 'open_journal_feed_generator',
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_ojs_export.inc',
+  );
+
   return $items;
 }
 
+/**
+ * Implements hook_theme().
+ */
 function open_journal_theme() {
 
   return array(
@@ -362,31 +457,44 @@ function open_journal_theme() {
     'open_journal_discussion_list' =>array(
       'variables' => array(
         'discussion_list' => NULL,
-        ),
+      ),
       'template' => 'templates/open-journal-discussion-list'
     ),
     'open_journal_status_form' =>array(
       'variables' => array(
         'journal' => NULL,
-        ),
+      ),
       'template' => 'templates/open-journal-status-form'
     ),
     'open_journal_informal_approve_form' =>array(
       'variables' => array(
         'journal' => NULL,
-        ),
+      ),
       'template' => 'templates/open-journal-informal-approve-form'
+    ),
+
+    // Issue
+    'open_journal_issue_sections_form' => array(
+      'render element' => 'form',
+      'path' => drupal_get_path('module', 'open_journal') .'/includes',
     ),
     'open_journal_account' =>array(
       'variables' => array(
         'account' => NULL,
-        ),
+      ),
       'template' => 'templates/open-journal-account'
+    ),
+    'open_journal_issue_journals_form' => array(
+      'render element' => 'form',
+      'path' => drupal_get_path('module', 'open_journal') .'/includes',
     ),
 
   );
 }
 
+/**
+ * Implements hook_permission().
+ */
 function open_journal_permission() {
   return array(
     'access open journal' => array(
@@ -600,7 +708,9 @@ function open_journal_journal_load($jid) {
 
 function open_journal_journal_save($data, $change_status=FALSE) {
 
-  $data->changed = REQUEST_TIME;
+  if(!$change_status) {
+    $data->changed = REQUEST_TIME;
+  }
 
   open_journal_update_field($data, 'subject_en');
   open_journal_update_field($data, 'subject_sub');
@@ -612,7 +722,7 @@ function open_journal_journal_save($data, $change_status=FALSE) {
   open_journal_update_field($data, 'dc_publisher');
   open_journal_update_field($data, 'dc_contributor');
 
-  if (is_array($data->date)) {
+  if (isset($data->date) && is_array($data->date)) {
     $date = (object) $data->date;
     open_journal_update_field($data, 'dc_date', mktime(0, 0, 0, $date->month, $date->day, $date->year));
   }
@@ -1719,53 +1829,58 @@ function open_journal_file($journal) {
 }
 
 function open_journal_load_section($section_id) {
-  $query_var = array();
+
+  $query_var = array(':sid' => $section_id);
   $sql =
    "SELECT j.*
     FROM
-      {open_journal_journal_people} jp
+      {open_journal_issue_journal} ij
     LEFT JOIN
       {open_journal_journal} j
     ON
-      jp.jid = j.jid
-    -- LEFT JOIN
-    --   {open_journal_journal_section} s
-    -- ON
-    --   j.section_id = s.id
+      ij.jid = j.jid
     WHERE
-      1 = 1
-    -- FOR TEST
-    LIMIT
-      3";
+      ij.sid = :sid";
+      
   $result = db_query($sql, $query_var)->fetchAll();
-
+  
+  
+  $query_var = array(':sid' => $section_id);
+  $sql =
+   "SELECT s.*
+    FROM
+      {open_journal_issue_section} s
+    WHERE
+      s.sid = :sid";
+      
+  $section = db_query($sql, $query_var)->fetchObject();
+  $section->abbrev = '';
+  $section->articles = $result;
+  
+  /*
   $section = new stdClass();
   $section->title = 'MOCK_TITLE'.rand();
   $section->abbrev = 'MOCK_ABBREV'.rand();
   $section->articles = $result;
+  */
+  
 
   return $section;
 }
 
 function open_journal_load_issue($issue_id) {
   # TODO: Query list section in issue
-  // $query_var = array();
-  // $sql =
-  //  "SELECT j.*
-  //   FROM
-  //     {open_journal_journal_people} jp
-  //   LEFT JOIN
-  //     {open_journal_journal} j
-  //   ON
-  //     jp.jid = j.jid
-  //   -- LEFT JOIN
-  //   --   {open_journal_journal_section} s
-  //   -- ON
-  //   --   j.section_id = s.id
-  //   WHERE
-  //     1 = 1";
-  // $result = db_query($sql, $query_var)->fetchAll();
-
+  $query_var = array(':iid' => $issue_id);
+  $sql =
+   "SELECT s.sid
+    FROM
+      {open_journal_issue_section} s
+    WHERE
+      s.iid = :iid
+    ORDER BY weight";
+  $result = db_query($sql, $query_var)->fetchAllKeyed(0, 0);
+    
+  /*
   $result1 = new stdClass();
   $result1->sid = '1';
   $result2 = new stdClass();
@@ -1776,7 +1891,24 @@ function open_journal_load_issue($issue_id) {
   $result[] = $result1;
   $result[] = $result2;
   $result[] = $result3;
-
+  */
+  
+  $query_var = array(':iid' => $issue_id);
+  $sql =
+   "SELECT i.*
+    FROM
+      {open_journal_issue} i
+    WHERE
+      i.iid = :iid";
+  $issue = db_query($sql, $query_var)->fetchObject();
+  
+  $issue->id = $issue->iid;
+  $issue->description = '';
+  $issue->volumn = $issue->volume;
+  $issue->date_published = $issue->publish_date;
+  $issue->sections = array_values($result);
+  
+  /*
   $issue = new stdClass();
   $issue->id = rand();
   $issue->title = 'MOCK_TITLE'.rand();
@@ -1787,29 +1919,19 @@ function open_journal_load_issue($issue_id) {
   $issue->date_published = '2013-03-09';
   $issue->access_date = '2013-03-09';
   $issue->sections = $result;
+  */
 
   return $issue;
 }
 
 function open_journal_load_all_issue() {
   # TODO: Query list issue
-  // $query_var = array();
-  // $sql =
-  //  "SELECT j.*
-  //   FROM
-  //     {open_journal_journal_people} jp
-  //   LEFT JOIN
-  //     {open_journal_journal} j
-  //   ON
-  //     jp.jid = j.jid
-  //   -- LEFT JOIN
-  //   --   {open_journal_journal_section} s
-  //   -- ON
-  //   --   j.section_id = s.id
-  //   WHERE
-  //     1 = 1";
-  // $result = db_query($sql, $query_var)->fetchAll();
-
+  $query_var = array();
+  $sql =
+   "SELECT i.iid FROM {open_journal_issue} i";
+  $result = db_query($sql, $query_var)->fetchAllKeyed(0, 0);;
+  
+  /*
   $result1 = new stdClass();
   $result1->iid = '1';
   $result2 = new stdClass();
@@ -1820,9 +1942,9 @@ function open_journal_load_all_issue() {
   $result[] = $result1;
   $result[] = $result2;
   $result[] = $result3;
+  */
 
-  $issue_list = new stdClass();
-  $issue_list->issues = $result;
+  $issue_list->issues = array_values($result);
 
   return $issue_list;
 }
@@ -1866,7 +1988,6 @@ function open_journal_load_multiple($user=NULL, $after_jid=NULL, $limit=NULL, $s
   return $result;
 }
 
-
 function open_journal_get_status_attributes($journal) {
 
   $status_list = unserialize(OPEN_JOUNAL_STATUS);
@@ -1888,6 +2009,10 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
   global $user;
   $mpath = drupal_get_path('module', 'open_journal');
   drupal_add_js($mpath.'/js/open_journal_list_load_more.js');
+
+  // Get checkbox not reject form
+  module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
+  //$not_reject_form = drupal_render(drupal_get_form('open_journal_not_reject_form', $journal));
 
   // TODO: Refactor to use COUNT function in SQL
   $list = open_journal_load_multiple($user);
@@ -2221,3 +2346,63 @@ function open_journal_get_display_user_info_more() {
 
 
 
+/**
+ * Issue load.
+ */
+function open_journal_issue_load($issue_id) {
+  $issue = &drupal_static(__FUNCTION__);
+
+  if (!isset($issue)) {
+    $issue = array();
+  }
+
+  if (!isset($issue[$issue_id])) {
+    // Load issue.
+    $issue[$issue_id] = db_query("SELECT * FROM {open_journal_issue} WHERE iid = :iid", array(':iid' => $issue_id))->fetch();
+
+    if ($issue[$issue_id]) {
+      // Load sections.
+      $section_result = db_query("SELECT * FROM {open_journal_issue_section} WHERE iid = :iid ORDER BY weight ASC", array(':iid' => $issue_id));
+
+      $sections = array();
+      foreach ($section_result as $section) {
+        // Load journals.
+        $journal_result = db_query("SELECT jid, weight FROM {open_journal_issue_journal} WHERE sid = :sid ORDER BY weight ASC", array(':sid' => $section->sid));
+
+        $journals = array();
+        foreach ($journal_result as $journal) {
+          if ($_journal = open_journal_journal_load($journal->jid)) {
+            $_journal->weight = $journal->weight;
+            $journals[] = $_journal;
+          }
+        }
+        $section->journals = $journals;
+        $sections[] = $section;
+      }
+      $issue[$issue_id]->sections = $sections;
+    }
+  }
+
+  return $issue[$issue_id];
+}
+
+/**
+ * Return JSON of journals list for autocomplete.
+ */
+function open_journal_list_autocomplete($string = '') {
+  $matches = array();
+
+  if ($string) {
+    $result = db_select('open_journal_journal', 'j')
+      ->fields('j', array('jid', 'dc_title'))
+      ->condition('j.dc_title', '%'. db_like($string) . '%', 'LIKE')
+      ->range(0, 10)
+      ->execute();
+
+    foreach ($result as $row) {
+      $matches[$row->dc_title .' [id:'. $row->jid .']'] = check_plain($row->dc_title);
+    }
+  }
+
+  drupal_json_output($matches);
+}
