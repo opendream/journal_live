@@ -87,3 +87,6 @@ function open_journal_approve_sidebar_form_submit($form, &$form_state) {
   drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$jid .'/people');
 
 }
+
+function open_journal_informal_approve_sidebar_form($form, &$form_state, $journal , $next_status) {
+}
