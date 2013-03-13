@@ -1768,11 +1768,9 @@ function open_journal_load_all_issue() {
   return $issue_list;
 }
 
-function open_journal_load_multiple($user, $after_jid=NULL, $limit=NULL, $status='all') {
+function open_journal_load_multiple($user=NULL, $after_jid=NULL, $limit=NULL, $status='all') {
    // Query data from database for edit journal when have journal ID
-  $query_var = array(
-  ':uid' => $user->uid,
-  );
+  $query_var = array();
   $sql =
    "SELECT j.*
     FROM
@@ -1782,8 +1780,12 @@ function open_journal_load_multiple($user, $after_jid=NULL, $limit=NULL, $status
     ON
       jp.jid = j.jid
     WHERE
-      jp.uid = :uid";
+      1 = 1";
 
+  if($user !== NULL) {
+    $sql .= " AND jp.uid = :uid";
+    $query_var[':uid'] = $user->uid;
+  }
   if($status != 'all') {
     $sql .= " AND j.status = :sid ";
     $query_var[':sid'] = $status;
@@ -1804,6 +1806,7 @@ function open_journal_load_multiple($user, $after_jid=NULL, $limit=NULL, $status
 
   return $result;
 }
+
 
 function open_journal_get_status_attributes($journal) {
 
