@@ -46,6 +46,20 @@ define('OPEN_JOUNAL_STATUS', serialize (
   )
 ));
 
+
+define('OPEN_JOURNAL_INFORMAL_STATUS_REVIEWING', 0);
+define('OPEN_JOURNAL_INFORMAL_STATUS_AGREE', 1);
+define('OPEN_JOURNAL_INFORMAL_STATUS_FAIL', 2);
+
+define('OPEN_JOUNAL_INFORMAL_STATUS', serialize (
+  array(
+    OPEN_JOURNAL_INFORMAL_STATUS_REVIEWING => 'Reviewing',
+    OPEN_JOURNAL_INFORMAL_STATUS_AGREE => 'Agree',
+    OPEN_JOURNAL_INFORMAL_STATUS_FAIL => 'Fail',
+  )
+));
+
+
 /**
  * Implements of hook_menu().
  */
@@ -219,12 +233,43 @@ function open_journal_menu() {
     'file' => 'includes/open_journal_people_form.inc',
   );
   
+
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/account/%'] = array(
+    'title' => t('Account'),
+    'page callback' => 'open_journal_account',
+    'page arguments' => array($arg+1),
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+  );
+
   $items['open_journal/avatar/%/%'] = array(
     'page callback' => 'open_journal_avatar_generate',
     'page arguments' => array(2, 3),
     'access arguments' => array('access open journal'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/identicon.inc',
+  );
+
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/ojs/export'] = array(
+    'title' => t('Export Issues'),
+    'page callback' => 'open_journal_ojs_export',
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_ojs_export.inc',
+  );
+  
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/autocomplete/%'] = array(
+    'page callback' => 'open_journal_list_autocomplete',
+    'page arguments' => array(2),
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['issue'] = array(
+    'title' => 'My Issue',
+    'page callback' => 'open_journal_issue_overview',
+    'access arguments' => array('create update delete issue'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_issue.inc',
   );
 
   // Issue paths.
@@ -277,6 +322,23 @@ function open_journal_menu() {
     'file' => 'includes/open_journal_issue.inc',
   );
   
+  $items['issue/%open_journal_issue/delete'] = array(
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('open_journal_issue_delete_confirm', 1),
+    'access arguments' => array('create update delete issue'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_issue.inc',
+  );
+
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/feed/%'] = array(
+    'title' => t('Export Issues'),
+    'page arguments' => array(2),
+    'page callback' => 'open_journal_feed_generator',
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/feed.inc',
+  );
+
   return $items;
 }
 
@@ -413,6 +475,12 @@ function open_journal_theme() {
     'open_journal_issue_sections_form' => array(
       'render element' => 'form',
       'path' => drupal_get_path('module', 'open_journal') .'/includes',
+    ),
+    'open_journal_account' =>array(
+      'variables' => array(
+        'account' => NULL,
+      ),
+      'template' => 'templates/open-journal-account'
     ),
     'open_journal_issue_journals_form' => array(
       'render element' => 'form',
@@ -724,6 +792,15 @@ function open_journal_journal_save($data, $change_status=FALSE) {
 /**
  * Journal people method
  */
+function open_journal_account($uid) {
+
+  $account = user_load($uid);
+  $account->user_info = open_journal_get_display_user_info($uid, array('image_style' => 'open_journal_avatar_large'));
+  return theme('open_journal_account', array(
+    'account' => $account,
+  ));
+
+}
 function open_journal_journal_people_active($journal, $uid) {
     
   $journal = is_numeric($journal)? open_journal_journal_load($journal): $journal;
@@ -1543,10 +1620,16 @@ function open_journal_discussion_add($journal) {
 
   module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
 
+  $sidebar = theme('open_journal_status_form', open_journal_get_status_form_variables($journal));
+  if (TRUE || user_access('approve with unanimity and reject journal') || user_access('informal approve journal')) {
+    $informal_list = open_journal_people_informal_approve_list($journal);
+    $sidebar .= theme('open_journal_informal_approve_form', array('informal_list' => $informal_list));
+  }
+
   return theme('open_journal_detail', array(
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
     'content' => drupal_render(drupal_get_form('open_journal_discussion_form', $journal)),
-    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', open_journal_get_status_form_variables($journal)),
+    'sidebar' => $sidebar,
     'jid' => $journal->jid
 
   ));
@@ -1556,10 +1639,16 @@ function open_journal_discussion_edit($journal, $discussion) {
 
   module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
 
+  $sidebar = theme('open_journal_status_form', open_journal_get_status_form_variables($journal));
+  if (TRUE || user_access('approve with unanimity and reject journal') || user_access('informal approve journal')) {
+    $informal_list = open_journal_people_informal_approve_list($journal);
+    $sidebar .= theme('open_journal_informal_approve_form', array('informal_list' => $informal_list));
+  }
+
   return theme('open_journal_detail', array(
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
     'content' => drupal_render(drupal_get_form('open_journal_discussion_form', $journal, $discussion)),
-    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', open_journal_get_status_form_variables($journal)),
+    'sidebar' => $sidebar,
     'jid' => $journal->jid
 
   ));
@@ -1569,10 +1658,16 @@ function open_journal_discussion_delete($journal, $discussion) {
 
   module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
 
+  $sidebar = theme('open_journal_status_form', open_journal_get_status_form_variables($journal));
+  if (TRUE || user_access('approve with unanimity and reject journal') || user_access('informal approve journal')) {
+    $informal_list = open_journal_people_informal_approve_list($journal);
+    $sidebar .= theme('open_journal_informal_approve_form', array('informal_list' => $informal_list));
+  }
+
   return theme('open_journal_detail', array(
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
     'content' => drupal_render(drupal_get_form('open_journal_discussion_delete_form', $journal, $discussion)),
-    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', open_journal_get_status_form_variables($journal)),
+    'sidebar' => $sidebar,
     'jid' => $journal->jid
 
   ));
@@ -1582,10 +1677,16 @@ function open_journal_comment_edit($journal, $discussion, $comment) {
 
   module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
 
+  $sidebar = theme('open_journal_status_form', open_journal_get_status_form_variables($journal));
+  if (TRUE || user_access('approve with unanimity and reject journal') || user_access('informal approve journal')) {
+    $informal_list = open_journal_people_informal_approve_list($journal);
+    $sidebar .= theme('open_journal_informal_approve_form', array('informal_list' => $informal_list));
+  }
+
   return theme('open_journal_detail', array(
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
     'content' => drupal_render(drupal_get_form('open_journal_comment_form', $journal, $discussion, $comment)),
-    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', open_journal_get_status_form_variables($journal)),
+    'sidebar' => $sidebar,
     'jid' => $journal->jid
 
   ));
@@ -1594,11 +1695,16 @@ function open_journal_comment_edit($journal, $discussion, $comment) {
 function open_journal_comment_delete($journal, $discussion, $comment) {
 
   module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
+  $sidebar = theme('open_journal_status_form', open_journal_get_status_form_variables($journal));
+  if (TRUE || user_access('approve with unanimity and reject journal') || user_access('informal approve journal')) {
+    $informal_list = open_journal_people_informal_approve_list($journal);
+    $sidebar .= theme('open_journal_informal_approve_form', array('informal_list' => $informal_list));
+  }
 
   return theme('open_journal_detail', array(
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
     'content' => drupal_render(drupal_get_form('open_journal_comment_delete_form', $journal, $discussion, $comment)),
-    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', open_journal_get_status_form_variables($journal)),
+    'sidebar' => $sidebar,
     'jid' => $journal->jid
 
   ));
@@ -1628,6 +1734,12 @@ function open_journal_discussion_detail($journal, $discussion) {
     $comment->can_edit = $user->uid == $comment->uid;
   }
     
+  $sidebar = theme('open_journal_status_form', open_journal_get_status_form_variables($journal));
+  if (TRUE || user_access('approve with unanimity and reject journal') || user_access('informal approve journal')) {
+    $informal_list = open_journal_people_informal_approve_list($journal);
+    $sidebar .= theme('open_journal_informal_approve_form', array('informal_list' => $informal_list));
+  }
+
   return theme('open_journal_detail', array(
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
     'content' => theme('open_journal_discussion_detail', array(
@@ -1637,7 +1749,7 @@ function open_journal_discussion_detail($journal, $discussion) {
       'comment_form' => drupal_render(drupal_get_form('open_journal_comment_form', $journal, $discussion)),
       'comment_list' => $comment_list,
     )),
-    'sidebar' => theme('open_journal_status_form', open_journal_get_status_form_variables($journal)),
+    'sidebar' => $sidebar,
     'jid' => $journal->jid,
   ));
 }
@@ -1714,13 +1826,118 @@ function open_journal_file($journal) {
   ));
 }
 
+function open_journal_load_section($section_id) {
+  $query_var = array();
+  $sql =
+   "SELECT j.*
+    FROM
+      {open_journal_journal_people} jp
+    LEFT JOIN
+      {open_journal_journal} j
+    ON
+      jp.jid = j.jid
+    -- LEFT JOIN
+    --   {open_journal_journal_section} s
+    -- ON
+    --   j.section_id = s.id
+    WHERE
+      1 = 1
+    -- FOR TEST
+    LIMIT
+      3";
+  $result = db_query($sql, $query_var)->fetchAll();
 
+  $section = new stdClass();
+  $section->title = 'MOCK_TITLE'.rand();
+  $section->abbrev = 'MOCK_ABBREV'.rand();
+  $section->articles = $result;
 
-function open_journal_load_multiple($user, $after_jid=NULL, $limit=NULL, $status='all') {
+  return $section;
+}
+
+function open_journal_load_issue($issue_id) {
+  # TODO: Query list section in issue
+  // $query_var = array();
+  // $sql =
+  //  "SELECT j.*
+  //   FROM
+  //     {open_journal_journal_people} jp
+  //   LEFT JOIN
+  //     {open_journal_journal} j
+  //   ON
+  //     jp.jid = j.jid
+  //   -- LEFT JOIN
+  //   --   {open_journal_journal_section} s
+  //   -- ON
+  //   --   j.section_id = s.id
+  //   WHERE
+  //     1 = 1";
+  // $result = db_query($sql, $query_var)->fetchAll();
+
+  $result1 = new stdClass();
+  $result1->sid = '1';
+  $result2 = new stdClass();
+  $result2->sid = '2';
+  $result3 = new stdClass();
+  $result3->sid = '3';
+  $result = array();
+  $result[] = $result1;
+  $result[] = $result2;
+  $result[] = $result3;
+
+  $issue = new stdClass();
+  $issue->id = rand();
+  $issue->title = 'MOCK_TITLE'.rand();
+  $issue->description = 'MOCK_description';
+  $issue->volumn = 'MOCK_volumn';
+  $issue->number = 'MOCK_number';
+  $issue->year = 'MOCK_year';
+  $issue->date_published = '2013-03-09';
+  $issue->access_date = '2013-03-09';
+  $issue->sections = $result;
+
+  return $issue;
+}
+
+function open_journal_load_all_issue() {
+  # TODO: Query list issue
+  // $query_var = array();
+  // $sql =
+  //  "SELECT j.*
+  //   FROM
+  //     {open_journal_journal_people} jp
+  //   LEFT JOIN
+  //     {open_journal_journal} j
+  //   ON
+  //     jp.jid = j.jid
+  //   -- LEFT JOIN
+  //   --   {open_journal_journal_section} s
+  //   -- ON
+  //   --   j.section_id = s.id
+  //   WHERE
+  //     1 = 1";
+  // $result = db_query($sql, $query_var)->fetchAll();
+
+  $result1 = new stdClass();
+  $result1->iid = '1';
+  $result2 = new stdClass();
+  $result2->iid = '2';
+  $result3 = new stdClass();
+  $result3->iid = '3';
+  $result = array();
+  $result[] = $result1;
+  $result[] = $result2;
+  $result[] = $result3;
+
+  $issue_list = new stdClass();
+  $issue_list->issues = $result;
+
+  return $issue_list;
+}
+
+function open_journal_load_multiple($user=NULL, $after_jid=NULL, $limit=NULL, $status='all') {
    // Query data from database for edit journal when have journal ID
-  $query_var = array(
-  ':uid' => $user->uid,
-  );
+  $query_var = array();
   $sql = 
    "SELECT j.* 
     FROM 
@@ -1730,8 +1947,12 @@ function open_journal_load_multiple($user, $after_jid=NULL, $limit=NULL, $status
     ON 
       jp.jid = j.jid
     WHERE 
-      jp.uid = :uid";
+      1 = 1";
 
+  if($user !== NULL) {
+    $sql .= " AND jp.uid = :uid";
+    $query_var[':uid'] = $user->uid;
+  }
   if($status != 'all') {
     $sql .= " AND j.status = :sid ";
     $query_var[':sid'] = $status;
@@ -2105,6 +2326,8 @@ function open_journal_get_display_user_info_more() {
   return array('display_picture' => '...', 'display_name' => 'more people');
 }
 
+
+
 /**
  * Issue load.
  */
@@ -2165,5 +2388,3 @@ function open_journal_list_autocomplete($string = '') {
 
   drupal_json_output($matches);
 }
-
-
