@@ -1200,10 +1200,18 @@ function open_journal_overview($journal) {
   $user = user_load($file_last[0]->uid);
   $file = file_load($file_last[0]->fid);
   $status_list = unserialize(OPEN_JOUNAL_STATUS);
+
+  // Get status name and class
+  $status_attributes = (object) open_journal_get_status_attributes($journal);
+  $journal->status_class = $status_attributes->class;
+  $journal->status_name  = $status_attributes->name;
+
+
   $status = array(
-    'name' => $status_list[$journal->status],
-    'updated' => date('d M Y', $journal->status_changed),
-    'created' => date('d M Y', $journal->created),
+    'name'      => $status_attributes->name,
+    'class'     => $status_attributes->class,
+    'updated'   => date('d M Y', $journal->status_changed),
+    'created'   => date('d M Y', $journal->created),
     'status_id' => $journal->status,
   );
   // Prepare people list  send to theme
@@ -1463,7 +1471,7 @@ function open_journal_discussion_add($journal) {
   return theme('open_journal_detail', array(
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
     'content' => drupal_render(drupal_get_form('open_journal_discussion_form', $journal)),
-    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', array('jid' => $journal->jid)),
+    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', open_journal_get_status_form_variables($journal)),
     'jid' => $journal->jid
 
   ));
@@ -1474,7 +1482,7 @@ function open_journal_discussion_edit($journal, $discussion) {
   return theme('open_journal_detail', array(
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
     'content' => drupal_render(drupal_get_form('open_journal_discussion_form', $journal, $discussion)),
-    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', array('jid' => $journal->jid)),
+    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', open_journal_get_status_form_variables($journal)),
     'jid' => $journal->jid
 
   ));
@@ -1485,7 +1493,7 @@ function open_journal_discussion_delete($journal, $discussion) {
   return theme('open_journal_detail', array(
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
     'content' => drupal_render(drupal_get_form('open_journal_discussion_delete_form', $journal, $discussion)),
-    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', array('jid' => $journal->jid)),
+    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', open_journal_get_status_form_variables($journal)),
     'jid' => $journal->jid
 
   ));
@@ -1496,7 +1504,7 @@ function open_journal_comment_edit($journal, $discussion, $comment) {
   return theme('open_journal_detail', array(
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
     'content' => drupal_render(drupal_get_form('open_journal_comment_form', $journal, $discussion, $comment)),
-    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', array('jid' => $journal->jid)),
+    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', open_journal_get_status_form_variables($journal)),
     'jid' => $journal->jid
 
   ));
@@ -1507,7 +1515,7 @@ function open_journal_comment_delete($journal, $discussion, $comment) {
   return theme('open_journal_detail', array(
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
     'content' => drupal_render(drupal_get_form('open_journal_comment_delete_form', $journal, $discussion, $comment)),
-    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', array('jid' => $journal->jid)),
+    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', open_journal_get_status_form_variables($journal)),
     'jid' => $journal->jid
 
   ));
@@ -1545,7 +1553,7 @@ function open_journal_discussion_detail($journal, $discussion) {
       'comment_form' => drupal_render(drupal_get_form('open_journal_comment_form', $journal, $discussion)),
       'comment_list' => $comment_list,
     )),
-    'sidebar' => theme('open_journal_status_form', array('jid' => $journal->jid)),
+    'sidebar' => theme('open_journal_status_form', open_journal_get_status_form_variables($journal)),
     'jid' => $journal->jid,
   ));
 }
@@ -1654,6 +1662,21 @@ function open_journal_load_multiple($user, $after_jid=NULL, $limit=NULL, $status
   return $result;
 }
 
+function open_journal_get_status_attributes($journal) {
+  
+  $status_list = unserialize(OPEN_JOUNAL_STATUS);
+
+  if($journal->reject) {
+    $class = 'reject';
+    $name = 'Reject';
+  }
+  else {
+    $class = $journal->status;
+    $name = $status_list[$journal->status];
+  }
+  return array('class' => $class, 'name' => $name);
+}
+
 function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_LIST_IPP) {
   drupal_set_title('');
 
@@ -1675,8 +1698,10 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
 
   foreach ($journal_list as &$journal) {
 
-    // Convers ststus id to word
-    $journal->status_name = $status_list[$journal->status];
+    // Get status name and class
+    $status_attributes = (object) open_journal_get_status_attributes($journal);
+    $journal->status_class = $status_attributes->class;
+    $journal->status_name  = $status_attributes->name;
 
     $journal->people_list = open_journal_people_active_list($journal->jid, NULL, $journal->uid, OPEN_JOURNAL_DISPLAY_IMAGE_USER_LIST_LIMIT+1);
     foreach ($journal->people_list as &$people) {
@@ -1699,7 +1724,6 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
   if ($has_more_page) {
     $update_load_more_url = url(OPEN_JOURNAL_PREFIX_PATH.'/list/'.$status.'/'.$journal->jid.'/'.$limit);
   }
-
 
 
   // render json respone for load mor ajax

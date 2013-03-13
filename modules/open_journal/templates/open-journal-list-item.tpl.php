@@ -1,7 +1,7 @@
 
 <li class="journal-item">
 
-	<div class="journal-status status<?php echo $journal->status;?>"><span><?php print $journal->status_name;?></span></div>
+	<div class="journal-status status<?php echo $journal->status_class;?>"><span><?php print $journal->status_name;?></span></div>
 	<h3 class="journal-title"><?php print l($journal->dc_title, 'journal/'.$journal->jid.'/overview');?></h3>
 	<div class="journal-update">
 		<span class="label">Status update: </span>
