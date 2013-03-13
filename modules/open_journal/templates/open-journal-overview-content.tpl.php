@@ -43,10 +43,15 @@
         <div class="journal-user profile-picture-small">
           <?php print $data['user_info']['display_picture'].'<span class="username">'.$data['user_info']['display_name'].'</span>';?>
         </div>
+
         <div class="discus-title">
-          <?php  print l($data['title'].'<span class="file-attach"><img src="/sites/all/modules/open_journal/images/ic-has-file.png" alt="has file attach" /></span>', OPEN_JOURNAL_PREFIX_PATH.'/'.$data['jid'].'/discussion/'.$data['did'], array('html' => TRUE));?>
-          
+          <?php if($data['fid']):?>
+            <?php  print l($data['title'].'<span class="file-attach"><img src="/sites/all/modules/open_journal/images/ic-has-file.png" alt="has file attach" /></span>', OPEN_JOURNAL_PREFIX_PATH.'/'.$data['jid'].'/discussion/'.$data['did'], array('html' => TRUE));?>
+          <?php else:?>
+            <?php  print l($data['title'], OPEN_JOURNAL_PREFIX_PATH.'/'.$data['jid'].'/discussion/'.$data['did'], array('html' => TRUE));?>
+          <?php endif;?>
         </div>
+
         <div class="discus-content"><?php print $data['description'];?></div>
         <?php //print open_journal_trim($title.$description);?>
 

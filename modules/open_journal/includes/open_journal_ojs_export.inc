@@ -341,7 +341,7 @@ function open_journal_ojs_export() {
 }
 
 
-function open_journal_feed_generator($id) {
+function open_journal_feed_generator($type='') {
   $limit = 30;
   $journals = open_journal_load_multiple(NULL, NULL, $limit, OPEN_JOURNAL_STATUS_PUBLISHED);
   $articles = array('name' => 'articles');

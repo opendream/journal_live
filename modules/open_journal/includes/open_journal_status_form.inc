@@ -45,14 +45,36 @@ function open_journal_reject_sidebar_form_submit($form, &$form_state) {
 	
 }
 function open_journal_not_reject_form($form, &$form_state) {
+	global $user;
 
-	$form['not_reject'] = array(
-		'title' => 'Not include reject status',
-		'type' => 'checkbox',
+	if(!isset($user->data['not_show_reject'])) {
+		$value = 0;
+	}
+	else {
+		$value = $user->data['not_show_reject'];
+	}
+
+	$form['not_show_reject'] = array(
+		'#type' => 'checkbox',
+		'#title' => 'Include rejected',
+		'#attributes' => array('id' => array('not_reject_checkbox')),
+		'#default_value' => !$value,
 
 	);
 
+	$form['submit'] = array(
+    	'#type' => 'submit',
+    	'#value' => t('submit'),
+ 	);
 	return $form;
+}
+function open_journal_not_reject_form_submit($form, &$form_state) {
+	global $user;
+
+	$account = user_load($user->uid);
+	user_save($account, array('data' => array('not_show_reject' => !$form_state['values']['not_show_reject'])));
+
+	drupal_goto($_SERVER['HTTP_REFERER']);
 }
 
 
