@@ -2533,6 +2533,9 @@ h3.people-section-title {
 
 /* Status Sidebar
 ----------------------------------------------------------------*/
+.sidebar-status-block {
+	float: left;
+}
 .sidebar-status-block .status-active,
 .sidebar-status-block .status-disabled {
 	width: 260px;
@@ -2544,7 +2547,7 @@ h3.people-section-title {
 	color: #626262;
 	margin-bottom: 10px;
 }
-.sidebar-status-block .status-active.current {
+.sidebar-status-block .status-active.current .can-approve {
 	line-height: 28px;
 }
 
