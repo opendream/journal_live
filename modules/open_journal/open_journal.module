@@ -1794,7 +1794,7 @@ function open_journal_get_active_menu_attributes($menu_active_url) {
 function open_journal_get_file_list($jid, $limit=NULL) {
 
   $sql = "SELECT
-      u.*, IF(d.fid IS NOT NULL, d.fid, c.fid) AS fid, f.filename, f.filesize, f.uri, f.timestamp
+      DISTINCT u.*, IF(d.fid IS NOT NULL, d.fid, c.fid) AS fid, f.filename, f.filesize, f.uri, f.timestamp
     FROM
       open_journal_discussion d
     LEFT JOIN
@@ -1820,7 +1820,7 @@ function open_journal_get_file_list($jid, $limit=NULL) {
     $sql .= " AND d.contributor_only = 0";
   }
 
-  $sql .= " ORDER BY c.created, d.created DESC".($limit? (' LIMIT 0, '.$limit): '');
+  $sql .= " ORDER BY c.created DESC, d.created DESC".($limit? (' LIMIT 0, '.$limit): '');
 
   $file_list = db_query($sql, array(':jid' => $jid))->fetchAll();
 
