@@ -1283,9 +1283,7 @@ function open_journal_overview($journal) {
 }
 
 function open_journal_discussion_list($journal) {
-  $mpath = drupal_get_path('module', 'open_journal');
-  drupal_add_js($mpath.'/js/open_journal_status_sidebar.js');
-  drupal_add_js($mpath.'/js/jquery.qtip.min.js');
+  
 
   // Query discussion list 
   $sql = " SELECT 
@@ -1397,6 +1395,8 @@ function open_journal_get_discussion_field($did, $field) {
 }
 function open_journal_discussion_add($journal) {
 
+  module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
+
   return theme('open_journal_detail', array(
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
     'content' => drupal_render(drupal_get_form('open_journal_discussion_form', $journal)),
@@ -1407,6 +1407,8 @@ function open_journal_discussion_add($journal) {
 }
 
 function open_journal_discussion_edit($journal, $discussion) {
+
+  module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
 
   return theme('open_journal_detail', array(
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
@@ -1419,6 +1421,8 @@ function open_journal_discussion_edit($journal, $discussion) {
 
 function open_journal_discussion_delete($journal, $discussion) {
 
+  module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
+
   return theme('open_journal_detail', array(
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
     'content' => drupal_render(drupal_get_form('open_journal_discussion_delete_form', $journal, $discussion)),
@@ -1430,6 +1434,8 @@ function open_journal_discussion_delete($journal, $discussion) {
 
 function open_journal_comment_edit($journal, $discussion, $comment) {
 
+  module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
+
   return theme('open_journal_detail', array(
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
     'content' => drupal_render(drupal_get_form('open_journal_comment_form', $journal, $discussion, $comment)),
@@ -1440,6 +1446,8 @@ function open_journal_comment_edit($journal, $discussion, $comment) {
 }
 
 function open_journal_comment_delete($journal, $discussion, $comment) {
+
+  module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
 
   return theme('open_journal_detail', array(
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
@@ -1459,7 +1467,8 @@ function open_journal_discussion_remove($did) {
 function open_journal_discussion_detail($journal, $discussion) {
   
   global $user;
-  
+  module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
+
   $discussion->user_info = open_journal_get_display_user_info($discussion->uid);
   $discussion->description = check_markup($discussion->description);
   $discussion->file = $discussion->fid? file_load($discussion->fid): NULL;
