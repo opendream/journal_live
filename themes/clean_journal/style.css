@@ -1698,6 +1698,7 @@ input.form-submit:hover {
 
 .user-picture-wrapper img,
 .journal-discussion-list-item .journal-user img {
+	border-radius: 50%;
   -moz-border-radius: 50%;
 	-webkit-border-radius: 50%;
 }
