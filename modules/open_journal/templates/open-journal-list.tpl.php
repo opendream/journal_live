@@ -16,6 +16,7 @@
 		<?php endforeach;?>
 		
 	</ul>
+	<?php print $not_reject_form;?>
 	<div class="add-journal-btn">
 		<?php print l(t('Add New'), OPEN_JOURNAL_PREFIX_PATH.'/add'); ?>
 	</div>
