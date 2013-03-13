@@ -368,6 +368,28 @@ function open_journal_permission() {
       'title' => t('Access contributor process'),
       'description' => t('Perform user can see contributor real name, avatar and create contributor only discussion. Recommented for editor, reviewer, librarian roles.'),
     ),
+    'invite people to journal' => array(
+      'title' => t('Iinvite people to journal'),
+      'description' => t('Perform user can active and deactive people to journal. Recommented for editor and some reviewer roles.'),
+    ),
+    'approve with unanimity and reject journal' => array(
+      'title' => t('Approve with unanimity and reject journal'),
+      'description' => t('Perform user can change status or reject of any journals and can see informal approved. Recommented for editor role.'),
+    ),
+    'informal approve journal' => array(
+      'title' => t('Informal approve journal'),
+      'description' => t('Perform user can informal approve journal for that user only. Recommented for reviewer role.'),
+    ),
+    
+    // Backend permission
+    'create update delete issue' => array(
+      'title' => t('Create update delete issue'),
+      'description' => t('Perform user can administrator issue. Recommented for webmaster role.'),
+    ),
+    'export issue to ojs xml format' => array(
+      'title' => t('Export issue to OJS xml format'),
+      'description' => t('Perform user can administrator OJS export. Recommented for webmaster role.'),
+    ),
   );
 }
 
@@ -1032,21 +1054,34 @@ function open_journal_people($journal) {
     $people_active_uid_key_list[$people->uid] = $people;
   }
   
-  foreach ($people_contributor_list as &$people) {
+  $can_invite = user_access('invite people to journal');
+  
+  foreach ($people_contributor_list as $key => &$people) {
     
     $people->active_in_journal = isset($people_active_uid_key_list[$people->uid])? TRUE: FALSE;
-    $people->user_info = open_journal_get_display_user_info($people, array('image_style' => 'open_journal_avatar_large'));
+    
     
     if ($people->active_in_journal) {
       $people->add_class = ' active-people';
       $people->joined = $people_active_uid_key_list[$people->uid]->joined;
     }
     else {
+      
+      if (!$can_invite) {
+        unset($people_contributor_list[$key]);
+        continue;
+      }
+      
       $people->add_class = ' inactive-people';
       $people->joined = 0;
     }
     
-    $people->form = drupal_render(drupal_get_form('open_journal_people_form', $journal->jid, $people->uid, $people->active_in_journal));
+    $people->user_info = open_journal_get_display_user_info($people, array('image_style' => 'open_journal_avatar_large'));
+    
+    $people->form = '';
+    if ($can_invite) {
+      $people->form = drupal_render(drupal_get_form('open_journal_people_form', $journal->jid, $people->uid, $people->active_in_journal));
+    }
   }
   
   $people_creator = user_load($journal->uid);
@@ -1683,6 +1718,25 @@ function open_journal_image_default_styles() {
   return $styles;
 }
 
+function open_journal_get_real_name($account) {
+  $real_name = '';
+  if (isset($account->data['firstname']) && $account->data['firstname']) {
+    $real_name .= $account->data['firstname'];
+  }
+  
+  if (isset($account->data['lastname']) && $account->data['lastname'] && $real_name) {
+    $real_name .= ' '.truncate_utf8($account->data['lastname'], 1).'.';
+  }
+  elseif (isset($account->data['lastname']) && $account->data['lastname'] && !$real_name) {
+    $real_name .= $account->data['lastname'];
+  }
+  else {
+    $real_name .= $account->name;
+  }
+  
+  return $real_name;
+}
+
 /**
  * $account require uid, name, (obj|str) data, (obj|int) picture
  */
@@ -1714,6 +1768,8 @@ function open_journal_get_display_user_info($account, $variables=array()) {
   
   
   // Prepare name and picture to display
+  $real_name = open_journal_get_real_name($account);
+    
   $dummy_name = $account->name;
   $dummy_name_text = $dummy_name;
   $dummy_picture = theme('image', array(
@@ -1724,9 +1780,17 @@ function open_journal_get_display_user_info($account, $variables=array()) {
     'alt' => $dummy_name,
     'title' => $dummy_name,
   ));
+  
     
   if (!$account->picture) {
-    $real_picture = $dummy_picture;
+    $real_picture = theme('image', array(
+      //'path' => 'http://www.gravatar.com/avatar/'.md5(strtolower(trim($account->uid))).'?d=identicon&f=y&size='.$size,
+      'path' => 'open_journal/avatar/'.md5(strtolower(trim($account->name))).'/'.$size.'.png',
+      'width' => $size,
+      'height' => $size,
+      'alt' => $real_name,
+      'title' => $real_name,
+    ));
   }
   else {
     
@@ -1737,27 +1801,14 @@ function open_journal_get_display_user_info($account, $variables=array()) {
       'path' => $picture->uri,
       'width' => $size,
       'height' => $size,
-      'alt' => $dummy_name,
-      'title' => $dummy_name,
+      'alt' => $real_name,
+      'title' => $real_name,
     ));
   }
   
   $account->data = !is_array($account->data)? unserialize($account->data): $account->data;
   
-  $real_name = '';
-  if (isset($account->data['firstname']) && $account->data['firstname']) {
-    $real_name .= $account->data['firstname'];
-  }
-  
-  if (isset($account->data['lastname']) && $account->data['lastname'] && $real_name) {
-    $real_name .= ' '.truncate_utf8($account->data['lastname'], 1).'.';
-  }
-  elseif (isset($account->data['lastname']) && $account->data['lastname'] && !$real_name) {
-    $real_name .= $account->data['lastname'];
-  }
-  else {
-    $real_name .= $dummy_name;
-  }
+
   
   if ($variables['owner_uid'] == $account->uid) {
     $real_picture .= '<span class="owner-label">Owner</span>';

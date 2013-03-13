@@ -2413,6 +2413,12 @@ ul.discussion-list {
 
 /* People
 ----------------------------------------------------------------*/
+.people-block {
+  width: 100%;
+}
+.people-block-inner {
+  overflow: hidden;
+}
 .people-block h2.journal-block-title {
 	margin-bottom: 0;
 }
