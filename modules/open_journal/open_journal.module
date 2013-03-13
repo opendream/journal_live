@@ -17,7 +17,7 @@ define('OPEN_JOURNAL_ABSTRACT_REQUIRED', TRUE);
 define('OPEN_JOURNAL_KEYWORDS_REQUIRED', TRUE);
 
 
-define('OPEN_JOURNAL_ABSTRACT_MAX_LENGTH', 2000);
+define('OPEN_JOURNAL_ABSTRACT_MAX_LENGTH', 500);
 define('OPEN_JOURNAL_MAX_MULTI_TEXTFIELD', 10);
 
 
@@ -25,12 +25,10 @@ define('OPEN_JOURNAL_MAX_MULTI_TEXTFIELD', 10);
 
 define('OPEN_JOURNAL_ALLOWED_FILE_TYPE', 'doc docx');
 
-// Status
 define('OPEN_JOURNAL_STATUS_INFORMATION_APPROVE', 0);
 define('OPEN_JOURNAL_STATUS_DOCUMENT_APPROVE', 1);
 define('OPEN_JOURNAL_STATUS_CATLOGUED', 2);
 define('OPEN_JOURNAL_STATUS_PUBLISHED', 3);
-
 define('OPEN_JOURNAL_DISPLAY_IMAGE_USER_LIST_LIMIT', 9);
 define('OPEN_JOURNAL_LIST_IPP', 20);
 
@@ -40,15 +38,13 @@ define('OPEN_JOURNAL_STATUS_INFORMATON_APPROVE_KEY', 0);
 define('OPEN_JOUNAL_STATUS', serialize (
   array(
     OPEN_JOURNAL_STATUS_INFORMATON_APPROVE_KEY => 'Information review',
-    OPEN_JOURNAL_STATUS_DOCUMENT_APPROVE => 'Document review', 
-    OPEN_JOURNAL_STATUS_CATLOGUED => 'Catalogued', 
+    OPEN_JOURNAL_STATUS_DOCUMENT_APPROVE => 'Document review',
+    OPEN_JOURNAL_STATUS_CATLOGUED => 'Catalogued',
     OPEN_JOURNAL_STATUS_PUBLISHED => 'Published',
   )
 ));
 
-/**
- * Implements of hook_menu().
- */
+
 function open_journal_menu() {
 
   $arg = count(explode('/', OPEN_JOURNAL_PREFIX_PATH));
@@ -78,12 +74,6 @@ function open_journal_menu() {
     'type' => MENU_CALLBACK,
   );
 
-  $items[OPEN_JOURNAL_PREFIX_PATH.'/autocomplete/%'] = array(
-    'page callback' => 'open_journal_list_autocomplete',
-    'page arguments' => array(2),
-    'access arguments' => array('access open journal'),
-    'type' => MENU_CALLBACK,
-  );
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/login'] = array(
     'title' => t('Login'),
@@ -99,7 +89,7 @@ function open_journal_menu() {
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_register_form.inc',
-  );  
+  );
   $items[OPEN_JOURNAL_PREFIX_PATH.'/account/setting'] = array(
     'title' => t('Setting my account'),
     'page callback' => 'drupal_get_form',
@@ -124,7 +114,7 @@ function open_journal_menu() {
     'access arguments' => array('access open journal'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_information_form.inc',
-  ); 
+  );
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/overview'] = array(
     'title' => t('Overview'),
@@ -133,7 +123,7 @@ function open_journal_menu() {
     'access arguments' => array('access open journal'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_overview.inc',
-  ); 
+  );
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/discussion'] = array(
     'title' => t('Discussions'),
@@ -141,7 +131,6 @@ function open_journal_menu() {
     'page arguments' => array($arg),
     'access arguments' => array('access open journal'),
     'type' => MENU_CALLBACK,
-    'file' => 'includes/open_journal_status_form.inc'
   );
   $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/discussion/list'] = $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/discussion'];
 
@@ -153,7 +142,7 @@ function open_journal_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_discussion_form.inc',
   );
-  
+
   $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/discussion/%open_journal_discussion'] = array(
     'title' => t('Discussion detail'),
     'page callback' => 'open_journal_discussion_detail',
@@ -171,7 +160,7 @@ function open_journal_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_discussion_form.inc',
   );
-  
+
   $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/discussion/%open_journal_discussion/delete'] = array(
     'title' => t('Delete discussion'),
     'page callback' => 'open_journal_discussion_delete',
@@ -180,7 +169,7 @@ function open_journal_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_discussion_form.inc',
   );
-  
+
   $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/discussion/%open_journal_discussion/comment/%open_journal_comment/edit'] = array(
     'title' => t('Edit comment'),
     'page callback' => 'open_journal_comment_edit',
@@ -189,7 +178,7 @@ function open_journal_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_comment_form.inc',
   );
-  
+
   $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/discussion/%open_journal_discussion/comment/%open_journal_comment/delete'] = array(
     'title' => t('Delete comment'),
     'page callback' => 'open_journal_comment_delete',
@@ -199,8 +188,6 @@ function open_journal_menu() {
     'file' => 'includes/open_journal_comment_form.inc',
   );
 
-
-
   $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/file'] = array(
     'title' => t('Files'),
     'page callback' => 'open_journal_file',
@@ -208,7 +195,7 @@ function open_journal_menu() {
     'access arguments' => array('access open journal'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_file.inc',
-  ); 
+  );
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/people'] = array(
     'title' => t('Peoples'),
@@ -218,7 +205,16 @@ function open_journal_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_people_form.inc',
   );
-  
+
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/ojs/export'] = array(
+    'title' => t('Export Issues'),
+    'page callback' => 'open_journal_ojs_export',
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_ojs_export.inc',
+  );
+  dpm($items);
+
   $items['open_journal/avatar/%/%'] = array(
     'page callback' => 'open_journal_avatar_generate',
     'page arguments' => array(2, 3),
@@ -227,42 +223,9 @@ function open_journal_menu() {
     'file' => 'includes/identicon.inc',
   );
 
-  // Issue paths.
-  $items['issue/add'] = array(
-    'page callback' => 'open_journal_issue_add',
-    'access arguments' => array('create issue'),
-    'type' => MENU_CALLBACK,
-    'file' => 'includes/open_journal_issue.inc',
-  );
-
-  $items['issue/%open_journal_issue'] = array(
-    'page callback' => 'open_journal_issue_view',
-    'page arguments' => array(1),
-    'access arguments' => array('create issue'),
-    'file' => 'includes/open_journal_issue.inc',
-  );
-
-  $items['issue/%open_journal_issue/view'] = array(
-    'title' => 'View',
-    'type' => MENU_DEFAULT_LOCAL_TASK,
-    'weight' => -10,
-  );
-
-  $items['issue/%open_journal_issue/edit'] = array(
-    'page callback' => 'open_journal_issue_edit',
-    'page arguments' => array(1),
-    'access arguments' => array('create issue'),
-    'type' => MENU_LOCAL_TASK,
-    'file' => 'includes/open_journal_issue.inc',
-    'weight' => -9,
-  );
-  
   return $items;
 }
 
-/**
- * Implements hook_theme().
- */
 function open_journal_theme() {
 
   return array(
@@ -291,7 +254,7 @@ function open_journal_theme() {
       ),
       'template' => 'templates/open-journal-detail',
     ),
-    
+
     'open_journal_discussion_item' => array(
       'variables' => array(
         'item' => NULL,
@@ -308,7 +271,7 @@ function open_journal_theme() {
       ),
       'template' => 'templates/open-journal-comment-item',
     ),
-    
+
     'open_journal_overview_content' => array(
       'variables' => array(
         'jid' => NULL,
@@ -337,6 +300,14 @@ function open_journal_theme() {
         'discussion_list' => NULL,
       ),
       'template' => 'templates/open-journal-discussion-detail',
+    ),
+
+    'open_journal_status_form' => array(
+      'variables' => array(
+        'jid' => NULL,
+        'form' => NULL,
+      ),
+      'template' => 'templates/open-journal-status-form',
     ),
 
     'open_journal_file' => array(
@@ -370,46 +341,19 @@ function open_journal_theme() {
       ),
       'template' => 'templates/open-journal-list-item',
     ),
-    'open_journal_discussion_list' =>array(
-      'variables' => array(
-        'discussion_list' => NULL,
-      ),
-      'template' => 'templates/open-journal-discussion-list'
-    ),
-    'open_journal_status_form' =>array(
-      'variables' => array(
-        'journal' => NULL,
-      ),
-      'template' => 'templates/open-journal-status-form'
-    ),
-    'open_journal_informal_approve_form' =>array(
-      'variables' => array(
-        'journal' => NULL,
-      ),
-      'template' => 'templates/open-journal-informal-approve-form'
-    ),
 
-    // Issue
-    'open_journal_issue_sections_form' => array(
-      'render element' => 'form',
-      'path' => drupal_get_path('module', 'open_journal') .'/includes',
-    ),
-    'open_journal_issue_journals_form' => array(
-      'render element' => 'form',
-      'path' => drupal_get_path('module', 'open_journal') .'/includes',
-    ),
-    
   );
 }
 
-/**
- * Implements hook_permission().
- */
 function open_journal_permission() {
   return array(
     'access open journal' => array(
       'title' => t('Access open journal'),
       'description' => t('Perform user can lonin to join open journal.'),
+    ),
+    'update final url field' => array(
+      'title' => t('Update final URL field'),
+      'description' => t('Perform user can update URL field. Recommented for librarian role.'),
     ),
     'auto active when create journal' => array(
       'title' => t('Auto active when create journal'),
@@ -419,40 +363,18 @@ function open_journal_permission() {
       'title' => t('Access contributor process'),
       'description' => t('Perform user can see contributor real name, avatar and create contributor only discussion. Recommented for editor, reviewer, librarian roles.'),
     ),
-    'invite people to journal' => array(
-      'title' => t('Iinvite people to journal'),
-      'description' => t('Perform user can active and deactive people to journal. Recommented for editor and some reviewer roles.'),
-    ),
-    'approve with unanimity and reject journal' => array(
-      'title' => t('Approve with unanimity and reject journal'),
-      'description' => t('Perform user can change status or reject of any journals and can see informal approved. Recommented for editor role.'),
-    ),
-    'informal approve journal' => array(
-      'title' => t('Informal approve journal'),
-      'description' => t('Perform user can informal approve journal for that user only. Recommented for reviewer role.'),
-    ),
-    
-    // Backend permission
-    'create update delete issue' => array(
-      'title' => t('Create update delete issue'),
-      'description' => t('Perform user can administrator issue. Recommented for webmaster role.'),
-    ),
-    'export issue to ojs xml format' => array(
-      'title' => t('Export issue to OJS xml format'),
-      'description' => t('Perform user can administrator OJS export. Recommented for webmaster role.'),
-    ),
   );
 }
 
 function open_journal_preprocess_html(&$vars) {
-  
-  
-  if (user_is_logged_in() && 
+
+
+  if (user_is_logged_in() &&
       !(in_array($_GET['q'], array(
-      OPEN_JOURNAL_PREFIX_PATH.'/login', 
+      OPEN_JOURNAL_PREFIX_PATH.'/login',
       OPEN_JOURNAL_PREFIX_PATH.'/register',
       'user/password')
-    ) || 
+    ) ||
     (arg(0) == 'user' && arg(1) == 'reset'))) {
     $vars['header_class'] = 'header-logged-in';
     $vars['logged_in'] = TRUE;
@@ -469,10 +391,10 @@ function open_journal_preprocess_page(&$vars) {
   $mpath = drupal_get_path('module', 'open_journal');
 
   if(in_array($_GET['q'], array(
-      OPEN_JOURNAL_PREFIX_PATH.'/login', 
+      OPEN_JOURNAL_PREFIX_PATH.'/login',
       OPEN_JOURNAL_PREFIX_PATH.'/register',
       'user/password')
-    ) || 
+    ) ||
     (arg(0) == 'user' && arg(1) == 'reset')
   ) {
     // TODO: change to settings upload file
@@ -495,28 +417,24 @@ function open_journal_preprocess_page(&$vars) {
 
     $arg = count(explode('/', OPEN_JOURNAL_PREFIX_PATH));
 
-    if ($_GET['q'] == OPEN_JOURNAL_PREFIX_PATH || 
-        $_GET['q'] == OPEN_JOURNAL_PREFIX_PATH.'/list'  || 
+    if ($_GET['q'] == OPEN_JOURNAL_PREFIX_PATH ||
+        $_GET['q'] == OPEN_JOURNAL_PREFIX_PATH.'/list'  ||
         (strpos($_GET['q'], OPEN_JOURNAL_PREFIX_PATH) === 0 && is_numeric(arg($arg+1)))){
       $vars['page_class'] = 'page-normal page-journal-list';
     }
-    
-    if (strpos($_GET['q'], OPEN_JOURNAL_PREFIX_PATH) === 0 && is_numeric(arg($arg))) {
-      $vars['journal'] = open_journal_journal_load(arg($arg));
-    }
 
   }
-   
-  if (user_is_logged_in()) { 
+
+  if (user_is_logged_in()) {
     global $user;
-  
+
     $dummy = open_journal_get_display_user_info($user, array('image_style' => 'open_journal_avatar_small'));
     $vars['user_info'] = $dummy;
     $vars['user_info']['display_picture_small'] = $dummy['display_picture'];
-  
+
     $dummy = open_journal_get_display_user_info($user, array('image_style' => 'open_journal_avatar_medium'));
     $vars['user_info']['display_picture_medium'] = $dummy['display_picture'];
-  
+
     $dummy = open_journal_get_display_user_info($user, array('image_style' => 'open_journal_avatar_large'));
     $vars['user_info']['display_picture_large'] = $dummy['display_picture'];
   }
@@ -526,7 +444,7 @@ function open_journal_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'user_pass') {
     $form['title'] = array('#markup' => '<h2>'.t('Forget password').'</h2>', '#weight' => -50);
     $form['#attached']['js'][] = drupal_get_path('module', 'open_journal').'/js/open_journal_compact.js';
-    
+
   }
 }
 
@@ -609,7 +527,7 @@ function open_journal_journal_load($jid) {
   $data->dc_publisher = explode(',' ,$data->dc_publisher);
   $data->dc_contributor = explode(',' ,$data->dc_contributor);
 
-  
+
 
   $data->title = $data->dc_title;
 
@@ -618,9 +536,7 @@ function open_journal_journal_load($jid) {
 
 function open_journal_journal_save($data, $change_status=FALSE) {
 
-  if(!$change_status) {
-    $data->changed = REQUEST_TIME;
-  }
+  $data->changed = REQUEST_TIME;
 
   open_journal_update_field($data, 'subject_en');
   open_journal_update_field($data, 'subject_sub');
@@ -632,7 +548,7 @@ function open_journal_journal_save($data, $change_status=FALSE) {
   open_journal_update_field($data, 'dc_publisher');
   open_journal_update_field($data, 'dc_contributor');
 
-  if (isset($data->date) && is_array($data->date)) {
+  if (is_array($data->date)) {
     $date = (object) $data->date;
     open_journal_update_field($data, 'dc_date', mktime(0, 0, 0, $date->month, $date->day, $date->year));
   }
@@ -640,45 +556,43 @@ function open_journal_journal_save($data, $change_status=FALSE) {
     open_journal_update_field($data, 'dc_date');
   }
 
-  
+
   if (isset($data->file) && $data->file) {
     $file = file_load($data->file);
     if(!isset($data->dc_format)) {
-     $data->dc_format = $file->filemime; 
+     $data->dc_format = $file->filemime;
     }
   }
-  
+
   // Importantly, save record before save file.
   $pk = (isset($data->jid) && $data->jid)? 'jid': array();
-  
+
   if (!$pk) {
     $data->created = REQUEST_TIME;
   }
   if (!$pk || $change_status) {
     $data->status_changed = REQUEST_TIME;
   }
-  
-  $data->title = $data->dc_title;
-  
+
   $jid = drupal_write_record('open_journal_journal', $data, $pk);
-  
+
   if (isset($data->file) && $data->file) {
     $file->status = FILE_STATUS_PERMANENT;
     file_save($file);
   }
-  
+
   // When create first
   if (!$pk) {
 
     // Active auto user
     global $user;
-    open_journal_journal_people_active($data, $user->uid);
+    open_journal_journal_people_active($data->jid, $user->uid);
 
     $user_auto_active_list = db_query("SELECT uid FROM users_roles ur, role_permission rp WHERE rp.permission = 'auto active when create journal' AND rp.rid = ur.rid")->fetchAllKeyed(0, 0);
 
     foreach ($user_auto_active_list as $uid) {
       if ($user->uid != $uid) {
-        open_journal_journal_people_active($data, $uid);
+        open_journal_journal_people_active($data->jid, $uid);
       }
     }
 
@@ -689,6 +603,8 @@ function open_journal_journal_save($data, $change_status=FALSE) {
       'title' => t('New journal has been created.'),
       'description' => 'Submit new journal has been completed. Now, status is "information review".'."\n\n".'See information with abstract field and journal file on "Information" tab.'."\n".url('journal/'.$data->jid.'/information', array('absolute' => TRUE)),
       'fid' => $data->file,
+      'contributor_only' => 0,
+      'created' => $data->created,
       'permanent' => 1
     );
     $discussion = (object) $discussion;
@@ -704,56 +620,15 @@ function open_journal_journal_save($data, $change_status=FALSE) {
 /**
  * Journal people method
  */
-function open_journal_journal_people_active($journal, $uid) {
-    
-  $journal = is_numeric($journal)? open_journal_journal_load($journal): $journal;
-  
-  $data = array(
+function open_journal_journal_people_active($jid, $uid) {
+  $data = (object) array(
     'joined' => REQUEST_TIME,
-    'jid' => $journal->jid,
+    'jid' => $jid,
     'uid' => $uid,
   );
-  
-  db_merge('open_journal_journal_people')
-    ->key(array(
-      'jid' => $journal->jid,
-      'uid' => $uid,
-    ))
-    ->fields($data)
-    ->execute();
-  
-  
-  $data = (object) $data;
-  $data->journal = $journal;
-  
-  open_journal_people_mail($data);
+  drupal_write_record('open_journal_journal_people', $data);
 }
 
-function open_journal_journal_people_deactive($jid, $uid) {
-  db_delete('open_journal_journal_people')
-    ->condition('jid', $jid)
-    ->condition('uid', $uid)
-    ->execute();
-}
-
-function open_journal_people_mail($data) {
-  
-  global $user;
-  
-  $sender = $user;
-  $reciver = user_load($data->uid);
-  
-  if ($sender->uid != $reciver->uid) {
-    
-    $sender_info = open_journal_get_display_user_info($sender, array('user' => $reciver));
-    $sender->name = $sender_info['display_name_text'];
-
-    $data->sender = $sender;
-    
-    drupal_mail('open_journal', 'open_journal_people_invite', $reciver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
-  }
-  
-}
 
 /**
  * Discussion method
@@ -763,13 +638,11 @@ function open_journal_discussion_load($did) {
   // Query data from database for edit journal when have journal ID
   $data = db_select('open_journal_discussion', 'd')
   ->fields('d')
-  ->condition('did', $did, '=');
-  
-  if (!user_access('access contributor process')) {
-    $data->condition('contributor_only', 0, '=');
-  }
-  
-  return $data->execute()->fetchObject();
+  ->condition('did', $did, '=')
+  ->execute()
+  ->fetchObject();
+
+  return $data;
 }
 
 function open_journal_discussion_load_limit($jid, $limit=NULL) {
@@ -779,13 +652,11 @@ function open_journal_discussion_load_limit($jid, $limit=NULL) {
   ->fields('d')
   ->condition('jid', $jid, '=')
   ->orderBy('did', 'DESC')
-  ->range(0,$limit);
-  
-  if (!user_access('access contributor process')) {
-    $data->condition('contributor_only', 0, '=');
-  }
+  ->range(0,$limit)
+  ->execute()
+  ->fetchAll();
 
-  return $data->execute()->fetchAll();
+  return $data;
 }
 
 function open_journal_discussion_load_all($jid) {
@@ -794,52 +665,41 @@ function open_journal_discussion_load_all($jid) {
   $data = db_select('open_journal_discussion', 'd')
   ->fields('d')
   ->condition('jid', $jid, '=')
-  ->orderBy('did', 'DESC');
-  
-  
-  if (!user_access('access contributor process')) {
-    $data->condition('contributor_only', 0, '=');
-  }
+  ->orderBy('did', 'DESC')
+  ->execute()
+  ->fetchAll();
 
-  return $data->execute()->fetchAll();
+  return $data;
 }
 
 
 
 
 function open_journal_discussion_save($data) {
-  
+
   $data->changed = REQUEST_TIME;
-
-  // Default value
-  $data->fid = isset($data->fid)? $data->fid: 0;
-  $data->contributor_only = isset($data->contributor_only)? $data->contributor_only: 0;
-  $data->permanent = isset($data->permanent)? $data->permanent: 0;
-
-  global $user;
-  $data->uid = isset($data->uid)? $data->uid: $user->uid;
 
 
   if ($data->fid) {
     $file = file_load($data->fid);
   }
-  
+
   // Importantly, save record before save file.
   $pk = (isset($data->did) && $data->did)? 'did': array();
-  
+
   if (!$pk) {
     $data->created = REQUEST_TIME;
   }
-  
+
   drupal_write_record('open_journal_discussion', $data, $pk);
-  
+
   if ($data->fid) {
     $file->status = FILE_STATUS_PERMANENT;
     file_save($file);
     file_usage_add($file, 'open_journal', 'discussion', $data->did);
-    
+
   }
-  
+
   $data->is_new = !$pk;
   if ($data->is_new) {
     open_jounal_discussion_mail($data);
@@ -848,29 +708,20 @@ function open_journal_discussion_save($data) {
   return $data;
 }
 
-// Send mail function 
+// Send mail function
 function open_jounal_discussion_mail($data) {
-  
+
   $user_list = open_journal_people_active_list($data->jid, $data->uid);
   $sender = user_load($data->uid);
   $data->journal = open_journal_journal_load($data->jid);
-  
-  $org_name = $sender->name;
+  $data->sender = $sender;
 
-  foreach ($user_list as $reciver) {
-    
-    $sender->name = $org_name;
-    $sender_info = open_journal_get_display_user_info($sender, array('user' => $reciver));
-    $sender->name = $sender_info['display_name_text'];
-    
-    $data->sender = $sender;
-    
-    if ($data->contributor_only && !user_access('access contributor process', $reciver)) {
-      drupal_mail('open_journal', 'open_journal_discussion_add', $reciver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
-    }
+  foreach ($user_list as $user) {
+    // TODO: check valid name for permission to dee the sender name
+    drupal_mail('open_journal', 'open_journal_discussion_add', $user->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
   }
 
-} 
+}
 
 
 /**
@@ -902,30 +753,30 @@ function open_journal_comment_load_all($did) {
 }
 
 function open_journal_comment_save($data) {
-  
+
   $data->changed = REQUEST_TIME;
 
 
   if ($data->fid) {
     $file = file_load($data->fid);
   }
-  
+
   // Importantly, save record before save file.
   $pk = (isset($data->cid) && $data->cid)? 'cid': array();
-  
+
   if (!$pk) {
     $data->created = REQUEST_TIME;
   }
-  
+
   drupal_write_record('open_journal_comment', $data, $pk);
-  
+
   if ($data->fid) {
     $file->status = FILE_STATUS_PERMANENT;
     file_save($file);
     file_usage_add($file, 'open_journal', 'comment', $data->cid);
-    
+
   }
-  
+
   $data->is_new = !$pk;
   if ($data->is_new) {
     open_jounal_comment_mail($data);
@@ -935,26 +786,18 @@ function open_journal_comment_save($data) {
 }
 
 function open_jounal_comment_mail($data) {
-    
+
   $sender = user_load($data->uid);
   $data->discussion = open_journal_discussion_load($data->did);
   $data->journal = open_journal_journal_load($data->discussion->jid);
-  
-  $user_list = open_journal_people_active_list($data->journal->jid, $data->uid);
-  
-  $org_name = $sender->name;
+  $data->sender = $sender;
 
-  foreach ($user_list as $reciver) {
-    
-    $sender->name = $org_name;
-    $sender_info = open_journal_get_display_user_info($sender, array('user' => $reciver));
-    $sender->name = $sender_info['display_name_text'];
-    
-    $data->sender = $sender;
-    
-    if ($data->discussion->contributor_only && !user_access('access contributor process', $reciver)) {
-      drupal_mail('open_journal', 'open_journal_comment_add', $reciver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
-    }
+  $user_list = open_journal_people_active_list($data->journal->jid, $data->uid);
+
+
+  foreach ($user_list as $user) {
+    // TODO: check valid name for permission to dee the sender name
+    drupal_mail('open_journal', 'open_journal_comment_add', $user->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
   }
 
 }
@@ -994,11 +837,8 @@ function open_journal_mail($key, &$message, $data) {
 
 
       $message['body'][] = $body;
-      
-      break;
-    
+
     case 'open_journal_comment_add':
-    
       $message['subject'] = 'Re: '.open_journal_trim($data->journal->title, 20).' - '.open_journal_trim($data->discussion->title);
 
       $body = "\n";
@@ -1015,22 +855,7 @@ function open_journal_mail($key, &$message, $data) {
 
 
       $message['body'][] = $body;
-      
-      break;
-    
-    case 'open_journal_people_invite':
-    
-      $message['subject'] = "You're invited to journal: ".open_journal_trim($data->journal->title, 20);
-      
-      $body = "\n";
-      $body .= "\n".$data->sender->name. " invited you to a journal named '".$data->journal->title."'";
-      $body .= "\n";
-      $body .= "\n".'Visit the journal to get started:';
-      $body .= "\n".url(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->journal->jid, array('absolute' => TRUE));
-      
-      break;
   }
-  
 }
 
 
@@ -1055,10 +880,10 @@ function open_journal_people_active_list($jid, $exclude=array() , $uid=FALSE, $l
   $user_list = $user_list->execute();
 
   $user_list = $user_list->fetchAllKeyed(0, 0);
-  
+
   $user_list = array_values($user_list);
   $user_list = array_diff($user_list, $exclude);
-  
+
   return array_values(user_load_multiple($user_list));
 }
 
@@ -1068,24 +893,19 @@ function open_journal_people_active_with_joined($jid) {
   $user_list->condition('jid', $jid, '=');
   $user_list = $user_list->execute();
   $user_list = $user_list->fetchAll();
-  
+
   return $user_list;
 }
 
 function open_journal_people_contributor_list($journal) {
-  
+
   $user_contributor_list = db_query(
-   "SELECT 
-      DISTINCT(uid) 
-    FROM 
-      users_roles ur, role_permission rp 
-    WHERE 
-      (
-        rp.permission = 'access contributor process' OR 
-        rp.permission = 'auto active when create journal' OR 
-        rp.permission = 'approve with unanimity and reject journal' OR 
-        rp.permission = 'informal approve journal'
-      ) AND 
+   "SELECT
+      uid
+    FROM
+      users_roles ur, role_permission rp
+    WHERE
+      rp.permission = 'access contributor process' AND
       rp.rid = ur.rid")->fetchAllKeyed(0, 0);
 
   foreach ($user_contributor_list as $key => $uid) {
@@ -1093,57 +913,9 @@ function open_journal_people_contributor_list($journal) {
       unset($user_contributor_list[$key]);
     }
   }
-  
+
   return array_values(user_load_multiple($user_contributor_list));
-  
-}
 
-function open_journal_people_informal_approve_list($journal) {
-  
-  $sql = 
-    "SELECT 
-        DISTINCT ur.uid, jp.informal_approve_status
-      FROM 
-        users_roles ur
-      INNER JOIN
-        role_permission rp 
-      ON
-        rp.rid = ur.rid
-      INNER JOIN
-        open_journal_journal_people jp
-      ON
-        ur.uid = jp.uid
-      WHERE 
-        rp.permission = 'informal approve journal' AND
-        jp.jid = :jid";
-  
-  $informal_list = db_query($sql, array(':jid' => $journal->jid))->fetchAll();
-  
-  
-  global $user;
-  
-  $status_list = unserialize(OPEN_JOUNAL_INFORMAL_STATUS);
-    
-  foreach ($informal_list as &$informal) {
-        
-    $informal->user = user_load($informal->uid);
-    $informal->user_info = open_journal_get_display_user_info($informal->user);
-    
-
-    if ($informal->uid == $user->uid) {
-      $informal->add_class = ' informal-form';
-      $informal->form = drupal_render(drupal_get_form('open_journal_informal_approve_sidebar_form', $journal, $informal));
-    }
-    else {
-      $informal->add_class = '';
-      $informal->form = $status_list[$informal->informal_approve_status];
-    }
-    
-  }
-    
-  
-  return $informal_list;
-  
 }
 
 function open_journal_people_sort($people1, $people2) {
@@ -1151,10 +923,7 @@ function open_journal_people_sort($people1, $people2) {
         return 0;
     }
     if ($people1->joined === 0) {
-      $people1->joined = 999999999999;
-    }
-    if ($people2->joined === 0) {
-      $people2->joined = 999999999999;
+      return 1;
     }
     return ($people1->joined < $people2->joined) ? -1 : 1;
 }
@@ -1162,49 +931,34 @@ function open_journal_people_sort($people1, $people2) {
 function open_journal_people($journal) {
   $people_contributor_list = open_journal_people_contributor_list($journal);
   $people_active_list = open_journal_people_active_with_joined($journal->jid);
-  
+
 
   $people_active_uid_key_list = array();
   foreach ($people_active_list as $people) {
     $people_active_uid_key_list[$people->uid] = $people;
   }
-  
-  $can_invite = user_access('invite people to journal');
-  
-  foreach ($people_contributor_list as $key => &$people) {
-    
+
+  foreach ($people_contributor_list as &$people) {
+
     $people->active_in_journal = isset($people_active_uid_key_list[$people->uid])? TRUE: FALSE;
-    
-    
+    $people->user_info = open_journal_get_display_user_info($people, array('image_style' => 'open_journal_avatar_large'));
+
     if ($people->active_in_journal) {
       $people->add_class = ' active-people';
       $people->joined = $people_active_uid_key_list[$people->uid]->joined;
     }
     else {
-      
-      if (!$can_invite) {
-        unset($people_contributor_list[$key]);
-        continue;
-      }
-      
-      $people->add_class = ' inactive-people';
+      $people->add_class = '';
       $people->joined = 0;
     }
-    
-    $people->user_info = open_journal_get_display_user_info($people, array('image_style' => 'open_journal_avatar_large'));
-    
-    $people->form = '';
-    if ($can_invite) {
-      $people->form = drupal_render(drupal_get_form('open_journal_people_form', $journal->jid, $people->uid, $people->active_in_journal));
-    }
   }
-  
+
   $people_creator = user_load($journal->uid);
   $people_creator->user_info = open_journal_get_display_user_info($people_creator, array('image_style' => 'open_journal_avatar_large'));
   $people_creator->joined = isset($people_active_uid_key_list[$people_creator->uid])? $people_active_uid_key_list[$people_creator->uid]->joined: $journal->created;
-  
+
   usort($people_contributor_list, 'open_journal_people_sort');
-      
+
   return theme('open_journal_detail', array(
     'jid' => $journal->jid,
     'content' => theme('open_journal_people', array(
@@ -1218,7 +972,7 @@ function open_journal_people($journal) {
 function open_journal_information($data=NULL) {
 
 
-  
+
   return theme('open_journal_detail', array(
     'content' => drupal_render(drupal_get_form('open_journal_information_form',$data)),
     'sidebar' => '',
@@ -1233,7 +987,7 @@ function open_journal_overview($journal) {
   // get data from discussion limit for display overview page
   $limit_overview_page = 3;
   $discussion = open_journal_discussion_load_limit($journal->jid, $limit_overview_page);
-  // Prepare data send to theme 
+  // Prepare data send to theme
   $discussion_data = array();
   $i = 0;
   foreach($discussion as $row) {
@@ -1244,7 +998,6 @@ function open_journal_overview($journal) {
     $discussion_data[$i]['description'] = open_journal_trim($row->description, 100);
     $discussion_data[$i]['url'] = '';
     $discussion_data[$i]['jid'] = $journal->jid;
-    $discussion_data[$i]['contributor_only'] = $row->contributor_only;
     $i++;
   }
   // calculate total more link to discussion journal
@@ -1253,18 +1006,10 @@ function open_journal_overview($journal) {
   $user = user_load($file_last[0]->uid);
   $file = file_load($file_last[0]->fid);
   $status_list = unserialize(OPEN_JOUNAL_STATUS);
-
-  // Get status name and class
-  $status_attributes = (object) open_journal_get_status_attributes($journal);
-  $journal->status_class = $status_attributes->class;
-  $journal->status_name  = $status_attributes->name;
-
-
   $status = array(
-    'name'      => $status_attributes->name,
-    'class'     => $status_attributes->class,
-    'updated'   => date('d M Y', $journal->status_changed),
-    'created'   => date('d M Y', $journal->created),
+    'name' => $status_list[$journal->status],
+    'updated' => date('d M Y', $journal->status_changed),
+    'created' => date('d M Y', $journal->created),
     'status_id' => $journal->status,
   );
   // Prepare people list  send to theme
@@ -1292,11 +1037,11 @@ function open_journal_overview($journal) {
   else {
     $abstract = $journal->description_en;
   }
-  // Prepare information sidebar 
+  // Prepare information sidebar
   $information = (object) array();
   $information_field = open_journal_get_field_settings();
 
-  
+
   if($information_field['dc_subject']) {
     if(OPEN_JOURNAL_SUB_LANG_ENABLE) {
       $information->subject_sub['value'] = implode(", ", $journal->subject_sub);
@@ -1347,35 +1092,35 @@ function open_journal_overview($journal) {
     $information->dc_format['value'] = $journal->dc_format;
     $information->dc_format['label'] = 'Format';
   }
-  
+
   if($information_field['dc_source']) {
     $information->dc_source['value'] = implode(", ", $journal->dc_source);
     $information->dc_source['label'] = 'Source';
   }
-  
+
   if($information_field['dc_relation']) {
     $information->dc_relation = implode(", ", $journal->dc_relation);
     $information->dc_relation['label'] = 'Relation';
   }
-  
+
   if($information_field['dc_right']) {
     $information->dc_right['value'] = $journal->dc_right;
     $information->dc_right['label'] = 'Right';
   }
-  
 
-  
+
+
   //  display language
   if($information->dc_language['value'] == OPEN_JOURNAL_SUB_LANG_CODE) {
     $information->dc_language['value'] = OPEN_JOURNAL_SUB_LANG_TEXT;
     $abstract_label = OPEN_JOURNAL_SUB_LANG_ABSTRACT_LABEL;
   }
   else {
-    $information->dc_language['value'] = 'Enligsh'; 
+    $information->dc_language['value'] = 'Enligsh';
     $abstract_label = 'Abstract';
   }
 
- 
+
   return theme('open_journal_detail', array(
     'content' => theme('open_journal_overview_content', array(
       'jid' => $journal->jid,
@@ -1402,131 +1147,20 @@ function open_journal_overview($journal) {
 }
 
 function open_journal_discussion_list($journal) {
-  
-
-  // Query discussion list 
-  $sql = " SELECT 
-    max(d.did) as  did,
-    max(c.cid) as cid,
-    if(c.cid IS NOT NULL, c.uid, d.uid) as user
-    
-    FROM 
-      open_journal_discussion d
-    LEFT JOIN
-      open_journal_comment c
-    ON
-      d.did = c.did
-    LEFT JOIN
-      users u
-    ON 
-      c.uid = u.uid OR
-      d.uid = u.uid
-    
-    WHERE 
-      d.jid = :jid";
-      
-  if (!user_access('access contributor process')) {
-    $sql .= " AND d.contributor_only = 0";
-  }
-  $sql .= " GROUP BY d.did ORDER BY d.did DESC";
-
-  $discussion_list = db_query($sql, array(':jid' => $journal->jid))->fetchAll();
-
-  foreach ($discussion_list as &$discussion_item) {
-    
-    $discussion = open_journal_discussion_load($discussion_item->did);
-    
-    if(isset($discussion_item->cid)) {
-     $latest_comment = open_journal_comment_load($discussion_item->cid);
-     $discussion->description = $latest_comment->message;
-    }
-    
-    $discussion->description = open_journal_trim($discussion->description, 100);
-    $discussion->title = open_journal_trim($discussion->title, 50);
-    
-    if(isset($discussion_item->user)) {
-      $discussion->user = open_journal_get_display_user_info($discussion_item->user);
-    }
-    
-    $discussion_item = $discussion;
-    
-  }
-  
-  $sidebar = theme('open_journal_status_form', open_journal_get_status_form_variables($journal));
-  
-  if (TRUE || user_access('approve with unanimity and reject journal') || user_access('informal approve journal')) {
-    $informal_list = open_journal_people_informal_approve_list($journal);
-    $sidebar .= theme('open_journal_informal_approve_form', array('informal_list' => $informal_list));
-  }
-
   return theme('open_journal_detail', array(
-    'content' => theme('open_journal_discussion_list', array(
-      'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
-      'discussion_list' => $discussion_list,
-      'jid' => $journal->jid,
-    )),
-    'sidebar' => $sidebar,
-    'jid' => $journal->jid
+    'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
+    'content' => 'Discussion list page',
+    'sidebar' => theme('open_journal_status_form', array('jid' => 1)),
+    'jid' => 1
   ));
-
-  
 }
 
-function open_journal_get_status_form_variables($journal) {
-  
-  // Prepare data to status side bar form
-  $status_list = unserialize(OPEN_JOUNAL_STATUS);
-  
-  $vars = array();
-  
-  $vars['status_list'] = $status_list;
-  $vars['journal'] = $journal;
-  
-  if (user_access('approve with unanimity and reject journal') && !$journal->reject) {
-    $vars['next_status'] = open_journal_next_status($journal->status);
-    $vars['reject_form'] = drupal_render(drupal_get_form('open_journal_reject_sidebar_form', $journal));
-    $vars['approve_form'] = drupal_render(drupal_get_form('open_journal_approve_sidebar_form', $journal, $vars['next_status']));
-    $vars['status_add_class'] = ' can-approve';
-  }
-  else {
-    $vars['reject_form'] = '';
-    $vars['approve_form'] = '';
-    $vars['status_add_class'] = ' no-approve';
-  }
-  
-  return $vars;
-}
-
-function open_journal_next_status($status) {
-  $status_list = unserialize(OPEN_JOUNAL_STATUS);
-  if($status == count($status_list)-1) {
-  }
-  else {
-    $status++;
-  }
-  return $status;
-
-}
-
-function open_journal_get_comment_field($cid, $field) {
-  $sql = " SELECT ".$field."  FROM open_journal_comment WHERE  cid=".$cid."  ";
-  $result = db_query($sql)->fetchAll();
-  return $result[0]->$field;
-}
-
-function open_journal_get_discussion_field($did, $field) {
-  $sql = " SELECT ".$field."  FROM open_journal_discussion WHERE  did=".$did."  ";
-  $result = db_query($sql)->fetchAll();
-  return $result[0]->$field;
-}
 function open_journal_discussion_add($journal) {
-
-  module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
 
   return theme('open_journal_detail', array(
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
     'content' => drupal_render(drupal_get_form('open_journal_discussion_form', $journal)),
-    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', open_journal_get_status_form_variables($journal)),
+    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', array('jid' => $journal->jid)),
     'jid' => $journal->jid
 
   ));
@@ -1534,12 +1168,10 @@ function open_journal_discussion_add($journal) {
 
 function open_journal_discussion_edit($journal, $discussion) {
 
-  module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
-
   return theme('open_journal_detail', array(
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
     'content' => drupal_render(drupal_get_form('open_journal_discussion_form', $journal, $discussion)),
-    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', open_journal_get_status_form_variables($journal)),
+    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', array('jid' => $journal->jid)),
     'jid' => $journal->jid
 
   ));
@@ -1547,12 +1179,10 @@ function open_journal_discussion_edit($journal, $discussion) {
 
 function open_journal_discussion_delete($journal, $discussion) {
 
-  module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
-
   return theme('open_journal_detail', array(
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
     'content' => drupal_render(drupal_get_form('open_journal_discussion_delete_form', $journal, $discussion)),
-    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', open_journal_get_status_form_variables($journal)),
+    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', array('jid' => $journal->jid)),
     'jid' => $journal->jid
 
   ));
@@ -1560,12 +1190,10 @@ function open_journal_discussion_delete($journal, $discussion) {
 
 function open_journal_comment_edit($journal, $discussion, $comment) {
 
-  module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
-
   return theme('open_journal_detail', array(
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
     'content' => drupal_render(drupal_get_form('open_journal_comment_form', $journal, $discussion, $comment)),
-    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', open_journal_get_status_form_variables($journal)),
+    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', array('jid' => $journal->jid)),
     'jid' => $journal->jid
 
   ));
@@ -1573,12 +1201,10 @@ function open_journal_comment_edit($journal, $discussion, $comment) {
 
 function open_journal_comment_delete($journal, $discussion, $comment) {
 
-  module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
-
   return theme('open_journal_detail', array(
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
     'content' => drupal_render(drupal_get_form('open_journal_comment_delete_form', $journal, $discussion, $comment)),
-    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', open_journal_get_status_form_variables($journal)),
+    'sidebar' => '<h3>Note</h3><p>Dummy content</p>'.theme('open_journal_status_form', array('jid' => $journal->jid)),
     'jid' => $journal->jid
 
   ));
@@ -1591,15 +1217,14 @@ function open_journal_discussion_remove($did) {
 }
 
 function open_journal_discussion_detail($journal, $discussion) {
-  
+
   global $user;
-  module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
 
   $discussion->user_info = open_journal_get_display_user_info($discussion->uid);
   $discussion->description = check_markup($discussion->description);
   $discussion->file = $discussion->fid? file_load($discussion->fid): NULL;
   $discussion->can_edit = $user->uid == $discussion->uid;
-  
+
   $comment_list = open_journal_comment_load_all($discussion->did);
   foreach ($comment_list as &$comment) {
     $comment->user_info = open_journal_get_display_user_info($comment->uid);
@@ -1607,7 +1232,7 @@ function open_journal_discussion_detail($journal, $discussion) {
     $comment->file = $comment->fid? file_load($comment->fid): NULL;
     $comment->can_edit = $user->uid == $comment->uid;
   }
-    
+
   return theme('open_journal_detail', array(
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
     'content' => theme('open_journal_discussion_detail', array(
@@ -1617,8 +1242,8 @@ function open_journal_discussion_detail($journal, $discussion) {
       'comment_form' => drupal_render(drupal_get_form('open_journal_comment_form', $journal, $discussion)),
       'comment_list' => $comment_list,
     )),
-    'sidebar' => theme('open_journal_status_form', open_journal_get_status_form_variables($journal)),
-    'jid' => $journal->jid,
+    'sidebar' => theme('open_journal_status_form', array('jid' => 1)),
+    'jid' => 1
   ));
 }
 
@@ -1630,10 +1255,10 @@ function open_journal_get_active_menu_attributes($menu_active_url) {
 }
 
 function open_journal_get_file_list($jid, $limit=NULL) {
-  
-  $sql = "SELECT 
+  $file_list = db_query(
+   "SELECT
       u.*, IF(d.fid IS NOT NULL, d.fid, c.fid) AS fid, f.filename, f.filesize, f.uri, f.timestamp
-    FROM 
+    FROM
       open_journal_discussion d
     LEFT JOIN
       open_journal_comment c
@@ -1641,37 +1266,30 @@ function open_journal_get_file_list($jid, $limit=NULL) {
       d.did = c.did
     LEFT JOIN
       users u
-    ON 
+    ON
       c.uid = u.uid OR
       d.uid = u.uid
     INNER JOIN
       file_managed f
-    ON 
+    ON
       c.fid = f.fid OR
       d.fid = f.fid
-    WHERE 
-      d.jid = :jid AND 
-      (c.fid IS NOT NULL OR d.fid IS NOT NULL)";
-      
-  
-  if (!user_access('access contributor process')) {
-    $sql .= " AND d.contributor_only = 0";
-  }
-  
-  $sql .= " ORDER BY c.created, d.created DESC".($limit? (' LIMIT 0, '.$limit): '');
-  
-  $file_list = db_query($sql, array(':jid' => $jid))->fetchAll();
-
+    WHERE
+      d.jid = :jid AND
+      (c.fid IS NOT NULL OR d.fid IS NOT NULL)
+    ORDER BY c.created, d.created DESC".($limit? (' LIMIT 0, '.$limit): ''),
+    array(':jid' => $jid)
+  )->fetchAll();
 
   return $file_list;
 }
 
 function open_journal_file($journal) {
-  
+
   $file_list = open_journal_get_file_list($journal->jid);
-  
+
   foreach ($file_list as &$file) {
-    
+
     $account = (object) array(
       'uid' => $file->uid,
       'name' => $file->name,
@@ -1680,7 +1298,7 @@ function open_journal_file($journal) {
     );
     $file->user_info = open_journal_get_display_user_info($account);
   }
-  
+
   return theme('open_journal_detail', array(
     'content' => theme('open_journal_file', array(
       'file_list' => $file_list,
@@ -1694,28 +1312,137 @@ function open_journal_file($journal) {
   ));
 }
 
-
-
-function open_journal_load_multiple($user, $after_jid=NULL, $limit=NULL, $status='all') {
-   // Query data from database for edit journal when have journal ID
-  $query_var = array(
-  ':uid' => $user->uid,
-  );
-  $sql = 
-   "SELECT j.* 
-    FROM 
-      {open_journal_journal_people} jp 
-    LEFT JOIN 
-      {open_journal_journal} j 
-    ON 
+function open_journal_load_section($section_id) {
+  $query_var = array();
+  $sql =
+   "SELECT j.*
+    FROM
+      {open_journal_journal_people} jp
+    LEFT JOIN
+      {open_journal_journal} j
+    ON
       jp.jid = j.jid
-    WHERE 
-      jp.uid = :uid";
+    -- LEFT JOIN
+    --   {open_journal_journal_section} s
+    -- ON
+    --   j.section_id = s.id
+    WHERE
+      1 = 1
+    -- FOR TEST
+    LIMIT
+      3";
+  $result = db_query($sql, $query_var)->fetchAll();
 
+  $section = new stdClass();
+  $section->title = 'MOCK_TITLE'.rand();
+  $section->abbrev = 'MOCK_ABBREV'.rand();
+  $section->articles = $result;
+
+  return $section;
+}
+
+function open_journal_load_issue($issue_id) {
+  # TODO: Query list section in issue
+  // $query_var = array();
+  // $sql =
+  //  "SELECT j.*
+  //   FROM
+  //     {open_journal_journal_people} jp
+  //   LEFT JOIN
+  //     {open_journal_journal} j
+  //   ON
+  //     jp.jid = j.jid
+  //   -- LEFT JOIN
+  //   --   {open_journal_journal_section} s
+  //   -- ON
+  //   --   j.section_id = s.id
+  //   WHERE
+  //     1 = 1";
+  // $result = db_query($sql, $query_var)->fetchAll();
+
+  $result1 = new stdClass();
+  $result1->sid = '1';
+  $result2 = new stdClass();
+  $result2->sid = '2';
+  $result3 = new stdClass();
+  $result3->sid = '3';
+  $result = array();
+  $result[] = $result1;
+  $result[] = $result2;
+  $result[] = $result3;
+
+  $issue = new stdClass();
+  $issue->id = rand();
+  $issue->title = 'MOCK_TITLE'.rand();
+  $issue->description = 'MOCK_description';
+  $issue->volumn = 'MOCK_volumn';
+  $issue->number = 'MOCK_number';
+  $issue->year = 'MOCK_year';
+  $issue->date_published = '2013-03-09';
+  $issue->access_date = '2013-03-09';
+  $issue->sections = $result;
+
+  return $issue;
+}
+
+function open_journal_load_all_issue() {
+  # TODO: Query list issue
+  // $query_var = array();
+  // $sql =
+  //  "SELECT j.*
+  //   FROM
+  //     {open_journal_journal_people} jp
+  //   LEFT JOIN
+  //     {open_journal_journal} j
+  //   ON
+  //     jp.jid = j.jid
+  //   -- LEFT JOIN
+  //   --   {open_journal_journal_section} s
+  //   -- ON
+  //   --   j.section_id = s.id
+  //   WHERE
+  //     1 = 1";
+  // $result = db_query($sql, $query_var)->fetchAll();
+
+  $result1 = new stdClass();
+  $result1->iid = '1';
+  $result2 = new stdClass();
+  $result2->iid = '2';
+  $result3 = new stdClass();
+  $result3->iid = '3';
+  $result = array();
+  $result[] = $result1;
+  $result[] = $result2;
+  $result[] = $result3;
+
+  $issue_list = new stdClass();
+  $issue_list->issues = $result;
+
+  return $issue_list;
+}
+
+function open_journal_load_multiple($user=NULL, $after_jid=NULL, $limit=NULL, $status='all') {
+   // Query data from database for edit journal when have journal ID
+  $query_var = array();
+  $sql =
+   "SELECT j.*
+    FROM
+      {open_journal_journal_people} jp
+    LEFT JOIN
+      {open_journal_journal} j
+    ON
+      jp.jid = j.jid
+    WHERE
+      1 = 1";
+
+  if($user !== NULL) {
+    $sql .= " AND jp.uid = :uid";
+    $query_var[':uid'] = $user->uid;
+  }
   if($status != 'all') {
     $sql .= " AND j.status = :sid ";
     $query_var[':sid'] = $status;
-  }    
+  }
 
   if($after_jid !== NULL) {
     $sql .= " AND j.jid < :jid ";
@@ -1728,24 +1455,9 @@ function open_journal_load_multiple($user, $after_jid=NULL, $limit=NULL, $status
   }
 
   $result = db_query($sql, $query_var)->fetchAll();
- 
-  
+
+
   return $result;
-}
-
-function open_journal_get_status_attributes($journal) {
-  
-  $status_list = unserialize(OPEN_JOUNAL_STATUS);
-
-  if($journal->reject) {
-    $class = 'reject';
-    $name = 'Reject';
-  }
-  else {
-    $class = $journal->status;
-    $name = $status_list[$journal->status];
-  }
-  return array('class' => $class, 'name' => $name);
 }
 
 function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_LIST_IPP) {
@@ -1754,7 +1466,7 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
   global $user;
   $mpath = drupal_get_path('module', 'open_journal');
   drupal_add_js($mpath.'/js/open_journal_list_load_more.js');
-  
+
   // TODO: Refactor to use COUNT function in SQL
   $list = open_journal_load_multiple($user);
   $count_journal = count($list);
@@ -1762,23 +1474,21 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
 
   $current_status_name = isset($status_list[$status]) ? $status_list[$status]: 'All Journals';
 
-  
+
   $user_info = open_journal_get_display_user_info($user , array('image_style' => 'open_journal_avatar_large'));
-  
+
   $journal_list = open_journal_load_multiple($user, $after_jid, $limit, $status);
 
   foreach ($journal_list as &$journal) {
 
-    // Get status name and class
-    $status_attributes = (object) open_journal_get_status_attributes($journal);
-    $journal->status_class = $status_attributes->class;
-    $journal->status_name  = $status_attributes->name;
+    // Convers ststus id to word
+    $journal->status_name = $status_list[$journal->status];
 
     $journal->people_list = open_journal_people_active_list($journal->jid, NULL, $journal->uid, OPEN_JOURNAL_DISPLAY_IMAGE_USER_LIST_LIMIT+1);
     foreach ($journal->people_list as &$people) {
       $people->display_info = open_journal_get_display_user_info($people, array('owner_uid' => $journal->uid));
     }
-    
+
     if (count($journal->people_list) > OPEN_JOURNAL_DISPLAY_IMAGE_USER_LIST_LIMIT) {
       array_pop($journal->people_list);
       $journal->people_list['more'] = open_journal_get_display_user_info_more();
@@ -1795,6 +1505,7 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
   if ($has_more_page) {
     $update_load_more_url = url(OPEN_JOURNAL_PREFIX_PATH.'/list/'.$status.'/'.$journal->jid.'/'.$limit);
   }
+
 
 
   // render json respone for load mor ajax
@@ -1894,47 +1605,24 @@ function open_journal_image_default_styles() {
   return $styles;
 }
 
-function open_journal_get_real_name($account) {
-  $real_name = '';
-  
-  if (!is_array($account->data)) {
-    $account->data = unserialize($account->data);
-  }
-  if (isset($account->data['firstname']) && $account->data['firstname']) {
-    $real_name .= $account->data['firstname'];
-  }
-  
-  if (isset($account->data['lastname']) && $account->data['lastname'] && $real_name) {
-    $real_name .= ' '.truncate_utf8($account->data['lastname'], 1).'.';
-  }
-  elseif (isset($account->data['lastname']) && $account->data['lastname'] && !$real_name) {
-    $real_name .= $account->data['lastname'];
-  }
-  else {
-    $real_name .= $account->name;
-  }
-  
-  return $real_name;
-}
-
 /**
  * $account require uid, name, (obj|str) data, (obj|int) picture
  */
 function open_journal_get_display_user_info($account, $variables=array()) {
-  
+
   $account = is_numeric($account)? user_load($account): $account;
-  
+
   $default_variables = array(
-    'image_style' => 'open_journal_avatar_medium', 
-    'user' => NULL, 
-    'picture_class' => array(), 
-    'name_class' => array(), 
+    'image_style' => 'open_journal_avatar_medium',
+    'user' => NULL,
+    'picture_class' => array(),
+    'name_class' => array(),
     'name_class' => array(),
     'owner_uid' => NULL
   );
-  
+
   $variables = array_merge($default_variables, $variables);
-  
+
 
   $image_style = image_style_load($variables['image_style']);
   $size = array();
@@ -1945,13 +1633,10 @@ function open_journal_get_display_user_info($account, $variables=array()) {
     $size[] = $height;
   }
   $size = min($size);
-  
-  
+
+
   // Prepare name and picture to display
-  $real_name = open_journal_get_real_name($account);
-    
   $dummy_name = $account->name;
-  $dummy_name_text = $dummy_name;
   $dummy_picture = theme('image', array(
     //'path' => 'http://www.gravatar.com/avatar/'.md5(strtolower(trim($account->uid))).'?d=identicon&f=y&size='.$size,
     'path' => 'open_journal/avatar/'.md5(strtolower(trim($account->name))).'/'.$size.'.png',
@@ -1960,95 +1645,89 @@ function open_journal_get_display_user_info($account, $variables=array()) {
     'alt' => $dummy_name,
     'title' => $dummy_name,
   ));
-  
-    
+
   if (!$account->picture) {
-    $real_picture = theme('image', array(
-      //'path' => 'http://www.gravatar.com/avatar/'.md5(strtolower(trim($account->uid))).'?d=identicon&f=y&size='.$size,
-      'path' => 'open_journal/avatar/'.md5(strtolower(trim($account->name))).'/'.$size.'.png',
-      'width' => $size,
-      'height' => $size,
-      'alt' => $real_name,
-      'title' => $real_name,
-    ));
+    $real_picture = $dummy_picture;
   }
   else {
-    
+
     $picture = file_load(is_numeric($account->picture)? $account->picture: $account->picture->fid);
-        
-    $real_picture = theme('image_style', array(
+
+    $real_picture = $dummy_picture = theme('image_style', array(
       'style_name' => $image_style['name'],
       'path' => $picture->uri,
       'width' => $size,
       'height' => $size,
-      'alt' => $real_name,
-      'title' => $real_name,
+      'alt' => $dummy_name,
+      'title' => $dummy_name,
     ));
   }
-  
-  $account->data = !is_array($account->data)? unserialize($account->data): $account->data;
-  
 
-  
+  $account->data = !is_array($account->data)? unserialize($account->data): $account->data;
+
+  $real_name = '';
+  if (isset($account->data['firstname']) && $account->data['firstname']) {
+    $real_name .= $account->data['firstname'];
+  }
+
+  if (isset($account->data['lastname']) && $account->data['lastname'] && $real_name) {
+    $real_name .= ' '.truncate_utf8($account->data['lastname'], 1).'.';
+  }
+  elseif (isset($account->data['lastname']) && $account->data['lastname'] && !$real_name) {
+    $real_name .= $account->data['lastname'];
+  }
+  else {
+    $real_name .= $dummy_name;
+  }
+
   if ($variables['owner_uid'] == $account->uid) {
     $real_picture .= '<span class="owner-label">Owner</span>';
     $dummy_picture = '<span class="user-picture-wrapper">'.$dummy_picture.'<span class="owner-label">Owner</span></span>';
   }
-  else {
-    $dummy_picture = '<span class="user-picture-wrapper">'.$dummy_picture.'</span>';
-    
-  }
-  
+
   $variables['picture_class'][] = 'user-picture-wrapper';
   $variables['name_class'][] = 'user-name-wrapper';
-  
+
   $user_profile_url = drupal_get_destination();
   $user_profile_url = $user_profile_url['destination'];
-    
+
   $real_picture = l($real_picture, $user_profile_url, array(
-    'html' => TRUE, 
+    'html' => TRUE,
     'attributes' => array('class' => $variables['picture_class']),
     'fragment' => 'link-to-user-profile',
   ));
-  
-  $real_name_text = $real_name;
+
   $real_name = l($real_name, $user_profile_url, array(
     'attributes' => array('class' => $variables['name_class']),
     'fragment' => 'link-to-user-profile',
   ));
-  
-  
-  $dummy_name = '<span class="user-name-wrapper">'.$dummy_name.'</span>';
-  
-  
+
+
+
+
   // Prepare info to return
   $info_real = array(
     'display_picture' => $real_picture,
     'display_name' => $real_name,
-    'display_name_text' =>  $real_name_text,
   );
 
   $info_dummy = array(
     'display_picture' => $dummy_picture,
     'display_name' => $dummy_name,
-    'display_name_text' =>  $dummy_name_text,
   );
-  
 
-  
-  
+
+
+
   // Check before return
   if (!isset($variables['user']) || !$variables['user']) {
     global $user;
   }
-  else {
-    $user = $variables['user'];
-  }
-  
+
   // Editor
   if (user_access('auto active when create journal')) {
     $info = $info_real;
-  }    
+  }
   // Reviewer and librarian
   elseif (user_access('access contributor process') && !user_access('auto active when create journal')) {
     if (user_access('access contributor process', $account)) {
@@ -2067,7 +1746,7 @@ function open_journal_get_display_user_info($account, $variables=array()) {
       $info = $info_dummy;
     }
   }
-    
+
   return $info;
 
 }
@@ -2085,62 +1764,5 @@ function open_journal_get_display_user_info_more() {
   return array('display_picture' => '...', 'display_name' => 'more people');
 }
 
-/**
- * Issue load.
- */
-function open_journal_issue_load($issue_id) {
-  $issue = &drupal_static(__FUNCTION__);
-
-  if (!isset($issue)) {
-    $issue = array();
-
-    if (!isset($issue[$issue_id])) {
-      // Load issue.
-      $issue[$issue_id] = db_query("SELECT * FROM {open_journal_issue} WHERE iid = :iid", array(':iid' => $issue_id))->fetch();
-      if ($issue[$issue_id]) {
-
-        // Load sections
-        $section_result = db_query("SELECT * FROM {open_journal_issue_section} WHERE iid = :iid ORDER BY weight ASC", array(':iid' => $issue_id));
-        $sections = array();
-        foreach ($section_result as $section) {
-          $journal_result = db_query("SELECT jid, weight FROM {open_journal_issue_journal} WHERE sid = :sid ORDER BY weight ASC", array(':sid' => $section->sid));
-          $journals = array();
-          foreach ($journal_result as $journal) {
-            if ($_journal = open_journal_journal_load($journal->jid)) {
-              $_journal->weight = $journal->weight;
-              $journals[] = $_journal;
-            }
-          }
-          $section->journals = $journals;
-          $sections[] = $section;
-        }
-        $issue[$issue_id]->sections = $sections;
-      }
-    }
-  }
-
-  return $issue[$issue_id];
-}
-
-/**
- * Return JSON of journals list for autocomplete.
- */
-function open_journal_list_autocomplete($string = '') {
-  $matches = array();
-
-  if ($string) {
-    $result = db_select('open_journal_journal', 'j')
-      ->fields('j', array('jid', 'dc_title'))
-      ->condition('j.dc_title', '%'. db_like($string) . '%', 'LIKE')
-      ->range(0, 10)
-      ->execute();
-
-    foreach ($result as $row) {
-      $matches[$row->dc_title .' [id:'. $row->jid .']'] = check_plain($row->dc_title);
-    }
-  }
-
-  drupal_json_output($matches);
-}
 
 
