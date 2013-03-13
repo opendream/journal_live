@@ -1406,9 +1406,10 @@ input.form-submit:hover {
 			height: 0;
 			margin: 0;
 		}
-		#page.page-journal-list #user-heading img {
+		#page.page-journal-list #user-heading .user-picture-wrapper {
 			float: left;
 			margin-right: 20px;
+			width: 73px;
 		}
 		#page.page-journal-list #user-heading h2 {
 			font-size: 30px;
@@ -1572,6 +1573,11 @@ input.form-submit:hover {
 		text-transform: uppercase;
 		margin-left: -5px;
 		margin-top: 10px;
+		cursor: pointer;
+	}
+	#journal-list .journal-item .journal-status:hover {
+		cursor: pointer;
+		text-decoration: none;
 	}
 		#journal-list .journal-item .status1 {
 			background-color: #c6aadd;
@@ -1676,6 +1682,7 @@ input.form-submit:hover {
 	display: block;
 	width: 140px;
 	margin: 0 auto;
+	margin-top: 40px;
 	text-align: center;
 	overflow: hidden;
 }
@@ -1722,16 +1729,20 @@ input.form-submit:hover {
 h2.journal-block-title {
 	margin-bottom: 15px;
 }
+.people-block-overview .journal-block-content {
+	float: left;
+	margin-bottom: 10px;
+}
 .people-block-overview .relate-peoples {
 	position: relative;
 	width: 260px;
 	margin: 0;
-	margin-bottom: 10px;
 	display: block;
 	float: left;
 }
 .people-block-overview .view-all-people {
 	float: right;
+	overflow: hidden;
 }
 .information-block .information-field .label {
 	text-align: right;
@@ -1866,7 +1877,7 @@ h2.journal-block-title {
 	float: left;
 }
 
-#journal-detail-wrapper .add-discussion-btn a {
+#journal-detail-wrapper .journal-discussion-list-block .add-discussion-btn a {
   display: block;
 	padding: 5px 10px 5px 30px;
 	border-radius: 5px;
@@ -1878,9 +1889,23 @@ h2.journal-block-title {
 	margin-right: 10px;
 	margin-top: 5px;
 }
+#journal-detail-wrapper .discussion-block .add-discussion-btn {
+	top: 10px;
+	right: 40px;
+	text-align: right;
+	position: absolute;
+	width: 140px;
+	margin-top: 10px;
+}
+#journal-detail-wrapper .discussion-block .add-discussion-btn a {
+	background: url(images/ic-add-journal-btn-gray.png) transparent no-repeat 7px 7px;
+	padding: 7px 0 0 30px;
+	color: #7d7d7d;
+}
 
 #journal-detail-wrapper .discussion-block .journal-block-title {
   float: left;
+  width: 200px;
 }
 
 .journal-detail-content-item {
@@ -2032,7 +2057,7 @@ h2.journal-block-title {
 	display: block;
 	width: 12px;
 	height: 12px;
-	background: url(images/ic-hint.png) no-repeat center right;
+	background: url(images/ic-hint.png) no-repeat /* center */top right;
 	position: absolute;
 	top: 3px;
 	right: -16px;
@@ -2429,11 +2454,15 @@ ul.discussion-list {
 .files-block {
 	background: url(images/bg-new-file.png) #FFF no-repeat 0 77px;
 }
+.files-block h2.journal-block-title {float: left;}
 
-#file-list-item { width: 880px; }
+#file-list-item, 
+#file-list-item li { width: 880px; }
+#file-list-item li { overflow: hidden; }
 	#file-list-item li .file-name {
 		width: 580px;
 		float: left;
+		padding-right: 110px;
 	}
 		#file-list-item li .file-name a {
 			color: #111;
@@ -2445,6 +2474,7 @@ ul.discussion-list {
 		}
 	#file-list-item li .upload-date,
 	#file-list-item li .file-size {
+		width: 100px;
 		float: left;
 		margin-right: 30px;
 		color: #333;
@@ -2454,8 +2484,12 @@ ul.discussion-list {
 		margin-right: 4px;
 	}
 	#file-list-item li a.file-download-btn {
-		float: none;
 		padding: 10px 15px;
+		position: absolute;
+		top: 10px;
+		right: 0;
+		height: 18px;
+		line-height: 18px;
 	}
 
 /* People

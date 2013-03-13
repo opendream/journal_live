@@ -384,6 +384,7 @@ function open_journal_schema() {
 /**
  * Implements hook_update_N().
  */
+ /*
 function open_journal_update_7002(&$sandbox) {
   $schema = drupal_get_schema_unprocessed('open_journal');
   db_create_table('open_journal_issue', $schema['open_journal_issue']);
@@ -391,3 +392,4 @@ function open_journal_update_7002(&$sandbox) {
   db_create_table('open_journal_issue_journal', $schema['open_journal_issue_journal']);
   return 'Add the open_journal_issue, open_journal_issue_section, open_journal_issue_journal tables for the open journal module.';
 }
+*/

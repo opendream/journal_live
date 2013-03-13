@@ -964,7 +964,7 @@ function open_jounal_discussion_mail($data) {
 
     $data->sender = $sender;
 
-    if ($data->contributor_only && !user_access('access contributor process', $reciver)) {
+    if (!$data->contributor_only || user_access('access contributor process', $reciver)) {
       drupal_mail('open_journal', 'open_journal_discussion_add', $reciver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
     }
   }
@@ -1042,7 +1042,6 @@ function open_jounal_comment_mail($data) {
   $user_list = open_journal_people_active_list($data->journal->jid, $data->uid);
 
   $org_name = $sender->name;
-
   foreach ($user_list as $reciver) {
 
     $sender->name = $org_name;
@@ -1050,8 +1049,7 @@ function open_jounal_comment_mail($data) {
     $sender->name = $sender_info['display_name_text'];
 
     $data->sender = $sender;
-
-    if ($data->discussion->contributor_only && !user_access('access contributor process', $reciver)) {
+    if (!$data->discussion->contributor_only || user_access('access contributor process', $reciver)) {
       drupal_mail('open_journal', 'open_journal_comment_add', $reciver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
     }
   }
@@ -1064,7 +1062,7 @@ function open_jounal_comment_mail($data) {
 function open_journal_mail($key, &$message, $data) {
 
   $site_name = variable_get('site_name', t('E-Journal'));
-
+  
   switch ($key) {
     case 'open_journal_discussion_add':
       //$message['subject'] = '['.truncate_utf8($data->journal->title, 10, FALSE, TRUE).']'.$data->title;
@@ -1126,7 +1124,9 @@ function open_journal_mail($key, &$message, $data) {
       $body .= "\n";
       $body .= "\n".'Visit the journal to get started:';
       $body .= "\n".url(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->journal->jid, array('absolute' => TRUE));
-
+      
+      $message['body'][] = $body;
+      
       break;
   }
 
