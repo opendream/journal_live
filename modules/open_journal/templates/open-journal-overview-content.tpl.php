@@ -37,6 +37,9 @@
   	<ul id="overview-discussion">
       <?php foreach($discussion_data as $data):?>
       <li>
+        <?php if ($data['contributor_only']): ?>
+        <span class="contributor-only-icon">contributor only</span>  
+        <?php endif ?>
         <div class="journal-user profile-picture-small">
           <?php print $data['user_info']['display_picture'].'<span class="username">'.$data['user_info']['display_name'].'</span>';?>
         </div>
