@@ -76,7 +76,7 @@
             <li><?php print l(t('OJS export'), OPEN_JOURNAL_PREFIX_PATH.'/ojs/export'); ?></li>  
             <?php endif ?>
             <?php if (user_access('create update delete issue')): ?>
-            <li><?php print l(t('Issue'), 'issue'); ?></li>  
+            <li><?php print l(t('All issue'), 'issue'); ?></li>  
             <?php endif ?>  
             <li><?php print l(t('Add new journal'), OPEN_JOURNAL_PREFIX_PATH.'/add'); ?></li>
             <li><?php print l(t('Account settings'), OPEN_JOURNAL_PREFIX_PATH.'/account/setting'); ?></li>

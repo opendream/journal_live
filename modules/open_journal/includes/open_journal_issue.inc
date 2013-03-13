@@ -529,8 +529,8 @@ function open_journal_issue_form_submit($form, $form_state) {
  * Issue list.
  */
 function open_journal_issue_list() {
-  global $user;
-  $result = db_query("SELECT iid FROM {open_journal_issue} WHERE uid = :uid ORDER BY created DESC", array(':uid' => $user->uid));
+
+  $result = db_query("SELECT iid FROM {open_journal_issue} ORDER BY created DESC");
 
   $header = array(t('Title'), t('Created date'), array('data' => t('Operations'), 'colspan' => 2));
 

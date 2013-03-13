@@ -264,6 +264,7 @@ function open_journal_menu() {
     'access arguments' => array('access open journal'),
     'type' => MENU_CALLBACK,
   );
+  /*
   $items['issue'] = array(
     'title' => 'My Issue',
     'page callback' => 'open_journal_issue_overview',
@@ -271,10 +272,11 @@ function open_journal_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_issue.inc',
   );
+  */
 
   // Issue paths.
   $items['issue'] = array(
-    'title' => 'My Issue',
+    'title' => 'All issue',
     'page callback' => 'open_journal_issue_list',
     'access arguments' => array('create update delete issue'),
     'file' => 'includes/open_journal_issue.inc',
