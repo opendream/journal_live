@@ -11,23 +11,19 @@
 		<?php print $key_status+1;?>
 		</div>
 
-		<?php print $value_status;?>
+		<div class="status-text">
+			<?php print $value_status;?>
+		</div>
 		
-		<?php if ($approve_form): ?>
 		<?php if($journal->status == $key_status && $journal->status != count($status_list)-1 && !$journal->reject):?>
 			<?php print $approve_form;?>
-		<?php endif;?>
-		<?php endif ?>
-	
+		<?php endif;?>	
 	</div>
 
 	<?php endforeach;?>
-	
-	<?php if ($reject_form): ?>
 	<?php print $reject_form;?>
 	<div class="reject-button">
 		<?php print 'or '.l('Reject' ,'', array('attributes' => array('id' => 'reject_bottom')));?>
 	</div>
-	<?php endif ?>
 
 </div>
