@@ -1937,6 +1937,7 @@ function open_journal_load_all_issue() {
 
 function open_journal_load_multiple($user=NULL, $after_jid=NULL, $limit=NULL, $status='all') {
    // Query data from database for edit journal when have journal ID
+
   $query_var = array();
   $sql = 
    "SELECT j.* 
@@ -1961,6 +1962,9 @@ function open_journal_load_multiple($user=NULL, $after_jid=NULL, $limit=NULL, $s
   if($after_jid !== NULL) {
     $sql .= " AND j.jid < :jid ";
     $query_var[':jid'] = $after_jid;
+  }
+  if(isset($user->data['not_show_reject']) && $user->data['not_show_reject']) {
+    $sql .= ' AND j.reject = 0 ';
   }
   $sql .= " ORDER BY j.jid DESC";
 
@@ -1993,12 +1997,13 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
   drupal_set_title('');
 
   global $user;
+  //dpm($user);
   $mpath = drupal_get_path('module', 'open_journal');
   drupal_add_js($mpath.'/js/open_journal_list_load_more.js');
 
   // Get checkbox not reject form
   module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
-  //$not_reject_form = drupal_render(drupal_get_form('open_journal_not_reject_form', $journal));
+  $not_reject_form = drupal_render(drupal_get_form('open_journal_not_reject_form'));
   
   // TODO: Refactor to use COUNT function in SQL
   $list = open_journal_load_multiple($user);
@@ -2068,6 +2073,7 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
     'status_list' => $status_list,
     'current_status_name' => $current_status_name,
     'status' => $status,
+    'not_reject_form' => $not_reject_form,
 
   ));
 
@@ -2141,7 +2147,6 @@ function open_journal_image_default_styles() {
 
 function open_journal_get_real_name($account) {
   $real_name = '';
-  
   if (!is_array($account->data)) {
     $account->data = unserialize($account->data);
   }
