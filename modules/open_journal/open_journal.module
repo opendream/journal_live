@@ -2272,6 +2272,7 @@ function open_journal_get_display_user_info($account, $variables=array()) {
 
   $user_profile_url = drupal_get_destination();
   $user_profile_url = $user_profile_url['destination'];
+  $user_profile_url = OPEN_JOURNAL_PREFIX_PATH.'/account/'.$account->uid;
 
   $real_picture = l($real_picture, $user_profile_url, array(
     'html' => TRUE,
