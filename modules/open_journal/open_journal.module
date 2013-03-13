@@ -1904,7 +1904,7 @@ function open_journal_load_issue($issue_id) {
   $issue->description = '';
   $issue->volumn = $issue->volume;
   $issue->date_published = $issue->publish_date;
-  $issue->sections = $result;
+  $issue->sections = array_values($result);
   
   /*
   $issue = new stdClass();
