@@ -31,7 +31,6 @@ define('OPEN_JOURNAL_STATUS_DOCUMENT_APPROVE', 1);
 define('OPEN_JOURNAL_STATUS_CATLOGUED', 2);
 define('OPEN_JOURNAL_STATUS_PUBLISHED', 3);
 
-
 define('OPEN_JOURNAL_DISPLAY_IMAGE_USER_LIST_LIMIT', 9);
 define('OPEN_JOURNAL_LIST_IPP', 20);
 
@@ -44,6 +43,19 @@ define('OPEN_JOUNAL_STATUS', serialize (
     OPEN_JOURNAL_STATUS_DOCUMENT_APPROVE => 'Document review', 
     OPEN_JOURNAL_STATUS_CATLOGUED => 'Catalogued', 
     OPEN_JOURNAL_STATUS_PUBLISHED => 'Published',
+  )
+));
+
+
+define('OPEN_JOURNAL_INFORMAL_STATUS_REVIEWING', 0);
+define('OPEN_JOURNAL_INFORMAL_STATUS_AGREE', 1);
+define('OPEN_JOURNAL_INFORMAL_STATUS_FAIL', 2);
+
+define('OPEN_JOUNAL_INFORMAL_STATUS', serialize (
+  array(
+    OPEN_JOURNAL_INFORMAL_STATUS_REVIEWING => 'Reviewing',
+    OPEN_JOURNAL_INFORMAL_STATUS_AGREE => 'Agree', 
+    OPEN_JOURNAL_INFORMAL_STATUS_FAIL => 'Fail', 
   )
 ));
 
@@ -335,13 +347,19 @@ function open_journal_theme() {
         'discussion_list' => NULL,
         ),
       'template' => 'templates/open-journal-discussion-list'
-      ),
+    ),
     'open_journal_status_form' =>array(
       'variables' => array(
         'journal' => NULL,
         ),
       'template' => 'templates/open-journal-status-form'
-      ),
+    ),
+    'open_journal_informal_approve_form' =>array(
+      'variables' => array(
+        'journal' => NULL,
+        ),
+      'template' => 'templates/open-journal-informal-approve-form'
+    ),
 
   );
 }
@@ -1028,6 +1046,54 @@ function open_journal_people_contributor_list($journal) {
   
 }
 
+function open_journal_people_informal_approve_list($journal) {
+  
+  $sql = 
+    "SELECT 
+        DISTINCT ur.uid, jp.informal_approve_status
+      FROM 
+        users_roles ur
+      INNER JOIN
+        role_permission rp 
+      ON
+        rp.rid = ur.rid
+      LEFT JOIN
+        open_journal_journal_people jp
+      ON
+        jp.uid = jp.uid
+      WHERE 
+        rp.permission = 'informal approve journal' AND
+        jp.jid = :jid";
+  
+  $informal_list = db_query($sql, array(':jid' => $journal->jid))->fetchAll();
+  
+  
+  global $user;
+  
+  $status_list = unserialize(OPEN_JOUNAL_INFORMAL_STATUS);
+  
+  foreach ($informal_list as &$informal) {
+    
+    $informal->user = user_load($informal->uid);
+    $informal->user_info = open_journal_get_display_user_info($informal->user);
+    
+
+    if ($informal->uid == $user->uid) {
+      $informal->add_class = ' informal-form';
+      $informal->form = drupal_render(drupal_get_form('open_journal_informal_approve_sidebar_form', $journal, $informal, $status_list));
+    }
+    else {
+      $informal->add_class = '';
+      $informal->form = $status_list[$informal->informal_approve_status];
+    }
+    
+  }
+    
+  
+  return $informal_list;
+  
+}
+
 function open_journal_people_sort($people1, $people2) {
     if ($people1->joined == $people2->joined) {
         return 0;
@@ -1324,8 +1390,13 @@ function open_journal_discussion_list($journal) {
     $discussion_item = $discussion;
     
   }
-
-
+  
+  $sidebar = theme('open_journal_status_form', open_journal_get_status_form_variables($journal));
+  
+  if (TRUE || user_access('approve with unanimity and reject journal') || user_access('informal approve journal')) {
+    $informal_list = open_journal_people_informal_approve_list($journal);
+    $sidebar .= theme('open_journal_informal_approve_form', array('informal_list' => $informal_list));
+  }
 
   return theme('open_journal_detail', array(
     'content' => theme('open_journal_discussion_list', array(
@@ -1333,7 +1404,7 @@ function open_journal_discussion_list($journal) {
       'discussion_list' => $discussion_list,
       'jid' => $journal->jid,
     )),
-    'sidebar' => theme('open_journal_status_form', open_journal_get_status_form_variables($journal)),
+    'sidebar' => $sidebar,
     'jid' => $journal->jid
   ));
 

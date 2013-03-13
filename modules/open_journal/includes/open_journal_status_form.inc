@@ -57,8 +57,7 @@ function open_journal_approve_sidebar_form($form, &$form_state, $journal , $next
 		'#type' => 'hidden',
 		'#value' => $next_status,
 		'#access' => FALSE,
-
-		);
+  );
 
 	
 	return $form;
@@ -88,5 +87,57 @@ function open_journal_approve_sidebar_form_submit($form, &$form_state) {
 
 }
 
-function open_journal_informal_approve_sidebar_form($form, &$form_state, $journal , $next_status) {
+function open_journal_informal_approve_sidebar_form($form, &$form_state, $journal, $informal, $status_list) {
+  
+  $form['jid'] = array(
+    '#type' => 'hidden',
+		'#value' => $journal->jid,
+		'#access' => FALSE,
+  );
+    
+  if ($informal->informal_approve_status == 0) {
+    $form['reviewing'] = array(
+  		'#markup' => '<span class="active-status">'.$status_list[0].'</span>',
+  	);
+  }
+  else {
+    $form['reviewing'] = array(
+  		'#type' => 'submit',
+  		'#value' => $status_list[0],
+  	);
+  }
+
+	if ($informal->informal_approve_status == 1) {
+  	$form['agree'] = array(
+  		'#markup' => '<span class="active-status">'.$status_list[1].'</span>',
+  	);
+  }
+  else {
+  	$form['agree'] = array(
+  		'#type' => 'submit',
+  		'#value' => $status_list[1],
+  	);
+  }
+  
+  if ($informal->informal_approve_status == 2) {  
+  	$form['fail'] = array(
+  		'#markup' => '<span class="active-status">'.$status_list[2].'</span>',
+  	);
+  }
+  else {  
+  	$form['fail'] = array(
+  		'#type' => 'submit',
+  		'#value' => $status_list[2],
+  	);
+  }
+
+  
+  return $form;
+  
 }
+
+function open_journal_informal_approve_sidebar_form_submit($form, &$form_state) {
+  $status = unserialize(OPEN_JOUNAL_INFORMAL_STATUS);
+  dpm($form_state);
+}
+
