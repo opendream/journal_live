@@ -239,6 +239,57 @@ function open_journal_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_ojs_export.inc',
   );
+  
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/autocomplete/%'] = array(
+    'page callback' => 'open_journal_list_autocomplete',
+    'page arguments' => array(2),
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['issue'] = array(
+    'title' => 'My Issue',
+    'page callback' => 'open_journal_issue_overview',
+    'access arguments' => array('create update delete issue'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_issue.inc',
+  );
+
+  $items['issue/add'] = array(
+    'page callback' => 'open_journal_issue_add',
+    'access arguments' => array('create update delete issue'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_issue.inc',
+  );
+
+  $items['issue/%open_journal_issue'] = array(
+    'page callback' => 'open_journal_issue_view',
+    'page arguments' => array(1),
+    'access arguments' => array('create update delete issue'),
+    'file' => 'includes/open_journal_issue.inc',
+  );
+
+  $items['issue/%open_journal_issue/view'] = array(
+    'title' => 'View',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -10,
+  );
+
+  $items['issue/%open_journal_issue/edit'] = array(
+    'page callback' => 'open_journal_issue_edit',
+    'page arguments' => array(1),
+    'access arguments' => array('create update delete issue'),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'includes/open_journal_issue.inc',
+    'weight' => -9,
+  );
+
+  $items['issue/%open_journal_issue/delete'] = array(
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('open_journal_issue_delete_confirm', 1),
+    'access arguments' => array('create update delete issue'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_issue.inc',
+  );
 
   return $items;
 }
@@ -367,6 +418,11 @@ function open_journal_theme() {
         'journal' => NULL,
         ),
       'template' => 'templates/open-journal-informal-approve-form'
+    ),
+    
+    'open_journal_issue_sections_form' => array(
+      'render element' => 'form',
+      'path' => drupal_get_path('module', 'open_journal') .'/includes',
     ),
 
   );
@@ -2162,3 +2218,60 @@ function open_journal_get_display_user_info_more() {
 
 
 
+/**
+ * Issue load.
+ */
+function open_journal_issue_load($issue_id) {
+  $issue = &drupal_static(__FUNCTION__);
+
+  if (!isset($issue)) {
+    $issue = array();
+
+    if (!isset($issue[$issue_id])) {
+      // Load issue.
+      $issue[$issue_id] = db_query("SELECT * FROM {open_journal_issue} WHERE iid = :iid", array(':iid' => $issue_id))->fetch();
+      if ($issue[$issue_id]) {
+
+        // Load sections
+        $section_result = db_query("SELECT * FROM {open_journal_issue_section} WHERE iid = :iid ORDER BY weight ASC", array(':iid' => $issue_id));
+        $sections = array();
+        foreach ($section_result as $section) {
+          $journal_result = db_query("SELECT jid, weight FROM {open_journal_issue_journal} WHERE sid = :sid ORDER BY weight ASC", array(':sid' => $section->sid));
+          $journals = array();
+          foreach ($journal_result as $journal) {
+            if ($_journal = open_journal_journal_load($journal->jid)) {
+              $_journal->weight = $journal->weight;
+              $journals[] = $_journal;
+            }
+          }
+          $section->journals = $journals;
+          $sections[] = $section;
+        }
+        $issue[$issue_id]->sections = $sections;
+      }
+    }
+  }
+
+  return $issue[$issue_id];
+}
+
+/**
+ * Return JSON of journals list for autocomplete.
+ */
+function open_journal_list_autocomplete($string = '') {
+  $matches = array();
+
+  if ($string) {
+    $result = db_select('open_journal_journal', 'j')
+      ->fields('j', array('jid', 'dc_title'))
+      ->condition('j.dc_title', '%'. db_like($string) . '%', 'LIKE')
+      ->range(0, 10)
+      ->execute();
+
+    foreach ($result as $row) {
+      $matches[$row->dc_title .' [id:'. $row->jid .']'] = check_plain($row->dc_title);
+    }
+  }
+
+  drupal_json_output($matches);
+}
