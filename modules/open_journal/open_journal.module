@@ -1607,6 +1607,12 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
     // Convers ststus id to word
     $journal->status_name = $status_list[$journal->status];
 
+    if($journal->reject) {
+      $journal->status_class = 'reject';
+    }
+    else {
+      $journal->status_class = $journal->status;
+    }
     $journal->people_list = open_journal_people_active_list($journal->jid, NULL, $journal->uid, OPEN_JOURNAL_DISPLAY_IMAGE_USER_LIST_LIMIT+1);
     foreach ($journal->people_list as &$people) {
       $people->display_info = open_journal_get_display_user_info($people, array('owner_uid' => $journal->uid));
@@ -1628,7 +1634,6 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
   if ($has_more_page) {
     $update_load_more_url = url(OPEN_JOURNAL_PREFIX_PATH.'/list/'.$status.'/'.$journal->jid.'/'.$limit);
   }
-
 
 
   // render json respone for load mor ajax
