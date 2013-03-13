@@ -799,9 +799,9 @@ function open_journal_journal_save($data, $change_status=FALSE) {
  * Journal people method
  */
 function open_journal_account($uid) {
-
   $account = user_load($uid);
   $account->user_info = open_journal_get_display_user_info($uid, array('image_style' => 'open_journal_avatar_large'));
+  
   return theme('open_journal_account', array(
     'account' => $account,
   ));
@@ -2173,6 +2173,7 @@ function open_journal_image_default_styles() {
 
 function open_journal_get_real_name($account) {
   $real_name = '';
+
   if (!is_array($account->data)) {
     $account->data = unserialize($account->data);
   }
@@ -2280,6 +2281,7 @@ function open_journal_get_display_user_info($account, $variables=array()) {
 
   $user_profile_url = drupal_get_destination();
   $user_profile_url = $user_profile_url['destination'];
+  $user_profile_url = OPEN_JOURNAL_PREFIX_PATH.'/account/'.$account->uid;
 
   $real_picture = l($real_picture, $user_profile_url, array(
     'html' => TRUE,
