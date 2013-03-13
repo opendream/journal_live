@@ -1342,6 +1342,7 @@ function open_journal_overview($journal) {
     $discussion_data[$i]['url'] = '';
     $discussion_data[$i]['jid'] = $journal->jid;
     $discussion_data[$i]['contributor_only'] = $row->contributor_only;
+    $discussion_data[$i]['fid'] = $row->fid;
     $i++;
   }
   // calculate total more link to discussion journal
