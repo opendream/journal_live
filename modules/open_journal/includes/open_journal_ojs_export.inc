@@ -58,7 +58,11 @@ function generate_author( $author ){
 
 function generate_article( $article, $file_absolute_url ){
   $author = generate_author(user_load($article->uid));
-
+  
+  $article->dc_subject = explode(',', $article->dc_subject);
+  $article->dc_subject = array_filter($article->dc_subject);
+  $article->dc_subject = implode(', ', $article->dc_subject);
+  
   $article = array(
         'name' => 'article',
         array(
@@ -78,7 +82,7 @@ function generate_article( $article, $file_absolute_url ){
         array(
             'name' => 'abstract',
             'attributes' => array(
-                'locale' => 'en_US',
+                'locale' => 'th_TH',
             ),
             'value' => $article->description_sub,
         ),
@@ -242,6 +246,7 @@ function generate_issue( $issue, $sections ) {
 }
 
 function get_journal_section( $section_id ) {
+
   $section = open_journal_load_section( $section_id );
   // $all_journal = open_journal_load_multiple( $section_id );
 
@@ -257,12 +262,16 @@ function get_journal_section( $section_id ) {
 }
 
 function get_journal_issue( $issue_id ) {
+  
+  
   $issue = open_journal_load_issue($issue_id);
-
+  
   $sections = array();
   for ($i=0; $i < count($issue->sections); $i++) {
     $sections[] = get_journal_section($issue->sections[$i]);
   }
+  
+
 
   return generate_issue( $issue, $sections );
 }
@@ -276,13 +285,12 @@ function get_journal_all() {
   for ($i=0; $i < count($issue_list->issues); $i++) {
     $issues[] = get_journal_issue($issue_list->issues[$i]);
   }
-  dpm($issues);
 
   return $issues;
 }
 
 function open_journal_ojs_export() {
-  drupal_add_http_header('Content-Type: text/xml; charset=utf-8');
+  drupal_add_http_header('Content-Type', 'text/xml; charset=utf-8');
   global $user;
 
   $issues = get_journal_all();

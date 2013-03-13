@@ -1807,53 +1807,58 @@ function open_journal_file($journal) {
 }
 
 function open_journal_load_section($section_id) {
-  $query_var = array();
+
+  $query_var = array(':sid' => $section_id);
   $sql =
    "SELECT j.*
     FROM
-      {open_journal_journal_people} jp
+      {open_journal_issue_journal} ij
     LEFT JOIN
       {open_journal_journal} j
     ON
-      jp.jid = j.jid
-    -- LEFT JOIN
-    --   {open_journal_journal_section} s
-    -- ON
-    --   j.section_id = s.id
+      ij.jid = j.jid
     WHERE
-      1 = 1
-    -- FOR TEST
-    LIMIT
-      3";
+      ij.sid = :sid";
+      
   $result = db_query($sql, $query_var)->fetchAll();
-
+  
+  
+  $query_var = array(':sid' => $section_id);
+  $sql =
+   "SELECT s.*
+    FROM
+      {open_journal_issue_section} s
+    WHERE
+      s.sid = :sid";
+      
+  $section = db_query($sql, $query_var)->fetchObject();
+  $section->abbrev = '';
+  $section->articles = $result;
+  
+  /*
   $section = new stdClass();
   $section->title = 'MOCK_TITLE'.rand();
   $section->abbrev = 'MOCK_ABBREV'.rand();
   $section->articles = $result;
+  */
+  
 
   return $section;
 }
 
 function open_journal_load_issue($issue_id) {
   # TODO: Query list section in issue
-  // $query_var = array();
-  // $sql =
-  //  "SELECT j.*
-  //   FROM
-  //     {open_journal_journal_people} jp
-  //   LEFT JOIN
-  //     {open_journal_journal} j
-  //   ON
-  //     jp.jid = j.jid
-  //   -- LEFT JOIN
-  //   --   {open_journal_journal_section} s
-  //   -- ON
-  //   --   j.section_id = s.id
-  //   WHERE
-  //     1 = 1";
-  // $result = db_query($sql, $query_var)->fetchAll();
-
+  $query_var = array(':iid' => $issue_id);
+  $sql =
+   "SELECT s.sid
+    FROM
+      {open_journal_issue_section} s
+    WHERE
+      s.iid = :iid
+    ORDER BY weight";
+  $result = db_query($sql, $query_var)->fetchAllKeyed(0, 0);
+    
+  /*
   $result1 = new stdClass();
   $result1->sid = '1';
   $result2 = new stdClass();
@@ -1864,7 +1869,24 @@ function open_journal_load_issue($issue_id) {
   $result[] = $result1;
   $result[] = $result2;
   $result[] = $result3;
-
+  */
+  
+  $query_var = array(':iid' => $issue_id);
+  $sql =
+   "SELECT i.*
+    FROM
+      {open_journal_issue} i
+    WHERE
+      i.iid = :iid";
+  $issue = db_query($sql, $query_var)->fetchObject();
+  
+  $issue->id = $issue->iid;
+  $issue->description = '';
+  $issue->volumn = $issue->volume;
+  $issue->date_published = $issue->publish_date;
+  $issue->sections = $result;
+  
+  /*
   $issue = new stdClass();
   $issue->id = rand();
   $issue->title = 'MOCK_TITLE'.rand();
@@ -1875,29 +1897,19 @@ function open_journal_load_issue($issue_id) {
   $issue->date_published = '2013-03-09';
   $issue->access_date = '2013-03-09';
   $issue->sections = $result;
+  */
 
   return $issue;
 }
 
 function open_journal_load_all_issue() {
   # TODO: Query list issue
-  // $query_var = array();
-  // $sql =
-  //  "SELECT j.*
-  //   FROM
-  //     {open_journal_journal_people} jp
-  //   LEFT JOIN
-  //     {open_journal_journal} j
-  //   ON
-  //     jp.jid = j.jid
-  //   -- LEFT JOIN
-  //   --   {open_journal_journal_section} s
-  //   -- ON
-  //   --   j.section_id = s.id
-  //   WHERE
-  //     1 = 1";
-  // $result = db_query($sql, $query_var)->fetchAll();
-
+  $query_var = array();
+  $sql =
+   "SELECT i.iid FROM {open_journal_issue} i";
+  $result = db_query($sql, $query_var)->fetchAllKeyed(0, 0);;
+  
+  /*
   $result1 = new stdClass();
   $result1->iid = '1';
   $result2 = new stdClass();
@@ -1908,9 +1920,9 @@ function open_journal_load_all_issue() {
   $result[] = $result1;
   $result[] = $result2;
   $result[] = $result3;
+  */
 
-  $issue_list = new stdClass();
-  $issue_list->issues = $result;
+  $issue_list->issues = array_values($result);
 
   return $issue_list;
 }
