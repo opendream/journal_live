@@ -1325,39 +1325,44 @@ function open_journal_discussion_list($journal) {
     
   }
 
-  // Prepare data to status side bar form
-  $status_list = unserialize(OPEN_JOUNAL_STATUS);
-  
-  if (user_access('approve with unanimity and reject journal')) {
-    $next_status = open_journal_next_status($journal->status);
-    $reject_form = drupal_render(drupal_get_form('open_journal_reject_sidebar_form', $journal));
-    $approve_form = drupal_render(drupal_get_form('open_journal_approve_sidebar_form', $journal, $next_status));
-  }
-  else {
-    $reject_form = '';
-    $approve_form = '';
-  }
 
 
   return theme('open_journal_detail', array(
     'content' => theme('open_journal_discussion_list', array(
-    'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
-    'discussion_list' => $discussion_list,
-    'jid' => $journal->jid,
-      )
-    ),
-    'sidebar' => theme('open_journal_status_form', array(
-      'journal' => $journal,
-      'status_list' => $status_list,
-      'reject_form' => $reject_form,
-      'approve_form' => $approve_form,
-
-      )
-    ),
+      'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
+      'discussion_list' => $discussion_list,
+      'jid' => $journal->jid,
+    )),
+    'sidebar' => theme('open_journal_status_form', open_journal_get_status_form_variables($journal)),
     'jid' => $journal->jid
   ));
 
   
+}
+
+function open_journal_get_status_form_variables($journal) {
+  
+  // Prepare data to status side bar form
+  $status_list = unserialize(OPEN_JOUNAL_STATUS);
+  
+  $vars = array();
+  
+  $vars['status_list'] = $status_list;
+  $vars['journal'] = $journal;
+  
+  if (user_access('approve with unanimity and reject journal') && !$journal->reject) {
+    $vars['next_status'] = open_journal_next_status($journal->status);
+    $vars['reject_form'] = drupal_render(drupal_get_form('open_journal_reject_sidebar_form', $journal));
+    $vars['approve_form'] = drupal_render(drupal_get_form('open_journal_approve_sidebar_form', $journal, $vars['next_status']));
+    $vars['status_add_class'] = ' can-approve';
+  }
+  else {
+    $vars['reject_form'] = '';
+    $vars['approve_form'] = '';
+    $vars['status_add_class'] = ' no-approve';
+  }
+  
+  return $vars;
 }
 
 function open_journal_next_status($status) {
