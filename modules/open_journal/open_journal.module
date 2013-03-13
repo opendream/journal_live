@@ -1956,6 +1956,7 @@ function open_journal_get_display_user_info($account, $variables=array()) {
   ));
   
   
+  $dummy_name = '<span class="user-name-wrapper">'.$dummy_name.'</span>';
   
   
   // Prepare info to return
