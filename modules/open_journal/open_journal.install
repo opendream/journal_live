@@ -238,7 +238,7 @@ function open_journal_schema() {
 
   $schema['open_journal_issue'] = array(
     'fields' => array(
-      'issue_id' => array(
+      'iid' => array(
         'type' => 'serial',
         'unsigned' => TRUE,
         'not null' => TRUE,
@@ -249,15 +249,52 @@ function open_journal_schema() {
         'not null' => TRUE,
         'default' => '',
       ),
+      'uid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
       'status' => array(
         'type' => 'int',
         'not null' => TRUE,
         'default' => 1,
       ),
-      'uid' => array(
+      'volume' => array(
         'type' => 'int',
         'not null' => TRUE,
         'default' => 0,
+      ),
+      'number' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'year' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'publish_date' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'access_date' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'current' => array(
+        'type' => 'int',
+        'length' => 1,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'published' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 1,
       ),
       'created' => array(
         'type' => 'int',
@@ -268,7 +305,34 @@ function open_journal_schema() {
         'not null' => TRUE,
       ),
     ),
-    'primary key' => array('issue_id'),
+    'primary key' => array('iid'),
+  );
+
+  $schema['open_journal_issue_section'] = array(
+    'fields' => array(
+      'sid' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'iid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'title' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'weight' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ), 
+    ),
+    'primary key' => array('sid', 'iid'),
   );
 
   $schema['open_journal_issue_journal'] = array(
@@ -278,7 +342,12 @@ function open_journal_schema() {
         'not null' => TRUE,
         'default' => 0,
       ),
-      'issue_id' => array(
+      'sid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'iid' => array(
         'type' => 'int',
         'not null' => TRUE,
         'default' => 0,
@@ -287,9 +356,9 @@ function open_journal_schema() {
         'type' => 'int',
         'not null' => TRUE,
         'default' => 0,
-      ), 
+      ),
     ),
-    'primary key' => array('jid', 'issue_id'),
+    'primary key' => array('jid', 'iid', 'sid'),
   );
 
   return $schema;

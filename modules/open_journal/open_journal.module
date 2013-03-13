@@ -379,11 +379,15 @@ function open_journal_theme() {
     ),
 
     // Issue
+    'open_journal_issue_sections_form' => array(
+      'render element' => 'form',
+      'path' => drupal_get_path('module', 'open_journal') .'/includes',
+    ),
     'open_journal_issue_journals_form' => array(
       'render element' => 'form',
       'path' => drupal_get_path('module', 'open_journal') .'/includes',
     ),
-
+    
   );
 }
 
