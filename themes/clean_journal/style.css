@@ -1496,12 +1496,12 @@ input.form-submit:hover {
 
   #open-journal-not-reject-form {
   line-height: 30px;
-  font-size: 26px;
+  font-size: 20px;
   font-family: 'THSarabunNewRegular';
   float: left;
   cursor: pointer;
   padding-right: 25px;
-  margin-left:10px;
+  margin-left:40px;
   }
 
 /* fixed journal menu */
