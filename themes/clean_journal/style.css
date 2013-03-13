@@ -2277,6 +2277,7 @@ h2.journal-block-title {
 	border-bottom: 0;
 	padding: 10px 0;
 	float: left;
+	position: relative;
 }
 	.journal-discussion-list-item .journal-user {
 		width: 130px;
@@ -2388,7 +2389,34 @@ ul.discussion-list {
 		font-weight: bold;
 		color: #000;
 	}
-	
+
+.discussion-block .contributor-only {
+	float: left;
+	margin: 7px 0 0 0;
+	line-height: 20px;
+	margin-left: 20px;
+	color: red;
+	font-size: 16px;
+	background: url(images/ic-lock.png) no-repeat;
+	padding-left: 30px;
+}
+.contributor-only-icon {
+	position: absolute;
+	display: block;
+	width: 22px;
+	height: 22px;
+	left: -30px;
+	top: 20px;
+	background: url(images/ic-lock.png) no-repeat;
+	text-indent: -999em;
+}
+.discussion-item-content .discussion-item-edit-link {
+	width: 50px;
+	position: absolute;
+	right: 40px;
+	top: 45px;
+	text-align: right;
+}
 /* File List
 ----------------------------------------------------------------*/
 .files-block {
@@ -2425,6 +2453,11 @@ ul.discussion-list {
 
 /* People
 ----------------------------------------------------------------*/
+.people-block .people-block-inner {
+	width: 920px;
+	overflow: hidden;
+}
+
 .people-block h2.journal-block-title {
 	margin-bottom: 0;
 }
@@ -2546,6 +2579,7 @@ h3.people-section-title {
 /* Status Sidebar
 ----------------------------------------------------------------*/
 .sidebar-status-block {
+	width: 260px;
 	float: left;
 }
 .sidebar-status-block .status-active,
@@ -2636,7 +2670,7 @@ h3.people-section-title {
 }
 .reject-tag {
 	float: left;
-	width: 260px;
+	width: 252px;
 	padding: 10px 0;
 	text-align: center;
 	border: 4px solid rgb(175, 30, 30);
