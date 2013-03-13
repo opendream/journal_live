@@ -1605,13 +1605,16 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
   foreach ($journal_list as &$journal) {
 
     // Convers ststus id to word
-    $journal->status_name = $status_list[$journal->status];
 
     if($journal->reject) {
       $journal->status_class = 'reject';
+      $journal->status_name = 'Reject';
+
     }
     else {
       $journal->status_class = $journal->status;
+      $journal->status_name = $status_list[$journal->status];
+
     }
     $journal->people_list = open_journal_people_active_list($journal->jid, NULL, $journal->uid, OPEN_JOURNAL_DISPLAY_IMAGE_USER_LIST_LIMIT+1);
     foreach ($journal->people_list as &$people) {
