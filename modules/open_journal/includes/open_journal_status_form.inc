@@ -65,6 +65,7 @@ function open_journal_not_reject_form($form, &$form_state) {
 	$form['submit'] = array(
     	'#type' => 'submit',
     	'#value' => t('submit'),
+    	'#attributes' => array('id' => array('not_reject_btu')),
  	);
 	return $form;
 }

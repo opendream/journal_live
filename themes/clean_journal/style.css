@@ -1494,6 +1494,16 @@ input.form-submit:hover {
   			background-color: #4084a0;
   		}
 
+  #open-journal-not-reject-form {
+  line-height: 30px;
+  font-size: 26px;
+  font-family: 'THSarabunNewRegular';
+  float: left;
+  cursor: pointer;
+  padding-right: 25px;
+  margin-left:10px;
+  }
+
 /* fixed journal menu */
 
 .journal-menu {
