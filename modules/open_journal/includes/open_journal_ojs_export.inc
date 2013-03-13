@@ -82,7 +82,7 @@ function generate_article( $article, $file_absolute_url ){
         ),
         array(
             'name' => 'date_published',
-            'value' => $article->dc_date,
+            'value' => date('Y-m-d', $article->dc_date),
         ),
         array(
             'name' => 'supplimental_file',
@@ -143,7 +143,7 @@ function generate_article( $article, $file_absolute_url ){
             ),
             array(
                 'name' => 'date_created',
-                'value' => $article->dc_date,
+                'value' => date('Y-m-d', $article->dc_date),
             ),
             array(
                 'name' => 'file',
@@ -192,8 +192,8 @@ function generate_issue( $issue, $sections ) {
   $issue = array(
     'name' => 'issue',
     'attributes' => array(
-      'current' => 'true',
-      'published' => 'true',
+      'current' => (string)$issue->current,
+      'published' => (string)$issue->published,
       'public_id' => $issue->id,
     ),
     array(
@@ -224,11 +224,11 @@ function generate_issue( $issue, $sections ) {
     ),
     array(
       'name' => 'date_published',
-      'value' => $issue->date_published,
+      'value' =>  date('Y-m-d', $issue->date_published),
     ),
     array(
       'name' => 'access_date',
-      'value' => $issue->access_date,
+      'value' => date('Y-m-d', $issue->access_date),
     ),
   );
 
