@@ -413,7 +413,7 @@ function open_journal_feed_generator($type='article') {
           $row[] = l(t('delete'), 'issue/'. $issue->iid. '/delete');
 
           $item[] = array('name' => 'title', 'value' => $issue->title);
-          $item[] = array('name' => 'link', 'value' => 'http://localhost/'.$article->dc_identifier);
+          $item[] = array('name' => 'link', 'value' => url('issue/'. $issue->iid. '/view', array('absolute' => TRUE)));
           $item[] = array('name' => 'description', 'value' => open_journal_issue_view($issue, TRUE));
           $item[] = array('name' => 'pubDate', 'value' => format_date($issue->created, 'short'));
           $item[] = array('name' => 'guid', 'value' => $issue->iid);

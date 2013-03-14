@@ -607,7 +607,7 @@ function open_journal_issue_delete_confirm_submit($form, &$form_state) {
 /**
  * View issue.
  */
-function open_journal_issue_view($issue, $is_feed = false) {
+function open_journal_issue_view($issue, $is_feed = FALSE) {
   global $user;
 
   // Set title.
@@ -632,7 +632,7 @@ function open_journal_issue_view($issue, $is_feed = false) {
   $output = theme('item_list', array('items' => $items));
 
   // Edit link.
-  if ($user->uid == $issue->uid || $user->uid == 1 && $is_feed == false) {
+  if (($user->uid == $issue->uid || $user->uid == 1 ) && $is_feed == FALSE) {
     $links = array();
     $links[] = l(t('Edit'), 'issue/'. $issue->iid .'/edit', array('query' => drupal_get_destination()));
     $links[] = l(t('Delete'), 'issue/'. $issue->iid .'/delete');
