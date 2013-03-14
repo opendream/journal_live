@@ -2110,7 +2110,13 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
     drupal_json_output($response);
     exit();
   }
-
+  $user_roles = $user->roles;
+  foreach ($user_roles as &$role) {
+    if($role == 'authenticated user') {
+      $role = 'researcher';
+    }  
+  }
+  $user_roles = implode(', ', $user_roles);
   // TODO: Edit hook theme with default value foward
   return theme('open_journal_list', array(
     'journal_list' => $journal_list,
@@ -2122,6 +2128,7 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
     'current_status_name' => $current_status_name,
     'status' => $status,
     'not_reject_form' => $not_reject_form,
+    'user_roles' => $user_roles,
 
   ));
 
