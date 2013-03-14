@@ -615,6 +615,15 @@ function open_journal_preprocess_page(&$vars) {
     $dummy = open_journal_get_display_user_info($user, array('image_style' => 'open_journal_avatar_large'));
     $vars['user_info']['display_picture_large'] = $dummy['display_picture'];
   }
+
+  // Issue
+  $vars['outer_header'] = '';
+  if (arg(0) == 'issue' && is_numeric(arg(1)) && is_string(arg(2))) {
+    $vars['outer_header'] = '<div class="back-to-all-issue">'.l('Issue detail', 'issue/'.arg(1).'/view').' · '.l('All issue', 'issue').'</div>';
+  }
+  elseif (arg(0) == 'issue' && is_numeric(arg(1))) {
+    $vars['outer_header'] = '<div class="back-to-all-issue">'.l('Back to all issue', 'issue').'</div>';
+  }
 }
 
 function open_journal_form_alter(&$form, &$form_state, $form_id) {
@@ -1361,7 +1370,7 @@ function open_journal_overview($journal) {
   // calculate total more link to discussion journal
   $more_discussion = count(open_journal_discussion_load_all($journal->jid))-$limit_overview_page;
   // get user and file data
-  $user = user_load($file_last[0]->uid);
+  $user_info = $file_last[0]->user_info;
   $file = file_load($file_last[0]->fid);
   $status_list = unserialize(OPEN_JOUNAL_STATUS);
 
@@ -1491,7 +1500,7 @@ function open_journal_overview($journal) {
       'jid' => $journal->jid,
       'abstract' => $abstract,
       'last_update' => date('d M Y', $file_last[0]->created),
-      'update_by' => $user->name,
+      'update_by' => $user_info['display_name'],
       'latest_file' => file_create_url($file->uri),
       'discussion_data' => $discussion_data,
       'more_discussion' => $more_discussion,
@@ -1796,18 +1805,13 @@ function open_journal_get_active_menu_attributes($menu_active_url) {
 function open_journal_get_file_list($jid, $limit=NULL) {
 
   $sql = "SELECT
-      DISTINCT u.*, IF(d.fid IS NOT NULL, d.fid, c.fid) AS fid, f.filename, f.filesize, f.uri, f.timestamp
+      DISTINCT f.uid, IF((d.fid IS NOT NULL AND d.fid <> 0), d.fid, c.fid) AS fid, f.filename, f.filesize, f.uri, f.timestamp, f.timestamp AS created
     FROM
       open_journal_discussion d
     LEFT JOIN
       open_journal_comment c
     ON
       d.did = c.did
-    LEFT JOIN
-      users u
-    ON
-      c.uid = u.uid OR
-      d.uid = u.uid
     INNER JOIN
       file_managed f
     ON
@@ -1815,18 +1819,23 @@ function open_journal_get_file_list($jid, $limit=NULL) {
       d.fid = f.fid
     WHERE
       d.jid = :jid AND
-      (c.fid IS NOT NULL OR d.fid IS NOT NULL)";
+      ((c.fid IS NOT NULL AND c.fid <> 0) OR (d.fid IS NOT NULL AND d.fid <> 0))";
 
 
   if (!user_access('access contributor process')) {
     $sql .= " AND d.contributor_only = 0";
   }
-  //$sql .= " GROUP BY f.fid";
 
   $sql .= " ORDER BY c.created DESC, d.created DESC".($limit? (' LIMIT 0, '.$limit): '');
   
 
   $file_list = db_query($sql, array(':jid' => $jid))->fetchAll();
+  
+  foreach ($file_list as &$file) {
+    $account = user_load($file->uid);
+    $file->user = $account;
+    $file->user_info = open_journal_get_display_user_info($account);
+  }
 
 
   return $file_list;
@@ -1835,12 +1844,6 @@ function open_journal_get_file_list($jid, $limit=NULL) {
 function open_journal_file($journal) {
 
   $file_list = open_journal_get_file_list($journal->jid);
-
-  foreach ($file_list as &$file) {
-
-    $account = user_load($file->uid);
-    $file->user_info = open_journal_get_display_user_info($account);
-  }
 
   return theme('open_journal_detail', array(
     'content' => theme('open_journal_file', array(

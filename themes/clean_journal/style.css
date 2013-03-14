@@ -1223,6 +1223,7 @@ h1.page-title {
 #open-journal-account-setting-form,
 #open-journal-information-form,
 #open-journal-discussion-form,
+#open-journal-comment-form,
 #open-journal-issue-form,
 .block-bg-shadow {
 	padding: 20px;
@@ -1500,6 +1501,11 @@ input.form-submit:hover {
   			background-color: #4084a0;
   		}
 
+#open-journal-not-reject-form {
+	float: left;
+	margin-left: 20px;
+	line-height: 26px;
+}
 /* fixed journal menu */
 
 .journal-menu {
@@ -2236,6 +2242,10 @@ h2.journal-block-title {
 	width: 560px;
 	max-width: 560px;
 }
+#open-journal-comment-form .form-textarea {
+	width: 600px;
+	max-width: 600px;
+}
 #open-journal-discussion-form .form-text {
 	width: 540px;
 	max-width: 540px;
@@ -2250,7 +2260,8 @@ h2.journal-block-title {
   position: relative;
   float: left;
 }
-#open-journal-discussion-form label {
+#open-journal-discussion-form label,
+#open-journal-comment-form label {
 	margin-bottom: 10px;
 	line-height: 30px;
 	margin-right: 10px;
@@ -2274,7 +2285,8 @@ h2.journal-block-title {
   margin-top: 30px;
 }
 #open-journal-comment-form .form-actions a,
-#open-journal-discussion-form .form-actions a {
+#open-journal-discussion-form .form-actions a,
+#open-journal-reject-sidebar-form .form-actions a {
 	color: #555;
 	line-height: 35px;
 }
@@ -2806,8 +2818,12 @@ ul.journal-informal-approve-list li .user-name-wrapper {
 	margin-bottom: 10px;
 }
 
-/* Issue Add
+/* Issue Section
 ----------------------------------------------------------------*/
+#open-journal-issue-form {
+	width: 920px;
+	float: left;
+}
 #open-journal-issue-form .form-item {
 	margin-bottom: 0;
 }
@@ -2826,31 +2842,62 @@ ul.journal-informal-approve-list li .user-name-wrapper {
 #issue-sections-form-table .title-remove-wrapper .form-item {
 	margin-bottom: 10px;
 }
-.issue-journals-wrapper .form-submit {
+
+#open-journal-issue-form .form-actions #edit-delete {
+	color: #666;
+	line-height: 35px;
+}
+.issue-journals-wrapper .form-submit,
+#edit-section-more {
 	padding: 5px 10px;
 	text-transform: none;
-
-	-webkit-box-align: center;
-	text-align: center;
-	cursor: default;
-	color: buttontext;
 	padding: 2px 6px 3px;
-	border: 2px outset buttonface;
-	border-image: initial;
-	background-color: buttonface;
-	box-sizing: border-box;
-	
-	margin: 0em;
-	font: -webkit-small-control;
-	color: initial;
-	letter-spacing: normal;
-	word-spacing: normal;
-	text-transform: none;
-	text-indent: 0px;
-	text-shadow: none;
-	display: inline-block;
-	text-align: start;
-	
+	color: buttontext;
+	border: 2px outset #f1f1f1;
+	background-color: #f1f1f1;
+}
+.issue-journals-wrapper .form-submit:hover {
+	background-color: #DDD;
+	cursor: pointer;
+}
+
+.issue-detail {
+	float: left;
+	width: 920px;
+}
+.back-to-all-issue {
+	width: 960px;
+	text-align: left;
+	margin: 0 auto 10px auto;
+}
+.page-issue-view h3 {
+	font-size: 36px;
+	border-bottom: 1px solid #ccc;
+	padding-bottom: 15px;
+}
+.page-issue-view .item-list {
+	margin-bottom: 30px;
+}
+.page-issue-view .item-list ul {
+	margin: 0;
+	list-style-type: none;
+}
+.page-issue-view .item-list ul li {
+	list-style-type: none;
+}
+.page-issue-view .item-list ul li.section-item {
+	margin-bottom: 20px;
+}
+.page-issue-view .item-list ul li.section-item,
+.page-issue-view .item-list ul li.journal-item,
+.page-issue-view .item-list ul li {
+	padding-left: 20px;
+}
+.page-issue-view .item-list ul li.journal-item {
+	font-size: 24px;
+}
+.page-issue-view .item-list .admin-links li {
+	float: left;
 }
 /* Footer
 ----------------------------------------------------------------*/
