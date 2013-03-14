@@ -322,7 +322,7 @@ function open_journal_issue_sections_more_submit($form, &$form_state) {
     $n = $_GET['q'] == 'system/ajax' ? 1 : 5;
     $form_state['section_count'] = count($form_state['values']['sections']) + $n;
   }
-  
+
   $form_state['sections'] = array_values($form_state['values']['sections']);
 
   // Not remember element data.
@@ -607,7 +607,7 @@ function open_journal_issue_delete_confirm_submit($form, &$form_state) {
 /**
  * View issue.
  */
-function open_journal_issue_view($issue) {
+function open_journal_issue_view($issue, $is_feed = FALSE) {
   global $user;
 
   // Set title.
@@ -634,12 +634,12 @@ function open_journal_issue_view($issue) {
   $output .= theme('item_list', array('items' => $items, 'attributes' => array('class' => array('section-list'))));
 
   // Edit link.
-  if ($user->uid == $issue->uid || $user->uid == 1) {
+  if (($user->uid == $issue->uid || $user->uid == 1 ) && $is_feed == FALSE) {
     $links = array();
     $links[] = l(t('Edit'), 'issue/'. $issue->iid .'/edit', array('query' => drupal_get_destination()));
     $links[] = l(t('Delete'), 'issue/'. $issue->iid .'/delete');
     $output .= theme('item_list', array(
-      'items' => $links, 
+      'items' => $links,
       'attributes' => array(
         'class' => array('admin-links'),
       ),
@@ -674,7 +674,7 @@ function theme_open_journal_issue_sections_form($variables) {
     }
 
     $form[$key]['weight']['#attributes']['class'] = array('section-weight');
-    
+
     $form[$key]['title']['#prefix'] = '<div class="title-remove-wrapper">';
     $form[$key]['remove']['#suffix'] = '</div>';
 

@@ -171,6 +171,15 @@ function generate_article( $article, $file_absolute_url ){
 function generate_article_feed( $article ){
   $author = generate_author(user_load($article->uid));
 
+
+  $description = '';
+  if ($article->dc_language == 'en') {
+    $description =  $article->description_en;
+  }
+  else {
+    $description = $article->description_sub;
+  }
+
   $article = array(
     'name' => 'item',
     array(
@@ -198,7 +207,7 @@ function generate_article_feed( $article ){
     ),
     array(
       'name' => 'description',
-      'value' => $article->dc_description,
+      'value' => $description,
     ),
     array(
       'name' => 'pubDate',
@@ -206,7 +215,7 @@ function generate_article_feed( $article ){
     ),
     array(
       'name' => 'guid',
-      'value' => $article->identifier,
+      'value' => $article->dc_identifier,
     ),
     // array(
     //   'name' =>' pubDate',
@@ -359,10 +368,9 @@ function open_journal_ojs_export() {
 
 function open_journal_feed_generator($type='article') {
   drupal_add_http_header('Content-Type', 'application/xhtml+xml; charset=utf-8');
-
   $type = arg(2);
   $limit = 30;
-  $channel = array('name' => 'rss', 'attributes' =>
+  $rss = array('name' => 'rss', 'attributes' =>
     array('version' => '2.0', 'xml:base' => 'http://localhost', 'xmlns:dc' => 'http://purl.org/dc/elements/1.1/'),
   );
 
@@ -371,24 +379,51 @@ function open_journal_feed_generator($type='article') {
     $type = 'article';
   }
 
+  $channel = array('name' => 'channel');
 
   switch ($type) {
     case 'article':
       $journals = open_journal_load_multiple(NULL, NULL, $limit, OPEN_JOURNAL_STATUS_PUBLISHED);
-      $items = array('name' => 'channel');
       $article_size = count($journals);
 
       for ($i=0; $i < $article_size; $i++) {
-        $items[]= generate_article_feed($journals[$i]);
+        $channel[]= generate_article_feed($journals[$i]);
       }
 
-      $channel[0] = $items;
-      $data = $channel;
+      $rss[0] = $channel;
+      $data = $rss;
 
       break;
       case 'issue':
-        $issues = get_journal_all();
-        $data = $issues;
+        module_load_include('inc', 'open_journal', 'includes/open_journal_issue');
+        // $issues = get_journal_all();
+        $result = db_query("SELECT iid FROM {open_journal_issue} ORDER BY created DESC");
+
+        $header = array(t('Title'), t('Created date'), array('data' => t('Operations'), 'colspan' => 2));
+
+        $item = array('name' => 'item');
+        $rows = array();
+        foreach ($result as $row) {
+          $issue = open_journal_issue_load($row->iid);
+          $row = array();
+
+          $row[] = l($issue->title, 'issue/'. $issue->iid. '/view');
+          $row[] = format_date($issue->created, 'short');
+          $row[] = l(t('edit'), 'issue/'. $issue->iid. '/edit', array('query' => drupal_get_destination()));
+          $row[] = l(t('delete'), 'issue/'. $issue->iid. '/delete');
+
+          $item[] = array('name' => 'title', 'value' => $issue->title);
+          $item[] = array('name' => 'link', 'value' => url('issue/'. $issue->iid. '/view', array('absolute' => TRUE)));
+          $item[] = array('name' => 'description', 'value' => open_journal_issue_view($issue, TRUE));
+          $item[] = array('name' => 'pubDate', 'value' => format_date($issue->created, 'short'));
+          $item[] = array('name' => 'guid', 'value' => $issue->iid);
+          // print_r($issue);
+         $channel[] = $item;
+       }
+
+
+        $rss[0] = $channel;
+        $data = $rss;
         break;
     default:
       # code...
