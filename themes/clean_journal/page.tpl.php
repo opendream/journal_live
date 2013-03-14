@@ -11,6 +11,7 @@
     <h1 class="page-title"><?php print $title; ?></h1>
   <?php endif; ?>
 
+  <?php print $outer_header; ?>
 
   <div id="page" class="<?php print $page_class; ?>">
     <div id="content" class="clearfix">

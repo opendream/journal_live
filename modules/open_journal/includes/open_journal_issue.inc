@@ -613,6 +613,8 @@ function open_journal_issue_view($issue) {
   // Set title.
   drupal_set_title($issue->title);
 
+  $output = '<div class="issue-detail block-bg-shadow">';
+
   // List journals.
   $items = array();
   foreach ($issue->sections as $section) {
@@ -629,7 +631,7 @@ function open_journal_issue_view($issue) {
     $items[] = $item;
   }
 
-  $output = theme('item_list', array('items' => $items));
+  $output .= theme('item_list', array('items' => $items, 'attributes' => array('class' => array('section-list'))));
 
   // Edit link.
   if ($user->uid == $issue->uid || $user->uid == 1) {
@@ -643,6 +645,8 @@ function open_journal_issue_view($issue) {
       ),
     ));
   }
+
+  $output .= '</div>';
 
   return $output;
 }

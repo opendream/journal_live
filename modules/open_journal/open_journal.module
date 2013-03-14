@@ -615,6 +615,15 @@ function open_journal_preprocess_page(&$vars) {
     $dummy = open_journal_get_display_user_info($user, array('image_style' => 'open_journal_avatar_large'));
     $vars['user_info']['display_picture_large'] = $dummy['display_picture'];
   }
+
+  // Issue
+  $vars['outer_header'] = '';
+  if (arg(0) == 'issue' && is_numeric(arg(1)) && is_string(arg(2))) {
+    $vars['outer_header'] = '<div class="back-to-all-issue">'.l('Issue detail', 'issue/'.arg(1).'/view').' · '.l('All issue', 'issue').'</div>';
+  }
+  elseif (arg(0) == 'issue' && is_numeric(arg(1))) {
+    $vars['outer_header'] = '<div class="back-to-all-issue">'.l('Back to all issue', 'issue').'</div>';
+  }
 }
 
 function open_journal_form_alter(&$form, &$form_state, $form_id) {
