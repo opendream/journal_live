@@ -306,7 +306,7 @@ function get_journal_section( $section_id ) {
     $file = file_load($file_last[0]->fid);
     $file_url = file_create_url($file->uri);
     $file_absolute_url = url($file_url, array('absolute' => TRUE));
-    $articles[]= generate_article_feed($section->articles[$i], $file_absolute_url);
+    $articles[]= generate_article($section->articles[$i], $file_absolute_url);
   }
   return generate_section( $section, $articles );
 }
