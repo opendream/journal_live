@@ -206,7 +206,7 @@ function generate_article_feed( $article ){
     ),
     array(
       'name' => 'guid',
-      'value' => 'hello',
+      'value' => $article->identifier,
     ),
     // array(
     //   'name' =>' pubDate',
@@ -358,42 +358,49 @@ function open_journal_ojs_export() {
 
 
 function open_journal_feed_generator($type='article') {
-  $type = arg(2);
-  if (!$type) {
-    $type = 'article';
-  }
-  $limit = 30;
+  drupal_add_http_header('Content-Type', 'application/xhtml+xml; charset=utf-8');
 
+  $type = arg(2);
+  $limit = 30;
   $channel = array('name' => 'rss', 'attributes' =>
     array('version' => '2.0', 'xml:base' => 'http://localhost', 'xmlns:dc' => 'http://purl.org/dc/elements/1.1/'),
   );
 
+  // Watching var
+  if (!$type || $type == 'articles') {
+    $type = 'article';
+  }
+
+
   switch ($type) {
     case 'article':
       $journals = open_journal_load_multiple(NULL, NULL, $limit, OPEN_JOURNAL_STATUS_PUBLISHED);
-      $articles = array('name' => 'channel');
+      $items = array('name' => 'channel');
       $article_size = count($journals);
 
       for ($i=0; $i < $article_size; $i++) {
-        $articles[]= generate_article_feed($journals[$i]);
+        $items[]= generate_article_feed($journals[$i]);
       }
 
-      drupal_add_http_header('Content-Type', 'application/xhtml+xml; charset=utf-8');
-      $channel[0] = $articles;
-      $data =$channel;
-      // $data = $articles;
-      // print_r($data);
-      $doc = new DOMDocument();
-      $child = generate_xml_element( $doc, $data );
-      if ( $child )
-          $doc->appendChild( $child );
-      $doc->formatOutput = true; // Add whitespace to make easier to read XML
-      $xml = $doc->saveXML();
+      $channel[0] = $items;
+      $data = $channel;
+
       break;
+      case 'issue':
+        $issues = get_journal_all();
+        $data = $issues;
+        break;
     default:
       # code...
       break;
   }
+
+  $doc = new DOMDocument();
+  $child = generate_xml_element( $doc, $data );
+  if ( $child )
+      $doc->appendChild( $child );
+  $doc->formatOutput = true; // Add whitespace to make easier to read XML
+  $xml = $doc->saveXML();
 
 
   print $xml;
