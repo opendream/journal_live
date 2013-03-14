@@ -865,7 +865,8 @@ function open_journal_people_mail($data) {
     $sender->name = $sender_info['display_name_text'];
 
     $data->sender = $sender;
-
+    $data->reciver = $reciver;
+    
     drupal_mail('open_journal', 'open_journal_people_invite', $reciver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
   }
 
@@ -982,8 +983,11 @@ function open_jounal_discussion_mail($data) {
     $sender->name = $sender_info['display_name_text'];
 
     $data->sender = $sender;
+    $data->reciver = $reciver;
 
     if (!$data->contributor_only || user_access('access contributor process', $reciver)) {
+      
+      
       drupal_mail('open_journal', 'open_journal_discussion_add', $reciver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
     }
   }
@@ -1070,7 +1074,10 @@ function open_jounal_comment_mail($data) {
     $sender->name = $sender_info['display_name_text'];
 
     $data->sender = $sender;
+    $data->reciver = $reciver;
+    
     if (!$data->discussion->contributor_only || user_access('access contributor process', $reciver)) {
+      
       drupal_mail('open_journal', 'open_journal_comment_add', $reciver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
     }
   }
@@ -1150,6 +1157,11 @@ function open_journal_mail($key, &$message, $data) {
       
       break;
   }
+  
+  global $conf;
+  if (isset($conf['debug']) && $conf['debug']) {
+    drupal_set_message('Debug email: '.$data->sender->name.' send '.$key.' to '.$data->reciver->name);
+  }
 
 }
 
@@ -1164,6 +1176,7 @@ function open_journal_people_active_list($jid, $exclude=array() , $uid=FALSE, $l
   $user_list = db_select('open_journal_journal_people', 'jp');
   $user_list->fields('jp', array('uid'));
   $user_list->condition('jid', $jid, '=');
+  $user_list->condition('uid', 1, '<>');
   if($uid) {
     $user_list->orderBy('uid = '.$uid, 'DESC');
   }
@@ -1235,7 +1248,7 @@ function open_journal_people_informal_approve_list($journal) {
         ur.uid = jp.uid
       WHERE
         rp.permission = 'informal approve journal' AND
-        jp.jid = :jid";
+        jp.jid = :jid AND ur.uid <> 1";
 
   $informal_list = db_query($sql, array(':jid' => $journal->jid))->fetchAll();
 
@@ -1285,13 +1298,23 @@ function open_journal_people($journal) {
 
 
   $people_active_uid_key_list = array();
-  foreach ($people_active_list as $people) {
-    $people_active_uid_key_list[$people->uid] = $people;
+  foreach ($people_active_list as $i => $people) {
+    if ($people->uid == 1) {
+      unset($people_active_list[$i]);
+    }
+    else {
+      $people_active_uid_key_list[$people->uid] = $people;
+    }
   }
 
   $can_invite = user_access('invite people to journal');
 
   foreach ($people_contributor_list as $key => &$people) {
+
+    if ($people->uid == 1) {
+      unset($people_contributor_list[$key]);
+      continue;
+    }
 
     $people->active_in_journal = isset($people_active_uid_key_list[$people->uid])? TRUE: FALSE;
 
