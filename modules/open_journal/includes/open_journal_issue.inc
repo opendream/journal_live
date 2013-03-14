@@ -547,7 +547,7 @@ function open_journal_issue_list() {
     $rows[] = $row;
   }
 
-  $output = theme('table', array('header' => $header, 'rows' => $rows));
+  $output = theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('class' => array('issue-list-table'))));
 
   return $output;
 }

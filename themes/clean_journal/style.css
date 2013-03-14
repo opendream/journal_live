@@ -2860,10 +2860,16 @@ ul.journal-informal-approve-list li .user-name-wrapper {
 	float: left;
 	width: 920px;
 }
-.back-to-all-issue {
+.back-to-all-issue,
+.issue-add-link {
 	width: 960px;
 	text-align: left;
 	margin: 0 auto 10px auto;
+}
+.issue-add-link {
+	background: url(images/ic-add-journal-btn-gray.png) transparent no-repeat 7px 7px;
+	padding: 7px 0 0 30px;
+	color: #7d7d7d;
 }
 .page-issue-view h3 {
 	font-size: 36px;
@@ -2888,11 +2894,21 @@ ul.journal-informal-approve-list li .user-name-wrapper {
 .page-issue-view .item-list ul li {
 	padding-left: 20px;
 }
-.page-issue-view .item-list ul li.journal-item {
-	font-size: 24px;
+.page-issue-view .item-list ul.section-list ul li {
+	font-size: 18px;
+	list-style-type: disc;
+	list-style-position: inside;
 }
 .page-issue-view .item-list .admin-links li {
 	float: left;
+}
+.issue-list-table th {
+	padding-top: 10px;
+	padding-bottom: 5px;
+}
+.issue-list-table th,
+.issue-list-table td {
+ font-size: 18px;
 }
 /* Footer
 ----------------------------------------------------------------*/

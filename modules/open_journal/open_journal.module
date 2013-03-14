@@ -618,11 +618,14 @@ function open_journal_preprocess_page(&$vars) {
 
   // Issue
   $vars['outer_header'] = '';
-  if (arg(0) == 'issue' && is_numeric(arg(1)) && is_string(arg(2))) {
+  if (arg(0) == 'issue' && is_numeric(arg(1)) && (arg(2) == 'edit' || arg(2) == 'delete')) {
     $vars['outer_header'] = '<div class="back-to-all-issue">'.l('Issue detail', 'issue/'.arg(1).'/view').' · '.l('All issue', 'issue').'</div>';
   }
   elseif (arg(0) == 'issue' && is_numeric(arg(1))) {
     $vars['outer_header'] = '<div class="back-to-all-issue">'.l('Back to all issue', 'issue').'</div>';
+  }
+  elseif(arg(0) == 'issue' && !arg(1)) {
+    $vars['outer_header'] = '<div class="back-to-all-issue">'.l('Add issue', 'issue/add', array('attributes' => array('class' => array('issue-add-link')))).'</div>';
   }
 }
 
