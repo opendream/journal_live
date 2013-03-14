@@ -171,6 +171,15 @@ function generate_article( $article, $file_absolute_url ){
 function generate_article_feed( $article ){
   $author = generate_author(user_load($article->uid));
 
+
+  $description = '';
+  if ($article->dc_language == 'en') {
+    $description =  $article->description_en;
+  }
+  else {
+    $description = $article->description_sub;
+  }
+
   $article = array(
     'name' => 'item',
     array(
@@ -198,7 +207,7 @@ function generate_article_feed( $article ){
     ),
     array(
       'name' => 'description',
-      'value' => $article->dc_description,
+      'value' => $description,
     ),
     array(
       'name' => 'pubDate',
