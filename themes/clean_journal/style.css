@@ -2934,9 +2934,12 @@ ul.journal-informal-approve-list li .user-name-wrapper {
 	font-family: 'THSarabunNewRegular';
 	font-size: 18px;
 }
+.feed {
+	margin-left: 10px;
+}
 .feed img{
   width:23px;
-  position: relative;
-  top: -82px;
-  left:175px;
+  height:23px;
+  vertical-align: middle;
+  margin-bottom: 6px;
 }
