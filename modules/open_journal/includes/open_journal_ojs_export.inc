@@ -58,11 +58,11 @@ function generate_author( $author ){
 
 function generate_article( $article, $file_absolute_url ){
   $author = generate_author(user_load($article->uid));
-  
+
   $article->dc_subject = explode(',', $article->dc_subject);
   $article->dc_subject = array_filter($article->dc_subject);
   $article->dc_subject = implode(', ', $article->dc_subject);
-  
+
   $article = array(
         'name' => 'article',
         array(
@@ -172,7 +172,7 @@ function generate_article_feed( $article ){
   $author = generate_author(user_load($article->uid));
 
   $article = array(
-    'name' => 'article',
+    'name' => 'item',
     array(
       'name' => 'title',
       'attributes' => array(
@@ -195,7 +195,23 @@ function generate_article_feed( $article ){
     array(
       'name' => 'link',
       'value' => $article->dc_identifier,
-    )
+    ),
+    array(
+      'name' => 'description',
+      'value' => $article->dc_description,
+    ),
+    array(
+      'name' => 'pubDate',
+      'value' => date('Y-m-d', $article->created),
+    ),
+    array(
+      'name' => 'guid',
+      'value' => 'hello',
+    ),
+    // array(
+    //   'name' =>' pubDate',
+    //   'value' => date('Y-m-d', $article->created),
+    // )
   );
 
   $article[] = $author;
@@ -296,15 +312,15 @@ function get_journal_section( $section_id ) {
 }
 
 function get_journal_issue( $issue_id ) {
-  
-  
+
+
   $issue = open_journal_load_issue($issue_id);
-  
+
   $sections = array();
   for ($i=0; $i < count($issue->sections); $i++) {
     $sections[] = get_journal_section($issue->sections[$i]);
   }
-  
+
 
 
   return generate_issue( $issue, $sections );
@@ -341,24 +357,44 @@ function open_journal_ojs_export() {
 }
 
 
-function open_journal_feed_generator($type='') {
+function open_journal_feed_generator($type='article') {
+  $type = arg(2);
+  if (!$type) {
+    $type = 'article';
+  }
   $limit = 30;
-  $journals = open_journal_load_multiple(NULL, NULL, $limit, OPEN_JOURNAL_STATUS_PUBLISHED);
-  $articles = array('name' => 'articles');
-  $article_size = count($journals);
 
-  for ($i=0; $i < $article_size; $i++) {
-    $articles[]= generate_article_feed($journals[$i]);
+  $channel = array('name' => 'rss', 'attributes' =>
+    array('version' => '2.0', 'xml:base' => 'http://localhost', 'xmlns:dc' => 'http://purl.org/dc/elements/1.1/'),
+  );
+
+  switch ($type) {
+    case 'article':
+      $journals = open_journal_load_multiple(NULL, NULL, $limit, OPEN_JOURNAL_STATUS_PUBLISHED);
+      $articles = array('name' => 'channel');
+      $article_size = count($journals);
+
+      for ($i=0; $i < $article_size; $i++) {
+        $articles[]= generate_article_feed($journals[$i]);
+      }
+
+      drupal_add_http_header('Content-Type', 'application/xhtml+xml; charset=utf-8');
+      $channel[0] = $articles;
+      $data =$channel;
+      // $data = $articles;
+      // print_r($data);
+      $doc = new DOMDocument();
+      $child = generate_xml_element( $doc, $data );
+      if ( $child )
+          $doc->appendChild( $child );
+      $doc->formatOutput = true; // Add whitespace to make easier to read XML
+      $xml = $doc->saveXML();
+      break;
+    default:
+      # code...
+      break;
   }
 
-  drupal_add_http_header('Content-Type', 'text/xml; charset=utf-8');
-  $data = $articles;
-  $doc = new DOMDocument();
-  $child = generate_xml_element( $doc, $data );
-  if ( $child )
-      $doc->appendChild( $child );
-  $doc->formatOutput = true; // Add whitespace to make easier to read XML
-  $xml = $doc->saveXML();
 
   print $xml;
 }
