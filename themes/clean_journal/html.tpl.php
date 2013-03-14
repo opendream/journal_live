@@ -98,6 +98,7 @@
   
   <div id="footer">
   	<p>E-Journal © 2013 Health System Research Institute (HSRI)</p>
+    <?php print l('<img src="/'.drupal_get_path('module', 'open_journal').'/images/rss.png'.'"/>', '', array('html' => TRUE, 'attributes' => array('class' => 'feed')));?>
   </div>
   
 </body>
