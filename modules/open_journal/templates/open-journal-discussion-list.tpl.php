@@ -9,7 +9,11 @@
         <span class="contributor-only-icon">contributor only</span>
         <?php endif ?>
 	      
-	      <div class="journal-user"><?php print $discussion_item->user['display_picture'];?> <span><?php print $discussion_item->user['display_name'];?></span> </div>
+	      <div class="journal-user">
+	        <?php print $discussion_item->user['display_picture'];?>
+	        <?php print $discussion_item->user['display_name'];?>
+	      </div>
+	      
 	      <div class="discus-title">
 	      	
 	      	<?php if($discussion_item->fid):?>

@@ -877,12 +877,14 @@ function open_journal_discussion_load($did) {
 }
 
 function open_journal_discussion_load_limit($jid, $limit=NULL) {
+  
+  return open_journal_discussion_list_limit($jid, $limit);
 
   // Query data from database for overview discussion
   $data = db_select('open_journal_discussion', 'd')
   ->fields('d')
   ->condition('jid', $jid, '=')
-  ->orderBy('did', 'DESC')
+  ->orderBy('changed', 'DESC')
   ->range(0,$limit);
 
   if (!user_access('access contributor process')) {
@@ -898,7 +900,7 @@ function open_journal_discussion_load_all($jid) {
   $data = db_select('open_journal_discussion', 'd')
   ->fields('d')
   ->condition('jid', $jid, '=')
-  ->orderBy('did', 'DESC');
+  ->orderBy('changed', 'DESC');
 
 
   if (!user_access('access contributor process')) {
@@ -1022,6 +1024,8 @@ function open_journal_comment_save($data) {
   }
 
   drupal_write_record('open_journal_comment', $data, $pk);
+  $discussion = open_journal_discussion_load($data->did);
+  open_journal_discussion_save($discussion);
 
   if ($data->fid) {
     $file->status = FILE_STATUS_PERMANENT;
@@ -1506,9 +1510,10 @@ function open_journal_overview($journal) {
   ));
 }
 
-function open_journal_discussion_list($journal) {
-
-
+function open_journal_discussion_list_limit($journal, $limit=0) {
+  if (is_numeric($journal)) {
+    $journal = (object) array('jid' => $journal);
+  }
   // Query discussion list
   $sql = " SELECT
     max(d.did) as  did,
@@ -1533,7 +1538,11 @@ function open_journal_discussion_list($journal) {
   if (!user_access('access contributor process')) {
     $sql .= " AND d.contributor_only = 0";
   }
-  $sql .= " GROUP BY d.did ORDER BY d.did DESC";
+  $sql .= " GROUP BY d.did ORDER BY d.changed DESC";
+  
+  if ($limit) {
+    $sql .= " LIMIT 0, ".$limit;
+  }
 
   $discussion_list = db_query($sql, array(':jid' => $journal->jid))->fetchAll();
 
@@ -1556,6 +1565,14 @@ function open_journal_discussion_list($journal) {
     $discussion_item = $discussion;
 
   }
+  
+  return $discussion_list;
+}
+
+function open_journal_discussion_list($journal) {
+
+
+  $discussion_list = open_journal_discussion_list_limit($journal);
 
   $sidebar = theme('open_journal_status_form', open_journal_get_status_form_variables($journal));
 
@@ -1777,7 +1794,7 @@ function open_journal_get_active_menu_attributes($menu_active_url) {
 function open_journal_get_file_list($jid, $limit=NULL) {
 
   $sql = "SELECT
-      u.*, IF(d.fid IS NOT NULL, d.fid, c.fid) AS fid, f.filename, f.filesize, f.uri, f.timestamp
+      DISTINCT u.*, IF(d.fid IS NOT NULL, d.fid, c.fid) AS fid, f.filename, f.filesize, f.uri, f.timestamp
     FROM
       open_journal_discussion d
     LEFT JOIN

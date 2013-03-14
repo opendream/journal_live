@@ -41,7 +41,8 @@
         <span class="contributor-only-icon">contributor only</span>  
         <?php endif ?>
         <div class="journal-user profile-picture-small">
-          <?php print $data['user_info']['display_picture'].'<span class="username">'.$data['user_info']['display_name'].'</span>';?>
+          <?php print $data['user_info']['display_picture']; ?>
+          <?php print $data['user_info']['display_name']; ?>
         </div>
 
         <div class="discus-title">

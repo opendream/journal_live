@@ -2326,8 +2326,9 @@ h2.journal-block-title {
 			width: 40px;
 			height: 40px;
 		}
-		.journal-discussion-list-item a.user-name-wrapper {
+		a.user-name-wrapper {
 			color: #000;
+			text-decoration: none;
 		}
 	.journal-discussion-list-item .discus-title,
 	.journal-discussion-list-item .discus-content {
