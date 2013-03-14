@@ -1821,9 +1821,10 @@ function open_journal_get_file_list($jid, $limit=NULL) {
   if (!user_access('access contributor process')) {
     $sql .= " AND d.contributor_only = 0";
   }
+  //$sql .= " GROUP BY f.fid";
 
   $sql .= " ORDER BY c.created DESC, d.created DESC".($limit? (' LIMIT 0, '.$limit): '');
-  dpm($sql);
+  
 
   $file_list = db_query($sql, array(':jid' => $jid))->fetchAll();
 
@@ -1837,12 +1838,7 @@ function open_journal_file($journal) {
 
   foreach ($file_list as &$file) {
 
-    $account = (object) array(
-      'uid' => $file->uid,
-      'name' => $file->name,
-      'picture' => $file->picture,
-      'data' => $file->data,
-    );
+    $account = user_load($file->uid);
     $file->user_info = open_journal_get_display_user_info($account);
   }
 

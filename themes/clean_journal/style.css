@@ -1223,6 +1223,7 @@ h1.page-title {
 #open-journal-account-setting-form,
 #open-journal-information-form,
 #open-journal-discussion-form,
+#open-journal-issue-form,
 .block-bg-shadow {
 	padding: 20px;
 	background-color: #FFF;
@@ -1493,16 +1494,6 @@ input.form-submit:hover {
   			text-decoration: none;
   			background-color: #4084a0;
   		}
-
-  #open-journal-not-reject-form {
-  line-height: 30px;
-  font-size: 20px;
-  font-family: 'THSarabunNewRegular';
-  float: left;
-  cursor: pointer;
-  padding-right: 25px;
-  margin-left:40px;
-  }
 
 /* fixed journal menu */
 
@@ -2810,6 +2801,52 @@ ul.journal-informal-approve-list li .user-name-wrapper {
 	margin-bottom: 10px;
 }
 
+/* Issue Add
+----------------------------------------------------------------*/
+#open-journal-issue-form .form-item {
+	margin-bottom: 0;
+}
+#open-journal-issue-form .form-item-title .form-text {
+	padding: 2px;
+	border: 1px solid #ccc;
+	border-top-color: #999;
+	background: #FFF;
+	color: #333;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+#open-journal-issue-form .form-text {
+	font-size: 16px;
+}
+
+#issue-sections-form-table .title-remove-wrapper .form-item {
+	margin-bottom: 10px;
+}
+.issue-journals-wrapper .form-submit {
+	padding: 5px 10px;
+	text-transform: none;
+
+	-webkit-box-align: center;
+	text-align: center;
+	cursor: default;
+	color: buttontext;
+	padding: 2px 6px 3px;
+	border: 2px outset buttonface;
+	border-image: initial;
+	background-color: buttonface;
+	box-sizing: border-box;
+	
+	margin: 0em;
+	font: -webkit-small-control;
+	color: initial;
+	letter-spacing: normal;
+	word-spacing: normal;
+	text-transform: none;
+	text-indent: 0px;
+	text-shadow: none;
+	display: inline-block;
+	text-align: start;
+	
+}
 /* Footer
 ----------------------------------------------------------------*/
 #footer {

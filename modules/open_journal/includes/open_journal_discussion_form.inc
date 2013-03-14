@@ -50,7 +50,7 @@ function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL)
     '#type' => 'checkbox',
     '#description' => t('If checked this box, only contributor can access this discussion.'),
     '#default_value' => open_journal_get_field($data, 'contributor_only'),
-    '#access' => !open_journal_get_field($data, 'permanent')
+    '#access' => !open_journal_get_field($data, 'permanent') && user_access('access contributor process')
   );
 
   $form['main']['actions'] = array('#type' => 'actions');
