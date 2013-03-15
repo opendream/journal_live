@@ -20,7 +20,7 @@
         
         <?php if ($item->fid && $item->file): ?>
         <div class="comment-item-file">
-            <a href="#"><?php print $item->file->filename; ?></a>
+            <?php print l($item->file->filename, file_create_url($item->file->uri));?>
         </div>
         <?php endif ?>
         

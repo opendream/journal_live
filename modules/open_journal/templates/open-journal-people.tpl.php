@@ -14,6 +14,10 @@
       <div class="journal-user">
         <?php print $people_creator->user_info['display_picture']; ?>
         <h3 class="username"><?php print $people_creator->user_info['display_name']; ?></h3>
+        <div class="user-role">
+            <span><?php print $people_creator->user_roles;?></span>
+          </div>
+
       	<div class="join-date">
     			<span class="label">Join Date: </span>
     			<span><?php print date('d M Y', $people_creator->joined); ?></span>		
@@ -34,6 +38,10 @@
 
     	    <?php print $contributor->user_info['display_picture']; ?>
     	    <h3 class="username"><?php print $contributor->user_info['display_name']; ?></h3>
+
+          <div class="user-role">
+            <span><?php print $contributor->user_roles;?></span>
+          </div>
 
     	    <div class="join-date">
       			<span class="label">Join Date: </span>

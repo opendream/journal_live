@@ -1345,8 +1345,13 @@ function open_journal_people($journal) {
   $people_creator = user_load($journal->uid);
   $people_creator->user_info = open_journal_get_display_user_info($people_creator, array('image_style' => 'open_journal_avatar_large'));
   $people_creator->joined = isset($people_active_uid_key_list[$people_creator->uid])? $people_active_uid_key_list[$people_creator->uid]->joined: $journal->created;
-
+  $people_creator->user_roles = open_journal_display_roles($people_creator->roles);
   usort($people_contributor_list, 'open_journal_people_sort');
+
+  // Prepare user roles
+  foreach ($people_contributor_list as &$contributor) {
+    $contributor->user_roles = open_journal_display_roles($contributor->roles);
+  }
 
   return theme('open_journal_detail', array(
     'jid' => $journal->jid,
@@ -1703,7 +1708,6 @@ function open_journal_discussion_add($journal) {
 }
 
 function open_journal_discussion_edit($journal, $discussion) {
-
   module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
 
   $sidebar = theme('open_journal_status_form', open_journal_get_status_form_variables($journal));
@@ -1806,7 +1810,7 @@ function open_journal_discussion_detail($journal, $discussion) {
     $informal_list = open_journal_people_informal_approve_list($journal);
     $sidebar .= theme('open_journal_informal_approve_form', array('informal_list' => $informal_list));
   }
-
+  dpm($comment_list);
   return theme('open_journal_detail', array(
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
     'content' => theme('open_journal_discussion_detail', array(
@@ -1830,7 +1834,7 @@ function open_journal_get_active_menu_attributes($menu_active_url) {
 
 function open_journal_get_file_list($jid, $limit=NULL) {
 
-  $sql = "SELECT
+  /*$sql = "SELECT
       DISTINCT f.uid, IF((d.fid IS NOT NULL AND d.fid <> 0), d.fid, c.fid) AS fid, f.filename, f.filesize, f.uri, f.timestamp, f.timestamp AS created
     FROM
       open_journal_discussion d
@@ -1853,7 +1857,37 @@ function open_journal_get_file_list($jid, $limit=NULL) {
   }
 
   $sql .= " ORDER BY c.created DESC, d.created DESC".($limit? (' LIMIT 0, '.$limit): '');
-  
+  */
+
+  // New sql
+
+  $sql_1 = "SELECT d.uid, d.fid,f.filename, f.filesize, f.uri, f.timestamp, d.created AS created
+  FROM open_journal_discussion d 
+  LEFT JOIN file_managed f
+  ON d.fid = f.fid
+  WHERE d.jid = :jid AND d.fid IS NOT NULL AND d.fid <> 0";
+  if (!user_access('access contributor process')) {
+    $sql_1 .= " AND d.contributor_only = 0";
+  }
+
+  $sql_2 = "SELECT c.uid, c.fid,f.filename, f.filesize, f.uri, f.timestamp, c.created AS created
+  FROM open_journal_discussion d
+  LEFT JOIN open_journal_comment c
+  ON d.did = c.did
+  LEFT JOIN file_managed f
+  ON c.fid = f.fid
+  WHERE d.jid = :jid AND c.fid IS NOT NULL AND c.fid <> 0";
+  if (!user_access('access contributor process')) {
+    $sql_2 .= " AND d.contributor_only = 0";
+  }
+
+  $sql = "SELECT * FROM ( ".$sql_1." UNION ".$sql_2.") AS tb 
+  ORDER BY tb.created DESC".($limit? (' LIMIT 0, '.$limit): '');
+
+
+   
+
+  //$sql .= " ORDER BY tb.created DESC".($limit? (' LIMIT 0, '.$limit): '');
 
   $file_list = db_query($sql, array(':jid' => $jid))->fetchAll();
   
@@ -1862,6 +1896,9 @@ function open_journal_get_file_list($jid, $limit=NULL) {
     $file->user = $account;
     $file->user_info = open_journal_get_display_user_info($account);
   }
+
+
+
 
 
   return $file_list;
@@ -2133,13 +2170,8 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
     drupal_json_output($response);
     exit();
   }
-  $user_roles = $user->roles;
-  foreach ($user_roles as &$role) {
-    if($role == 'authenticated user') {
-      $role = 'researcher';
-    }  
-  }
-  $user_roles = implode(', ', $user_roles);
+  $user_roles = open_journal_display_roles($user->roles);
+  
   // TODO: Edit hook theme with default value foward
   return theme('open_journal_list', array(
     'journal_list' => $journal_list,
@@ -2157,7 +2189,16 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
 
 }
 
+function open_journal_display_roles($user_roles) {
+  foreach ($user_roles as &$role) {
+    if($role == 'authenticated user') {
+      $role = 'researcher';
+    }  
+  }
+  $user_roles = implode(', ', $user_roles);
 
+  return $user_roles;
+}
 
 function open_journal_get_field_settings() {
   // DC field settings
