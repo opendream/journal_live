@@ -57,7 +57,7 @@ function open_journal_not_reject_form($form, &$form_state) {
 	$form['not_show_reject'] = array(
 		'#type' => 'checkbox',
 		'#title' => 'Include rejected',
-		'#attributes' => array('id' => array('not_reject_checkbox')),
+		'#attributes' => array('class' => array('not_reject_checkbox')),
 		'#default_value' => !$value,
 
 	);
@@ -140,8 +140,8 @@ function open_journal_informal_approve_sidebar_form($form, &$form_state, $journa
   
   $status_list = array(
     0 => 'Reviewing',
-    1 => 'Agree', 
-    2 => 'Fail', 
+    1 => 'Yes', 
+    2 => 'No', 
   );
   
   $form['jid'] = array(
@@ -203,7 +203,7 @@ function open_journal_informal_approve_sidebar_form_submit($form, &$form_state) 
   $op = $data['op'];
   
   // TODO use constant
-  $status_list = array('Reviewing' => 0, 'Agree' => 1, 'Fail' => 2);
+  $status_list = array('Reviewing' => 0, 'Yes' => 1, 'No' => 2);
   $status = $status_list[$op];
   
   db_update('open_journal_journal_people')

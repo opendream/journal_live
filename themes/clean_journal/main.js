@@ -47,7 +47,7 @@ jQuery(document).ready(function () {
 	});
 	*/
 	$('#not_reject_btu').hide();
-	$('#not_reject_checkbox').click(function(e) {
+	$('.not_reject_checkbox').click(function(e) {
 		
 		$('#open-journal-not-reject-form').submit();
 	});

@@ -1,14 +1,10 @@
 
 <li class="journal-item">
 
-	<a href="<?php print OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/overview';?>">
-		<div class="journal-status status<?php echo $journal->status_class;?>">
-			<span>
-				<?php print $journal->status_name;?>
-			</span>
-		</div>
-	</a>
 	
+	
+	<?php print l("<div class='journal-status status".$journal->status_class."'> <span>".$journal->status_name."</span> </div>", OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/overview', array('html' => TRUE));?>
+
 	<h3 class="journal-title"><?php print l($journal->dc_title, OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/overview');?></h3>
 	<div class="journal-update">
 		<span class="label">Status update: </span>

@@ -23,7 +23,7 @@ define('OPEN_JOURNAL_MAX_MULTI_TEXTFIELD', 10);
 
 // Constant
 
-define('OPEN_JOURNAL_ALLOWED_FILE_TYPE', 'doc docx');
+define('OPEN_JOURNAL_ALLOWED_FILE_TYPE', 'doc docx pdf');
 
 // Status
 define('OPEN_JOURNAL_STATUS_INFORMATION_APPROVE', 0);
@@ -814,7 +814,7 @@ function open_journal_journal_save($data, $change_status=FALSE) {
 function open_journal_account($uid) {
   $account = user_load($uid);
   $account->user_info = open_journal_get_display_user_info($uid, array('image_style' => 'open_journal_avatar_large'));
-  
+  $account->user_roles = open_journal_display_roles($account->roles);
   return theme('open_journal_account', array(
     'account' => $account,
   ));
@@ -1640,7 +1640,6 @@ function open_journal_get_status_form_variables($journal) {
 
   // Prepare data to status side bar form
   $status_list = unserialize(OPEN_JOUNAL_STATUS);
-
   $vars = array();
 
   $vars['status_list'] = $status_list;
@@ -1649,7 +1648,7 @@ function open_journal_get_status_form_variables($journal) {
   $vars['reject_form'] = '';
   $vars['approve_form'] = '';
   
-  if ((user_access('approve with unanimity') || user_access('reject journal')) && !$journal->reject) {
+  if ((user_access('approve with unanimity') || user_access('reject journal')) && !$journal->reject && $journal->status < count($status_list)-1) {
     $vars['next_status'] = open_journal_next_status($journal->status);
     if (user_access('reject journal')) {
       $vars['reject_form'] = drupal_render(drupal_get_form('open_journal_reject_sidebar_form', $journal));
@@ -1810,7 +1809,6 @@ function open_journal_discussion_detail($journal, $discussion) {
     $informal_list = open_journal_people_informal_approve_list($journal);
     $sidebar .= theme('open_journal_informal_approve_form', array('informal_list' => $informal_list));
   }
-  dpm($comment_list);
   return theme('open_journal_detail', array(
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
     'content' => theme('open_journal_discussion_detail', array(
