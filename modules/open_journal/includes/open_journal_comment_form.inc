@@ -4,6 +4,10 @@ function open_journal_comment_form($form, $form_state, $journal, $discussion, $d
   
   global $user;
   
+  $form['#attached']['css']['wmd'] = drupal_get_path('module', 'open_journal').'/wmd/wmd.css';
+  $form['#attached']['js']['wmd'] = drupal_get_path('module', 'open_journal').'/wmd/wmd.js';
+  $form['#attached']['js']['open_journal_editor'] = drupal_get_path('module', 'open_journal').'/js/open_journal_editor.js';
+  
   $form['#attached']['js']['open_journal_compact'] = drupal_get_path('module', 'open_journal').'/js/open_journal_compact.js';
   
   $submit_text = t('Add this comment');
@@ -22,6 +26,9 @@ function open_journal_comment_form($form, $form_state, $journal, $discussion, $d
     '#title' => t('Add a comment'),
     '#required' => TRUE,
     '#default_value' => open_journal_get_field($data, 'message'),
+    '#attributes' => array('id' => 'wmd-input-editor', 'class' => array('wmd-input')),
+    '#prefix' => '<div id="wmd-toolbar-editor" class="wmd-toolbar">'.'</div>',
+    
   );
   
   $form['fid'] = array(

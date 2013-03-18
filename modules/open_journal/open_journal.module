@@ -1552,6 +1552,9 @@ function open_journal_overview($journal) {
 }
 
 function open_journal_discussion_list_limit($journal, $limit=0) {
+  
+  module_load_include('php', 'open_journal', 'includes/markdown');
+  
   if (is_numeric($journal)) {
     $journal = (object) array('jid' => $journal);
   }
@@ -1596,7 +1599,7 @@ function open_journal_discussion_list_limit($journal, $limit=0) {
      $discussion->description = $latest_comment->message;
     }
 
-    $discussion->description = open_journal_trim($discussion->description, 100);
+    $discussion->description = open_journal_trim(Markdown($discussion->description), 100);
     $discussion->title = open_journal_trim($discussion->title, 50);
 
     if(isset($discussion_item->user)) {
@@ -1787,19 +1790,21 @@ function open_journal_discussion_remove($did) {
 }
 
 function open_journal_discussion_detail($journal, $discussion) {
-
+  
+  module_load_include('php', 'open_journal', 'includes/markdown');
+  
   global $user;
   module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
 
   $discussion->user_info = open_journal_get_display_user_info($discussion->uid);
-  $discussion->description = check_markup($discussion->description);
+  $discussion->description = check_markup(Markdown($discussion->description), 'full_html');
   $discussion->file = $discussion->fid? file_load($discussion->fid): NULL;
   $discussion->can_edit = $user->uid == $discussion->uid;
 
   $comment_list = open_journal_comment_load_all($discussion->did);
   foreach ($comment_list as &$comment) {
     $comment->user_info = open_journal_get_display_user_info($comment->uid);
-    $comment->message = check_markup($comment->message);
+    $comment->message = check_markup(Markdown($comment->message), 'full_html');
     $comment->file = $comment->fid? file_load($comment->fid): NULL;
     $comment->can_edit = $user->uid == $comment->uid;
   }
