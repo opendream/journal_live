@@ -335,6 +335,7 @@ function open_journal_menu() {
     'file' => 'includes/open_journal_issue.inc',
   );
 
+
   $items[OPEN_JOURNAL_PREFIX_PATH.'/feed'] = array(
     'title' => t('Export Issues'),
     'page arguments' => array(2),
@@ -704,7 +705,6 @@ function open_journal_get_field($data, $field_name, $default_value=NULL) {
  * Journal method
  */
 function open_journal_journal_load($jid) {
-
   // Query data from database for edit journal when have journal ID
   $data = db_select('open_journal_journal', 'j')
   ->fields('j')
@@ -712,16 +712,30 @@ function open_journal_journal_load($jid) {
   ->execute()
   ->fetchObject();
 
-  $data->subject_sub = explode(',' ,$data->subject_sub);
-  $data->subject_en = explode(',' ,$data->subject_en);
-  $data->dc_creator = explode(',' ,$data->dc_creator);
-  $data->dc_publisher = explode(',' ,$data->dc_publisher);
-  $data->dc_contributor = explode(',' ,$data->dc_contributor);
+  if(isset($data->subject_sub)) {
+    $data->subject_sub = explode(',' ,$data->subject_sub);
+  }
+  if(isset($data->subject_en)) {
+    $data->subject_en = explode(',' ,$data->subject_en);
 
+  }
+  if(isset($data->dc_creator)) {
+    $data->dc_creator = explode(',' ,$data->dc_creator);
 
+  }
+  if(isset($data->dc_publisher)) {
+    $data->dc_publisher = explode(',' ,$data->dc_publisher);
+  }
+  if(isset($data->dc_contributor)) {
+    $data->dc_contributor = explode(',' ,$data->dc_contributor);
+  } 
 
-  $data->title = $data->dc_title;
-
+  if(isset($data->title)) {
+    $data->title = $data->dc_title;
+  }
+  else {
+    $data->title = '';
+  }
   return $data;
 }
 
@@ -2185,7 +2199,6 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
   drupal_set_title('');
 
   global $user;
-  //dpm($user);
   $mpath = drupal_get_path('module', 'open_journal');
   drupal_add_js($mpath.'/js/open_journal_list_load_more.js');
 
@@ -2564,6 +2577,7 @@ function open_journal_issue_load($issue_id) {
 
         $journals = array();
         foreach ($journal_result as $journal) {
+
           if ($_journal = open_journal_journal_load($journal->jid)) {
             $_journal->weight = $journal->weight;
             $journals[] = $_journal;
