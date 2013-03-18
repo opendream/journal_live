@@ -279,7 +279,7 @@ function open_journal_menu() {
 
   // Issue paths.
   $items['issue'] = array(
-    'title' => 'All issue',
+    'title' => 'All issues',
     'page callback' => 'open_journal_issue_list',
     'access arguments' => array('create update delete issue'),
     'file' => 'includes/open_journal_issue.inc',
@@ -891,23 +891,7 @@ function open_journal_discussion_load($did) {
   return $data->execute()->fetchObject();
 }
 
-function open_journal_discussion_load_limit($jid, $limit=NULL) {
-  
-  return open_journal_discussion_list_limit($jid, $limit);
 
-  // Query data from database for overview discussion
-  $data = db_select('open_journal_discussion', 'd')
-  ->fields('d')
-  ->condition('jid', $jid, '=')
-  ->orderBy('changed', 'DESC')
-  ->range(0,$limit);
-
-  if (!user_access('access contributor process')) {
-    $data->condition('contributor_only', 0, '=');
-  }
-
-  return $data->execute()->fetchAll();
-}
 
 function open_journal_discussion_load_all($jid) {
 
@@ -1479,7 +1463,7 @@ function open_journal_overview($journal) {
   $file_last = open_journal_get_file_list($journal->jid, 1);
   // get data from discussion limit for display overview page
   $limit_overview_page = 3;
-  $discussion = open_journal_discussion_load_limit($journal->jid, $limit_overview_page);
+  $discussion = open_journal_discussion_list_limit($journal->jid, $limit_overview_page);
 
   // Prepare data send to theme
   $discussion_data = array();
