@@ -1374,6 +1374,7 @@ function open_journal_information($data=NULL) {
 }
 
 function open_journal_overview($journal) {
+
   // add dublincore meta data tag to html hearder
   $tags = array(
     'DC.title' => array(
@@ -1382,28 +1383,94 @@ function open_journal_overview($journal) {
         'name' => 'DC.title',
         'content' => $journal->dc_title,
       )
-    )
-  );
-
-  $tags = array(
-    'DC.title' => array(
+    ),
+    'DC.creator' => array(
       '#tag' => 'meta',
       '#attributes' => array(
         'name' => 'DC.creator',
         'content' => $journal->dc_creator,
       )
-    )
-  );
-
-  $tags = array(
-    'DC.title' => array(
+    ),
+    'DC.subject' => array(
       '#tag' => 'meta',
       '#attributes' => array(
-        'name' => 'DC.title',
-        'content' => $journal->dc_title,
+        'name' => 'DC.subject',
+        'content' => $journal->dc_subject,
+      )
+    ),
+    'DC.publisher' => array(
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'name' => 'DC.publisher',
+        'content' => $journal->dc_publisher,
+      )
+    ),
+    'DC.contributor' => array(
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'name' => 'DC.contributor',
+        'content' => $journal->dc_contributor,
+      )
+    ),
+    'DC.date' => array(
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'name' => 'DC.date',
+        'content' => $journal->dc_date,
+      )
+    ),
+    'DC.type' => array(
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'name' => 'DC.type',
+        'content' => $journal->dc_type,
+      )
+    ),
+    'DC.format' => array(
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'name' => 'DC.format',
+        'content' => $journal->dc_format,
+      )
+    ),
+    'DC.identifier' => array(
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'name' => 'DC.identifier',
+        'content' => $journal->dc_identifier,
+      )
+    ),
+    'DC.identifier' => array(
+      '#tag' => 'link',
+      '#attributes' => array(
+        'rel' => 'DC.identifier',
+        'href' => $journal->dc_identifier,
+      )
+    ),
+    'DC.language' => array(
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'name' => 'DC.language',
+        'content' => $journal->dc_language,
+      )
+    ),
+     'DC.coverage' => array(
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'name' => 'DC.coverage',
+        'content' => $journal->dc_coverage,
+      )
+    ),
+    'DC.right' => array(
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'name' => 'DC.right',
+        'content' => $journal->dc_right,
       )
     )
   );
+
+ 
 
   foreach ($tags as $key => $val) {
     drupal_add_html_head($val, $key);
