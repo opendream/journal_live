@@ -23,7 +23,9 @@ define('OPEN_JOURNAL_MAX_MULTI_TEXTFIELD', 10);
 
 // Constant
 
-define('OPEN_JOURNAL_ALLOWED_FILE_TYPE', 'doc docx pdf');
+define('OPEN_JOURNAL_ALLOWED_FILE_TYPE', 'doc docx');
+define('OPEN_JOURNAL_ALLOWED_FINAL_STATUS_FILE_TYPE', 'doc docx pdf');
+
 
 // Status
 define('OPEN_JOURNAL_STATUS_INFORMATION_APPROVE', 0);
@@ -54,8 +56,8 @@ define('OPEN_JOURNAL_INFORMAL_STATUS_FAIL', 2);
 define('OPEN_JOUNAL_INFORMAL_STATUS', serialize (
   array(
     OPEN_JOURNAL_INFORMAL_STATUS_REVIEWING => 'Reviewing',
-    OPEN_JOURNAL_INFORMAL_STATUS_AGREE => 'Agree',
-    OPEN_JOURNAL_INFORMAL_STATUS_FAIL => 'Fail',
+    OPEN_JOURNAL_INFORMAL_STATUS_AGREE => 'Yes',
+    OPEN_JOURNAL_INFORMAL_STATUS_FAIL => 'No',
   )
 ));
 
@@ -124,7 +126,7 @@ function open_journal_menu() {
   );
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/add'] = array(
-    'title' => t('Add new journal'),
+    'title' => t('Add new article'),
     'page callback' => 'open_journal_information',
     'access arguments' => array('access open journal'),
     'type' => MENU_CALLBACK,
@@ -277,7 +279,7 @@ function open_journal_menu() {
 
   // Issue paths.
   $items['issue'] = array(
-    'title' => 'All issue',
+    'title' => 'All issues',
     'page callback' => 'open_journal_issue_list',
     'access arguments' => array('create update delete issue'),
     'file' => 'includes/open_journal_issue.inc',
@@ -332,6 +334,7 @@ function open_journal_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_issue.inc',
   );
+
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/feed'] = array(
     'title' => t('Export Issues'),
@@ -622,7 +625,7 @@ function open_journal_preprocess_page(&$vars) {
     $vars['outer_header'] = '<div class="back-to-all-issue">'.l('Issue detail', 'issue/'.arg(1).'/view').' · '.l('All issue', 'issue').'</div>';
   }
   elseif (arg(0) == 'issue' && is_numeric(arg(1))) {
-    $vars['outer_header'] = '<div class="back-to-all-issue">'.l('Back to all issue', 'issue').'</div>';
+    $vars['outer_header'] = '<div class="back-to-all-issue">'.l('Back to all issues', 'issue').'</div>';
   }
   elseif(arg(0) == 'issue' && !arg(1)) {
     $vars['outer_header'] = '<div class="back-to-all-issue">'.l('Add issue', 'issue/add', array('attributes' => array('class' => array('issue-add-link')))).'</div>';
@@ -640,14 +643,14 @@ function open_journal_form_alter(&$form, &$form_state, $form_id) {
 function open_journal_login() {
   return theme('open_journal_login', array(
     'form' => drupal_render(drupal_get_form('open_journal_login_form')),
-    'condition' => 'CONDITION',
+    'condition' => 'CONDITIONS',
   ));
 }
 
 function open_journal_register() {
   return theme('open_journal_register', array(
     'form' => drupal_render(drupal_get_form('open_journal_register_form')),
-    'condition' => 'CONDITION',
+    'condition' => 'CONDITIONS',
   ));
 }
 
@@ -702,7 +705,6 @@ function open_journal_get_field($data, $field_name, $default_value=NULL) {
  * Journal method
  */
 function open_journal_journal_load($jid) {
-
   // Query data from database for edit journal when have journal ID
   $data = db_select('open_journal_journal', 'j')
   ->fields('j')
@@ -710,16 +712,30 @@ function open_journal_journal_load($jid) {
   ->execute()
   ->fetchObject();
 
-  $data->subject_sub = explode(',' ,$data->subject_sub);
-  $data->subject_en = explode(',' ,$data->subject_en);
-  $data->dc_creator = explode(',' ,$data->dc_creator);
-  $data->dc_publisher = explode(',' ,$data->dc_publisher);
-  $data->dc_contributor = explode(',' ,$data->dc_contributor);
+  if(isset($data->subject_sub)) {
+    $data->subject_sub = explode(',' ,$data->subject_sub);
+  }
+  if(isset($data->subject_en)) {
+    $data->subject_en = explode(',' ,$data->subject_en);
 
+  }
+  if(isset($data->dc_creator)) {
+    $data->dc_creator = explode(',' ,$data->dc_creator);
 
+  }
+  if(isset($data->dc_publisher)) {
+    $data->dc_publisher = explode(',' ,$data->dc_publisher);
+  }
+  if(isset($data->dc_contributor)) {
+    $data->dc_contributor = explode(',' ,$data->dc_contributor);
+  } 
 
-  $data->title = $data->dc_title;
-
+  if(isset($data->title)) {
+    $data->title = $data->dc_title;
+  }
+  else {
+    $data->title = '';
+  }
   return $data;
 }
 
@@ -793,8 +809,8 @@ function open_journal_journal_save($data, $change_status=FALSE) {
     $discussion = array(
       'uid' => $data->uid,
       'jid' => $data->jid,
-      'title' => t('New journal has been created.'),
-      'description' => 'Submit new journal has been completed. Now, status is "information review".'."\n\n".'See information with abstract field and journal file on "Information" tab.'."\n".url('journal/'.$data->jid.'/information', array('absolute' => TRUE)),
+      'title' => t('New article has been created.'),
+      'description' => 'Submit new article has been completed. Now, status is "information review".'."\n\n".'See information with abstract field and journal file on "Information" tab.'."\n".url('journal/'.$data->jid.'/information', array('absolute' => TRUE)),
       'fid' => $data->file,
       'permanent' => 1
     );
@@ -889,23 +905,7 @@ function open_journal_discussion_load($did) {
   return $data->execute()->fetchObject();
 }
 
-function open_journal_discussion_load_limit($jid, $limit=NULL) {
-  
-  return open_journal_discussion_list_limit($jid, $limit);
 
-  // Query data from database for overview discussion
-  $data = db_select('open_journal_discussion', 'd')
-  ->fields('d')
-  ->condition('jid', $jid, '=')
-  ->orderBy('changed', 'DESC')
-  ->range(0,$limit);
-
-  if (!user_access('access contributor process')) {
-    $data->condition('contributor_only', 0, '=');
-  }
-
-  return $data->execute()->fetchAll();
-}
 
 function open_journal_discussion_load_all($jid) {
 
@@ -1364,9 +1364,6 @@ function open_journal_people($journal) {
 
 
 function open_journal_information($data=NULL) {
-
-
-
   return theme('open_journal_detail', array(
     'content' => drupal_render(drupal_get_form('open_journal_information_form',$data)),
     'sidebar' => '',
@@ -1376,11 +1373,111 @@ function open_journal_information($data=NULL) {
 
 function open_journal_overview($journal) {
 
+  // add dublincore meta data tag to html hearder
+  $tags = array(
+    'DC.title' => array(
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'name' => 'DC.title',
+        'content' => $journal->dc_title,
+      )
+    ),
+    'DC.creator' => array(
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'name' => 'DC.creator',
+        'content' => $journal->dc_creator,
+      )
+    ),
+    'DC.subject' => array(
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'name' => 'DC.subject',
+        'content' => $journal->dc_subject,
+      )
+    ),
+    'DC.publisher' => array(
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'name' => 'DC.publisher',
+        'content' => $journal->dc_publisher,
+      )
+    ),
+    'DC.contributor' => array(
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'name' => 'DC.contributor',
+        'content' => $journal->dc_contributor,
+      )
+    ),
+    'DC.date' => array(
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'name' => 'DC.date',
+        'content' => $journal->dc_date,
+      )
+    ),
+    'DC.type' => array(
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'name' => 'DC.type',
+        'content' => $journal->dc_type,
+      )
+    ),
+    'DC.format' => array(
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'name' => 'DC.format',
+        'content' => $journal->dc_format,
+      )
+    ),
+    'DC.identifier' => array(
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'name' => 'DC.identifier',
+        'content' => $journal->dc_identifier,
+      )
+    ),
+    'DC.identifier' => array(
+      '#tag' => 'link',
+      '#attributes' => array(
+        'rel' => 'DC.identifier',
+        'href' => $journal->dc_identifier,
+      )
+    ),
+    'DC.language' => array(
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'name' => 'DC.language',
+        'content' => $journal->dc_language,
+      )
+    ),
+     'DC.coverage' => array(
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'name' => 'DC.coverage',
+        'content' => $journal->dc_coverage,
+      )
+    ),
+    'DC.right' => array(
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'name' => 'DC.right',
+        'content' => $journal->dc_right,
+      )
+    )
+  );
+
+ 
+
+  foreach ($tags as $key => $val) {
+    drupal_add_html_head($val, $key);
+  } 
   // get data from last discussion
   $file_last = open_journal_get_file_list($journal->jid, 1);
   // get data from discussion limit for display overview page
   $limit_overview_page = 3;
-  $discussion = open_journal_discussion_load_limit($journal->jid, $limit_overview_page);
+  $discussion = open_journal_discussion_list_limit($journal->jid, $limit_overview_page);
 
   // Prepare data send to theme
   $discussion_data = array();
@@ -2107,7 +2204,6 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
   drupal_set_title('');
 
   global $user;
-  //dpm($user);
   $mpath = drupal_get_path('module', 'open_journal');
   drupal_add_js($mpath.'/js/open_journal_list_load_more.js');
 
@@ -2486,6 +2582,7 @@ function open_journal_issue_load($issue_id) {
 
         $journals = array();
         foreach ($journal_result as $journal) {
+
           if ($_journal = open_journal_journal_load($journal->jid)) {
             $_journal->weight = $journal->weight;
             $journals[] = $_journal;

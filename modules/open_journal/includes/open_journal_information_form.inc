@@ -29,7 +29,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
     $form['main']['description_sub'] = array(
       '#title' => open_journal_label_help(OPEN_JOURNAL_SUB_LANG_ABSTRACT_LABEL, 'Help me please.', TRUE),
       '#type' => 'textarea',
-      '#description' => t('No more than !d words please!', array('!d' => OPEN_JOURNAL_ABSTRACT_MAX_LENGTH)),
+      '#description' => t('No more than !d words.', array('!d' => OPEN_JOURNAL_ABSTRACT_MAX_LENGTH)),
       '#required' => OPEN_JOURNAL_SUB_LANG_ABSTRACT_REQUIRED,
       '#default_value' => open_journal_get_field($data, 'description_sub'),
       '#rows' => 10,
@@ -40,7 +40,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
   $form['main']['description_en'] = array(
     '#title' => open_journal_label_help('Abstract', 'Help me please.', TRUE),
     '#type' => 'textarea',
-    '#description' => t('No more than !d words please!', array('!d' => OPEN_JOURNAL_ABSTRACT_MAX_LENGTH)),
+    '#description' => t('No more than !d words.', array('!d' => OPEN_JOURNAL_ABSTRACT_MAX_LENGTH)),
     '#required' => OPEN_JOURNAL_ABSTRACT_REQUIRED,
     '#default_value' => open_journal_get_field($data, 'description_en'),
     '#rows' => 10,
@@ -53,7 +53,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
     $latest_file = $latest_file[0];
 
     $form['main']['file_link'] = array(
-      '#markup' => '<div class="form-type-managed-file">Latest file : '.l($latest_file->filename, file_create_url($latest_file->uri)).'<div class="description">'.t('When you create discussion or comment with upload file, The latest file will be update.').'</div></div>'
+      '#markup' => '<div class="form-type-managed-file">Latest file : '.l($latest_file->filename, file_create_url($latest_file->uri)).'<div class="description">'.t('When you upload a file, the latest file will appear at the top.').'</div></div>'
     );
     
     $submit_text = t('Save changes');
@@ -72,7 +72,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
     );
 
     $form['main']['guideline'] = array(
-      '#title' => t('I read submit journal guideline completely.').' '.l(t('Download guideline'), ''),
+      '#title' => t('I have read the submission guidelines.').' '.l(t('Download guideline'), ''),
       '#type' => 'checkbox',
       '#required' => TRUE,
     );
@@ -104,8 +104,8 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
   }
   $form['data']['group']['subject_en'] = open_journal_multi_textfield('Keywords',open_journal_get_field($data, 'subject_en'), 'dc_subject');
 
-  $form['data']['group']['dc_creator'] = open_journal_multi_textfield('Author' ,open_journal_get_field($data, 'dc_creator'), 'dc_creator', 'co-Author', TRUE, 1);
-  $form['data']['group']['dc_publisher'] = open_journal_multi_textfield('Publishers' ,open_journal_get_field($data, 'dc_publisher'), 'dc_publisher', '', FALSE, 1);
+  $form['data']['group']['dc_creator'] = open_journal_multi_textfield('Author' ,open_journal_get_field($data, 'dc_creator'), 'dc_creator', 'Add co-author', TRUE, 1);
+  $form['data']['group']['dc_publisher'] = open_journal_multi_textfield('Publisher' ,open_journal_get_field($data, 'dc_publisher'), 'dc_publisher', '', FALSE, 1);
   $form['data']['group']['dc_contributor'] = open_journal_multi_textfield('Contributors', open_journal_get_field($data, 'dc_contributor'), 'dc_contributor','', FALSE, 1);
 
   // Setting date to display form
@@ -276,7 +276,7 @@ function open_journal_multi_textfield($title='' , $values = FALSE, $name, $add_m
     );
   }
   if($add_more_text_show) {
-    $multi_textfield[] = array('#markup' => '<button class="add-multi-textfield">add '.t($add_more_text).'</button>');
+    $multi_textfield[] = array('#markup' => '<button class="add-multi-textfield"> '.t($add_more_text).'</button>');
   }
 
   return $multi_textfield;
@@ -313,11 +313,11 @@ function open_journal_information_form_submit($form, &$form_state) {
   
   if ($is_new) {
 
-    drupal_set_message(t('You has been submit new journal completed. Wait for information review.'));
+    drupal_set_message(t('You has been submit new article completed. Wait for information review.'));
     drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->jid.'/overview');
   }
   else {
-    drupal_set_message(t('This journal information has been updated.'));
+    drupal_set_message(t('This article information has been updated.'));
     drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->jid.'/overview');
   }
 

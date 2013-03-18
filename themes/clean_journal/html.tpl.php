@@ -67,7 +67,7 @@
         <?php print l($open_journal_logo1, '', array('html' => TRUE));?>
       </div>
       <div class="user-manage">
-        <?php print l(t('View My Journal'), OPEN_JOURNAL_PREFIX_PATH, array('attributes' => array('class' => array('view-all-journal')))); ?>
+        <?php print l(t('View My article'), OPEN_JOURNAL_PREFIX_PATH, array('attributes' => array('class' => array('view-all-journal')))); ?>
         <div class="user-dropdown">
           <?php print $user_info['display_picture_small']; ?>
           <span class="dropdown-link"><?php print $user_info['display_name']; ?></span>
@@ -78,7 +78,7 @@
             <?php if (user_access('create update delete issue')): ?>
             <li><?php print l(t('All issue'), 'issue'); ?></li>  
             <?php endif ?>  
-            <li><?php print l(t('Add new journal'), OPEN_JOURNAL_PREFIX_PATH.'/add'); ?></li>
+            <li><?php print l(t('Add new article'), OPEN_JOURNAL_PREFIX_PATH.'/add'); ?></li>
             <li><?php print l(t('Account settings'), OPEN_JOURNAL_PREFIX_PATH.'/account/setting'); ?></li>
             <li><?php print l(t('Logout'), 'user/logout'); ?></li>
           </ul>
@@ -97,7 +97,7 @@
   <?php print $page_bottom; ?>
   
   <div id="footer">
-  	<p>E-Journal © 2013 Health System Research Institute (HSRI)
+  	<p>E-Journal © 2013 Health Systems Research Institute (HSRI)
     <?php print l(theme('image', array('path' => drupal_get_path('module', 'open_journal').'/images/rss.png') ), OPEN_JOURNAL_PREFIX_PATH.'/feed/issue', array('html' => TRUE, 'attributes' => array('class' => 'feed', 'title' => 'Issue rss feed')));?>
     <?php //print l(theme('image', array('path' => drupal_get_path('module', 'open_journal').'/images/rss.png') ), OPEN_JOURNAL_PREFIX_PATH.'/feed/article', array('html' => TRUE, 'attributes' => array('class' => 'feed', 'title' => 'Article rss feed')));?>
     </p>

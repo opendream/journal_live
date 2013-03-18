@@ -213,6 +213,10 @@ function _issue_sections($key, $id = NULL, $value = '', $weight = 0, $size = 10,
     '#delta' => $size,
     '#parents' => array('sections', $key, 'weight'),
   );
+  // Operation links (to remove rows).
+    $form['remove'] = array(
+      '#markup' => '<a href="#" class="remove-row">' . t('Remove') . '</a>',
+    );
 
   $form['journals_wrapper'] = array(
     '#weight' => -4,
@@ -226,6 +230,23 @@ function _issue_sections($key, $id = NULL, $value = '', $weight = 0, $size = 10,
     '#theme' => 'open_journal_issue_journals_form',
     '#section_key' => $key,
   );
+
+   $js = <<<EOD
+(function ($) {
+  $(function() {
+    $('a.remove-row').click(function(e) {
+      e.preventDefault();
+      $(this).closest('tr').fadeOut(function() {
+       $(this).remove();
+      });
+    });;
+  });
+})(jQuery);
+EOD;
+  
+  drupal_add_js($js, array('type' => 'inline'));
+
+  
 
   // Calculate number to display.
   $journal_count = max(2, empty($journals) ? 2 : count($journals) + 1);
@@ -439,10 +460,10 @@ function open_journal_issue_form_validate($form, &$form_state) {
 /**
  * Issue form submit.
  */
-function open_journal_issue_form_submit($form, $form_state) {
+function open_journal_issue_form_submit($form, &$form_state) {
   global $user;
   $values = $form_state['values'];
-
+  //==drupal_set_message(print_r($form_state, 1));
   // Update.
   $num_update = 0;
   if (isset($values['iid']) && is_numeric($values['iid'])) {
@@ -491,7 +512,14 @@ function open_journal_issue_form_submit($form, $form_state) {
       db_query("DELETE FROM open_journal_issue_journal WHERE iid = :iid", array(':iid' => $issue_id));
     }
 
-    foreach ($values['sections'] as $section) {
+    $input_sections = $form_state['input']['sections'];
+    foreach ($values['sections'] as $key_section => $section) {
+
+      if (!(isset($input_sections[$key_section]) && isset($input_sections[$key_section]['title']) && trim($input_sections[$key_section]['title']))) {
+        continue;
+      }
+
+
       $section_id = db_insert('open_journal_issue_section')
         ->fields(array(
           'iid' => $issue_id,
@@ -666,7 +694,7 @@ function theme_open_journal_issue_sections_form($variables) {
   drupal_add_tabledrag('issue-sections-form-table', 'order', 'sibling', 'section-weight');
 
   $rows = array();
-  $headers = array('', t('Section'), t('Weight'));
+  $headers = array('', t('Section'), t('Weight'), ('Operation'));
 
   foreach (element_children($form) as $key) {
     if ($key === 'section_more') {
@@ -681,8 +709,9 @@ function theme_open_journal_issue_sections_form($variables) {
     $row = array();
     $row['data'] = array();
     $row['data'][] = array('class' => array('section-flag'));
-    $row['data'][] = drupal_render($form[$key]['title']) . drupal_render($form[$key]['remove']) . drupal_render($form[$key]['journals_wrapper']);
+    $row['data'][] = drupal_render($form[$key]['title'])  . drupal_render($form[$key]['journals_wrapper']);
     $row['data'][] = drupal_render($form[$key]['weight']);
+    $row['data'][] = drupal_render($form[$key]['remove']);
     $row['class'] = array('draggable');
 
     $rows[] = $row;

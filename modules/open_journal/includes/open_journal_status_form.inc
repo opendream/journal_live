@@ -83,7 +83,7 @@ function open_journal_approve_sidebar_form($form, &$form_state, $journal , $next
 	
 	$form['submit'] = array(
 		'#type' => 'submit',
-		'#value' => 'approve',
+		'#value' => 'approved',
 		'#attributes' => array('class' => array('open_journal_approve_bottom')),
 	);
 	$form['next_status'] = array(
@@ -117,7 +117,7 @@ function open_journal_approve_sidebar_form_submit($form, &$form_state) {
 
 	$discussion = array(
     'jid' => $jid,
-    'title' => t('Congratulation! Status changed to '.$status_name ),
+    'title' => t('Congratulations! Status changed to '.$status_name ),
     'description' => 'Talk on discussion if you have some question?',
   );
 
@@ -125,7 +125,7 @@ function open_journal_approve_sidebar_form_submit($form, &$form_state) {
   open_journal_discussion_save($discussion);
   
   if (user_access('invite people to journal')) {
-    drupal_set_message(t('Please, invite contributors to join on this journal.'));
+    drupal_set_message(t('Please invite your contributors.'));
     drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$jid .'/people');
   }
   else {
@@ -138,12 +138,7 @@ function open_journal_approve_sidebar_form_submit($form, &$form_state) {
 
 function open_journal_informal_approve_sidebar_form($form, &$form_state, $journal, $informal) {
   
-  $status_list = array(
-    0 => 'Reviewing',
-    1 => 'Yes', 
-    2 => 'No', 
-  );
-  
+  $status_list = unserialize(OPEN_JOUNAL_INFORMAL_STATUS);
   $form['jid'] = array(
     '#type' => 'hidden',
 		'#value' => $journal->jid,
@@ -201,10 +196,10 @@ function open_journal_informal_approve_sidebar_form_submit($form, &$form_state) 
   
   $data = $form_state['values'];
   $op = $data['op'];
+  $status_list = unserialize(OPEN_JOUNAL_INFORMAL_STATUS);
+  $status = array_search($op, $status_list);
   
-  // TODO use constant
-  $status_list = array('Reviewing' => 0, 'Yes' => 1, 'No' => 2);
-  $status = $status_list[$op];
+  
   
   db_update('open_journal_journal_people')
     ->fields(array(
@@ -213,6 +208,7 @@ function open_journal_informal_approve_sidebar_form_submit($form, &$form_state) 
     ->condition('jid', $data['jid'], '=')
     ->condition('uid', $user->uid, '=')
     ->execute();
+    
   
 }
 

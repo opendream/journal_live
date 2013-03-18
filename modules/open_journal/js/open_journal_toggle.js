@@ -4,17 +4,17 @@ jQuery(document).ready(function () {
   
   $('.toggle-people-btn').mouseenter(function () {
     if ($(this).hasClass('active-people-btn')) {
-      $(this).val('deactive');
+      $(this).val('deactivate');
     }
     else {
-      $(this).val('active');
+      $(this).val('activate');
     }
   }).mouseout(function () {
     if ($(this).hasClass('active-people-btn')) {
-      $(this).val('active');
+      $(this).val('activate');
     }
     else {
-      $(this).val('deactive');
+      $(this).val('deactivate');
     }
   });
 

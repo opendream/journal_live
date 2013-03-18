@@ -31,7 +31,8 @@ function open_journal_comment_form($form, $form_state, $journal, $discussion, $d
     
   );
   
-  $form['fid'] = array(
+  if($journal->status < count(unserialize(OPEN_JOUNAL_STATUS))-1) {
+    $form['fid'] = array(
     '#type' => 'managed_file',
     '#title' => t('File'),
     '#description' => t('Allowed file types: %s',array('%s' => OPEN_JOURNAL_ALLOWED_FILE_TYPE)),
@@ -41,7 +42,23 @@ function open_journal_comment_form($form, $form_state, $journal, $discussion, $d
     ),
     '#upload_location' => "public://journal/",
     '#default_value' => open_journal_get_field($data, 'fid'),
+    );
+  }
+  else {
+    $form['fid'] = array(
+    '#type' => 'managed_file',
+    '#title' => t('File'),
+    '#description' => t('Allowed file types: %s',array('%s' => OPEN_JOURNAL_ALLOWED_FINAL_STATUS_FILE_TYPE)),
+    '#upload_validators' => array(
+      'file_validate_extensions' => array(OPEN_JOURNAL_ALLOWED_FINAL_STATUS_FILE_TYPE),
+      //'file_validate_size' => array(2 * 1048576),
+    ),
+    '#upload_location' => "public://journal/",
+    '#default_value' => open_journal_get_field($data, 'fid'),
   );
+  }
+
+  
   
   $form['actions'] = array('#type' => 'actions');
   $form['actions']['submit'] = array(

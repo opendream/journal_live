@@ -29,7 +29,7 @@
     <!-- Creator Section -->
     <div class="journal-block-content people-contributor">
 
-    	<h3 class="people-section-title">Contributor</h3>
+    	<h3 class="people-section-title">Contributors</h3>
 
     	<!-- People item -->
     	<ul>
