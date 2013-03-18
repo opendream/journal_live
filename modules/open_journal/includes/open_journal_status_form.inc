@@ -83,7 +83,7 @@ function open_journal_approve_sidebar_form($form, &$form_state, $journal , $next
 	
 	$form['submit'] = array(
 		'#type' => 'submit',
-		'#value' => 'approve',
+		'#value' => 'approved',
 		'#attributes' => array('class' => array('open_journal_approve_bottom')),
 	);
 	$form['next_status'] = array(
@@ -117,7 +117,7 @@ function open_journal_approve_sidebar_form_submit($form, &$form_state) {
 
 	$discussion = array(
     'jid' => $jid,
-    'title' => t('Congratulation! Status changed to '.$status_name ),
+    'title' => t('Congratulations! Status changed to '.$status_name ),
     'description' => 'Talk on discussion if you have some question?',
   );
 
@@ -125,7 +125,7 @@ function open_journal_approve_sidebar_form_submit($form, &$form_state) {
   open_journal_discussion_save($discussion);
   
   if (user_access('invite people to journal')) {
-    drupal_set_message(t('Please, invite contributors to join on this journal.'));
+    drupal_set_message(t('Please invite your contributors.'));
     drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$jid .'/people');
   }
   else {

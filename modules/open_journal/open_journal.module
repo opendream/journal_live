@@ -23,7 +23,9 @@ define('OPEN_JOURNAL_MAX_MULTI_TEXTFIELD', 10);
 
 // Constant
 
-define('OPEN_JOURNAL_ALLOWED_FILE_TYPE', 'doc docx pdf');
+define('OPEN_JOURNAL_ALLOWED_FILE_TYPE', 'doc docx');
+define('OPEN_JOURNAL_ALLOWED_FINAL_STATUS_FILE_TYPE', 'doc docx pdf');
+
 
 // Status
 define('OPEN_JOURNAL_STATUS_INFORMATION_APPROVE', 0);
@@ -124,7 +126,7 @@ function open_journal_menu() {
   );
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/add'] = array(
-    'title' => t('Add new journal'),
+    'title' => t('Add new article'),
     'page callback' => 'open_journal_information',
     'access arguments' => array('access open journal'),
     'type' => MENU_CALLBACK,
@@ -622,7 +624,7 @@ function open_journal_preprocess_page(&$vars) {
     $vars['outer_header'] = '<div class="back-to-all-issue">'.l('Issue detail', 'issue/'.arg(1).'/view').' · '.l('All issue', 'issue').'</div>';
   }
   elseif (arg(0) == 'issue' && is_numeric(arg(1))) {
-    $vars['outer_header'] = '<div class="back-to-all-issue">'.l('Back to all issue', 'issue').'</div>';
+    $vars['outer_header'] = '<div class="back-to-all-issue">'.l('Back to all issues', 'issue').'</div>';
   }
   elseif(arg(0) == 'issue' && !arg(1)) {
     $vars['outer_header'] = '<div class="back-to-all-issue">'.l('Add issue', 'issue/add', array('attributes' => array('class' => array('issue-add-link')))).'</div>';
@@ -640,14 +642,14 @@ function open_journal_form_alter(&$form, &$form_state, $form_id) {
 function open_journal_login() {
   return theme('open_journal_login', array(
     'form' => drupal_render(drupal_get_form('open_journal_login_form')),
-    'condition' => 'CONDITION',
+    'condition' => 'CONDITIONS',
   ));
 }
 
 function open_journal_register() {
   return theme('open_journal_register', array(
     'form' => drupal_render(drupal_get_form('open_journal_register_form')),
-    'condition' => 'CONDITION',
+    'condition' => 'CONDITIONS',
   ));
 }
 
@@ -793,8 +795,8 @@ function open_journal_journal_save($data, $change_status=FALSE) {
     $discussion = array(
       'uid' => $data->uid,
       'jid' => $data->jid,
-      'title' => t('New journal has been created.'),
-      'description' => 'Submit new journal has been completed. Now, status is "information review".'."\n\n".'See information with abstract field and journal file on "Information" tab.'."\n".url('journal/'.$data->jid.'/information', array('absolute' => TRUE)),
+      'title' => t('New article has been created.'),
+      'description' => 'Submit new article has been completed. Now, status is "information review".'."\n\n".'See information with abstract field and journal file on "Information" tab.'."\n".url('journal/'.$data->jid.'/information', array('absolute' => TRUE)),
       'fid' => $data->file,
       'permanent' => 1
     );
@@ -1364,9 +1366,6 @@ function open_journal_people($journal) {
 
 
 function open_journal_information($data=NULL) {
-
-
-
   return theme('open_journal_detail', array(
     'content' => drupal_render(drupal_get_form('open_journal_information_form',$data)),
     'sidebar' => '',
@@ -1375,7 +1374,40 @@ function open_journal_information($data=NULL) {
 }
 
 function open_journal_overview($journal) {
+  // add dublincore meta data tag to html hearder
+  $tags = array(
+    'DC.title' => array(
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'name' => 'DC.title',
+        'content' => $journal->dc_title,
+      )
+    )
+  );
 
+  $tags = array(
+    'DC.title' => array(
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'name' => 'DC.creator',
+        'content' => $journal->dc_creator,
+      )
+    )
+  );
+
+  $tags = array(
+    'DC.title' => array(
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'name' => 'DC.title',
+        'content' => $journal->dc_title,
+      )
+    )
+  );
+
+  foreach ($tags as $key => $val) {
+    drupal_add_html_head($val, $key);
+  } 
   // get data from last discussion
   $file_last = open_journal_get_file_list($journal->jid, 1);
   // get data from discussion limit for display overview page

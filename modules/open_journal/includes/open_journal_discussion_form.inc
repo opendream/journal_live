@@ -29,11 +29,12 @@ function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL)
 
   $form['description'] = array(
     '#type' => 'textarea',
-    '#title' => t('Detail'),
+    '#title' => t('Details'),
     '#default_value' => open_journal_get_field($data, 'description')
   );
 
-  $form['fid'] = array(
+  if($journal->status < count(unserialize(OPEN_JOUNAL_STATUS))-1) {
+    $form['fid'] = array(
     '#type' => 'managed_file',
     '#title' => t('File'),
     '#description' => t('Allowed file types: %s',array('%s' => OPEN_JOURNAL_ALLOWED_FILE_TYPE)),
@@ -43,7 +44,23 @@ function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL)
     ),
     '#upload_location' => "public://journal/",
     '#default_value' => open_journal_get_field($data, 'fid'),
+    );
+  }
+  else {
+    $form['fid'] = array(
+    '#type' => 'managed_file',
+    '#title' => t('File'),
+    '#description' => t('Allowed file types: %s',array('%s' => OPEN_JOURNAL_ALLOWED_FINAL_STATUS_FILE_TYPE)),
+    '#upload_validators' => array(
+      'file_validate_extensions' => array(OPEN_JOURNAL_ALLOWED_FINAL_STATUS_FILE_TYPE),
+      //'file_validate_size' => array(2 * 1048576),
+    ),
+    '#upload_location' => "public://journal/",
+    '#default_value' => open_journal_get_field($data, 'fid'),
   );
+  }
+
+  
       
   $form['contributor_only'] = array(
     '#title' => t('Contributor only'),

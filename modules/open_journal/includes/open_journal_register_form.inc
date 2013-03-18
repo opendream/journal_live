@@ -88,7 +88,7 @@ function open_journal_account_form(&$form, &$form_state) {
     '#type' => 'textfield',
     '#title' => t('Username'),
     '#maxlength' => USERNAME_MAX_LENGTH,
-    '#description' => t('Username should be a pretended. ex: mickymouse'),
+    '#description' => t('Username should be a pseudonym. ex: mickymouse'),
     '#required' => TRUE,
     '#attributes' => array('class' => array('username')),
     '#default_value' => (!$register ? $account->name : ''),
@@ -100,7 +100,7 @@ function open_journal_account_form(&$form, &$form_state) {
     '#type' => 'textfield',
     '#title' => t('E-mail address'),
     '#maxlength' => EMAIL_MAX_LENGTH,
-    '#description' => t('A valid e-mail address. All e-mails from the system will be sent to this address. The e-mail address is not made public and will only be used if you wish to receive a new password or wish to receive certain news or notifications by e-mail.'),
+    '#description' => t('E-mail address must be valid. All e-mails from the system will be sent to this address. E-mail address must be valid and will only be used if you wish to receive a new password or wish to receive certain news or notifications by e-mail.'),
     '#required' => TRUE,
     '#default_value' => (!$register ? $account->mail : ''),
   );
@@ -211,19 +211,19 @@ function open_journal_account_form(&$form, &$form_state) {
     '#tree' => TRUE,
     '#type' => 'fieldset',
     '#title' => t('Information'),
-    '#description' => t('This infomation display for you only.'),
+    '#description' => t('Only you will see this information display.'),
   );
   $form['data']['firstname'] = array(
     '#type' => 'textfield',
     '#title' => t('First name'),
     '#default_value' => isset($account->data) && isset($account->data['firstname'])? $account->data['firstname']: '',
-    '#description' => t('Ex : Sommay'),
+    '#description' => t('Ex : Sommai'),
   );
   $form['data']['lastname'] = array(
     '#type' => 'textfield',
     '#title' => t('Last name'),
     '#default_value' => isset($account->data) && isset($account->data['lastname'])? $account->data['lastname']: '',
-    '#description' => t('Ex : Dejai'),
+    '#description' => t('Ex : Deejai'),
   );
   
 

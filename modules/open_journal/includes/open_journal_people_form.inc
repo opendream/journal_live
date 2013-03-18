@@ -14,7 +14,7 @@ function open_journal_people_form($form, &$form_state, $jid, $uid, $is_active) {
   );
   $form['operation'] = array(
     '#type' => 'hidden',
-    '#value' => $is_active? 'deactive': 'active',
+    '#value' => $is_active? 'deactivate': 'activate',
   );
   
   $button_class = array('toggle-people-btn');
@@ -22,7 +22,7 @@ function open_journal_people_form($form, &$form_state, $jid, $uid, $is_active) {
   
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => $is_active? 'active': 'deactive',
+    '#value' => $is_active? 'activate': 'deactivate',
     '#attributes' => array('class' => $button_class)
   );
   
@@ -35,7 +35,7 @@ function open_journal_people_form_submit($form, &$form_state) {
   $uid = $form_state['input']['uid'];
   $operation = $form_state['input']['operation'];
     
-  if ($operation == 'deactive') {
+  if ($operation == 'deactivate') {
     open_journal_journal_people_deactive($jid, $uid);
   }
   else {
