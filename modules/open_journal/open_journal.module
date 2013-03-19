@@ -237,7 +237,7 @@ function open_journal_menu() {
   );
 
 
-  $items[OPEN_JOURNAL_PREFIX_PATH.'/account/%'] = array(
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/account/%user'] = array(
     'title' => t('Account'),
     'page callback' => 'open_journal_account',
     'page arguments' => array($arg+1),
@@ -828,10 +828,15 @@ function open_journal_journal_save($data, $change_status=FALSE) {
 /**
  * Journal people method
  */
-function open_journal_account($uid) {
-  $account = user_load($uid);
-  $account->user_info = open_journal_get_display_user_info($uid, array('image_style' => 'open_journal_avatar_large'));
+function open_journal_account($account) {
+  
+  $account->user_info = open_journal_get_display_user_info($account, array('image_style' => 'open_journal_avatar_large'));
   $account->user_roles = open_journal_display_roles($account->roles);
+  
+  if (!$account->user_info['access account profile']) {
+    return drupal_not_found();
+  }
+  
   return theme('open_journal_account', array(
     'account' => $account,
   ));
@@ -2502,12 +2507,14 @@ function open_journal_get_display_user_info($account, $variables=array()) {
     'display_picture' => $real_picture,
     'display_name' => $real_name,
     'display_name_text' =>  $real_name_text,
+    'access account profile' => TRUE,
   );
 
   $info_dummy = array(
     'display_picture' => $dummy_picture,
     'display_name' => $dummy_name,
     'display_name_text' =>  $dummy_name_text,
+    'access account profile' => FALSE,
   );
 
 
