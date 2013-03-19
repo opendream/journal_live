@@ -561,6 +561,8 @@ function open_journal_preprocess_html(&$vars) {
     $vars['header_class'] = 'header-logged-out';
     $vars['logged_in'] = FALSE;
   }
+  
+  $vars['logo'] = theme_get_setting('default_logo')? '': theme_get_setting('logo_path');
   open_journal_preprocess_page($vars);
 }
 
@@ -2373,7 +2375,21 @@ function open_journal_get_field_settings() {
 
 function open_journal_image_default_styles() {
   $styles = array();
-
+  
+  $styles['open_journal_logo'] = array(
+    'effects' => array(
+      array(
+        'name' => 'image_scale',
+        'data' => array(
+          'width' => FALSE,
+          'height' => 42,
+          'upscale' => FALSE
+        ),
+        'weight' => 0,
+      ),
+    ),
+  );
+  
   $styles['open_journal_avatar_small'] = array(
     'effects' => array(
       array(
