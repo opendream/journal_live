@@ -2264,7 +2264,7 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
 
     if (count($journal->people_list) > OPEN_JOURNAL_DISPLAY_IMAGE_USER_LIST_LIMIT) {
       array_pop($journal->people_list);
-      $journal->people_list['more'] = open_journal_get_display_user_info_more();
+      $journal->people_list['more']->display_info = open_journal_get_display_user_info_more();
     }
     $count_all_people = count(open_journal_people_active_list($journal->jid));
 
