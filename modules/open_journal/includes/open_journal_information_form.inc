@@ -180,7 +180,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
   $form['data']['group']['dc_type'] = array(
     '#title' => open_journal_label_help('Type', 'Type of article'),
     '#type' => 'textfield',
-    '#default_value' => open_journal_get_field($data, 'dc_type', 'Text.Serial.Journal'),
+    '#default_value' => open_journal_get_field($data, 'dc_type', 'Article'),
     '#access' => user_access('access contributor process') && $fs['dc_identifier'],
   );
 
@@ -323,7 +323,7 @@ function open_journal_information_form_submit($form, &$form_state) {
   
   if ($is_new) {
 
-    drupal_set_message(t('You has been submit new article completed. Wait for information review.'));
+    drupal_set_message(t('Your submission is completed. It is now waiting for information review.'));
     drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->jid.'/overview');
   }
   else {

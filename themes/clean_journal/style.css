@@ -1486,14 +1486,13 @@ input.form-submit:hover {
   	right: 0;
   	top: 10px;
   }
-  	#page.page-journal-list .journal-filter-tab .add-journal-btn a {
+  	#page.page-journal-list .journal-filter-tab .add-journal-btn a{
   		display: block;
   		padding: 5px 10px 5px 30px;
   		border-radius: 5px;
   		-moz-border-radius: 5px;
   		-webkit-border-radius: 5px;
   		color: #FFF;
-  		text-transform: uppercase;
   		background: url(images/ic-add-journal-btn.png) #55b0d6 no-repeat 7px 7px;
   	}
   		#page.page-journal-list .journal-filter-tab .add-journal-btn a:hover {
@@ -2634,7 +2633,6 @@ h3.people-section-title {
 .journal-list-empty h2 {
 	font-size: 30px;
 	margin: 20px 0;
-	text-transform: uppercase;
 }
 .journal-list-empty .add-journal-btn a {
 	width: 65px;
@@ -2644,7 +2642,6 @@ h3.people-section-title {
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	color: #FFF;
-	text-transform: uppercase;
 	background: url(images/ic-add-journal-btn.png) #55b0d6 no-repeat 7px 7px;
 	margin: 20px auto;
 }

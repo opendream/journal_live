@@ -3,7 +3,7 @@
 	<?php print $user_info['display_picture'];?>
 	<h2><?php print $user_info['display_name'];?> </h2>
 	<h3><?php print $user_roles;?></h3>
-	<span><?php print $count_journal; ?> Journals</span>
+	<span><?php print $count_journal; ?> Articles</span>
 
 </div>
 
@@ -12,7 +12,7 @@
 		<div class="journal-filter-active"><?php print $current_status_name; ?></div>
 	</div>
 	<ul id="journal-filter-item-list">
-		<li class="journal-filter-item"><?php print l('All Journals', OPEN_JOURNAL_PREFIX_PATH);?></li>
+		<li class="journal-filter-item"><?php print l('All Articles', OPEN_JOURNAL_PREFIX_PATH);?></li>
 		<?php foreach($status_list as $key_status => $status):?>
 		<li class="journal-filter-item"><?php print l($status, OPEN_JOURNAL_PREFIX_PATH.'/list/'.$key_status);?></li>
 		<?php endforeach;?>
@@ -42,7 +42,7 @@
 </div>
 <?php else: ?>
 <div class="journal-list-empty block-bg-shadow">
-  <h2>Create Your First Journal</h2>
+  <h2>Create your first article</h2>
   <div class="add-journal-btn">
 		<a href="/journal/add">Add New</a>
 	</div>

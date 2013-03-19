@@ -645,7 +645,7 @@ function open_journal_form_alter(&$form, &$form_state, $form_id) {
 function open_journal_login() {
   return theme('open_journal_login', array(
     'form' => drupal_render(drupal_get_form('open_journal_login_form')),
-    'condition' => 'CONDITIONS',
+    'condition' => 'Submission Guidelines',
   ));
 }
 
@@ -2262,7 +2262,7 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
   $count_journal = count($list);
   $status_list = unserialize(OPEN_JOUNAL_STATUS);
 
-  $current_status_name = isset($status_list[$status]) ? $status_list[$status]: 'All Journals';
+  $current_status_name = isset($status_list[$status]) ? $status_list[$status]: 'All Articles';
 
 
   $user_info = open_journal_get_display_user_info($user , array('image_style' => 'open_journal_avatar_large'));
