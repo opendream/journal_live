@@ -705,12 +705,36 @@ function open_journal_get_field($data, $field_name, $default_value=NULL) {
  * Journal method
  */
 function open_journal_journal_load($jid) {
+  global $user;
+  // check user access permission
+  $can_access = FALSE;
+  if(in_array('administrator', $user->roles)) {
+    $can_access = TRUE;
+  }
+  else {
+    $access_user_list = open_journal_people_active_list($jid);
+    foreach ($access_user_list as  $access_user) {
+      if($access_user->uid == $user->uid) {
+        $can_access = TRUE;
+      }
+    }
+  }
+
   // Query data from database for edit journal when have journal ID
-  $data = db_select('open_journal_journal', 'j')
-  ->fields('j')
-  ->condition('jid', $jid, '=')
-  ->execute()
-  ->fetchObject();
+  $data = db_select('open_journal_journal', 'j');
+  $data->fields('j');
+  $data->condition('jid', $jid, '=');
+  
+  $data = $data->execute();
+  $data = $data->fetchObject();
+
+  if(!$can_access) {
+    
+    return FALSE;
+  }
+
+  
+
 
   if(isset($data->subject_sub)) {
     $data->subject_sub = explode(',' ,$data->subject_sub);
@@ -1079,7 +1103,7 @@ function open_jounal_comment_mail($data) {
     
     if (!$data->discussion->contributor_only || user_access('access contributor process', $reciver)) {
       
-      drupal_mail('open_journal', 'open_journal_comment_add', $reciver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
+     // drupal_mail('open_journal', 'open_journal_comment_add', $reciver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
     }
   }
 

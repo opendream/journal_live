@@ -103,7 +103,8 @@ function open_journal_approve_sidebar_form($form, &$form_state, $journal , $next
 function open_journal_approve_sidebar_form_submit($form, &$form_state) {
 	$next_status = $form['next_status']['#value'];
 	$jid = $form_state['build_info']['args'][0]->jid;
-	//$sql = "UPDATE open_journal_journal SET status = ".$next_status." staWHERE jid = ".$jid;
+  // TODO use $form_state['value'] for block hacker
+ 	//$sql = "UPDATE open_journal_journal SET status = ".$next_status." staWHERE jid = ".$jid;
 	//db_query($sql);
 	$journal = open_journal_journal_load($jid);
 
