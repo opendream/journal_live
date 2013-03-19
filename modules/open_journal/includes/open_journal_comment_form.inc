@@ -107,7 +107,7 @@ function open_journal_comment_form_submit($form, &$form_state) {
     drupal_set_message(t('This comment has been updated.'));
   }
   
-  drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->jid.'/discussion/'.$data->did.'/comment/'.$data->cid);
+  drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->jid.'/discussion/'.$data->did.'/comment/'.$data->cid, array('fragment' => 'comment-item-'.$data->cid));
   
 }
 

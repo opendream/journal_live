@@ -2486,13 +2486,11 @@ function open_journal_get_display_user_info($account, $variables=array()) {
   $real_picture = l($real_picture, $user_profile_url, array(
     'html' => TRUE,
     'attributes' => array('class' => $variables['picture_class']),
-    'fragment' => 'link-to-user-profile',
   ));
 
   $real_name_text = $real_name;
   $real_name = l($real_name, $user_profile_url, array(
     'attributes' => array('class' => $variables['name_class']),
-    'fragment' => 'link-to-user-profile',
   ));
 
 
