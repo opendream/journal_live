@@ -2384,7 +2384,8 @@ ul.discussion-list {
 	list-style: none;
 	padding: 0 20px;
 }
-	ul.discussion-list li {
+  ul.discussion-list li.discussion-item,
+	ul.discussion-list li.comment-item {
 		border-top: 1px solid #aaa;
 		padding: 10px 0;
 		float: left;
@@ -2967,4 +2968,22 @@ ul.journal-informal-approve-list li .user-name-wrapper {
   height:23px;
   vertical-align: middle;
   margin-bottom: 6px;
+
+}
+
+.wmd-toolbar {
+  display: block;
+  width: 100%;
+}
+
+.journal-comment-form-wrapper ul.wmd-toolbar {
+  margin: 0;
+}
+
+#open-journal-discussion-form .wmd-toolbar {
+  margin-bottom: 8px;
+}
+
+#open-journal-comment-form .form-item-message {
+  float: left;
 }

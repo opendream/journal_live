@@ -3,8 +3,10 @@ function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL)
 
   global $user; 
   
-  $form['#attached']['js']['jquery-ui'] = drupal_get_path('module', 'open_journal').'/js/jquery-ui-1.10.1.custom.min.js';
-  $form['#attached']['js']['hallo'] = drupal_get_path('module', 'open_journal').'/js/hallo.js';
+  $form['#attached']['css']['wmd'] = drupal_get_path('module', 'open_journal').'/wmd/wmd.css';
+  $form['#attached']['js']['wmd'] = drupal_get_path('module', 'open_journal').'/wmd/wmd.js';
+  $form['#attached']['js']['open_journal_editor'] = drupal_get_path('module', 'open_journal').'/js/open_journal_editor.js';
+  
   
   if ($data && $data->did) {
     $form['head_title'] = array(
@@ -26,10 +28,13 @@ function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL)
     '#required' => TRUE,
     '#default_value' => open_journal_get_field($data, 'title')
   );
-
+  
   $form['description'] = array(
     '#type' => 'textarea',
-    '#title' => t('Details'),
+    //'#title' => t('Details'),
+    '#default_value' => open_journal_get_field($data, 'description'),
+    '#attributes' => array('id' => 'wmd-input-editor', 'class' => array('wmd-input')),
+    '#prefix' => '<div id="wmd-toolbar-editor" class="wmd-toolbar">'.'</div>',
     '#default_value' => open_journal_get_field($data, 'description')
   );
 
