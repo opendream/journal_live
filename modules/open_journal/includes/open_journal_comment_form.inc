@@ -25,8 +25,9 @@ function open_journal_comment_form($form, $form_state, $journal, $discussion, $d
     '#type' => 'textarea',
     '#title' => t('Add a comment'),
     '#required' => TRUE,
+    '#id' => 'wmd-input-editor', 
     '#default_value' => open_journal_get_field($data, 'message'),
-    '#attributes' => array('id' => 'wmd-input-editor', 'class' => array('wmd-input')),
+    '#attributes' => array('class' => array('wmd-input')),
     '#prefix' => '<div id="wmd-toolbar-editor" class="wmd-toolbar">'.'</div>',
     
   );
@@ -106,7 +107,7 @@ function open_journal_comment_form_submit($form, &$form_state) {
     drupal_set_message(t('This comment has been updated.'));
   }
   
-  drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->jid.'/discussion/'.$data->did.'/comment/'.$data->cid);
+  drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->jid.'/discussion/'.$data->did.'/comment/'.$data->cid, array('fragment' => 'comment-item-'.$data->cid));
   
 }
 

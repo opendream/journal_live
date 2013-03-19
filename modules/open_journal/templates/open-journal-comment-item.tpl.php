@@ -1,4 +1,4 @@
-<li class="comment-item">
+<li class="comment-item" id="comment-item-<?php print $item->cid; ?>">
     <?php print $item->user_info['display_picture']; ?>
     <div class="comment-item-content">
         
