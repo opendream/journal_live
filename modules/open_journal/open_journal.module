@@ -61,6 +61,8 @@ define('OPEN_JOUNAL_INFORMAL_STATUS', serialize (
   )
 ));
 
+define('OPEN_JOUNAL_HELP_DESCRIPTION_SUB', 'สรุปบทความโดยสังเขป');
+
 
 /**
  * Implements of hook_menu().
