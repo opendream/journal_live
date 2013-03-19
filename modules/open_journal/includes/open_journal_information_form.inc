@@ -3,7 +3,7 @@
 function open_journal_information_form($form, &$form_state, $data=NULL) {
 
   global $user;
-  
+    
   $mpath = drupal_get_path('module', 'open_journal');
   
   $form['#attached']['js'][] = $mpath.'/js/open_journal_multi_textfield.js';
@@ -18,7 +18,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
   $form['main']['main_title'] = array('#markup' => '<h2>'.t('Information').'</h2>');
 
   $form['main']['dc_title'] = array(
-    '#title' => open_journal_label_help('Title', 'Help me please.', TRUE),
+    '#title' => open_journal_label_help('Title', 'Name of the article', TRUE),
     '#type' => 'textfield',
     '#required' => TRUE,
     '#default_value' => open_journal_get_field($data, 'dc_title'),
@@ -27,7 +27,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
 
   if (OPEN_JOURNAL_SUB_LANG_ENABLE) {
     $form['main']['description_sub'] = array(
-      '#title' => open_journal_label_help(OPEN_JOURNAL_SUB_LANG_ABSTRACT_LABEL, 'Help me please.', TRUE),
+      '#title' => open_journal_label_help(OPEN_JOURNAL_SUB_LANG_ABSTRACT_LABEL, OPEN_JOUNAL_HELP_DESCRIPTION_SUB, TRUE),
       '#type' => 'textarea',
       '#description' => t('No more than !d words.', array('!d' => OPEN_JOURNAL_ABSTRACT_MAX_LENGTH)),
       '#required' => OPEN_JOURNAL_SUB_LANG_ABSTRACT_REQUIRED,
@@ -38,7 +38,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
   }
 
   $form['main']['description_en'] = array(
-    '#title' => open_journal_label_help('Abstract', 'Help me please.', TRUE),
+    '#title' => open_journal_label_help('Abstract', 'Summary of the article', TRUE),
     '#type' => 'textarea',
     '#description' => t('No more than !d words.', array('!d' => OPEN_JOURNAL_ABSTRACT_MAX_LENGTH)),
     '#required' => OPEN_JOURNAL_ABSTRACT_REQUIRED,
@@ -61,7 +61,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
   else {
     $form['main']['file'] = array(
       '#type' => 'managed_file',
-      '#title' => open_journal_label_help('File', 'Help me please.', TRUE),
+      '#title' => open_journal_label_help('File', 'Upload a full-text file here', TRUE),
       '#description' => t('Allowed file types: %s',array('%s' => OPEN_JOURNAL_ALLOWED_FILE_TYPE)),
       '#upload_validators' => array(
         'file_validate_extensions' => array(OPEN_JOURNAL_ALLOWED_FILE_TYPE),
@@ -123,7 +123,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
   // Group date 
 
   $form['data']['group']['date'] = array(
-    '#title' => open_journal_label_help('Date', 'Help me please.'),
+    '#title' => open_journal_label_help('Date', 'Date of submission'),
     '#type' => 'fieldset',
     '#tree' => TRUE,
     '#access' => $fs['dc_date'],
@@ -152,7 +152,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
 
   if (OPEN_JOURNAL_SUB_LANG_ENABLE) {
     $form['data']['group']['dc_language'] = array(
-      '#title' => open_journal_label_help('Language', 'Help me please.'),
+      '#title' => open_journal_label_help('Language', 'Language used in the article'),
       '#type' => 'select',
       '#options' => array(
         OPEN_JOURNAL_SUB_LANG_CODE => t(OPEN_JOURNAL_SUB_LANG_TEXT),
@@ -171,35 +171,35 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
   }
   
   $form['data']['group']['dc_coverage'] = array(
-    '#title' => open_journal_label_help('Coverage', 'Help me please.'),
+    '#title' => open_journal_label_help('Coverage', 'e.g. geographical area, time period, sample size, characteristics of research sample'),
     '#type' => 'textfield',
     '#default_value' => open_journal_get_field($data, 'dc_coverage'),
     '#access' => $fs['dc_coverage'],
   );
   
   $form['data']['group']['dc_type'] = array(
-    '#title' => open_journal_label_help('Type', 'For librarian only.'),
+    '#title' => open_journal_label_help('Type', 'Type of article'),
     '#type' => 'textfield',
     '#default_value' => open_journal_get_field($data, 'dc_type', 'Text.Serial.Journal'),
     '#access' => user_access('access contributor process') && $fs['dc_identifier'],
   );
 
   $form['data']['group']['dc_format'] = array(
-    '#title' => open_journal_label_help('Format', 'For librarian only.'),
+    '#title' => open_journal_label_help('Format', 'Format of article'),
     '#type' => 'textfield',
     '#default_value' => open_journal_get_field($data, 'dc_format', 'TEXT/HTML'),
     '#access' => user_access('access contributor process') && $fs['dc_identifier'],
   );
 
   $form['data']['group']['dc_right'] = array(
-    '#title' => open_journal_label_help('Right', 'For librarian only.'),
+    '#title' => open_journal_label_help('Right', 'Information about rights held in and over the resource'),
     '#type' => 'textfield',
     '#default_value' => open_journal_get_field($data, 'dc_right'),
     '#access' => user_access('access contributor process') && $fs['dc_identifier'],
   );
   
   $form['data']['group']['dc_identifier'] = array(
-    '#title' => open_journal_label_help('Final URL', 'For librarian only.'),
+    '#title' => open_journal_label_help('Final URL', 'For librarian only'),
     '#type' => 'textfield',
     '#access' => user_access('access contributor process') && $fs['dc_identifier'],
     '#default_value' => open_journal_get_field($data, 'dc_identifier'),
@@ -243,12 +243,22 @@ function open_journal_get_date_option($start_num , $end_num) {
   return $option;
 }
 
+
 function open_journal_multi_textfield($title='' , $values = FALSE, $name, $add_more_text='Add another', $add_more_text_show=TRUE ,$initail_show_field=2) {
   $fs = open_journal_get_field_settings();
+  
+  $help_map = array(
+    'dc_subject' => 'Words or phrases relevant to the article',
+    'dc_creator' => 'Name of principal researcher',
+    'dc_publisher' => 'Health Systems Research Institute',
+    'dc_contributor' => 'Funding organizations',
+  );
+  
+  $help_text = isset($help_map[$name])? $help_map[$name]: 'Help me please.';
 
   $multi_textfield = array(
     '#type' => 'fieldset',
-    '#title' => open_journal_label_help($title, 'Help me please.'),
+    '#title' => open_journal_label_help($title, $help_text),
     '#tree' => TRUE,
     '#access' => $fs[$name]
   );
