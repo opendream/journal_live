@@ -2,7 +2,7 @@
 	<h1>Journals List</h1>
 	<?php print $user_info['display_picture'];?>
 	<h2><?php print $user_info['display_name'];?> </h2>
-	<h3>(<?php print $user_roles;?>)</h3>
+	<h3><?php print $user_roles;?></h3>
 	<span><?php print $count_journal; ?> Journals</span>
 
 </div>

@@ -2270,6 +2270,7 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
     drupal_json_output($response);
     exit();
   }
+  
   $user_roles = open_journal_display_roles($user->roles);
   
   // TODO: Edit hook theme with default value foward
@@ -2295,7 +2296,13 @@ function open_journal_display_roles($user_roles) {
       $role = 'researcher';
     }  
   }
+  
+  // Case editor reviewer librarian not display researcher role
+  if (count($user_roles) > 1) {
+    array_shift($user_roles);
+  }
   $user_roles = implode(', ', $user_roles);
+  
 
   return $user_roles;
 }
