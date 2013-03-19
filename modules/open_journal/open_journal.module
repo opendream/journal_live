@@ -1851,9 +1851,7 @@ function open_journal_discussion_edit($journal, $discussion) {
   module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
 
   global $user;
-  $discussion->can_edit = $user->uid == $discussion->uid;
-
-  if(!($discussion->can_edit)) {
+  if(!($user->uid == $discussion->uid)) {
     drupal_goto('a random page');
   }
 
@@ -1873,6 +1871,12 @@ function open_journal_discussion_edit($journal, $discussion) {
 }
 
 function open_journal_discussion_delete($journal, $discussion) {
+
+  global $user;
+  if(!($user->uid == $discussion->uid)) {
+    drupal_goto('a random page');
+  }
+
 
   module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
 
@@ -1895,6 +1899,11 @@ function open_journal_comment_edit($journal, $discussion, $comment) {
 
   module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
 
+  global $user;
+  if(!($user->uid == $comment->uid)) {
+    drupal_goto('a random page');
+  }
+
   $sidebar = theme('open_journal_status_form', open_journal_get_status_form_variables($journal));
   if (user_access('access contributor process') || user_access('informal approve journal')) {
     $informal_list = open_journal_people_informal_approve_list($journal);
@@ -1911,6 +1920,11 @@ function open_journal_comment_edit($journal, $discussion, $comment) {
 }
 
 function open_journal_comment_delete($journal, $discussion, $comment) {
+
+  global $user;
+  if(!($user->uid == $comment->uid)) {
+    drupal_goto('a random page');
+  }
 
   module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
   $sidebar = theme('open_journal_status_form', open_journal_get_status_form_variables($journal));
@@ -1944,7 +1958,7 @@ function open_journal_discussion_detail($journal, $discussion) {
   $discussion->user_info = open_journal_get_display_user_info($discussion->uid);
   $discussion->description = check_markup(Markdown($discussion->description), 'full_html');
   $discussion->file = $discussion->fid? file_load($discussion->fid): NULL;
-  
+  $discussion->can_edit = $user->uid == $discussion->uid;
 
   $comment_list = open_journal_comment_load_all($discussion->did);
   foreach ($comment_list as &$comment) {

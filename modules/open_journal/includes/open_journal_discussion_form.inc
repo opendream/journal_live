@@ -41,29 +41,29 @@ function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL)
 
   if($journal->status < count(unserialize(OPEN_JOUNAL_STATUS))-1) {
     $form['fid'] = array(
-    '#type' => 'managed_file',
-    '#title' => t('File'),
-    '#description' => t('Allowed file types: %s',array('%s' => OPEN_JOURNAL_ALLOWED_FILE_TYPE)),
-    '#upload_validators' => array(
-      'file_validate_extensions' => array(OPEN_JOURNAL_ALLOWED_FILE_TYPE),
-      //'file_validate_size' => array(2 * 1048576),
-    ),
-    '#upload_location' => "public://journal/",
-    '#default_value' => open_journal_get_field($data, 'fid'),
+      '#type' => 'managed_file',
+      '#title' => t('File'),
+      '#description' => t('Allowed file types: %s',array('%s' => OPEN_JOURNAL_ALLOWED_FILE_TYPE)),
+      '#upload_validators' => array(
+        'file_validate_extensions' => array(OPEN_JOURNAL_ALLOWED_FILE_TYPE),
+        //'file_validate_size' => array(2 * 1048576),
+      ),
+      '#upload_location' => "public://journal/",
+      '#default_value' => open_journal_get_field($data, 'fid'),
     );
   }
   else {
     $form['fid'] = array(
-    '#type' => 'managed_file',
-    '#title' => t('File'),
-    '#description' => t('Allowed file types: %s',array('%s' => OPEN_JOURNAL_ALLOWED_FINAL_STATUS_FILE_TYPE)),
-    '#upload_validators' => array(
-      'file_validate_extensions' => array(OPEN_JOURNAL_ALLOWED_FINAL_STATUS_FILE_TYPE),
-      //'file_validate_size' => array(2 * 1048576),
-    ),
-    '#upload_location' => "public://journal/",
-    '#default_value' => open_journal_get_field($data, 'fid'),
-  );
+      '#type' => 'managed_file',
+      '#title' => t('File'),
+      '#description' => t('Allowed file types: %s',array('%s' => OPEN_JOURNAL_ALLOWED_FINAL_STATUS_FILE_TYPE)),
+      '#upload_validators' => array(
+        'file_validate_extensions' => array(OPEN_JOURNAL_ALLOWED_FINAL_STATUS_FILE_TYPE),
+        //'file_validate_size' => array(2 * 1048576),
+      ),
+      '#upload_location' => "public://journal/",
+      '#default_value' => open_journal_get_field($data, 'fid'),
+    );
   }
 
   
@@ -72,7 +72,7 @@ function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL)
     '#title' => t('Contributor only'),
     '#type' => 'checkbox',
     '#description' => t('If checked this box, only contributor can access this discussion.'),
-    '#default_value' => open_journal_get_field($data, 'contributor_only', 1),
+    '#default_value' => open_journal_get_field($data, 'contributor_only', user_access('access contributor process')),
     '#access' => !open_journal_get_field($data, 'permanent') && user_access('access contributor process')
   );
 
