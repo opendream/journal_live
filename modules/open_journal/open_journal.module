@@ -734,6 +734,7 @@ function open_journal_journal_load($jid) {
     $data->title = $data->dc_title;
   }
   else {
+    // If not have $data->title, autocomplete in issue add page not work
     $data->title = '';
   }
   return $data;
