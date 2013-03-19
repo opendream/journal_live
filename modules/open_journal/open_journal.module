@@ -1647,7 +1647,11 @@ function open_journal_overview($journal) {
     $information->dc_language['value'] = 'Enligsh';
     $abstract_label = 'Abstract';
   }
-
+  $mpath = drupal_get_path('module', 'open_journal');
+  $image_file = theme('image', array(
+    'path' => $mpath.'/images/ic-has-file.png',
+    'alt' => 'has file attach',
+  ));
   return theme('open_journal_detail', array(
     'content' => theme('open_journal_overview_content', array(
       'jid' => $journal->jid,
@@ -1658,6 +1662,7 @@ function open_journal_overview($journal) {
       'discussion_data' => $discussion_data,
       'more_discussion' => $more_discussion,
       'abstract_label' => $abstract_label,
+      'image_file' => $image_file,
       )
     ),
     'sidebar' => theme('open_journal_overview_sidebar', array(
@@ -1740,6 +1745,11 @@ function open_journal_discussion_list($journal) {
 
   $discussion_list = open_journal_discussion_list_limit($journal);
 
+  $mpath = drupal_get_path('module', 'open_journal');
+  $image_file = theme('image', array(
+    'path' => $mpath.'/images/ic-has-file.png',
+    'alt' => 'has file attach',
+  ));
 
   $sidebar = theme('open_journal_status_form', open_journal_get_status_form_variables($journal));
 
@@ -1753,6 +1763,7 @@ function open_journal_discussion_list($journal) {
       'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
       'discussion_list' => $discussion_list,
       'jid' => $journal->jid,
+      'image_file' => $image_file,
     )),
     'sidebar' => $sidebar,
     'jid' => $journal->jid
