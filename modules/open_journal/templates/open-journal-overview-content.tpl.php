@@ -47,7 +47,7 @@
 
         <div class="discus-title">
           <?php if($data['fid']):?>
-            <?php  print l($data['title'].'<span class="file-attach"><img src="/sites/all/modules/open_journal/images/ic-has-file.png" alt="has file attach" /></span>', OPEN_JOURNAL_PREFIX_PATH.'/'.$data['jid'].'/discussion/'.$data['did'], array('html' => TRUE));?>
+            <?php  print l($data['title'].'<span class="file-attach">'.$image_file.'</span>', OPEN_JOURNAL_PREFIX_PATH.'/'.$data['jid'].'/discussion/'.$data['did'], array('html' => TRUE));?>
           <?php else:?>
             <?php  print l($data['title'], OPEN_JOURNAL_PREFIX_PATH.'/'.$data['jid'].'/discussion/'.$data['did'], array('html' => TRUE));?>
           <?php endif;?>

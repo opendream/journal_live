@@ -705,12 +705,36 @@ function open_journal_get_field($data, $field_name, $default_value=NULL) {
  * Journal method
  */
 function open_journal_journal_load($jid) {
+  global $user;
+  // check user access permission
+  $can_access = FALSE;
+  if(in_array('administrator', $user->roles)) {
+    $can_access = TRUE;
+  }
+  else {
+    $access_user_list = open_journal_people_active_list($jid);
+    foreach ($access_user_list as  $access_user) {
+      if($access_user->uid == $user->uid) {
+        $can_access = TRUE;
+      }
+    }
+  }
+
   // Query data from database for edit journal when have journal ID
-  $data = db_select('open_journal_journal', 'j')
-  ->fields('j')
-  ->condition('jid', $jid, '=')
-  ->execute()
-  ->fetchObject();
+  $data = db_select('open_journal_journal', 'j');
+  $data->fields('j');
+  $data->condition('jid', $jid, '=');
+  
+  $data = $data->execute();
+  $data = $data->fetchObject();
+
+  if(!$can_access) {
+    
+    return FALSE;
+  }
+
+  
+
 
   if(isset($data->subject_sub)) {
     $data->subject_sub = explode(',' ,$data->subject_sub);
@@ -1084,7 +1108,7 @@ function open_jounal_comment_mail($data) {
     
     if (!$data->discussion->contributor_only || user_access('access contributor process', $reciver)) {
       
-      drupal_mail('open_journal', 'open_journal_comment_add', $reciver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
+     // drupal_mail('open_journal', 'open_journal_comment_add', $reciver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
     }
   }
 
@@ -1628,7 +1652,11 @@ function open_journal_overview($journal) {
     $information->dc_language['value'] = 'Enligsh';
     $abstract_label = 'Abstract';
   }
-
+  $mpath = drupal_get_path('module', 'open_journal');
+  $image_file = theme('image', array(
+    'path' => $mpath.'/images/ic-has-file.png',
+    'alt' => 'has file attach',
+  ));
   return theme('open_journal_detail', array(
     'content' => theme('open_journal_overview_content', array(
       'jid' => $journal->jid,
@@ -1639,6 +1667,7 @@ function open_journal_overview($journal) {
       'discussion_data' => $discussion_data,
       'more_discussion' => $more_discussion,
       'abstract_label' => $abstract_label,
+      'image_file' => $image_file,
       )
     ),
     'sidebar' => theme('open_journal_overview_sidebar', array(
@@ -1721,6 +1750,11 @@ function open_journal_discussion_list($journal) {
 
   $discussion_list = open_journal_discussion_list_limit($journal);
 
+  $mpath = drupal_get_path('module', 'open_journal');
+  $image_file = theme('image', array(
+    'path' => $mpath.'/images/ic-has-file.png',
+    'alt' => 'has file attach',
+  ));
 
   $sidebar = theme('open_journal_status_form', open_journal_get_status_form_variables($journal));
 
@@ -1734,6 +1768,7 @@ function open_journal_discussion_list($journal) {
       'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
       'discussion_list' => $discussion_list,
       'jid' => $journal->jid,
+      'image_file' => $image_file,
     )),
     'sidebar' => $sidebar,
     'jid' => $journal->jid
@@ -2245,7 +2280,7 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
 
     if (count($journal->people_list) > OPEN_JOURNAL_DISPLAY_IMAGE_USER_LIST_LIMIT) {
       array_pop($journal->people_list);
-      $journal->people_list['more'] = open_journal_get_display_user_info_more();
+      $journal->people_list['more']->display_info = open_journal_get_display_user_info_more();
     }
     $count_all_people = count(open_journal_people_active_list($journal->jid));
 
