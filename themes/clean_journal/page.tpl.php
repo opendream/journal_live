@@ -1,7 +1,11 @@
 
   <?php if(!empty($open_journal_logo2)):?>
     <div id="open-journal-sign-logo">
-      <?php print l($open_journal_logo2, '', array('html' => TRUE));?>
+      <?php if ($logo): ?>
+      <?php print l(theme('image', array('path' => $logo)), '', array('html' => TRUE));?>  
+      <?php else: ?>
+      <?php print l($open_journal_logo2, '', array('html' => TRUE));?>  
+      <?php endif ?>
     </div>
   <?php endif;?>
   

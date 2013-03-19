@@ -64,7 +64,12 @@
     <div id="header-content">
       <?php if(!empty($open_journal_logo1)):?>
       <div id="open-journal-small-logo">
-        <?php print l($open_journal_logo1, '', array('html' => TRUE));?>
+        <?php if ($logo): ?>
+        <?php print l(theme('image_style', array('path' => $logo, 'style_name' => 'open_journal_logo')), '', array('html' => TRUE));?>  
+        <?php else: ?>
+        <?php print l($open_journal_logo1, '', array('html' => TRUE));?>  
+        <?php endif ?>
+        
       </div>
       <div class="user-manage">
         <?php print l(t('View My article'), OPEN_JOURNAL_PREFIX_PATH, array('attributes' => array('class' => array('view-all-journal')))); ?>
