@@ -2319,7 +2319,7 @@ h2.journal-block-title {
 	  -moz-border-radius: 5px;
 	  -webkit-border-radius: 5px;
 	  color: #FFF !important;
-	  text-transform: uppercase;
+	  /* text-transform: uppercase; */
 	  background: url(images/ic-add-journal-btn.png) #55b0d6 no-repeat 7px 7px !important;
 	  margin-right: 0 !important;
 	}
