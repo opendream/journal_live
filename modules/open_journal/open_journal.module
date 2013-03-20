@@ -1553,6 +1553,8 @@ function open_journal_overview($journal) {
   else {
     $abstract = $journal->description_en;
   }
+  $abstract = check_markup($abstract);
+  
   // Prepare information sidebar
   $information = (object) array();
   $information_field = open_journal_get_field_settings();
