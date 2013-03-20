@@ -44,7 +44,7 @@
 <div class="journal-list-empty block-bg-shadow">
   <h2>Create your first article</h2>
   <div class="add-journal-btn">
-		<a href="/journal/add">Add New</a>
+  		<?php print l('Add New', OPEN_JOURNAL_PREFIX_PATH.'/add');?>
 	</div>
 </div>
 <?php endif ?>
