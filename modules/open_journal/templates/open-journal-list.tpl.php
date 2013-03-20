@@ -20,7 +20,7 @@
 	</ul>
 	<?php print $not_reject_form;?>
 	<div class="add-journal-btn">
-		<?php print l(t('Add New'), OPEN_JOURNAL_PREFIX_PATH.'/add'); ?>
+		<?php print l(t('Add new'), OPEN_JOURNAL_PREFIX_PATH.'/add'); ?>
 	</div>
 </div>
 
@@ -44,7 +44,7 @@
 <div class="journal-list-empty block-bg-shadow">
   <h2>Create your first article</h2>
   <div class="add-journal-btn">
-  		<?php print l('Add New', OPEN_JOURNAL_PREFIX_PATH.'/add');?>
+  		<?php print l('Add new', OPEN_JOURNAL_PREFIX_PATH.'/add');?>
 	</div>
 </div>
 <?php endif ?>
