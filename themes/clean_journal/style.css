@@ -264,6 +264,7 @@ ul.primary {
   height: 2.60em;
   margin: 0;
   padding-top: 0;
+  margin-top: -30px;
 }
 ul.primary li {
   float: left; /* LTR */
@@ -278,7 +279,7 @@ ul.primary li a:hover,
 ul.primary li.active a {
   display: block;
   float: left; /* LTR */
-  height: 2.60em;
+  height: 1.80em;
   line-height: 2.60em;
   padding: 0 18px 8px;
   background-color: #a6a7a2;
@@ -1170,7 +1171,7 @@ h1.page-title {
 	margin: 30px auto;
 	padding-left: 50px;
 	background: url(images/bg-page-title.png) no-repeat center left;
-	text-transform: uppercase;
+	/* text-transform: uppercase; */
 }
 
 #journal-detail-content {

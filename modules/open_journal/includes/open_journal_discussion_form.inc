@@ -31,11 +31,11 @@ function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL)
   
   $form['description'] = array(
     '#type' => 'textarea',
-    //'#title' => t('Details'),
+    '#title' => t('Details'),
     '#id' => 'wmd-input-editor', 
     '#default_value' => open_journal_get_field($data, 'description'),
     '#attributes' => array('class' => array('wmd-input')),
-    '#prefix' => '<div id="wmd-toolbar-editor" class="wmd-toolbar">'.'</div>',
+    //'#prefix' => '<div id="wmd-toolbar-editor" class="wmd-toolbar">'.'</div>',
     '#default_value' => open_journal_get_field($data, 'description')
   );
 

@@ -28,7 +28,7 @@ function open_journal_comment_form($form, $form_state, $journal, $discussion, $d
     '#id' => 'wmd-input-editor', 
     '#default_value' => open_journal_get_field($data, 'message'),
     '#attributes' => array('class' => array('wmd-input')),
-    '#prefix' => '<div id="wmd-toolbar-editor" class="wmd-toolbar">'.'</div>',
+    //'#prefix' => '<div id="wmd-toolbar-editor" class="wmd-toolbar">'.'</div>',
     
   );
   
