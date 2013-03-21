@@ -1204,8 +1204,9 @@ function open_journal_people_active_list($jid, $exclude=array() , $uid=FALSE, $l
 
   $user_list = array_values($user_list);
   $user_list = array_diff($user_list, $exclude);
-
-  return array_values(user_load_multiple($user_list));
+  $user_list = array_values(user_load_multiple($user_list));
+  
+  return $user_list;
 }
 
 function open_journal_people_active_with_joined($jid) {
@@ -1357,8 +1358,8 @@ function open_journal_people($journal) {
 
   $people_creator = user_load($journal->uid);
   $people_creator->user_info = open_journal_get_display_user_info($people_creator, array('image_style' => 'open_journal_avatar_large'));
-  $people_creator->joined = isset($people_active_uid_key_list[$people_creator->uid])? $people_active_uid_key_list[$people_creator->uid]->joined: $journal->created;
-  $people_creator->user_roles = open_journal_display_roles($people_creator->roles);
+  $people_creator->joined = isset($people_active_uid_key_list[$journal->uid])? $people_active_uid_key_list[$journal->uid]->joined: $journal->created;
+  $people_creator->user_roles = isset($people_creator->uid)? open_journal_display_roles($people_creator->roles): array();
   usort($people_contributor_list, 'open_journal_people_sort');
 
   // Prepare user roles
@@ -2483,6 +2484,27 @@ function open_journal_get_display_user_info($account, $variables=array()) {
     $size[] = $height;
   }
   $size = min($size);
+  
+  if (!$account) {
+    $deleted_name_text = 'Deleted U.';
+    $deleted_name = '<span class="user-name-wrapper">'.$deleted_name_text.'</span>';
+    $deleted_picture = '<div class="user-picture-wrapper">'.theme('image', array(
+      'path' => 'open_journal/avatar/010110101000100100101010001/'.$size.'.png',
+      'width' => $size,
+      'height' => $size,
+      'alt' => $deleted_name_text,
+      'title' => $deleted_name_text,
+    )).'</div>';
+    
+    $info_deleted = array(
+      'display_picture' => $deleted_picture,
+      'display_name' => $deleted_name,
+      'display_name_text' =>  $deleted_name_text,
+      'access account profile' => FALSE,
+    );
+    
+    return $info_deleted;
+  }
 
 
   // Prepare name and picture to display
