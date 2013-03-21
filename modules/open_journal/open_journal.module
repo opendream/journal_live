@@ -1203,8 +1203,20 @@ function open_journal_people_active_list($jid, $exclude=array() , $uid=FALSE, $l
   $user_list = $user_list->fetchAllKeyed(0, 0);
 
   $user_list = array_values($user_list);
+  $user_list_raw = $user_list;
   $user_list = array_diff($user_list, $exclude);
   $user_list = array_values(user_load_multiple($user_list));
+  
+  $user_list_uid = array();
+  foreach ($user_list as $user) {
+    $user_list_uid[$user->uid] = $user->uid;
+  }
+  
+  foreach ($user_list_raw as $uid) {
+    if (!isset($user_list_uid[$uid])) {
+      $user_list[] = NULL;
+    }
+  }
   
   return $user_list;
 }
