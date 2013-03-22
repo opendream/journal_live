@@ -611,7 +611,7 @@ function open_journal_preprocess_page(&$vars) {
 
   if (user_is_logged_in()) {
     global $user;
-
+    
     $dummy = open_journal_get_display_user_info($user, array('image_style' => 'open_journal_avatar_small'));
     $vars['user_info'] = $dummy;
     $vars['user_info']['display_picture_small'] = $dummy['display_picture'];
@@ -1208,8 +1208,8 @@ function open_journal_people_active_list($jid, $exclude=array() , $uid=FALSE, $l
   $user_list = array_values(user_load_multiple($user_list));
   
   $user_list_uid = array();
-  foreach ($user_list as $user) {
-    $user_list_uid[$user->uid] = $user->uid;
+  foreach ($user_list as $account) {
+    $user_list_uid[$account->uid] = $account->uid;
   }
   
   foreach ($user_list_raw as $uid) {
@@ -1509,7 +1509,6 @@ function open_journal_overview($journal) {
   $discussion_data = array();
   $i = 0;
   foreach($discussion as $row) {
-    $user = user_load($row->uid);
 
     $discussion_data[$i]['did'] = $row->did;
     $discussion_data[$i]['user_info'] = $row->user;
@@ -2265,6 +2264,9 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
   drupal_set_title('');
 
   global $user;
+  
+  //drupal_set_message('<pre>'.print_r($user, 1).'</pre>');
+  
   $mpath = drupal_get_path('module', 'open_journal');
   drupal_add_js($mpath.'/js/open_journal_list_load_more.js');
 

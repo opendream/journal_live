@@ -46,6 +46,8 @@ function open_journal_login_form($form_state) {
 function open_journal_login_form_submit($form, &$form_state) {
   global $user;
   $user = user_load($form_state['uid']);
+  
+  
   $form_state['redirect'] = 'journal';
 
   user_login_finalize($form_state);
