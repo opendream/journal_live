@@ -36,7 +36,7 @@ function open_journal_comment_form($form, $form_state, $journal, $discussion, $d
     $form['fid'] = array(
     '#type' => 'managed_file',
     '#title' => t('File'),
-    '#description' => t('Allowed file types: %s',array('%s' => OPEN_JOURNAL_ALLOWED_FILE_TYPE)),
+    '#description' => t('File types allowed: %s',array('%s' => OPEN_JOURNAL_ALLOWED_FILE_TYPE)),
     '#upload_validators' => array(
       'file_validate_extensions' => array(OPEN_JOURNAL_ALLOWED_FILE_TYPE),
       //'file_validate_size' => array(2 * 1048576),

@@ -7,6 +7,7 @@ define('OPEN_JOURNAL_PREFIX_PATH', 'journal');
 define('OPEN_JOURNAL_SUB_LANG_ENABLE', TRUE);
 define('OPEN_JOURNAL_SUB_LANG_CODE', 'th');
 define('OPEN_JOURNAL_SUB_LANG_TEXT', 'th');
+define('OPEN_JOURNAL_SUB_LANG_FULL_TEXT', 'thai');
 define('OPEN_JOURNAL_SUB_LANG_ABSTRACT_LABEL', 'บทคัดย่อ');
 define('OPEN_JOURNAL_SUB_LANG_KEYWORDS_LABEL', 'คำสำคัญ');
 define('OPEN_JOURNAL_DEFAULT_PUBLISHER_NAME', 'Health Systems Research Institute');
@@ -695,12 +696,21 @@ function open_journal_update_field(&$data, $field_name, $field_value=NULL) {
   }
 
   // Set variables
+  if($field_name == 'dc_creator') {
+    unset($field_value['dc_creator_address']);
+    //$data->{$field_name}['dc_creator_address'] = 'bb';
+  }
+  elseif($field_name == 'dc_creator_address') {
+    $field_name = $field_name['dc_creator_address'];
+  }
   if (is_array($field_value)) {
     $data->{$field_name} = implode(',', array_filter($field_value));
   }
   else {
     $data->{$field_name} = $field_value;
   }
+
+
 }
 
 function open_journal_get_field($data, $field_name, $default_value=NULL) {
@@ -744,10 +754,12 @@ function open_journal_journal_load($jid) {
   $data->dc_creator = explode(',' ,$data->dc_creator);
   $data->dc_publisher = explode(',' ,$data->dc_publisher);
   $data->dc_contributor = explode(',' ,$data->dc_contributor);
+  $data->dc_creator_sub = explode(',' ,$data->dc_creator_sub);
   
   $data->title = $data->dc_title;
 
   return $data;
+
 }
 
 function open_journal_journal_save($data, $change_status=FALSE) {
@@ -758,14 +770,15 @@ function open_journal_journal_save($data, $change_status=FALSE) {
 
   open_journal_update_field($data, 'subject_en');
   open_journal_update_field($data, 'subject_sub');
-
+ 
   // Dublin core
   open_journal_update_field($data, 'dc_description', $data->description_sub.','.$data->description_en);
   open_journal_update_field($data, 'dc_subject', $data->subject_sub.','.$data->subject_en);
   open_journal_update_field($data, 'dc_creator');
   open_journal_update_field($data, 'dc_publisher');
   open_journal_update_field($data, 'dc_contributor');
-
+  open_journal_update_field($data, 'dc_creator_sub');
+dpm($data);
   if (isset($data->date) && is_array($data->date)) {
     $date = (object) $data->date;
     open_journal_update_field($data, 'dc_date', mktime(0, 0, 0, $date->month, $date->day, $date->year));
@@ -821,7 +834,7 @@ function open_journal_journal_save($data, $change_status=FALSE) {
       'uid' => $data->uid,
       'jid' => $data->jid,
       'title' => t('New article has been created.'),
-      'description' => 'Submit new article has been completed. Now, status is "information review".'."\n\n".'See information with abstract field and journal file on "Information" tab.'."\n".url('journal/'.$data->jid.'/information', array('absolute' => TRUE)),
+      'description' => 'Submit is now completed. Infomation is begin reviewed.'."\n\n".'See information with abstract field and journal file on "Information" tab.'."\n".url('journal/'.$data->jid.'/information', array('absolute' => TRUE)),
       'fid' => $data->file,
       'permanent' => 1
     );
@@ -1004,7 +1017,7 @@ function open_jounal_discussion_mail($data) {
     if (!$data->contributor_only || user_access('access contributor process', $reciver)) {
       
       
-      drupal_mail('open_journal', 'open_journal_discussion_add', $reciver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
+      //drupal_mail('open_journal', 'open_journal_discussion_add', $reciver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
     }
   }
 
@@ -1161,13 +1174,13 @@ function open_journal_mail($key, &$message, $data) {
 
     case 'open_journal_people_invite':
 
-      $message['subject'] = "You're invited to journal: ".open_journal_trim($data->journal->title, 20);
+      $message['subject'] = "A new submission : ".open_journal_trim($data->journal->title, 20);
 
       $body = "\n";
-      $body .= "\n".$data->sender->name. " invited you to a journal named '".$data->journal->title."'";
+      $body .= "\n".$data->sender->name. " You're invited to initiate the reviewing process of the article '".$data->journal->title."'";
       $body .= "\n";
-      $body .= "\n".'Visit the journal to get started:';
-      $body .= "\n".url(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->journal->jid, array('absolute' => TRUE));
+      $body .= "\n".'To review the article, please click following link:';
+      $body .= url(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->journal->jid, array('absolute' => TRUE));
       
       $message['body'][] = $body;
       
@@ -2391,6 +2404,9 @@ function open_journal_get_field_settings() {
     'dc_relation'    => 0,
     'dc_coverage'    => 1,
     'dc_right'      => 1,
+    'dc_title'     => 1,
+    'dc_creator_sub'     => 1,
+    'dc_creator_address'     => 1,
   );
 }
 

@@ -128,6 +128,20 @@ function open_journal_schema() {
         'type' => 'text',
         'not null' => FALSE,
       ),
+      'dc_title_sub' => array(
+        'type' => 'text',
+        'size' => 'normal'
+      ),
+      'dc_creator_sub' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
+      'dc_creator_address' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
     ),
     'primary key' => array('jid'),
   );

@@ -83,7 +83,7 @@ function open_journal_approve_sidebar_form($form, &$form_state, $journal , $next
 	
 	$form['submit'] = array(
 		'#type' => 'submit',
-		'#value' => 'approved',
+		'#value' => 'approve',
 		'#attributes' => array('class' => array('open_journal_approve_bottom')),
 	);
 	$form['next_status'] = array(

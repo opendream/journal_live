@@ -43,7 +43,7 @@ function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL)
     $form['fid'] = array(
       '#type' => 'managed_file',
       '#title' => t('File'),
-      '#description' => t('Allowed file types: %s',array('%s' => OPEN_JOURNAL_ALLOWED_FILE_TYPE)),
+      '#description' => t('File type allowed: %s',array('%s' => OPEN_JOURNAL_ALLOWED_FILE_TYPE)),
       '#upload_validators' => array(
         'file_validate_extensions' => array(OPEN_JOURNAL_ALLOWED_FILE_TYPE),
         //'file_validate_size' => array(2 * 1048576),
@@ -56,7 +56,7 @@ function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL)
     $form['fid'] = array(
       '#type' => 'managed_file',
       '#title' => t('File'),
-      '#description' => t('Allowed file types: %s',array('%s' => OPEN_JOURNAL_ALLOWED_FINAL_STATUS_FILE_TYPE)),
+      '#description' => t('File type allowed: %s',array('%s' => OPEN_JOURNAL_ALLOWED_FINAL_STATUS_FILE_TYPE)),
       '#upload_validators' => array(
         'file_validate_extensions' => array(OPEN_JOURNAL_ALLOWED_FINAL_STATUS_FILE_TYPE),
         //'file_validate_size' => array(2 * 1048576),

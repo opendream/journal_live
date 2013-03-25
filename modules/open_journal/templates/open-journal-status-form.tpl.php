@@ -29,7 +29,7 @@
 	<?php if ($reject_form): ?>
 	<?php print $reject_form;?>
 	<div class="reject-button">
-		<?php print 'or '.l('Rejected' ,'', array('attributes' => array('id' => 'reject_bottom')));?>
+		<?php print 'or '.l('Rejecte' ,'', array('attributes' => array('id' => 'reject_bottom')));?>
 	</div>
 	<?php endif ?>
 	
