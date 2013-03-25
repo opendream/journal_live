@@ -12,7 +12,7 @@
   <div class="journal-file-download">
   
   	<div class="file-download-update">
-  	  <span class="label">Lastes file upload: </span>
+  	  <span class="label">Latest file uploaded: </span>
   	  <span> <?php print $last_update;?></span>
   	</div>
   	

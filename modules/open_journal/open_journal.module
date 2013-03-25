@@ -43,8 +43,8 @@ define('OPEN_JOUNAL_STATUS', serialize (
   array(
     OPEN_JOURNAL_STATUS_INFORMATON_APPROVE_KEY => 'Information review',
     OPEN_JOURNAL_STATUS_DOCUMENT_APPROVE => 'Document review',
-    OPEN_JOURNAL_STATUS_CATLOGUED => 'Catalogued',
-    OPEN_JOURNAL_STATUS_PUBLISHED => 'Published',
+    OPEN_JOURNAL_STATUS_CATLOGUED => 'Library catalogue',
+    OPEN_JOURNAL_STATUS_PUBLISHED => 'Publication',
   )
 ));
 
@@ -645,16 +645,19 @@ function open_journal_form_alter(&$form, &$form_state, $form_id) {
 }
 
 function open_journal_login() {
+
+  $condition_list = array('For Author', 'For Reviewer');
   return theme('open_journal_login', array(
     'form' => drupal_render(drupal_get_form('open_journal_login_form')),
-    'condition' => 'Submission Guidelines',
+    'condition_list' => $condition_list,
   ));
 }
 
 function open_journal_register() {
+  $condition_list = array('For Author', 'For Reviewer');
   return theme('open_journal_register', array(
     'form' => drupal_render(drupal_get_form('open_journal_register_form')),
-    'condition' => 'CONDITIONS',
+    'condition_list' => $condition_list,
   ));
 }
 
@@ -1596,7 +1599,7 @@ function open_journal_overview($journal) {
   }
   if($information_field['dc_contributor']) {
     $information->dc_contributor['value'] = implode(", ", $journal->dc_contributor);
-    $information->dc_contributor['label'] = 'Contributors';
+    $information->dc_contributor['label'] = 'Co-author(s)';
   }
   if($information_field['dc_date']) {
     $information->dc_date['value'] = date('d M Y',$journal->dc_date);
@@ -2332,8 +2335,8 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
     drupal_json_output($response);
     exit();
   }
-  
   $user_roles = open_journal_display_roles($user->roles);
+  
   
   // TODO: Edit hook theme with default value foward
   return theme('open_journal_list', array(
@@ -2361,7 +2364,8 @@ function open_journal_display_roles($user_roles) {
   
   // Case editor reviewer librarian not display researcher role
   if (count($user_roles) > 1) {
-    array_shift($user_roles);
+    // In new comment want to display add new button  only researcher, So will display researcher role.
+    // array_shift($user_roles);
   }
   $user_roles = implode(', ', $user_roles);
   

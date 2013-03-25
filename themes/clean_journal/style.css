@@ -1758,7 +1758,7 @@ h2.journal-block-title {
 }
 .information-block .information-field .label {
 	text-align: right;
-	width: 85px;
+	width: 95px;
 	display: block;
 	padding-right: 15px;
 	float: left;
@@ -1766,7 +1766,7 @@ h2.journal-block-title {
 	font-weight: bold;
 }
 .information-block .information-field .value {
-	width: 160px;
+	width: 150px;
 	float: right;
 	color: #333333;
 	word-wrap: break-word;
@@ -2984,4 +2984,7 @@ ul.journal-informal-approve-list li .user-name-wrapper {
 
 #open-journal-comment-form .form-item-message {
   float: left;
+}
+.clear {
+  clear: both;
 }

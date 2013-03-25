@@ -72,7 +72,7 @@
         
       </div>
       <div class="user-manage">
-        <?php print l(t('View My article'), OPEN_JOURNAL_PREFIX_PATH, array('attributes' => array('class' => array('view-all-journal')))); ?>
+        <?php print l(t('View articles'), OPEN_JOURNAL_PREFIX_PATH, array('attributes' => array('class' => array('view-all-journal')))); ?>
         <div class="user-dropdown">
           <?php print $user_info['display_picture_small']; ?>
           <span class="dropdown-link"><?php print $user_info['display_name']; ?></span>
@@ -105,7 +105,16 @@
   	<p>E-Journal © 2013 Health Systems Research Institute (HSRI)
     <?php print l(theme('image', array('path' => drupal_get_path('module', 'open_journal').'/images/rss.png') ), OPEN_JOURNAL_PREFIX_PATH.'/feed/issue', array('html' => TRUE, 'attributes' => array('class' => 'feed', 'title' => 'Issue rss feed')));?>
     <?php //print l(theme('image', array('path' => drupal_get_path('module', 'open_journal').'/images/rss.png') ), OPEN_JOURNAL_PREFIX_PATH.'/feed/article', array('html' => TRUE, 'attributes' => array('class' => 'feed', 'title' => 'Article rss feed')));?>
+    <br>
+    <?php print l('Edit board members', 'http://ejournal.hsri.or.th/editorial-board-members');?>
+    <?php print l('Search articles', 'http://kb.hsri.or.th/dspace/handle/123456789/16');?>
+    <?php print l('Contact', '');?>
+    <?php print l('About', '');?>
+
     </p>
+
+    
+
   </div>
   
 </body>

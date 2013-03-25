@@ -12,7 +12,7 @@
   		<span><?php print $status['updated']?></span>
   	</div>
   	<div class="journal-create">
-  		<span class="label">Create Date: </span>
+  		<span class="label">Creation Date: </span>
   		<span><?php print $status['created']?></span>		
   	</div>
   </div><!-- End Journal-block-content -->

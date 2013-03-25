@@ -28,7 +28,7 @@ function open_journal_login_form($form_state) {
   $form['actions'] = array('#type' => 'actions');
   $form['actions']['submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Submit'),
+    '#value' => t('Login'),
   );
   $form['actions']['register'] = array(
     '#markup' => l(t('Register'), OPEN_JOURNAL_PREFIX_PATH.'/register', array('attributes' => array('class' => array('link-register')))),
