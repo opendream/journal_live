@@ -3021,5 +3021,10 @@ ul.journal-informal-approve-list li .user-name-wrapper {
 #nav {
   width: 960px;
   margin: 0 auto;
-  margin-top: 50px;
+  position: relative;
+  top: -60px;
+}
+#nav #main-menu-links li{
+  float: left;
+
 }
