@@ -742,14 +742,6 @@ function open_journal_update_field(&$data, $field_name, $field_value=NULL) {
     $field_value = $old_field_value;
   }
 
-  // Set variables
-  if($field_name == 'dc_creator') {
-    unset($field_value['dc_creator_address']);
-    //$data->{$field_name}['dc_creator_address'] = 'bb';
-  }
-  elseif($field_name == 'dc_creator_address') {
-    $field_value = $field_name['dc_creator_address'];
-  }
   if (is_array($field_value)) {
     $data->{$field_name} = implode(',', array_filter($field_value));
   }
@@ -798,12 +790,17 @@ function open_journal_journal_load($jid) {
 
   $data->subject_sub = explode(',' ,$data->subject_sub);
   $data->subject_en = explode(',' ,$data->subject_en);
-  $data->dc_creator = explode(',' ,$data->dc_creator);
   $data->dc_publisher = explode(',' ,$data->dc_publisher);
   $data->dc_contributor = explode(',' ,$data->dc_contributor);
-  $data->dc_creator_sub = explode(',' ,$data->dc_creator_sub);
+  $data->creator_sub = explode(',' ,$data->creator_sub);
+  $data->creator_en = explode(',' ,$data->creator_en);
   
-  $data->title = $data->dc_title;
+  if (OPEN_JOURNAL_SUB_LANG_ENABLE) {
+    $data->title = $data->title_sub? $data->title_sub: $data->title_en;
+  }
+  else {
+    $data->title = $data->title_en? $data->title_en: $data->title_sub;
+  }
 
   return $data;
 }
@@ -814,20 +811,17 @@ function open_journal_journal_save($data, $change_status=FALSE) {
   }
   open_journal_update_field($data, 'subject_en');
   open_journal_update_field($data, 'subject_sub');
+  
+  open_journal_update_field($data, 'creator_en');
+  open_journal_update_field($data, 'creator_sub');
  
   // Dublin core
-  if(isset($data->dc_creator['dc_creator_address'])) {
-    $data->dc_creator_address = $data->dc_creator['dc_creator_address'];
-  }
-  else {
-     $data->dc_creator_address = $data->dc_creator_address;
-  }
+  open_journal_update_field($data, 'dc_title', $data->title_sub.','.$data->title_en);
   open_journal_update_field($data, 'dc_description', $data->description_sub.','.$data->description_en);
   open_journal_update_field($data, 'dc_subject', $data->subject_sub.','.$data->subject_en);
-  open_journal_update_field($data, 'dc_creator');
   open_journal_update_field($data, 'dc_publisher');
   open_journal_update_field($data, 'dc_contributor');
-  open_journal_update_field($data, 'dc_creator_sub');
+  open_journal_update_field($data, 'dc_creator', $data->creator_sub.','.$data->creator_en);
   if (isset($data->date) && is_array($data->date)) {
     $date = (object) $data->date;
     open_journal_update_field($data, 'dc_date', mktime(0, 0, 0, $date->month, $date->day, $date->year));
@@ -854,8 +848,12 @@ function open_journal_journal_save($data, $change_status=FALSE) {
     $data->status_changed = REQUEST_TIME;
   }
 
-  $data->title = $data->dc_title;
- 
+  if (OPEN_JOURNAL_SUB_LANG_ENABLE) {
+    $data->title = $data->title_sub? $data->title_sub: $data->title_en;
+  }
+  else {
+    $data->title = $data->title_en? $data->title_en: $data->title_sub;
+  }
 
   $jid = drupal_write_record('open_journal_journal', $data, $pk);
 
@@ -2365,7 +2363,14 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
   $journal_list = open_journal_load_multiple($user, $after_jid, $limit, $status);
 
   foreach ($journal_list as &$journal) {
-
+    
+    if (OPEN_JOURNAL_SUB_LANG_ENABLE) {
+      $journal->title = $journal->title_sub? $journal->title_sub: $journal->title_en;
+    }
+    else {
+      $journal->title = $journal->title_en? $journal->title_en: $journal->title_sub;
+    }
+    
     // Get status name and class
     $status_attributes = (object) open_journal_get_status_attributes($journal);
     $journal->status_class = $status_attributes->class;
@@ -2463,9 +2468,6 @@ function open_journal_get_field_settings() {
     'dc_relation'    => 0,
     'dc_coverage'    => 1,
     'dc_right'      => 1,
-    'dc_title_sub'     => 1,
-    'dc_creator_sub'     => 1,
-    'dc_creator_address'     => 1,
   );
 }
 

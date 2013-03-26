@@ -21,22 +21,22 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
   // Add sub title 
   $title_label = 'Title';
   if(OPEN_JOURNAL_SUB_LANG_ENABLE) {
-    $form['main']['dc_title_sub'] = array(
+    $form['main']['title_sub'] = array(
       '#title' => open_journal_label_help(OPEN_JOURNAL_SUB_LANG_TITLE_LABEL, 'Name of the article in '.OPEN_JOURNAL_SUB_LANG_FULL_TEXT.' language', TRUE),
       '#type' => 'textfield',
       '#required' => TRUE,
-      '#default_value' => open_journal_get_field($data, 'dc_title_sub'),
-      '#access' => $fs['dc_title_sub'],
+      '#default_value' => open_journal_get_field($data, 'title_sub'),
+      '#access' => $fs['title_sub'],
     );
     $title_label .= ' ('.OPEN_JOURNAL_LANG_FULL_TEXT.')';
   }
   
-  $form['main']['dc_title'] = array(
+  $form['main']['title_en'] = array(
     '#title' => open_journal_label_help($title_label, 'Name of the article in '.OPEN_JOURNAL_LANG_FULL_TEXT.' language', TRUE),
     '#type' => 'textfield',
     '#required' => TRUE,
-    '#default_value' => open_journal_get_field($data, 'dc_title'),
-    '#access' => $fs['dc_title'],
+    '#default_value' => open_journal_get_field($data, 'title_en'),
+    '#access' => $fs['title_en'],
   );
 
   
@@ -128,15 +128,26 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
   
   $author_label = 'Author';
   if (OPEN_JOURNAL_SUB_LANG_ENABLE) {
-    $form['data']['group']['dc_creator_sub'] = open_journal_multi_textfield(OPEN_JOURNAL_SUB_LANG_AUTHOR_LABEL ,open_journal_get_field($data, 'dc_creator_sub'), 'dc_creator_sub', '', FALSE, 1, NULL, TRUE);
+    $form['data']['group']['creator_sub'] = open_journal_multi_textfield(OPEN_JOURNAL_SUB_LANG_AUTHOR_LABEL ,open_journal_get_field($data, 'creator_sub'), 'dc_creator', 'Add co-author', TRUE, 1, NULL, TRUE);
     $author_label .= ' ('.OPEN_JOURNAL_LANG_FULL_TEXT.')';
   }
+    
+  $form['data']['group']['creator_en'] = open_journal_multi_textfield($author_label ,open_journal_get_field($data, 'creator_en'), 'dc_creator', 'Add co-author', TRUE, 1, NULL, TRUE);
   
+ 
 
   $form['data']['group']['dc_creator'] = open_journal_multi_textfield($author_label ,open_journal_get_field($data, 'dc_creator'), 'dc_creator', 'Add co-authors', TRUE, 2, $data);
 
+  $form['data']['group']['address'] = array(
+    '#title' => open_journal_label_help('Offices', 'Work address for principal researcher', FALSE),
+    '#type' => 'textarea',
+    '#default_value' => open_journal_get_field($data, 'address'),
+    '#rows' => 3,
+    '#access' => $fs['address'],
+  );
+
   $form['data']['group']['dc_publisher'] = open_journal_multi_textfield('Publisher' ,open_journal_get_field($data, 'dc_publisher'), 'dc_publisher', '', FALSE, 1);
-  $form['data']['group']['dc_contributor'] = open_journal_multi_textfield('Contributors', open_journal_get_field($data, 'dc_contributor'), 'dc_contributor','', FALSE, 1);
+  $form['data']['group']['dc_contributor'] = open_journal_multi_textfield('Contributors', open_journal_get_field($data, 'dc_contributor'), 'dc_contributor', '', FALSE, 1);
 
   // Setting date to display form
   if(isset($data->jid)) {
@@ -279,12 +290,9 @@ function open_journal_multi_textfield($title='' , $values = FALSE, $name, $add_m
   $fs = open_journal_get_field_settings();
   $help_map = array(
     'dc_subject' => 'Words or phrases relevant to the article',
-    'dc_creator' => 'Name of principal researcher',
     'dc_publisher' => 'Health Systems Research Institute',
     'dc_contributor' => 'Funding organizations',
     'dc_creator' => 'Name of principal researcher',
-    'dc_creator_address' => 'Work address for principal researcher',
-    'dc_creator_sub' => 'Name of principal researcher('.OPEN_JOURNAL_SUB_LANG_FULL_TEXT.')',
   );
 
   $help_text = isset($help_map[$name])? $help_map[$name]: 'Help me please.';
@@ -314,30 +322,13 @@ function open_journal_multi_textfield($title='' , $values = FALSE, $name, $add_m
 
     // hardcode
     
-    if($i == 1 && $name == 'dc_creator') {
 
-      $multi_textfield['dc_creator_address'] = array(
-        '#title' => open_journal_label_help('Offices', $help_map['dc_creator_address']),
-        '#type' => 'textfield',
-        '#attributes' => array('class' => array('multi-textfield', 'multi-textfield-'.$i) ,'alt' => $alt),
-        '#default_value' => open_journal_get_field($data, 'dc_creator_address'),
-      );
-    }
-    elseif($i >= 2 && $name == 'dc_creator') {
-      $multi_textfield[] = array(
-        '#type' => 'textfield',
-        '#attributes' => array('class' => array('multi-textfield', 'multi-textfield-'.$i) ,'alt' => $alt),
-        '#default_value' => $values[$i-1],
-      );
-    }
-    else {
-      $multi_textfield[] = array(
-        '#type' => 'textfield',
-        '#attributes' => array('class' => array('multi-textfield', 'multi-textfield-'.$i) ,'alt' => $alt),
-        '#default_value' => $values[$i],
-
-      );
-    }
+    $multi_textfield[] = array(
+      '#type' => 'textfield',
+      '#attributes' => array('class' => array('multi-textfield', 'multi-textfield-'.$i) ,'alt' => $alt),
+      '#default_value' => $values[$i],
+    
+    );
     
   }
   if($add_more_text_show) {

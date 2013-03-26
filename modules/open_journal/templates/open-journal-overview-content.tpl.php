@@ -1,7 +1,7 @@
 <!-- Abstract -->
 <div class="journal-block abstract-block block-bg-shadow">
 
-  <h2 class="journal-block-title"><?php print $abstract_label;?></h2>
+  <h2 class="journal-block-title">Abstract</h2>
   
   <!-- Journal-block-content -->
   <div class="journal-block-content">
