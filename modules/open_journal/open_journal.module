@@ -776,7 +776,12 @@ function open_journal_journal_save($data, $change_status=FALSE) {
   open_journal_update_field($data, 'subject_sub');
  
   // Dublin core
-  $data->dc_creator_address = $data->dc_creator['dc_creator_address'];
+  if(isset($data->dc_creator['dc_creator_address'])) {
+    $data->dc_creator_address = $data->dc_creator['dc_creator_address'];
+  }
+  else {
+     $data->dc_creator_address = $data->dc_creator_address;
+  }
   open_journal_update_field($data, 'dc_description', $data->description_sub.','.$data->description_en);
   open_journal_update_field($data, 'dc_subject', $data->subject_sub.','.$data->subject_en);
   open_journal_update_field($data, 'dc_creator');
@@ -1605,23 +1610,28 @@ function open_journal_overview($journal) {
     $information->dc_creator_sub['value'] = implode(", ", $journal->dc_creator_sub);
     $information->dc_creator_sub['label'] = 'Author('.OPEN_JOURNAL_SUB_LANG_FULL_TEXT.')';
   }
+
   if($information_field['dc_creator']) {
     $author = array_shift($journal->dc_creator);
     $information->dc_author['value'] = $author;
     $information->dc_author['label'] = 'Author';
-
-    
   }
-  $information->dc_co_author['value'] = implode(", ", $journal->dc_creator);
-    $information->dc_co_author['label'] = 'Co-Author';
+  if($information_field['dc_creator_address']) {
+    $information->dc_creator_address['value'] = $journal->dc_creator_address;
+    $information->dc_creator_address['label'] = 'Offices';
+  }
 
+  if($information_field['dc_creator']) {
+    $information->dc_co_author['value'] = implode(", ", $journal->dc_creator);
+    $information->dc_co_author['label'] = 'Co-Author';
+  }
   if($information_field['dc_publisher']) {
     $information->dc_publisher['value'] = implode(", ", $journal->dc_publisher);
     $information->dc_publisher['label'] = 'Publisher';
   }
   if($information_field['dc_contributor']) {
     $information->dc_contributor['value'] = implode(", ", $journal->dc_contributor);
-    $information->dc_contributor['label'] = 'Co-author(s)';
+    $information->dc_contributor['label'] = 'Contributors';
   }
   if($information_field['dc_date']) {
     $information->dc_date['value'] = date('d M Y',$journal->dc_date);
@@ -2387,8 +2397,7 @@ function open_journal_display_roles($user_roles) {
   
   // Case editor reviewer librarian not display researcher role
   if (count($user_roles) > 1) {
-    // In new comment want to display add new button  only researcher, So will display researcher role.
-    // array_shift($user_roles);
+    array_shift($user_roles);
   }
   $user_roles = implode(', ', $user_roles);
   
