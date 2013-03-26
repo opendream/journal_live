@@ -3067,5 +3067,7 @@ ul.journal-informal-approve-list li .user-name-wrapper {
 }
 #nav #main-menu-links li{
   display: inline;
-
+}
+#nav #main-menu-links li a{
+  color: #999;
 }
