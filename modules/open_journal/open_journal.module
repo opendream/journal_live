@@ -484,6 +484,12 @@ function open_journal_theme() {
       ),
       'template' => 'templates/open-journal-informal-approve-form'
     ),
+    'open_journal_dowload_reviewer_form' =>array(
+      'variables' => array(
+        'journal' => NULL,
+      ),
+      'template' => 'templates/open-journal-dowload-reviewer-form'
+    ),
 
     // Issue
     'open_journal_issue_sections_form' => array(

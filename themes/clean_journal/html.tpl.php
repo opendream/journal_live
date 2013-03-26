@@ -105,12 +105,8 @@
   	<p>E-Journal © 2013 Health Systems Research Institute (HSRI)
     <?php print l(theme('image', array('path' => drupal_get_path('module', 'open_journal').'/images/rss.png') ), OPEN_JOURNAL_PREFIX_PATH.'/feed/issue', array('html' => TRUE, 'attributes' => array('class' => 'feed', 'title' => 'Issue rss feed')));?>
     <?php //print l(theme('image', array('path' => drupal_get_path('module', 'open_journal').'/images/rss.png') ), OPEN_JOURNAL_PREFIX_PATH.'/feed/article', array('html' => TRUE, 'attributes' => array('class' => 'feed', 'title' => 'Article rss feed')));?>
-    <br>
-    <?php print l('Edit board members', 'http://ejournal.hsri.or.th/editorial-board-members');?>
-    <?php print l('Search articles', 'http://kb.hsri.or.th/dspace/handle/123456789/16');?>
-    <?php print l('Contact', '');?>
-    <?php print l('About', '');?>
-
+    
+    
     </p>
 
     
