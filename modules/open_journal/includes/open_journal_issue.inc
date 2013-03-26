@@ -425,11 +425,13 @@ function open_journal_issue_form_validate($form, &$form_state) {
         list(, $title, $jid) = $matches;
 
         if (!empty($title)) {
-          $real_title = db_select('open_journal_journal', 'j')
-            ->fields('j', array('dc_title'))
+          $data = db_select('open_journal_journal', 'j')
+            ->fields('j', array('dc_title', 'title_sub', 'title_en', 'dc_language'))
             ->condition('j.jid', $jid)
             ->execute()
-            ->fetchField();
+            ->fetchObject();
+            
+          $real_title = $data->dc_language == 'en'? $data->title_en: $data->title_sub;
 
           if (trim($title) === trim($real_title)) {
             $empty_journal = FALSE;
@@ -649,7 +651,7 @@ function open_journal_issue_view($issue, $is_feed = FALSE) {
     $item['data'] = '<h3>'. $section->title .'</h3>';
     $item['children'] = array();
     foreach ($section->journals as $journal) {
-      $title = l($journal->dc_title, 'journal/'. $journal->jid);
+      $title = l($journal->title, 'journal/'. $journal->jid);
       if ($journal->dc_identifier) {
         $options['attributes']['target'] = '_blank';
         $title .= ' ('. l(t('PDF'), $journal->dc_identifier, $options) .')';
@@ -666,12 +668,6 @@ function open_journal_issue_view($issue, $is_feed = FALSE) {
     $links = array();
     $links[] = l(t('Edit'), 'issue/'. $issue->iid .'/edit', array('query' => drupal_get_destination()));
     $links[] = l(t('Delete'), 'issue/'. $issue->iid .'/delete');
-    $output .= theme('item_list', array(
-      'items' => $links,
-      'attributes' => array(
-        'class' => array('admin-links'),
-      ),
-    ));
   }
 
   $output .= '</div>';

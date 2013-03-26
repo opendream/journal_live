@@ -331,6 +331,7 @@ function open_journal_menu() {
   );
 
   $items['issue/%open_journal_issue/edit'] = array(
+    'title' => 'Edit',
     'page callback' => 'open_journal_issue_edit',
     'page arguments' => array(1),
     'access arguments' => array('create update delete issue'),
@@ -346,15 +347,6 @@ function open_journal_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_issue.inc',
   );
-
-  $items['issue/%open_journal_issue/delete'] = array(
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('open_journal_issue_delete_confirm', 1),
-    'access arguments' => array('create update delete issue'),
-    'type' => MENU_CALLBACK,
-    'file' => 'includes/open_journal_issue.inc',
-  );
-
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/feed'] = array(
     'title' => t('Export Issues'),
@@ -2807,14 +2799,14 @@ function open_journal_list_autocomplete($string = '') {
 
   if ($string) {
     $result = db_select('open_journal_journal', 'j')
-      ->fields('j', array('jid', 'title_sub', 'title_en', 'dc_language'))
+      ->fields('j', array('jid', 'title_sub', 'title_en', 'dc_language', 'dc_title'))
       ->condition('j.dc_title', '%'. db_like($string) . '%', 'LIKE')
       ->range(0, 10)
       ->execute();
 
     foreach ($result as $row) {
       $title = ($row->dc_language == 'en')? $row->title_en: $row->title_sub;
-      //$title = 'xxxxx';
+      //$title = $row->dc_title;
       $matches[$title .' [id:'. $row->jid .']'] = check_plain($title);
     }
   }
