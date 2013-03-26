@@ -605,7 +605,11 @@ function open_journal_preprocess_html(&$vars) {
   }
   
   $vars['logo'] = theme_get_setting('default_logo')? '': theme_get_setting('logo_path');
+
+  $vars['main_menu'] = menu_navigation_links('main-menu');
+  
   open_journal_preprocess_page($vars);
+
 }
 
 function open_journal_preprocess_page(&$vars) {
@@ -1666,6 +1670,11 @@ function open_journal_overview($journal) {
     $information->dc_creator_address['label'] = 'Offices';
   }
 
+
+  if($information_field['dc_creator']) {
+    $information->dc_co_author['value'] = implode(", ", $journal->dc_creator);
+    $information->dc_co_author['label'] = 'Co-Authors';
+  }
   if($information_field['dc_publisher']) {
     $information->dc_publisher['value'] = implode(", ", $journal->dc_publisher);
     $information->dc_publisher['label'] = 'Publisher';
