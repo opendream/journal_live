@@ -2800,6 +2800,7 @@ function open_journal_list_autocomplete($string = '') {
     $result = db_select('open_journal_journal', 'j')
       ->fields('j', array('jid', 'title_sub', 'title_en', 'dc_language', 'dc_title'))
       ->condition('j.dc_title', '%'. db_like($string) . '%', 'LIKE')
+      ->condition('j.status', OPEN_JOURNAL_STATUS_PUBLISHED, '=')
       ->range(0, 10)
       ->execute();
 
