@@ -103,14 +103,28 @@ function generate_article( $article, $file_absolute_url ){
                 'attributes' => array(
                     'locale' => 'en_US',
                 ),
-                'value' => $article->dc_title,
+                'value' => $article->title_en,
+            ),
+            array(
+                'name' => 'title',
+                'attributes' => array(
+                    'locale' => 'th_TH',
+                ),
+                'value' => $article->title_sub,
             ),
             array(
                 'name' => 'creator',
                 'attributes' => array(
                     'locale' => 'en_US',
                 ),
-                'value' => $article->dc_creator,
+                'value' => $article->creator_en,
+            ),
+            array(
+                'name' => 'creator',
+                'attributes' => array(
+                    'locale' => 'th_TH',
+                ),
+                'value' => $article->creator_sub,
             ),
             array(
                 'name' => 'publisher',
@@ -131,12 +145,19 @@ function generate_article( $article, $file_absolute_url ){
                 'attributes' => array(
                     'locale' => 'en_US',
                 ),
-                'value' => $article->dc_description,
+                'value' => $article->description_en,
+            ),
+            array(
+                'name' => 'description',
+                'attributes' => array(
+                    'locale' => 'th_TH',
+                ),
+                'value' => $article->description_sub,
             ),
             array(
                 'name' => 'type_other',
                 'attributes' => array(
-                    'locale' => 'en_US',
+                    //'locale' => 'en_US',
                 ),
                 'value' => $article->dc_type,
             ),
@@ -145,7 +166,14 @@ function generate_article( $article, $file_absolute_url ){
                 'attributes' => array(
                     'locale' => 'en_US',
                 ),
-                'value' => $article->dc_subject,
+                'value' => $article->subject_en,
+            ),
+            array(
+                'name' => 'subject',
+                'attributes' => array(
+                    'locale' => 'th_TH',
+                ),
+                'value' => $article->subject_sub,
             ),
             array(
                 'name' => 'date_created',
