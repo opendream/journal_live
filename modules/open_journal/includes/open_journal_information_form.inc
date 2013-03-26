@@ -16,25 +16,32 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
   $form['main'] = array('#type' => 'container');
 
   $form['main']['main_title'] = array('#markup' => '<h2>'.t('Information').'</h2>');
-
-  $form['main']['dc_title'] = array(
-    '#title' => open_journal_label_help('Title', 'Name of the article', TRUE),
-    '#type' => 'textfield',
-    '#required' => TRUE,
-    '#default_value' => open_journal_get_field($data, 'dc_title'),
-    '#access' => $fs['dc_title'],
-  );
+  
+  
   // Add sub title 
+  $title_label = 'Title';
   if(OPEN_JOURNAL_SUB_LANG_ENABLE) {
     $form['main']['dc_title_sub'] = array(
-      '#title' => open_journal_label_help('Alt. Title', 'Name of the article in other language', TRUE),
+      '#title' => open_journal_label_help(OPEN_JOURNAL_SUB_LANG_TITLE_LABEL, 'Name of the article in '.OPEN_JOURNAL_SUB_LANG_FULL_TEXT.' language', TRUE),
       '#type' => 'textfield',
       '#required' => TRUE,
       '#default_value' => open_journal_get_field($data, 'dc_title_sub'),
       '#access' => $fs['dc_title_sub'],
     );
+    $title_label .= ' ('.OPEN_JOURNAL_LANG_FULL_TEXT.')';
   }
+  
+  $form['main']['dc_title'] = array(
+    '#title' => open_journal_label_help($title_label, 'Name of the article in '.OPEN_JOURNAL_LANG_FULL_TEXT.' language', TRUE),
+    '#type' => 'textfield',
+    '#required' => TRUE,
+    '#default_value' => open_journal_get_field($data, 'dc_title'),
+    '#access' => $fs['dc_title'],
+  );
 
+  
+  $abstract_label = 'Abstract';
+  
   if (OPEN_JOURNAL_SUB_LANG_ENABLE) {
     $form['main']['description_sub'] = array(
       '#title' => open_journal_label_help(OPEN_JOURNAL_SUB_LANG_ABSTRACT_LABEL, OPEN_JOUNAL_HELP_DESCRIPTION_SUB, TRUE),
@@ -45,10 +52,13 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
       '#rows' => 10,
       '#access' => $fs['dc_description'],
     );
+    
+    $abstract_label .= ' ('.OPEN_JOURNAL_LANG_FULL_TEXT.')';
   }
-
+  
+  
   $form['main']['description_en'] = array(
-    '#title' => open_journal_label_help('Abstract', 'Summary of the article', TRUE),
+    '#title' => open_journal_label_help($abstract_label, 'Summary of the article', TRUE),
     '#type' => 'textarea',
     '#description' => t('No more than !d words.', array('!d' => OPEN_JOURNAL_ABSTRACT_MAX_LENGTH)),
     '#required' => OPEN_JOURNAL_ABSTRACT_REQUIRED,
@@ -108,17 +118,21 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
   $form['data']['group'] = array('#type' => 'fieldset');
 
 //open_journal_multi_textfield($title='' , $values = FALSE, $name, $add_more_text='Add another', $add_more_text_show=TRUE ,$initail_show_field=2)
-
+  
+  $keywords_label = 'Keywords';
   if (OPEN_JOURNAL_SUB_LANG_ENABLE) {
     $form['data']['group']['subject_sub'] = open_journal_multi_textfield(OPEN_JOURNAL_SUB_LANG_KEYWORDS_LABEL,open_journal_get_field($data, 'subject_sub'), 'dc_subject');
+    $keywords_label .= ' ('.OPEN_JOURNAL_LANG_FULL_TEXT.')';
   }
-  $form['data']['group']['subject_en'] = open_journal_multi_textfield('Keywords',open_journal_get_field($data, 'subject_en'), 'dc_subject');
+  $form['data']['group']['subject_en'] = open_journal_multi_textfield($keywords_label,open_journal_get_field($data, 'subject_en'), 'dc_subject');
   
+  $author_label = 'Author';
   if (OPEN_JOURNAL_SUB_LANG_ENABLE) {
-    $form['data']['group']['dc_creator_sub'] = open_journal_multi_textfield('Author('.OPEN_JOURNAL_SUB_LANG_FULL_TEXT.')' ,open_journal_get_field($data, 'dc_creator_sub'), 'dc_creator_sub', '', FALSE, 1, NULL, TRUE);
+    $form['data']['group']['dc_creator_sub'] = open_journal_multi_textfield(OPEN_JOURNAL_SUB_LANG_AUTHOR_LABEL ,open_journal_get_field($data, 'dc_creator_sub'), 'dc_creator_sub', '', FALSE, 1, NULL, TRUE);
+    $author_label .= ' ('.OPEN_JOURNAL_LANG_FULL_TEXT.')';
   }
   
-  $form['data']['group']['dc_creator'] = open_journal_multi_textfield('Author(eng.)' ,open_journal_get_field($data, 'dc_creator'), 'dc_creator', 'Add co-author', TRUE, 2, $data);
+  $form['data']['group']['dc_creator'] = open_journal_multi_textfield($author_label ,open_journal_get_field($data, 'dc_creator'), 'dc_creator', 'Add co-author', TRUE, 2, $data);
   $form['data']['group']['dc_publisher'] = open_journal_multi_textfield('Publisher' ,open_journal_get_field($data, 'dc_publisher'), 'dc_publisher', '', FALSE, 1);
   $form['data']['group']['dc_contributor'] = open_journal_multi_textfield('Co-author(s)', open_journal_get_field($data, 'dc_contributor'), 'dc_contributor','', FALSE, 1);
 
@@ -179,7 +193,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
   else {
     $form['data']['group']['dc_language'] = array(
       '#type' => 'hidden',
-      '#value' => 'en',
+      '#value' => OPEN_JOURNAL_SUB_LANG_ENABLE,
       '#access' => FALSE,
     );
   }

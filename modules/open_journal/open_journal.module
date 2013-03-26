@@ -4,12 +4,17 @@
 
 define('OPEN_JOURNAL_PREFIX_PATH', 'journal');
 
+define('OPEN_JOURNAL_LANG_FULL_TEXT', 'eng.');
 define('OPEN_JOURNAL_SUB_LANG_ENABLE', TRUE);
 define('OPEN_JOURNAL_SUB_LANG_CODE', 'th');
 define('OPEN_JOURNAL_SUB_LANG_TEXT', 'th');
 define('OPEN_JOURNAL_SUB_LANG_FULL_TEXT', 'thai');
-define('OPEN_JOURNAL_SUB_LANG_ABSTRACT_LABEL', 'บทคัดย่อ');
-define('OPEN_JOURNAL_SUB_LANG_KEYWORDS_LABEL', 'คำสำคัญ');
+
+define('OPEN_JOURNAL_SUB_LANG_TITLE_LABEL', 'Title (thai)');
+define('OPEN_JOURNAL_SUB_LANG_ABSTRACT_LABEL', 'Abstract (thai)');
+define('OPEN_JOURNAL_SUB_LANG_KEYWORDS_LABEL', 'Keywords (thai)');
+define('OPEN_JOURNAL_SUB_LANG_AUTHOR_LABEL', 'Author (thai)');
+
 define('OPEN_JOURNAL_DEFAULT_PUBLISHER_NAME', 'Health Systems Research Institute');
 
 define('OPEN_JOURNAL_SUB_LANG_ABSTRACT_REQUIRED', TRUE);
@@ -646,8 +651,10 @@ function open_journal_form_alter(&$form, &$form_state, $form_id) {
 }
 
 function open_journal_login() {
-
-  $condition_list = array('For Author', 'For Reviewer');
+  
+  $mpath = drupal_get_path('module', 'open_journal');
+  
+  $condition_list = array(l('For Author', $mpath.'/files/guideline-author.pdf'), l('For Reviewer', $mpath.'/files/guideline-reviewer.pdf'));
   return theme('open_journal_login', array(
     'form' => drupal_render(drupal_get_form('open_journal_login_form')),
     'condition_list' => $condition_list,
@@ -1658,15 +1665,16 @@ function open_journal_overview($journal) {
 
 
 
-  //  display language
+  //  display language  
   if($information->dc_language['value'] == OPEN_JOURNAL_SUB_LANG_CODE) {
     $information->dc_language['value'] = OPEN_JOURNAL_SUB_LANG_TEXT;
     $abstract_label = OPEN_JOURNAL_SUB_LANG_ABSTRACT_LABEL;
   }
   else {
-    $information->dc_language['value'] = 'Enligsh';
-    $abstract_label = 'Abstract';
+    $information->dc_language['value'] = OPEN_JOURNAL_LANG_FULL_TEXT;
+    $abstract_label = 'Abstract ('.OPEN_JOURNAL_LANG_FULL_TEXT.')';
   }
+  
   $mpath = drupal_get_path('module', 'open_journal');
   $image_file = theme('image', array(
     'path' => $mpath.'/images/ic-has-file.png',

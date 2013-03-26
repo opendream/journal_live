@@ -2,8 +2,6 @@
 	<?php print $form;?>
 	<div id="member-condition">
 		<h3>Member guideline</h3>
-		<?php foreach($condition_list as $condition):?>
-		<div> - <?php print $condition;?></div>
-		<?php endforeach;?>
+		<?php print theme('item_list', array('items' => $condition_list)) ?>
 	</div>
 </div>

@@ -1385,9 +1385,11 @@ input.form-submit:hover {
 	margin-top: 0;
 	font-size: 22px;
 }
-#member-condition  div {
+#member-condition  div,
+#member-condition a {
 	color: #929292;
 }
+
 
 /* Journal List Page
 ----------------------------------------------------------------*/
