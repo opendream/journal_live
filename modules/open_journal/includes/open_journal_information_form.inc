@@ -115,7 +115,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
   $form['data']['group']['subject_en'] = open_journal_multi_textfield('Keywords',open_journal_get_field($data, 'subject_en'), 'dc_subject');
   
   if (OPEN_JOURNAL_SUB_LANG_ENABLE) {
-    $form['data']['group']['dc_creator_sub'] = open_journal_multi_textfield('Author('.OPEN_JOURNAL_SUB_LANG_FULL_TEXT.')' ,open_journal_get_field($data, 'dc_creator_sub'), 'dc_creator_sub', '', FALSE, 1);
+    $form['data']['group']['dc_creator_sub'] = open_journal_multi_textfield('Author('.OPEN_JOURNAL_SUB_LANG_FULL_TEXT.')' ,open_journal_get_field($data, 'dc_creator_sub'), 'dc_creator_sub', '', FALSE, 1, NULL, TRUE);
   }
   
   $form['data']['group']['dc_creator'] = open_journal_multi_textfield('Author(eng.)' ,open_journal_get_field($data, 'dc_creator'), 'dc_creator', 'Add co-author', TRUE, 2, $data);
@@ -258,9 +258,9 @@ function open_journal_get_date_option($start_num , $end_num) {
 }
 
 
-function open_journal_multi_textfield($title='' , $values = FALSE, $name, $add_more_text='Add another', $add_more_text_show=TRUE ,$initail_show_field=2, $data=NULL) {
-  $fs = open_journal_get_field_settings();
+function open_journal_multi_textfield($title='' , $values = FALSE, $name, $add_more_text='Add another', $add_more_text_show=TRUE ,$initail_show_field=2, $data=NULL, $required=FALSE) {
   
+  $fs = open_journal_get_field_settings();
   $help_map = array(
     'dc_subject' => 'Words or phrases relevant to the article',
     'dc_creator' => 'Name of principal researcher',
@@ -268,6 +268,7 @@ function open_journal_multi_textfield($title='' , $values = FALSE, $name, $add_m
     'dc_contributor' => 'Funding organizations',
     'dc_creator' => 'Name of principal researcher',
     'dc_creator_address' => 'Work address for principal researcher',
+    'dc_creator_sub' => 'Name of principal researcher('.OPEN_JOURNAL_SUB_LANG_FULL_TEXT.')',
   );
 
   $help_text = isset($help_map[$name])? $help_map[$name]: 'Help me please.';
@@ -276,7 +277,7 @@ function open_journal_multi_textfield($title='' , $values = FALSE, $name, $add_m
     '#type' => 'fieldset',
     '#title' => open_journal_label_help($title, $help_text),
     '#tree' => TRUE,
-    '#access' => $fs[$name]
+    '#access' => $fs[$name],
   );
 
   for ($i = 0; $i < OPEN_JOURNAL_MAX_MULTI_TEXTFIELD; $i++) {
@@ -318,6 +319,7 @@ function open_journal_multi_textfield($title='' , $values = FALSE, $name, $add_m
         '#type' => 'textfield',
         '#attributes' => array('class' => array('multi-textfield', 'multi-textfield-'.$i) ,'alt' => $alt),
         '#default_value' => $values[$i],
+
       );
     }
     

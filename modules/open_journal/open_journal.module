@@ -1594,15 +1594,19 @@ function open_journal_overview($journal) {
     $information->subject_en['value'] = implode(", ", $journal->subject_en);
     $information->subject_en['label'] = 'Keywords';
   }
-
+  if($information_field['dc_creator_sub']) {
+    $information->dc_creator_sub['value'] = implode(", ", $journal->dc_creator_sub);
+    $information->dc_creator_sub['label'] = 'Author('.OPEN_JOURNAL_SUB_LANG_FULL_TEXT.')';
+  }
   if($information_field['dc_creator']) {
     $author = array_shift($journal->dc_creator);
     $information->dc_author['value'] = $author;
     $information->dc_author['label'] = 'Author';
 
-    $information->dc_co_author['value'] = implode(", ", $journal->dc_creator);
-    $information->dc_co_author['label'] = 'Co-Author';
+    
   }
+  $information->dc_co_author['value'] = implode(", ", $journal->dc_creator);
+    $information->dc_co_author['label'] = 'Co-Author';
 
   if($information_field['dc_publisher']) {
     $information->dc_publisher['value'] = implode(", ", $journal->dc_publisher);
