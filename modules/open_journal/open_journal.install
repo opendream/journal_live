@@ -30,7 +30,15 @@ function open_journal_schema() {
         'type' => 'int',
         'not null' => TRUE,
       ),
-
+      
+      'title_en' => array(
+        'type' => 'text',
+        'size' => 'normal'
+      ),
+      'title_sub' => array(
+        'type' => 'text',
+        'size' => 'normal'
+      ),
       'description_en' => array(
         'type' => 'text',
         'size' => 'big',
@@ -41,7 +49,6 @@ function open_journal_schema() {
         'size' => 'big',
         'not null' => FALSE,
       ),
-
       'subject_en' => array(
         'type' => 'text',
         'size' => 'big',
@@ -52,6 +59,73 @@ function open_journal_schema() {
         'size' => 'big',
         'not null' => FALSE,
       ),
+      'creator_en' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
+      'creator_sub' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
+      'publisher_en' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
+      'publisher_sub' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
+      'contributor_en' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
+      'contributor_sub' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
+      'coverage_en' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'coverage_sub' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'right_en' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'right_sub' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      
+      'address_en' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
+      'address_sub' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
+      'address' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
+      
 
       // Dublin core
       'dc_title' => array(
@@ -128,20 +202,7 @@ function open_journal_schema() {
         'type' => 'text',
         'not null' => FALSE,
       ),
-      'dc_title_sub' => array(
-        'type' => 'text',
-        'size' => 'normal'
-      ),
-      'dc_creator_sub' => array(
-        'type' => 'text',
-        'size' => 'big',
-        'not null' => FALSE,
-      ),
-      'dc_creator_address' => array(
-        'type' => 'text',
-        'size' => 'big',
-        'not null' => FALSE,
-      ),
+
     ),
     'primary key' => array('jid'),
   );

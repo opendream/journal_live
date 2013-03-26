@@ -758,12 +758,15 @@ function open_journal_journal_load($jid) {
 
   $data->subject_sub = explode(',' ,$data->subject_sub);
   $data->subject_en = explode(',' ,$data->subject_en);
-  $data->dc_creator = explode(',' ,$data->dc_creator);
   $data->dc_publisher = explode(',' ,$data->dc_publisher);
   $data->dc_contributor = explode(',' ,$data->dc_contributor);
-  $data->dc_creator_sub = explode(',' ,$data->dc_creator_sub);
   
-  $data->title = $data->dc_title;
+  if (OPEN_JOURNAL_SUB_LANG_ENABLE) {
+    $data->title = $data->title_sub? $data->title_sub: $data->title_en;
+  }
+  else {
+    $data->title = $data->title_en? $data->title_en: $data->title_sub;
+  }
 
   return $data;
 }
@@ -776,18 +779,12 @@ function open_journal_journal_save($data, $change_status=FALSE) {
   open_journal_update_field($data, 'subject_sub');
  
   // Dublin core
-  if(isset($data->dc_creator['dc_creator_address'])) {
-    $data->dc_creator_address = $data->dc_creator['dc_creator_address'];
-  }
-  else {
-     $data->dc_creator_address = $data->dc_creator_address;
-  }
+  open_journal_update_field($data, 'dc_title', $data->title_sub.','.$data->title_en);
   open_journal_update_field($data, 'dc_description', $data->description_sub.','.$data->description_en);
   open_journal_update_field($data, 'dc_subject', $data->subject_sub.','.$data->subject_en);
-  open_journal_update_field($data, 'dc_creator');
   open_journal_update_field($data, 'dc_publisher');
   open_journal_update_field($data, 'dc_contributor');
-  open_journal_update_field($data, 'dc_creator_sub');
+  open_journal_update_field($data, 'dc_creator', $data->creator_sub.','.$data->creator_en);
   if (isset($data->date) && is_array($data->date)) {
     $date = (object) $data->date;
     open_journal_update_field($data, 'dc_date', mktime(0, 0, 0, $date->month, $date->day, $date->year));
@@ -2423,9 +2420,6 @@ function open_journal_get_field_settings() {
     'dc_relation'    => 0,
     'dc_coverage'    => 1,
     'dc_right'      => 1,
-    'dc_title_sub'     => 1,
-    'dc_creator_sub'     => 1,
-    'dc_creator_address'     => 1,
   );
 }
 
