@@ -3066,6 +3066,6 @@ ul.journal-informal-approve-list li .user-name-wrapper {
   top: -60px;
 }
 #nav #main-menu-links li{
-  float: left;
+  display: inline;
 
 }
