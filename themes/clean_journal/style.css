@@ -3002,3 +3002,24 @@ ul.journal-informal-approve-list li .user-name-wrapper {
 .clear {
   clear: both;
 }
+
+.contact-content,
+.about-content {
+  padding: 20px;
+  background-color: #FFF;
+  display: block;
+  box-shadow: 2px 2px 5px #DADADA;
+}
+.contact-content .label,
+.contact-about .label {
+  float: left;
+  font-weight: bold;
+  margin-right: 10px;
+  width: 50px;
+  text-align: right; 
+}
+#nav {
+  width: 960px;
+  margin: 0 auto;
+  margin-top: 50px;
+}
