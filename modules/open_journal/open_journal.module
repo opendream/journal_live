@@ -1663,10 +1663,7 @@ function open_journal_overview($journal) {
   }
 
 
-  if($information_field['dc_creator']) {
-    $information->dc_co_author['value'] = implode(", ", $journal->dc_creator);
-    $information->dc_co_author['label'] = 'Co-Authors';
-  }
+  
   if($information_field['dc_publisher']) {
     $information->dc_publisher['value'] = implode(", ", $journal->dc_publisher);
     $information->dc_publisher['label'] = 'Publisher';
@@ -2475,6 +2472,8 @@ function open_journal_get_field_settings() {
     'creator_sub'   => 1,
     'creator_en'   => 1,
     'address' => 1,
+    'title_sub' => 1,
+    'title_en' => 1,
   );
 }
 
