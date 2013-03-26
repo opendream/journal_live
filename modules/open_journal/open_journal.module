@@ -1000,6 +1000,8 @@ function open_journal_discussion_save($data) {
   }
 
   $data->is_new = !$pk;
+  drupal_set_message('<pre>'.print_r($data, 1).'</pre>');
+  
   if ($data->is_new) {
     open_jounal_discussion_mail($data);
   }
@@ -1009,12 +1011,16 @@ function open_journal_discussion_save($data) {
 
 // Send mail function
 function open_jounal_discussion_mail($data) {
-
+  
+  drupal_set_message('xxxxxxx');
+  
   $user_list = open_journal_people_active_list($data->jid, $data->uid);
   $sender = user_load($data->uid);
   $data->journal = open_journal_journal_load($data->jid);
 
   $org_name = $sender->name;
+  
+  drupal_set_message('<pre>'.print_r($user_list, 1).'</pre>');
 
   foreach ($user_list as $reciver) {
 
@@ -1028,7 +1034,7 @@ function open_jounal_discussion_mail($data) {
     if (!$data->contributor_only || user_access('access contributor process', $reciver)) {
       
       
-      //drupal_mail('open_journal', 'open_journal_discussion_add', $reciver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
+      drupal_mail('open_journal', 'open_journal_discussion_add', $reciver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
     }
   }
 
@@ -1118,7 +1124,7 @@ function open_jounal_comment_mail($data) {
     
     if (!$data->discussion->contributor_only || user_access('access contributor process', $reciver)) {
       
-     // drupal_mail('open_journal', 'open_journal_comment_add', $reciver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
+     drupal_mail('open_journal', 'open_journal_comment_add', $reciver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
     }
   }
 
