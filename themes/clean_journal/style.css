@@ -3003,7 +3003,7 @@ ul.journal-informal-approve-list li .user-name-wrapper {
 	border-top: 1px solid #ebebeb;
 	color: #55b0d6;
 	text-align: center;
-	line-height: 124px;
+	line-height: 24px;
 	margin: 0;
 	margin-top: 50px;
 	float: left;
@@ -3062,11 +3062,19 @@ ul.journal-informal-approve-list li .user-name-wrapper {
 #nav {
   width: 960px;
   margin: 0 auto;
-  position: relative;
-  top: -160px;
+  margin-top: 20px;
 }
-#nav #main-menu-links li{
+#nav ul#main-menu-links li {
   display: inline;
+  border-right: 1px solid #aaa;
+  padding-left: 0.8em; 
+  padding-right: 0.8em; 
+
+}
+#nav #main-menu-links li.last {
+  display: inline;
+  border-right: 0px none;
+
 }
 #nav #main-menu-links li a{
   color: #999;
