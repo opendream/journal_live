@@ -1000,7 +1000,6 @@ function open_journal_discussion_save($data) {
   }
 
   $data->is_new = !$pk;
-  drupal_set_message('<pre>'.print_r($data, 1).'</pre>');
   
   if ($data->is_new) {
     open_jounal_discussion_mail($data);
@@ -1011,17 +1010,13 @@ function open_journal_discussion_save($data) {
 
 // Send mail function
 function open_jounal_discussion_mail($data) {
-  
-  drupal_set_message('xxxxxxx');
-  
+    
   $user_list = open_journal_people_active_list($data->jid, $data->uid);
   $sender = user_load($data->uid);
   $data->journal = open_journal_journal_load($data->jid);
 
   $org_name = $sender->name;
   
-  drupal_set_message('<pre>'.print_r($user_list, 1).'</pre>');
-
   foreach ($user_list as $reciver) {
 
     $sender->name = $org_name;
@@ -2316,9 +2311,7 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
   drupal_set_title('');
 
   global $user;
-  
-  //drupal_set_message('<pre>'.print_r($user, 1).'</pre>');
-  
+    
   $mpath = drupal_get_path('module', 'open_journal');
   drupal_add_js($mpath.'/js/open_journal_list_load_more.js');
 
