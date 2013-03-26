@@ -252,19 +252,7 @@ function open_journal_menu() {
     'access arguments' => array('access open journal'),
     'type' => MENU_CALLBACK,
   );
-  $items[OPEN_JOURNAL_PREFIX_PATH.'/contact'] = array(
-    'title' => t('Contact'),
-    'page callback' => 'open_journal_contact',
-    'access arguments' => array('access open journal'),
-    'type' => MENU_CALLBACK,
-  );
-  $items[OPEN_JOURNAL_PREFIX_PATH.'/about'] = array(
-    'title' => t('About'),
-    'page callback' => 'open_journal_about',
-    'access arguments' => array('access open journal'),
-    'type' => MENU_CALLBACK,
-  );
-
+  
   $items['open_journal/avatar/%/%'] = array(
     'page callback' => 'open_journal_avatar_generate',
     'page arguments' => array(2, 3),
@@ -518,18 +506,7 @@ function open_journal_theme() {
       'render element' => 'form',
       'path' => drupal_get_path('module', 'open_journal') .'/includes',
     ),
-    'open_journal_contact' =>array(
-      'variables' => array(
-        'contact' => NULL,
-      ),
-      'template' => 'templates/open-journal-contact'
-    ),
-    'open_journal_about' =>array(
-      'variables' => array(
-        'about' => NULL,
-      ),
-      'template' => 'templates/open-journal-about'
-    ),
+    
 
   );
 }
@@ -579,13 +556,7 @@ function open_journal_permission() {
     ),
   );
 }
-function open_journal_contact() {
-  return theme('open_journal_contact');
-}
 
-function open_journal_about() {
-  return theme('open_journal_about');
-}
 function open_journal_preprocess_html(&$vars) {
 
 
