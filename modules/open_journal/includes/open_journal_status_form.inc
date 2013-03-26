@@ -91,6 +91,11 @@ function open_journal_approve_sidebar_form($form, &$form_state, $journal , $next
 		'#value' => $next_status,
 		'#access' => FALSE,
   );
+  $form['journal'] = array(
+    '#type' => 'hidden',
+    '#value' => $journal,
+    '#access' => FALSE,
+  );
 
 	$form['#attached']['js'] = array(
 	  drupal_get_path('module', 'open_journal') . '/js/open_journal_status_sidebar.js',
@@ -98,6 +103,20 @@ function open_journal_approve_sidebar_form($form, &$form_state, $journal , $next
 	);
 	
 	return $form;
+}
+
+function open_journal_approve_sidebar_form_validate($element, &$form_state) {
+  $next_status = $element['next_status']['#value'];
+  $final_url = $element['journal']['#value']->dc_identifier;
+
+  $status_list = unserialize(OPEN_JOUNAL_STATUS);
+  if($next_status == count($status_list)-1) {
+    if(!$final_url) {
+      form_error($element, t('Please fill in final URL before.'));
+
+    }
+    
+  }
 }
 
 function open_journal_approve_sidebar_form_submit($form, &$form_state) {
