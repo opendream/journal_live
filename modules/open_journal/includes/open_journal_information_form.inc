@@ -136,7 +136,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
   
  
 
-  $form['data']['group']['dc_creator'] = open_journal_multi_textfield($author_label ,open_journal_get_field($data, 'dc_creator'), 'dc_creator', 'Add co-authors', TRUE, 2, $data);
+  
 
   $form['data']['group']['address'] = array(
     '#title' => open_journal_label_help('Offices', 'Work address for principal researcher', FALSE),
