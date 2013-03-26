@@ -24,6 +24,16 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
     '#default_value' => open_journal_get_field($data, 'dc_title'),
     '#access' => $fs['dc_title'],
   );
+  // Add sub title 
+  if(OPEN_JOURNAL_SUB_LANG_ENABLE) {
+    $form['main']['dc_title_sub'] = array(
+      '#title' => open_journal_label_help('Alt. Title', 'Name of the article in other language', TRUE),
+      '#type' => 'textfield',
+      '#required' => TRUE,
+      '#default_value' => open_journal_get_field($data, 'dc_title_sub'),
+      '#access' => $fs['dc_title_sub'],
+    );
+  }
 
   if (OPEN_JOURNAL_SUB_LANG_ENABLE) {
     $form['main']['description_sub'] = array(
@@ -259,7 +269,7 @@ function open_journal_multi_textfield($title='' , $values = FALSE, $name, $add_m
     'dc_creator' => 'Name of principal researcher',
     'dc_creator_address' => 'Work address for principal researcher',
   );
-  
+
   $help_text = isset($help_map[$name])? $help_map[$name]: 'Help me please.';
 
   $multi_textfield = array(
@@ -286,20 +296,28 @@ function open_journal_multi_textfield($title='' , $values = FALSE, $name, $add_m
     }
 
     // hardcode
+    
     if($i == 1 && $name == 'dc_creator') {
 
       $multi_textfield['dc_creator_address'] = array(
         '#title' => open_journal_label_help('Offices', $help_map['dc_creator_address']),
         '#type' => 'textfield',
         '#attributes' => array('class' => array('multi-textfield', 'multi-textfield-'.$i) ,'alt' => $alt),
-        '#default_value' => open_journal_get_field($data, 'dc_creator_sub'),
+        '#default_value' => open_journal_get_field($data, 'dc_creator_address'),
+      );
+    }
+    elseif($i >= 2 && $name == 'dc_creator') {
+      $multi_textfield[] = array(
+        '#type' => 'textfield',
+        '#attributes' => array('class' => array('multi-textfield', 'multi-textfield-'.$i) ,'alt' => $alt),
+        '#default_value' => $values[$i-1],
       );
     }
     else {
       $multi_textfield[] = array(
-      '#type' => 'textfield',
-      '#attributes' => array('class' => array('multi-textfield', 'multi-textfield-'.$i) ,'alt' => $alt),
-      '#default_value' => $values[$i],
+        '#type' => 'textfield',
+        '#attributes' => array('class' => array('multi-textfield', 'multi-textfield-'.$i) ,'alt' => $alt),
+        '#default_value' => $values[$i],
       );
     }
     
