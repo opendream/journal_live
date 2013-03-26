@@ -2102,6 +2102,24 @@ h2.journal-block-title {
 	margin-right: -2px;
 }
 
+.form-item-title-sub label,
+.form-item-title-en label {
+  position: relative;
+}
+.form-item-title-sub label .label-help,
+.form-item-title-en label .label-help {
+  left: 90px;
+}
+
+.form-item-description-sub label,
+.form-item-description-en label {
+  position: relative;
+}
+.form-item-description-sub label .label-help,
+.form-item-description-en label .label-help {
+  left: 115px;
+}
+
 #edit-subject-sub .fieldset-wrapper,
 #edit-subject-en .fieldset-wrapper,
 #edit-creator-en .fieldset-wrapper,
@@ -2214,6 +2232,7 @@ h2.journal-block-title {
 #edit-file-ajax-wrapper .form-type-managed-file,
 .form-type-managed-file  {
   float: left;
+  width: 100%;
 }
 .form-type-managed-file {
 	padding-left: 20px;
