@@ -20,11 +20,13 @@
 	</ul>
 	<?php print $not_reject_form;?>
 	<div class="add-journal-btn">
+		<?php if(!user_access('access contributor process')):?>
 		<?php print l(t('Add new'), OPEN_JOURNAL_PREFIX_PATH.'/add'); ?>
+		<?php endif;?>
 	</div>
 </div>
 
-<?php if ($count_journal): ?>
+<?php if ($count_journal ): ?>
 <div id="journal-list">
 	<ul id="journal-list-container">
 		<?php foreach ($journal_list as $journal): ?>
@@ -40,7 +42,7 @@
 
 
 </div>
-<?php else: ?>
+<?php elseif(!user_access('access contributor process')): ?>
 <div class="journal-list-empty block-bg-shadow">
   <h2>Create your first article</h2>
   <div class="add-journal-btn">

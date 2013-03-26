@@ -118,9 +118,9 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
     $form['data']['group']['dc_creator_sub'] = open_journal_multi_textfield('Author('.OPEN_JOURNAL_SUB_LANG_FULL_TEXT.')' ,open_journal_get_field($data, 'dc_creator_sub'), 'dc_creator_sub', '', FALSE, 1, NULL, TRUE);
   }
   
-  $form['data']['group']['dc_creator'] = open_journal_multi_textfield('Author(eng.)' ,open_journal_get_field($data, 'dc_creator'), 'dc_creator', 'Add co-author', TRUE, 2, $data);
+  $form['data']['group']['dc_creator'] = open_journal_multi_textfield('Author(eng.)' ,open_journal_get_field($data, 'dc_creator'), 'dc_creator', 'Add co-authors', TRUE, 2, $data);
   $form['data']['group']['dc_publisher'] = open_journal_multi_textfield('Publisher' ,open_journal_get_field($data, 'dc_publisher'), 'dc_publisher', '', FALSE, 1);
-  $form['data']['group']['dc_contributor'] = open_journal_multi_textfield('Co-author(s)', open_journal_get_field($data, 'dc_contributor'), 'dc_contributor','', FALSE, 1);
+  $form['data']['group']['dc_contributor'] = open_journal_multi_textfield('Contributors', open_journal_get_field($data, 'dc_contributor'), 'dc_contributor','', FALSE, 1);
 
   // Setting date to display form
   if(isset($data->jid)) {
