@@ -11,7 +11,7 @@
 		<span><?php print date('d M Y', $journal->status_changed);?></span>
 	</div>
 	<div class="journal-create">
-		<span class="label">Creation Date: </span>
+		<span class="label">Creation date: </span>
 		<span><?php print date('d M Y', $journal->created);?></span>		
 	</div>
 	<ul class="relate-peoples">

@@ -236,7 +236,7 @@ function open_journal_menu() {
   );
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/people'] = array(
-    'title' => t('Peoples'),
+    'title' => t('People'),
     'page callback' => 'open_journal_people',
     'page arguments' => array($arg),
     'access arguments' => array('access open journal'),
@@ -657,7 +657,7 @@ function open_journal_login() {
   
   $mpath = drupal_get_path('module', 'open_journal');
   
-  $condition_list = array(l('For Author', $mpath.'/files/guideline-author.pdf'), l('For Reviewer', $mpath.'/files/guideline-reviewer.pdf'));
+  $condition_list = array(l('For authors', $mpath.'/files/guideline-author.pdf'), l('For reviewers', $mpath.'/files/guideline-reviewer.pdf'));
   return theme('open_journal_login', array(
     'form' => drupal_render(drupal_get_form('open_journal_login_form')),
     'condition_list' => $condition_list,
@@ -1189,10 +1189,12 @@ function open_journal_mail($key, &$message, $data) {
       $message['subject'] = "A new submission : ".open_journal_trim($data->journal->title, 20);
 
       $body = "\n";
-      $body .= "\n".$data->sender->name. " You're invited to initiate the reviewing process of the article '".$data->journal->title."'";
+      $body .= "\n"."You're invited to initiate the reviewing process the article.";
       $body .= "\n";
-      $body .= "\n".'To review the article, please click following link:';
-      $body .= url(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->journal->jid, array('absolute' => TRUE));
+      $body .= "\n"."Kindly send us your comments in tree weeks.";
+      $body .= "\n";
+      $body .= "\n".'To review the article, please click following link.';
+      $body .= "\n".url(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->journal->jid, array('absolute' => TRUE));
       
       $message['body'][] = $body;
       
@@ -2326,7 +2328,7 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
   $count_journal = count($list);
   $status_list = unserialize(OPEN_JOUNAL_STATUS);
 
-  $current_status_name = isset($status_list[$status]) ? $status_list[$status]: 'All Articles';
+  $current_status_name = isset($status_list[$status]) ? $status_list[$status]: 'All articles';
 
 
   $user_info = open_journal_get_display_user_info($user , array('image_style' => 'open_journal_avatar_large'));
@@ -2770,7 +2772,7 @@ function open_journal_list_autocomplete($string = '') {
     $result = db_select('open_journal_journal', 'j')
       ->fields('j', array('jid', 'title_sub', 'title_en', 'dc_language', 'dc_title'))
       ->condition('j.dc_title', '%'. db_like($string) . '%', 'LIKE')
-      ->condition('j.status', OPEN_JOURNAL_STATUS_PUBLISHED, '=')
+      //->condition('j.status', OPEN_JOURNAL_STATUS_PUBLISHED, '=')
       ->range(0, 10)
       ->execute();
 
