@@ -251,7 +251,7 @@ function open_journal_account_form(&$form, &$form_state) {
     '#type' => 'file',
     '#title' => t('Upload picture'),
     '#size' => 48,
-    '#description' => t('Your virtual face or picture. Pictures larger than @dimensions pixels will be scaled down. <br /> <strong>! This picture display for you only.</strong>', array('@dimensions' => variable_get('user_picture_dimensions', '85x85'))) . ' ' . filter_xss_admin(variable_get('user_picture_guidelines', '')),
+    '#description' => t('This will be your virtual  face.', array('@dimensions' => variable_get('user_picture_dimensions', '85x85'))) .'<br>'.t('Pictures larger than 1024x1024 pixels will be scaled down. '). ' ' . filter_xss_admin(variable_get('user_picture_guidelines', '')),
   );
   $form['#validate'][] = 'user_validate_picture';
 }

@@ -12,8 +12,21 @@
 	</div>
 	<div class="journal-create">
 		<span class="label">Creation date: </span>
-		<span><?php print date('d M Y', $journal->created);?></span>		
+		<span><?php print date('d M Y', $journal->created);?></span>
 	</div>
+
+	<div class="journal-lastupdate-ago">
+		<span class="label">Last update </span>
+		<span>
+			<?php if($journal->lastupdate_ago == 0):?>
+			today
+			<?php else:?>
+			<?php print number_format($journal->lastupdate_ago);?> days ago
+			<?php endif;?>
+
+		</span>
+	</div>
+
 	<ul class="relate-peoples">
 		<?php foreach ($journal->people_list as $key_people => $people):?>
 		<?php if($key_people == 'more'):?>
@@ -23,9 +36,16 @@
 		<?php else:?>
 		<li class="clickable-people profile-picture-small">
 			<?php print $people->display_info['display_picture']; ?>
+
 		</li>
 		<?php endif;?>
 		<?php endforeach;?>
 	</ul>
 </li>
+
+<?php 
+
+
+
+?>
 

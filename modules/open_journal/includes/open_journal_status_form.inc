@@ -137,8 +137,8 @@ function open_journal_approve_sidebar_form_submit($form, &$form_state) {
 
 	$discussion = array(
     'jid' => $jid,
-    'title' => t('Congratulations! Status changed to '.$status_name ),
-    'description' => 'Talk on discussion if you have some question?',
+    'title' => t('Congratulations! Status is now changed to '.$status_name ),
+    'description' => 'Goto discussions if you have any questions.',
   );
 
   $discussion = (object) $discussion;

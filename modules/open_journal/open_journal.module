@@ -1138,24 +1138,23 @@ function open_journal_mail($key, &$message, $data) {
       $message['subject'] = open_journal_trim($data->journal->title, 20).' - '.open_journal_trim($data->title);
 
       $body = "\n";
-      $body .= "\n".'Journal: '.$data->journal->title;
+      $body .= "\n".'Article: '.$data->journal->title;
       $body .= "\n".'------------------------------------------------------------------------';
       $body .= "\n";
       if ($data->is_new) {
-      $body .= "\n".'Start discussion by : '.$data->sender->name;
+      $body .= "\n".'Discussion was initialed by '.$data->sender->name;
       }
       else {
       $body .= "\n".'Update discussion by : '.$data->sender->name;
       }
       $body .= "\n".'Title: '.open_journal_trim($data->title);
       if (open_journal_trim($data->description)) {
-        $body .= "\n".'------------------------------------------------------------------------';
         $body .= "\n";
         $body .= "\n".$data->description;
         $body .= "\n";
       }
       $body .= "\n".'------------------------------------------------------------------------';
-      $body .= "\n".'View more detail on '.$site_name.': ';
+      $body .= "\n".'More details at HSRI e-journal.';
       $body .= "\n".url(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->journal->jid.'/discussion/'.$data->did, array('absolute' => TRUE));
 
 
@@ -2360,7 +2359,14 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
     }
     $count_all_people = count(open_journal_people_active_list($journal->jid));
 
+    // Calculate different date
+    $date1 = new DateTime(date('Y-m-d', $journal->created));
+    $date2 = new DateTime(date('Y-m-d', $journal->status_changed));
+    $interval = $date1->diff($date2);
+    $lastupdate_ago = ($interval->days);
+    $journal->lastupdate_ago = $lastupdate_ago;
   }
+
   // Check rander load more
   // TODO: has_more_page checker better performance
   $has_more_page = $count_journal && open_journal_load_multiple($user, isset($journal->jid), $limit, $status);

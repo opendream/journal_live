@@ -1626,13 +1626,13 @@ input.form-submit:hover {
 		text-decoration: none;
 	}
 	/* Journal update */
-	#journal-list .journal-item .journal-update {
+	#journal-list .journal-item .journal-update, #journal-list .journal-item .journal-create {
 		float: left;
 		margin-left: 20px;
 		margin-right: 20px;
 	}
 	/* Journal create */
-	#journal-list .journal-item .journal-create {
+	#journal-list .journal-item .journal-lastupdate-ago {
 		float: left;
 	}
 	/* Relate Peoples */
@@ -1797,7 +1797,8 @@ h2.journal-block-title {
 		line-height: 40px;
 	}
 .status-block .journal-update .label,
-.status-block .journal-create .label {
+.status-block .journal-create .label,
+.status-block .journal-lastupdate-ago .label {
 	font-weight: bold;
 }
 .status-block {
