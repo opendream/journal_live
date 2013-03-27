@@ -56,7 +56,7 @@ function open_journal_not_reject_form($form, &$form_state) {
 
 	$form['not_show_reject'] = array(
 		'#type' => 'checkbox',
-		'#title' => 'Include rejected',
+		'#title' => 'Include rejected articles',
 		'#attributes' => array('class' => array('not_reject_checkbox')),
 		'#default_value' => !$value,
 

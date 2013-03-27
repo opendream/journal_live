@@ -211,7 +211,7 @@ function open_journal_account_form(&$form, &$form_state) {
     '#tree' => TRUE,
     '#type' => 'fieldset',
     '#title' => t('Information'),
-    '#description' => t('Only you will see this information display.'),
+    //'#description' => t('Only you will see this information display.'),
   );
   $form['data']['firstname'] = array(
     '#type' => 'textfield',

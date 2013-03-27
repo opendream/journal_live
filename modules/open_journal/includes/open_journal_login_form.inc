@@ -51,6 +51,8 @@ function open_journal_login_form_submit($form, &$form_state) {
   $form_state['redirect'] = 'journal';
 
   user_login_finalize($form_state);
+  
+  drupal_goto(OPEN_JOURNAL_PREFIX_PATH);
 
 }
 
