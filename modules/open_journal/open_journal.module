@@ -2319,7 +2319,6 @@ function open_journal_get_status_attributes($journal) {
 
 function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_LIST_IPP) {
   drupal_set_title('');
-  open_journal_check();
   global $user;
     
   $mpath = drupal_get_path('module', 'open_journal');
