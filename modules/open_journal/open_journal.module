@@ -1006,7 +1006,6 @@ function open_journal_discussion_save($data) {
   }
 
   $data->is_new = !$pk;
-  
   if ($data->is_new) {
     open_jounal_discussion_mail($data);
   }
@@ -1016,7 +1015,7 @@ function open_journal_discussion_save($data) {
 
 // Send mail function
 function open_jounal_discussion_mail($data) {
-    
+  
   $user_list = open_journal_people_active_list($data->jid, $data->uid);
   $sender = user_load($data->uid);
   $data->journal = open_journal_journal_load($data->jid);
@@ -1031,7 +1030,6 @@ function open_jounal_discussion_mail($data) {
 
     $data->sender = $sender;
     $data->reciver = $reciver;
-
     if (!$data->contributor_only || user_access('access contributor process', $reciver)) {
       
       
@@ -1124,7 +1122,6 @@ function open_jounal_comment_mail($data) {
     $data->reciver = $reciver;
     
     if (!$data->discussion->contributor_only || user_access('access contributor process', $reciver)) {
-      
      drupal_mail('open_journal', 'open_journal_comment_add', $reciver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
     }
   }
@@ -2843,13 +2840,18 @@ function open_journal_reviewer_warning_mail(){
           $result = $result->fetchAll();
           if(!$result) {
             // Sending mail
-            global $user;
+            $user_admin = user_load(1);
 
-            $sender_info = open_journal_get_display_user_info($user);
+            $sender_info = open_journal_get_display_user_info($user_admin);
             $sender->name = $sender_info['display_name_text'];
 
             $data = array('message' => 'You have the article waiting for you review. Please click this link for review article.');
             $data = (object) $data;
+
+            $data->journal = open_journal_journal_load($user_reviewer_active->jid);
+            $data->sender = $user_admin;
+            $data->reciver = user_load($user_reviewer_active->uid);
+
             drupal_mail('open_journal', 'open_journal_people_invite', $user_info->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
 
           }
