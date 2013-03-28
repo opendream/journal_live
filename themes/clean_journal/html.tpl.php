@@ -82,8 +82,10 @@
             <?php endif ?>
             <?php if (user_access('create update delete issue')): ?>
             <li><?php print l(t('All issue'), 'issue'); ?></li>  
-            <?php endif ?>  
+            <?php endif ?>
+            <?php if(!user_access('access contributor process')):?>  
             <li><?php print l(t('Add new article'), OPEN_JOURNAL_PREFIX_PATH.'/add'); ?></li>
+            <?php endif;?>
             <li><?php print l(t('Account settings'), OPEN_JOURNAL_PREFIX_PATH.'/account/setting'); ?></li>
             <li><?php print l(t('Logout'), 'user/logout'); ?></li>
           </ul>
