@@ -2802,7 +2802,17 @@ function open_journal_list_autocomplete($string = '') {
   drupal_json_output($matches);
 }
 
-function open_journal_cron(){
+function open_journal_cron() {
+
+  $interval = variable_get('open_journal_interval', 60*60*24*21);
+  if (time() >= variable_get('open_journal_next_execution', 0)) {
+    
+    open_journal_reviewer_warning_mail();
+    variable_set('open_journal_next_execution', time() + $interval);
+  }
+}
+
+function open_journal_reviewer_warning_mail(){
   // Get reviewer user in active journal(includeing infomation review, document review and library catalogue status) for checking about updated discussion, comment or infomal status
   $user_reviewer_active = db_query(" SELECT jp.jid, 
     jp.uid, 
@@ -2839,6 +2849,7 @@ function open_journal_cron(){
             $sender->name = $sender_info['display_name_text'];
 
             $data = array('message' => 'You have the article waiting for you review. Please click this link for review article.');
+            $data = (object) $data;
             drupal_mail('open_journal', 'open_journal_people_invite', $user_info->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
 
           }
