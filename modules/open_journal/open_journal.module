@@ -2799,9 +2799,10 @@ function open_journal_list_autocomplete($string = '') {
   drupal_json_output($matches);
 }
 
+/*
 function open_journal_cron() {
 
-  $interval = variable_get('open_journal_interval', 60*60*24*21);
+  $interval = variable_get('open_journal_interval', 60*60*60*24*21);
   if (time() >= variable_get('open_journal_next_execution', 0)) {
     
     open_journal_reviewer_warning_mail();
@@ -2862,4 +2863,6 @@ function open_journal_reviewer_warning_mail(){
   
 
 }
+*/
+
 
