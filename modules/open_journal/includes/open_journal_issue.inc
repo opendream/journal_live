@@ -117,7 +117,7 @@ function open_journal_issue_form($form, $form_state, $issue = NULL) {
       $sections[$delta]->id = $section->sid;
       foreach ($section->journals as $delta2 => $journal) {
         $sections[$delta]->journals[$delta2]->id = $journal->jid;
-        $sections[$delta]->journals[$delta2]->title = $journal->dc_title .' [id:'. $journal->jid .']';
+        $sections[$delta]->journals[$delta2]->title = $journal->title_sub .' [id:'. $journal->jid .']';
         $sections[$delta]->journals[$delta2] = (array) $sections[$delta]->journals[$delta2];
       }
       $sections[$delta] = (array) $sections[$delta];
@@ -125,7 +125,6 @@ function open_journal_issue_form($form, $form_state, $issue = NULL) {
   }
 
   // return array();
-
   if (!empty($sections)) {
     $delta = count($sections);
     foreach ($sections as $id => $section) {
@@ -250,7 +249,6 @@ EOD;
 
   // Calculate number to display.
   $journal_count = max(2, empty($journals) ? 2 : count($journals) + 1);
-
   $delta = 0;
   $_weight = 0;
   if ($journals) {
@@ -276,7 +274,7 @@ EOD;
     '#id' => str_replace('_', '-', $more_name),
     '#name' => $more_name,
     '#type' => 'submit',
-    '#value' => t('More journals'),
+    '#value' => t('More Articles'),
     '#attributes' => array(
       'title' => t("If the amount of boxes above isn't enough, click here to add more journals."),
     ),
@@ -310,7 +308,7 @@ function _issue_journals($section_key, $key, $id = NULL, $value = '', $weight = 
 
   $form['title'] = array(
     '#type' => 'textfield',
-    '#title' => $value !== '' ? t('Journal title') : t('New journal title'),
+    '#title' => $value !== '' ? t('Article title') : t('New article title'),
     '#title_display' => 'invisible',
     '#default_value' => $value,
     '#autocomplete_path' => OPEN_JOURNAL_PREFIX_PATH .'/autocomplete',

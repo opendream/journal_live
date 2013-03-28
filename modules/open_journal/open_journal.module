@@ -2784,12 +2784,14 @@ function open_journal_list_autocomplete($string = '') {
   $matches = array();
 
   if ($string) {
-    $result = db_select('open_journal_journal', 'j')
-      ->fields('j', array('jid', 'title_sub', 'title_en', 'dc_language', 'dc_title'))
-      ->condition('j.dc_title', '%'. db_like($string) . '%', 'LIKE')
-      //->condition('j.status', OPEN_JOURNAL_STATUS_PUBLISHED, '=')
-      ->range(0, 10)
-      ->execute();
+
+   $result = db_query("SELECT j.jid, j.title_sub, j.title_en, j.dc_language, j.dc_title 
+      FROM open_journal_journal j 
+      LEFT JOIN open_journal_issue_journal  ij  
+      ON j.jid = ij.jid 
+      WHERE ij.jid IS NULL AND j.dc_title LIKE('%".db_like($string)."%')  LIMIT 10 "
+    );
+    $result = $result->fetchAll();
 
     foreach ($result as $row) {
       $title = ($row->dc_language == 'en')? $row->title_en: $row->title_sub;
