@@ -1050,6 +1050,20 @@ a.file-download-btn:hover {
   background-color: #4084a0;
 }
 
+a.file-download-sidebar-btn {
+  height: 40px;
+  line-height: 40px;
+  text-transform: uppercase;
+  padding: 15px;
+  background-color: #55b0d6;
+  color: #FFF;
+  border-left: 1px solid #FFF;
+}
+a.file-download-sidebar-btn:hover {
+  text-decoration: none;
+  background-color: #4084a0;
+}
+
 /* Open Journal 
 ----------------------------------------------------------------*/
 body {
@@ -2808,7 +2822,8 @@ h3.people-section-title {
 
 /* Informal Status
 ----------------------------------------------------------------*/
-.informal-status-block {
+.informal-status-block,
+.download-file-sidebar-block {
 	width: 260px;
 	float: left;
 }

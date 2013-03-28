@@ -737,7 +737,7 @@ function theme_open_journal_issue_journals_form($variables) {
   drupal_add_tabledrag('issue-journals-form-table-'. $form['#section_key'], 'order', 'sibling', 'journal-weight');
 
   $rows = array();
-  $headers = array(t('Journal'), t('Weight'));
+  $headers = array(t('Article'), t('Weight'));
 
   foreach (element_children($form) as $key) {
     if ($key === 'more') {
