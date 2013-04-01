@@ -302,7 +302,7 @@ function open_journal_multi_textfield($title='' , $values = FALSE, $name, $add_m
 
   $multi_textfield = array(
     '#type' => 'fieldset',
-    '#title' => open_journal_label_help($title, $help_text),
+    '#title' => $_title,
     '#tree' => TRUE,
     '#access' => $fs[$name],
   );
@@ -329,9 +329,10 @@ function open_journal_multi_textfield($title='' , $values = FALSE, $name, $add_m
     if($i == 0) {
       $multi_textfield[] = array(
         '#type' => 'textfield',
+        '#title' => open_journal_label_help($title, $help_text),
         '#attributes' => array('class' => array('multi-textfield', 'multi-textfield-'.$i) ,'alt' => $alt),
         '#default_value' => $values[$i],
-        //'#required' => $required,
+        '#required' => $required,
       );
     }
     else {

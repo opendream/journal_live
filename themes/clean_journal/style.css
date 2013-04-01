@@ -2190,7 +2190,7 @@ h2.journal-block-title {
 		.form-item-description-en .form-textarea {
 			width: 200px;
 			padding: 2px 10px 2px 10px;
-			border: none;
+			border: 1px solid #f1f1f1;
 			background: #f1f1f1;
 			color: #111;
 			font-family: 'THSarabunNewRegular';
@@ -3094,4 +3094,8 @@ ul.journal-informal-approve-list li .user-name-wrapper {
 }
 #nav #main-menu-links li a{
   color: #999;
+}
+
+.form-item input.error, .form-item textarea.error, .form-item select.error {
+border: 2px solid red !important;
 }
