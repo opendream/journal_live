@@ -1,5 +1,13 @@
 <!-- Abstract -->
 <div class="journal-block abstract-block block-bg-shadow">
+  
+  <h2 class="journal-block-title">Alternative title</h2>
+  
+  <!-- Journal-block-content -->
+  <div class="journal-block-content">
+  	<p><?php print $alt_title; ?></p>
+  </div><!-- End Journal-block-content -->
+  
 
   <h2 class="journal-block-title">Abstract</h2>
   

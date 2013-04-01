@@ -75,13 +75,13 @@ function open_journal_issue_form($form, $form_state, $issue = NULL) {
   $form['current'] = array(
     '#type' => 'checkbox',
     '#title' => t('Current'),
-    '#default_value' => isset($issue) ? $issue->current : 1,
+    '#default_value' => isset($issue) ? $issue->current : 0,
   );
 
   $form['published'] = array(
     '#type' => 'checkbox',
     '#title' => t('Published'),
-    '#default_value' => isset($issue) ? $issue->published : 1,
+    '#default_value' => isset($issue) ? $issue->published : 0,
   );
 
   if (isset($form_state['section_count'])) {
@@ -146,7 +146,7 @@ function open_journal_issue_form($form, $form_state, $issue = NULL) {
 
   $form['sections_wrapper']['section_more'] = array(
     '#type' => 'submit',
-    '#value' => t('More sections'),
+    '#value' => t('Add more sections'),
     '#attributes' => array(
       'title' => t("If the amount of boxes above isn't enough, click here to add more sections."),
     ),
@@ -274,7 +274,7 @@ EOD;
     '#id' => str_replace('_', '-', $more_name),
     '#name' => $more_name,
     '#type' => 'submit',
-    '#value' => t('More Articles'),
+    '#value' => t('Add more articles'),
     '#attributes' => array(
       'title' => t("If the amount of boxes above isn't enough, click here to add more journals."),
     ),
@@ -436,12 +436,12 @@ function open_journal_issue_form_validate($form, &$form_state) {
             $form_state['values']['sections'][$delta]['journals'][$delta2]['jid'] = $jid;
           }
           else {
-            form_set_error('sections]['. $delta .'][journals]['. $delta2 .'][title', t('Journal not found. Please choose from autocomplete again.'));
+            form_set_error('sections]['. $delta .'][journals]['. $delta2 .'][title', t('Article not found. Please choose from autocomplete again.'));
           }
         }
       }
       else {
-        form_set_error('sections]['. $delta .'][journals]['. $delta2 .'][title', t('Journal not found. Please choose from autocomplete again.'));
+        form_set_error('sections]['. $delta .'][journals]['. $delta2 .'][title', t('Article not found. Please choose from autocomplete again.'));
       }
     }
 
