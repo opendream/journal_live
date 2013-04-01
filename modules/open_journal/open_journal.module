@@ -78,7 +78,7 @@ function open_journal_menu() {
   $arg = count(explode('/', OPEN_JOURNAL_PREFIX_PATH));
 
   $items[OPEN_JOURNAL_PREFIX_PATH]  = array(
-    'title' => t('Journal list'),
+    'title' => t('Article list'),
     'page callback' => 'open_journal_list',
     'access arguments' => array('access open journal'),
     'type' => MENU_CALLBACK,
@@ -87,7 +87,7 @@ function open_journal_menu() {
   $items[OPEN_JOURNAL_PREFIX_PATH.'/list/all'] = $items[OPEN_JOURNAL_PREFIX_PATH];
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/list/%']  = array(
-    'title' => t('Journal list'),
+    'title' => t('Article list'),
     'page callback' => 'open_journal_list',
     'page arguments' => array($arg+1),
     'access arguments' => array('access open journal'),
@@ -95,7 +95,7 @@ function open_journal_menu() {
   );
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/list/%/%/%']  = array(
-    'title' => t('Journal list'),
+    'title' => t('Article list'),
     'page callback' => 'open_journal_list',
     'page arguments' => array($arg+1, $arg+2, $arg+3),
     'access arguments' => array('access open journal'),
@@ -764,7 +764,7 @@ function open_journal_journal_load($jid) {
   $data->creator_sub = explode(',' ,$data->creator_sub);
   $data->creator_en = explode(',' ,$data->creator_en);
   
-  if (OPEN_JOURNAL_SUB_LANG_ENABLE) {
+  if (OPEN_JOURNAL_SUB_LANG_ENABLE && $data->dc_language != 'en') {
     $data->title = $data->title_sub? $data->title_sub: $data->title_en;
   }
   else {
@@ -1170,7 +1170,7 @@ function open_journal_mail($key, &$message, $data) {
       $message['subject'] = 'Re: '.open_journal_trim($data->journal->title, 20).' - '.open_journal_trim($data->discussion->title);
 
       $body = "\n";
-      $body .= "\n".'Journal: '.$data->journal->title;
+      $body .= "\n".'Article: '.$data->journal->title;
       $body .= "\n";
       $body .= "\n".'Re: '.$data->discussion->title;
       $body .= "\n".'------------------------------------------------------------------------';
@@ -1590,7 +1590,15 @@ function open_journal_overview($journal) {
   else {
     $abstract = $journal->description_en;
   }
-  $abstract = check_markup($abstract);
+  $abstract = check_markup($abstract, 'filtered_html');
+  
+  if(OPEN_JOURNAL_SUB_LANG_ENABLE && $journal->dc_language != 'en') {
+    $alt_title = $journal->title_en;
+  }
+  else {
+    $alt_title = $journal->title_sub;
+  }
+  $abstract = check_markup($abstract, 'filtered_html');
   
   // Prepare information sidebar
   $information = (object) array();
@@ -1709,6 +1717,7 @@ function open_journal_overview($journal) {
     'content' => theme('open_journal_overview_content', array(
       'jid' => $journal->jid,
       'abstract' => $abstract,
+      'alt_title' => $alt_title,
       'last_update' => date('d M Y', $file_last[0]->created),
       'update_by' => $user_info['display_name'],
       'latest_file' => file_create_url($file->uri),
@@ -2007,14 +2016,14 @@ function open_journal_discussion_detail($journal, $discussion) {
   module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
 
   $discussion->user_info = open_journal_get_display_user_info($discussion->uid);
-  $discussion->description = check_markup(Markdown($discussion->description), 'full_html');
+  $discussion->description = check_markup(Markdown($discussion->description), 'filtered_html');
   $discussion->file = $discussion->fid? file_load($discussion->fid): NULL;
   $discussion->can_edit = $user->uid == $discussion->uid;
 
   $comment_list = open_journal_comment_load_all($discussion->did);
   foreach ($comment_list as &$comment) {
     $comment->user_info = open_journal_get_display_user_info($comment->uid);
-    $comment->message = check_markup(Markdown($comment->message), 'full_html');
+    $comment->message = check_markup(Markdown($comment->message), 'filtered_html');
     $comment->file = $comment->fid? file_load($comment->fid): NULL;
     $comment->can_edit = $user->uid == $comment->uid;
   }
