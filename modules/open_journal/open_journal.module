@@ -2370,7 +2370,7 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
 
   foreach ($journal_list as &$journal) {
     
-    if (OPEN_JOURNAL_SUB_LANG_ENABLE) {
+    if (OPEN_JOURNAL_SUB_LANG_ENABLE && $journal->dc_language != 'en') {
       $journal->title = $journal->title_sub? $journal->title_sub: $journal->title_en;
     }
     else {
@@ -2427,7 +2427,6 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
     exit();
   }
   $user_roles = open_journal_display_roles($user->roles);
-  
   
   // TODO: Edit hook theme with default value foward
   return theme('open_journal_list', array(
