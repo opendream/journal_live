@@ -81,7 +81,7 @@ function open_journal_issue_form($form, $form_state, $issue = NULL) {
   $form['published'] = array(
     '#type' => 'checkbox',
     '#title' => t('Published'),
-    '#default_value' => isset($issue) ? $issue->published : 1,
+    '#default_value' => isset($issue) ? $issue->published : 0,
   );
 
   if (isset($form_state['section_count'])) {

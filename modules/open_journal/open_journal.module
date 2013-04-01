@@ -2365,11 +2365,11 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
     $count_all_people = count(open_journal_people_active_list($journal->jid));
 
     // Calculate different date
-    $date1 = new DateTime(date('Y-m-d', $journal->created));
-    $date2 = new DateTime(date('Y-m-d', $journal->status_changed));
-    $interval = $date1->diff($date2);
-    $lastupdate_ago = ($interval->days);
-    $journal->lastupdate_ago = $lastupdate_ago;
+    $last_update = open_journal_get_last_update($journal->jid);
+    $start = new DateTime(date('Y-m-d', $last_update));
+    $end = new DateTime();
+    $days = round(($end->format('U') - $start->format('U')) / (60*60*24));
+    $journal->lastupdate_ago = $days;
   }
 
   // Check rander load more
@@ -2771,6 +2771,30 @@ function open_journal_issue_load($issue_id) {
   }
 
   return $issue[$issue_id];
+}
+
+/**
+* Return last update from discussion or comment in journal
+*/
+function open_journal_get_last_update($jid) {
+  $sql = " SELECT 
+    (SELECT  max(c.changed)
+    FROM open_journal_discussion d INNER JOIN open_journal_comment c ON c.did = d.did
+    WHERE d.jid = :jid 
+    ) AS u1,
+     
+    (
+    SELECT  max(d.changed)
+    FROM open_journal_discussion d 
+    WHERE d.jid = :jid 
+    ) AS u2"
+  ;
+  $result = db_query($sql, array(':jid' => $jid));
+  $result = $result->fetchAll();
+
+  $last_update = max($result[0]->u1, $result[0]->u2);
+  return $last_update;
+
 }
 
 /**
