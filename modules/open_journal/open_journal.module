@@ -766,9 +766,11 @@ function open_journal_journal_load($jid) {
   
   if (OPEN_JOURNAL_SUB_LANG_ENABLE && $data->dc_language != 'en') {
     $data->title = $data->title_sub? $data->title_sub: $data->title_en;
+    $data->title_second = $data->title_en? $data->title_en: $data->title_sub;
   }
   else {
     $data->title = $data->title_en? $data->title_en: $data->title_sub;
+    $data->title_second = $data->title_sub? $data->title_sub: $data->title_en;
   }
 
   return $data;
@@ -1433,45 +1435,52 @@ function open_journal_overview($journal) {
 
   // add dublincore meta data tag to html hearder
   $tags = array(
-    'DC.title' => array(
+    'DC.Title' => array(
       '#tag' => 'meta',
       '#attributes' => array(
-        'name' => 'DC.title',
-        'content' => $journal->dc_title,
+        'name' => 'DC.Title',
+        'content' => $journal->title,
       )
     ),
-    'DC.creator' => array(
+    'DC.Title.Alternative' => array(
       '#tag' => 'meta',
       '#attributes' => array(
-        'name' => 'DC.creator',
+        'name' => 'DC.Title.Alternative',
+        'content' => $journal->title_second,
+      )
+    ),
+    'DC.Creator' => array(
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'name' => 'DC.Creator',
         'content' => $journal->dc_creator,
       )
     ),
-    'DC.subject' => array(
+    'DC.Subject' => array(
       '#tag' => 'meta',
       '#attributes' => array(
-        'name' => 'DC.subject',
+        'name' => 'DC.Subject',
         'content' => $journal->dc_subject,
       )
     ),
-    'DC.publisher' => array(
+    'DC.Publisher' => array(
       '#tag' => 'meta',
       '#attributes' => array(
-        'name' => 'DC.publisher',
+        'name' => 'DC.Publisher',
         'content' => $journal->dc_publisher,
       )
     ),
-    'DC.contributor' => array(
+    'DC.Contributor' => array(
       '#tag' => 'meta',
       '#attributes' => array(
-        'name' => 'DC.contributor',
+        'name' => 'DC.Contributor',
         'content' => $journal->dc_contributor,
       )
     ),
-    'DC.date' => array(
+    'DC.Date' => array(
       '#tag' => 'meta',
       '#attributes' => array(
-        'name' => 'DC.date',
+        'name' => 'DC.Date',
         'content' => $journal->dc_date,
       )
     ),
@@ -1482,39 +1491,46 @@ function open_journal_overview($journal) {
         'content' => $journal->dc_type,
       )
     ),
-    'DC.format' => array(
+    'DC.Format' => array(
       '#tag' => 'meta',
       '#attributes' => array(
-        'name' => 'DC.format',
+        'name' => 'DC.Format',
         'content' => $journal->dc_format,
       )
     ),
-    'DC.identifier' => array(
+    'DC.Identifier' => array(
       '#tag' => 'meta',
       '#attributes' => array(
-        'name' => 'DC.identifier',
+        'name' => 'DC.Identifier',
         'content' => $journal->dc_identifier,
       )
     ),
-    'DC.language' => array(
+    'DC.Language' => array(
       '#tag' => 'meta',
       '#attributes' => array(
-        'name' => 'DC.language',
+        'name' => 'DC.Language',
         'content' => $journal->dc_language,
       )
     ),
-     'DC.coverage' => array(
+     'DC.Coverage' => array(
       '#tag' => 'meta',
       '#attributes' => array(
-        'name' => 'DC.coverage',
+        'name' => 'DC.Coverage',
         'content' => $journal->dc_coverage,
       )
     ),
-    'DC.right' => array(
+    'DC.Right' => array(
       '#tag' => 'meta',
       '#attributes' => array(
-        'name' => 'DC.right',
+        'name' => 'DC.Right',
         'content' => $journal->dc_right,
+      )
+    ),
+    'DC.Creator.CorporateName' => array(
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'name' => 'DC.Creator.CorporateName',
+        'content' => $journal->address,
       )
     )
   );

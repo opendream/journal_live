@@ -118,14 +118,9 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
   $form['data']['group'] = array('#type' => 'fieldset');
 
 //open_journal_multi_textfield($title='' , $values = FALSE, $name, $add_more_text='Add another', $add_more_text_show=TRUE ,$initail_show_field=2)
-  
-  $keywords_label = 'Keywords';
-  if (OPEN_JOURNAL_SUB_LANG_ENABLE) {
-    $form['data']['group']['subject_sub'] = open_journal_multi_textfield(OPEN_JOURNAL_SUB_LANG_KEYWORDS_LABEL,open_journal_get_field($data, 'subject_sub'), 'dc_subject');
-    $keywords_label .= ' ('.OPEN_JOURNAL_LANG_FULL_TEXT.')';
-  }
-  $form['data']['group']['subject_en'] = open_journal_multi_textfield($keywords_label,open_journal_get_field($data, 'subject_en'), 'dc_subject');
-  
+//($title='' , $values = FALSE, $name, $add_more_text='Add another', $add_more_text_show=TRUE ,$initail_show_field=2, $data=NULL, $required=FALSE)
+
+
   $author_label = 'Author';
   if (OPEN_JOURNAL_SUB_LANG_ENABLE) {
     $form['data']['group']['creator_sub'] = open_journal_multi_textfield(OPEN_JOURNAL_SUB_LANG_AUTHOR_LABEL ,open_journal_get_field($data, 'creator_sub'), 'dc_creator', 'Add co-author', TRUE, 1, NULL, TRUE);
@@ -133,6 +128,14 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
   }
     
   $form['data']['group']['creator_en'] = open_journal_multi_textfield($author_label ,open_journal_get_field($data, 'creator_en'), 'dc_creator', 'Add co-author', TRUE, 1, NULL, TRUE);
+  
+  
+  $keywords_label = 'Keywords';
+  if (OPEN_JOURNAL_SUB_LANG_ENABLE) {
+    $form['data']['group']['subject_sub'] = open_journal_multi_textfield(OPEN_JOURNAL_SUB_LANG_KEYWORDS_LABEL.'',open_journal_get_field($data, 'subject_sub'), 'dc_subject', 'Add another', TRUE, 2, NULL, TRUE);
+    $keywords_label .= ' ('.OPEN_JOURNAL_LANG_FULL_TEXT.')';
+  }
+  $form['data']['group']['subject_en'] = open_journal_multi_textfield($keywords_label,open_journal_get_field($data, 'subject_en'), 'dc_subject');
   
  
 
@@ -322,13 +325,23 @@ function open_journal_multi_textfield($title='' , $values = FALSE, $name, $add_m
 
     // hardcode
     
-
-    $multi_textfield[] = array(
-      '#type' => 'textfield',
-      '#attributes' => array('class' => array('multi-textfield', 'multi-textfield-'.$i) ,'alt' => $alt),
-      '#default_value' => $values[$i],
+    // Check required on first input field
+    if($i == 0) {
+      $multi_textfield[] = array(
+        '#type' => 'textfield',
+        '#attributes' => array('class' => array('multi-textfield', 'multi-textfield-'.$i) ,'alt' => $alt),
+        '#default_value' => $values[$i],
+        //'#required' => $required,
+      );
+    }
+    else {
+      $multi_textfield[] = array(
+        '#type' => 'textfield',
+        '#attributes' => array('class' => array('multi-textfield', 'multi-textfield-'.$i) ,'alt' => $alt),
+        '#default_value' => $values[$i],
+      );
+    }
     
-    );
     
   }
   if($add_more_text_show) {
