@@ -766,11 +766,11 @@ function open_journal_journal_load($jid) {
   
   if (OPEN_JOURNAL_SUB_LANG_ENABLE && $data->dc_language != 'en') {
     $data->title = $data->title_sub? $data->title_sub: $data->title_en;
-    $data->title_second = $data->title_en? $data->title_en: $data->title_sub;
+    $data->alt_title = $data->title_en? $data->title_en: $data->title_sub;
   }
   else {
     $data->title = $data->title_en? $data->title_en: $data->title_sub;
-    $data->title_second = $data->title_sub? $data->title_sub: $data->title_en;
+    $data->alt_title = $data->title_sub? $data->title_sub: $data->title_en;
   }
 
   return $data;
@@ -1446,7 +1446,7 @@ function open_journal_overview($journal) {
       '#tag' => 'meta',
       '#attributes' => array(
         'name' => 'DC.Title.Alternative',
-        'content' => $journal->title_second,
+        'content' => $journal->alt_title,
       )
     ),
     'DC.Creator' => array(
@@ -1608,12 +1608,7 @@ function open_journal_overview($journal) {
   }
   $abstract = check_markup($abstract, 'filtered_html');
   
-  if(OPEN_JOURNAL_SUB_LANG_ENABLE && $journal->dc_language != 'en') {
-    $alt_title = $journal->title_en;
-  }
-  else {
-    $alt_title = $journal->title_sub;
-  }
+   
   $abstract = check_markup($abstract, 'filtered_html');
   
   // Prepare information sidebar
@@ -1733,7 +1728,7 @@ function open_journal_overview($journal) {
     'content' => theme('open_journal_overview_content', array(
       'jid' => $journal->jid,
       'abstract' => $abstract,
-      'alt_title' => $alt_title,
+      'alt_title' => $journal->alt_title,
       'last_update' => date('d M Y', $file_last[0]->created),
       'update_by' => $user_info['display_name'],
       'latest_file' => file_create_url($file->uri),
