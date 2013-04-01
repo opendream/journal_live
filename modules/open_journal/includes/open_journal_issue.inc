@@ -652,6 +652,7 @@ function open_journal_issue_view($issue, $is_feed = FALSE) {
       $title = l($journal->title, 'journal/'. $journal->jid);
       if ($journal->dc_identifier) {
         $options['attributes']['target'] = '_blank';
+        $title .= ' By: '.$journal->dc_creator;
         $title .= ' ('. l(t('PDF'), $journal->dc_identifier, $options) .')';
       }
       $item['children'][] = $title;

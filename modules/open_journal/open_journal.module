@@ -2833,7 +2833,7 @@ function open_journal_list_autocomplete($string = '') {
 
   if ($string) {
 
-   $result = db_query("SELECT j.jid, j.title_sub, j.title_en, j.dc_language, j.dc_title 
+   $result = db_query("SELECT j.jid, j.title_sub, j.title_en, j.dc_language, j.dc_title, j.dc_creator
       FROM open_journal_journal j 
       LEFT JOIN open_journal_issue_journal  ij  
       ON j.jid = ij.jid 
@@ -2843,8 +2843,11 @@ function open_journal_list_autocomplete($string = '') {
 
     foreach ($result as $row) {
       $title = ($row->dc_language == 'en')? $row->title_en: $row->title_sub;
-      //$title = $row->dc_title;
-      $matches[$title .' [id:'. $row->jid .']'] = check_plain($title);
+      //$title = $title.'(aaa)';
+
+      // Display Author
+      $author = ' By: '.$row->dc_creator;
+      $matches[$title .' [id:'. $row->jid .']'] = check_plain($title.$author);
     }
   }
 
