@@ -45,6 +45,7 @@ define('OPEN_JOURNAL_LIST_IPP', 20);
 
 
 define('OPEN_JOURNAL_STATUS_INFORMATON_APPROVE_KEY', 0);
+
 define('OPEN_JOUNAL_STATUS', serialize (
   array(
     OPEN_JOURNAL_STATUS_INFORMATON_APPROVE_KEY => 'Information review',
@@ -54,6 +55,14 @@ define('OPEN_JOUNAL_STATUS', serialize (
   )
 ));
 
+define('OPEN_JOUNAL_STATUS_UPPERCASE', serialize (
+  array(
+    OPEN_JOURNAL_STATUS_INFORMATON_APPROVE_KEY => 'Information Review',
+    OPEN_JOURNAL_STATUS_DOCUMENT_APPROVE => 'Document Review',
+    OPEN_JOURNAL_STATUS_CATLOGUED => 'Library Catalogue',
+    OPEN_JOURNAL_STATUS_PUBLISHED => 'Publication',
+  )
+));
 
 define('OPEN_JOURNAL_INFORMAL_STATUS_REVIEWING', 0);
 define('OPEN_JOURNAL_INFORMAL_STATUS_AGREE', 1);
