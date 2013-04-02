@@ -135,7 +135,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
     $form['data']['group']['subject_sub'] = open_journal_multi_textfield(OPEN_JOURNAL_SUB_LANG_KEYWORDS_LABEL.'',open_journal_get_field($data, 'subject_sub'), 'dc_subject', 'Add another', TRUE, 2, NULL, TRUE);
     $keywords_label .= ' ('.OPEN_JOURNAL_LANG_FULL_TEXT.')';
   }
-  $form['data']['group']['subject_en'] = open_journal_multi_textfield($keywords_label,open_journal_get_field($data, 'subject_en'), 'dc_subject');
+  $form['data']['group']['subject_en'] = open_journal_multi_textfield($keywords_label,open_journal_get_field($data, 'subject_en'), 'dc_subject', 'Add another', TRUE, 2, NULL, TRUE);
   
  
 
