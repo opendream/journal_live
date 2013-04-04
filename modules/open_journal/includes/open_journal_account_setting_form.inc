@@ -77,6 +77,6 @@ function open_journal_account_setting_form_submit($form, &$form_state) {
     drupal_goto(OPEN_JOURNAL_PREFIX_PATH);
   }
   else {
-    drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/journal/add');
+    drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/add');
   }
 }
