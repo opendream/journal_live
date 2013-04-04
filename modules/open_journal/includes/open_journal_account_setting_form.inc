@@ -53,6 +53,7 @@ function open_journal_account_setting_form($form, &$form_state) {
   $form['#validate'][] = 'user_profile_form_validate';
   // Add the final user profile form submit handler.
   $form['#submit'][] = 'user_profile_form_submit';
+  $form['#submit'][] = 'open_journal_account_setting_form_submit';
 
 
   if (variable_get('nocurrent_pass_disabled', TRUE)) {
@@ -68,4 +69,14 @@ function open_journal_account_setting_form($form, &$form_state) {
 
 
   return $form;
+}
+
+
+function open_journal_account_setting_form_submit($form, &$form_state) {
+  if (user_access('access contributor process')) {
+    drupal_goto(OPEN_JOURNAL_PREFIX_PATH);
+  }
+  else {
+    drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/journal/add');
+  }
 }
