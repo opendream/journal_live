@@ -2921,6 +2921,7 @@ ul.journal-informal-approve-list li .user-name-wrapper {
 }
 .page-issue-view .item-list ul.section-list ul li {
 	font-size: 18px;
+	margin-bottom: 10px;
 	list-style-type: disc;
 	list-style-position: inside;
 }

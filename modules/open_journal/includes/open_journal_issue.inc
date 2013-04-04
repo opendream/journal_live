@@ -421,7 +421,8 @@ function open_journal_issue_form_validate($form, &$form_state) {
         // Explicit nid. Check that the 'title' part matches the actual title for
         // the nid.
         list(, $title, $jid) = $matches;
-
+        
+        
         if (!empty($title)) {
           $data = db_select('open_journal_journal', 'j')
             ->fields('j', array('dc_title', 'title_sub', 'title_en', 'dc_language'))
@@ -430,7 +431,7 @@ function open_journal_issue_form_validate($form, &$form_state) {
             ->fetchObject();
             
           $real_title = $data->dc_language == 'en'? $data->title_en: $data->title_sub;
-
+                    
           if (trim($title) === trim($real_title)) {
             $empty_journal = FALSE;
             $form_state['values']['sections'][$delta]['journals'][$delta2]['jid'] = $jid;
@@ -649,10 +650,17 @@ function open_journal_issue_view($issue, $is_feed = FALSE) {
     $item['data'] = '<h3>'. $section->title .'</h3>';
     $item['children'] = array();
     foreach ($section->journals as $journal) {
+      
+      $creator = $journal->creator;
+      $creator = array_filter($creator);
+      $creator = implode(', ', $creator);
+      
       $title = l($journal->title, 'journal/'. $journal->jid);
+      if ($creator) {
+        $title .= ' by <em>'.$creator.'</em>';
+      }
       if ($journal->dc_identifier) {
         $options['attributes']['target'] = '_blank';
-        $title .= ' By: '.$journal->dc_creator;
         $title .= ' ('. l(t('PDF'), $journal->dc_identifier, $options) .')';
       }
       $item['children'][] = $title;

@@ -55,15 +55,6 @@ define('OPEN_JOUNAL_STATUS', serialize (
   )
 ));
 
-define('OPEN_JOUNAL_STATUS_UPPERCASE', serialize (
-  array(
-    OPEN_JOURNAL_STATUS_INFORMATON_APPROVE_KEY => 'Information Review',
-    OPEN_JOURNAL_STATUS_DOCUMENT_APPROVE => 'Document Review',
-    OPEN_JOURNAL_STATUS_CATLOGUED => 'Library Catalogue',
-    OPEN_JOURNAL_STATUS_PUBLISHED => 'Publication',
-  )
-));
-
 define('OPEN_JOURNAL_INFORMAL_STATUS_REVIEWING', 0);
 define('OPEN_JOURNAL_INFORMAL_STATUS_AGREE', 1);
 define('OPEN_JOURNAL_INFORMAL_STATUS_FAIL', 2);
@@ -781,6 +772,14 @@ function open_journal_journal_load($jid) {
     $data->title = $data->title_en? $data->title_en: $data->title_sub;
     $data->alt_title = $data->title_sub? $data->title_sub: $data->title_en;
   }
+
+  if (OPEN_JOURNAL_SUB_LANG_ENABLE && $data->dc_language != 'en') {
+    $data->creator = $data->creator_sub? $data->creator_sub: $data->creator_en;
+  }
+  else {
+    $data->creator = $data->creator_en? $data->creator_en: $data->creator_sub;
+  }
+
 
   return $data;
 }
@@ -2844,9 +2843,14 @@ function open_journal_list_autocomplete($string = '') {
     foreach ($result as $row) {
       $title = ($row->dc_language == 'en')? $row->title_en: $row->title_sub;
       //$title = $title.'(aaa)';
-
+      
+      $creator = explode(',', $row->dc_creator);
+      $creator = array_filter($creator);
+      if (!empty($creator)) {
+        $author = ' -- '.$creator[0];
+      }
+      
       // Display Author
-      $author = ' By: '.$row->dc_creator;
       $matches[$title .' [id:'. $row->jid .']'] = check_plain($title.$author);
     }
   }

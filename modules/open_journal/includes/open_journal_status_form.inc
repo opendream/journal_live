@@ -132,12 +132,12 @@ function open_journal_approve_sidebar_form_submit($form, &$form_state) {
 	open_journal_journal_save($journal, TRUE);
 	
 	// Create new discustion
-	$status_list = unserialize(OPEN_JOUNAL_STATUS_UPPERCASE);
+	$status_list = unserialize(OPEN_JOUNAL_STATUS);
 	$status_name = $status_list[$next_status];
 
 	$discussion = array(
     'jid' => $jid,
-    'title' => t('Congratulations! Status is now changed to '.$status_name ),
+    'title' => t('Congratulations! Status is now changed to '.ucwords($status_name) ),
     'description' => 'Your comments are now welcome in Discussions.',
   );
 
