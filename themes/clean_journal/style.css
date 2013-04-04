@@ -2078,9 +2078,9 @@ h2.journal-block-title {
 .form-item-description-en {
 	margin-bottom: 20px;
 }
-#edit-data .form-text,
-#edit-data .form-textarea,
-#edit-data #edit-dc-language {
+#open-journal-information-form #edit-data .form-text,
+#open-journal-information-form #edit-data .form-textarea,
+#open-journal-information-form #edit-data #edit-dc-language {
 	float: right;
 	width: 180px;
 }
