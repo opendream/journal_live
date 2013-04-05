@@ -463,6 +463,10 @@ function open_journal_issue_form_validate($form, &$form_state) {
  */
 function open_journal_issue_form_submit($form, &$form_state) {
   global $user;
+  
+  // sender email
+  $sender = $user;
+  
   $values = $form_state['values'];
   //==drupal_set_message(print_r($form_state, 1));
   // Update.
@@ -505,6 +509,7 @@ function open_journal_issue_form_submit($form, &$form_state) {
       ))
       ->execute();
   }
+  
 
   if ($issue_id) {
 
@@ -512,6 +517,8 @@ function open_journal_issue_form_submit($form, &$form_state) {
       db_query("DELETE FROM open_journal_issue_section WHERE iid = :iid", array(':iid' => $issue_id));
       db_query("DELETE FROM open_journal_issue_journal WHERE iid = :iid", array(':iid' => $issue_id));
     }
+    
+    $send_email = $values['published'] && variable_get('open_journal_issue_published_'.$issue_id, TRUE);
 
     $input_sections = $form_state['input']['sections'];
     foreach ($values['sections'] as $key_section => $section) {
@@ -547,9 +554,29 @@ function open_journal_issue_form_submit($form, &$form_state) {
               'weight' => $journal['weight'],
             ))
             ->execute();
+            
+          // send email to reviewers          
+          if ($send_email) {
+            
+            $_journal = open_journal_journal_load($journal['jid']);
+            $reciver = user_load($_journal->uid);
+            $values['iid'] = $issue_id;
+            
+            $data->sender = $sender;
+            $data->reciver = $reciver;
+            $data->journal = $_journal;
+            $data->issue = (object) $values;
+            
+            drupal_mail('open_journal', 'open_journal_issue_published', $reciver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
+          }
         }
       }
     }
+    
+    if ($send_email) {
+      variable_set('open_journal_issue_published_'.$issue_id, FALSE);
+    }
+    
     drupal_goto('issue/'. $issue_id .'/view');
   }
 }

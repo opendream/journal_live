@@ -1211,6 +1211,26 @@ function open_journal_mail($key, &$message, $data) {
       $message['body'][] = $body;
       
       break;
+    
+    case 'open_journal_issue_published':
+      
+      $message['subject'] = open_journal_trim($data->journal->title, 20).' was published on issue '.open_journal_trim($data->issue->title, 20);
+
+      $body = "\n";
+      $body .= "\n".'Article: '.$data->journal->title;
+      $body .= "\n".'------------------------------------------------------------------------';
+      $body .= "\n";
+      $body .= "\n".'Your article was published.';
+      $body .= "\n".'Issue title: '.open_journal_trim($data->issue->title);
+      $body .= "\n";
+      $body .= "\n".'------------------------------------------------------------------------';
+      $body .= "\n".'More details at HSRI e-journal.';
+      $body .= "\n".url('issue/'.$data->issue->iid.'/view', array('absolute' => TRUE));
+
+      $message['body'][] = $body;
+
+      break;
+      
   }
   
   global $conf;
