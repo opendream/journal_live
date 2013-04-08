@@ -42,6 +42,8 @@ define('OPEN_JOURNAL_STATUS_PUBLISHED', 3);
 define('OPEN_JOURNAL_DISPLAY_IMAGE_USER_LIST_LIMIT', 9);
 define('OPEN_JOURNAL_LIST_IPP', 20);
 
+define('OPEN_JOURNAL_REMINDER_DAYS', 15);
+
 
 
 define('OPEN_JOURNAL_STATUS_INFORMATON_APPROVE_KEY', 0);
@@ -542,6 +544,11 @@ function open_journal_permission() {
       'title' => t('Informal approve journal'),
       'description' => t('Perform user can informal approve journal for that user only. Recommented for reviewer role.'),
     ),
+    'receive daily reminder email' => array(
+      'title' => t('Receive daily reminder email'),
+      'description' => t('Allow people that active on article can receive email notification when article not active after '.OPEN_JOURNAL_REMINDER_DAYS.' days'),
+    ),
+    
 
     // Backend permission
     'create update delete issue' => array(
@@ -729,7 +736,7 @@ function open_journal_get_field($data, $field_name, $default_value=NULL) {
 /**
  * Journal method
  */
-function open_journal_journal_load($jid) {
+function open_journal_journal_load($jid, $ignore_access=FALSE) {
   global $user;
   // check user access permission
   $can_access = FALSE;
@@ -752,8 +759,8 @@ function open_journal_journal_load($jid) {
   
   $data = $data->execute();
   $data = $data->fetchObject();
-
-  if(!$can_access || empty($data)) {
+  
+  if(!$ignore_access && (!$can_access || empty($data))) {
     return 0;
   }
 
@@ -1132,7 +1139,7 @@ function open_jounal_comment_mail($data) {
     $data->reciver = $reciver;
     
     if (!$data->discussion->contributor_only || user_access('access contributor process', $reciver)) {
-     drupal_mail('open_journal', 'open_journal_comment_add', $reciver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
+      drupal_mail('open_journal', 'open_journal_comment_add', $reciver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
     }
   }
 
@@ -1167,7 +1174,7 @@ function open_journal_mail($key, &$message, $data) {
         $body .= "\n";
       }
       $body .= "\n".'------------------------------------------------------------------------';
-      $body .= "\n".'More details at HSRI e-journal.';
+      $body .= "\n".'More details on link below.';
       $body .= "\n".url(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->journal->jid.'/discussion/'.$data->did, array('absolute' => TRUE));
 
 
@@ -1188,7 +1195,7 @@ function open_journal_mail($key, &$message, $data) {
       $body .= "\n".$data->sender->name.': '.$data->message;
       $body .= "\n";
       $body .= "\n".'------------------------------------------------------------------------';
-      $body .= "\n".'View more detail on '.$site_name.': ';
+      $body .= "\n".'View more detail on link below.';
       $body .= "\n".url(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->journal->jid.'/discussion/'.$data->did, array('absolute' => TRUE));
 
 
@@ -1224,13 +1231,31 @@ function open_journal_mail($key, &$message, $data) {
       $body .= "\n".'Issue title: '.open_journal_trim($data->issue->title);
       $body .= "\n";
       $body .= "\n".'------------------------------------------------------------------------';
-      $body .= "\n".'More details at HSRI e-journal.';
-      $body .= "\n".url('issue/'.$data->issue->iid.'/view', array('absolute' => TRUE));
+      $body .= "\n".'More details on link below.';
+      $body .= "\n".url(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->journal->jid, array('absolute' => TRUE));
 
       $message['body'][] = $body;
 
       break;
       
+    case 'open_journal_reminder_daily':
+    
+      $message['subject'] = 'Reminder for article '. open_journal_trim($data->journal->title, 20);
+      
+      $body = "\n";
+      $body .= "\n".'Article: '.$data->journal->title;
+      $body .= "\n".'------------------------------------------------------------------------';
+      $body .= "\n";
+      $body .= "\n".'The article was not update in '.OPEN_JOURNAL_REMINDER_DAYS.' days ago.';
+      $body .= "\n".'Please, check the article and response peoples related to active on the article.';
+      $body .= "\n";
+      $body .= "\n".'------------------------------------------------------------------------';
+      $body .= "\n".'More details on link below.';
+      $body .= "\n".url(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->journal->jid, array('absolute' => TRUE));
+
+      $message['body'][] = $body;
+      
+      break;
   }
   
   global $conf;
@@ -2878,70 +2903,60 @@ function open_journal_list_autocomplete($string = '') {
   drupal_json_output($matches);
 }
 
-/*
-function open_journal_cron() {
 
-  $interval = variable_get('open_journal_interval', 60*60*60*24*21);
-  if (time() >= variable_get('open_journal_next_execution', 0)) {
+
+function open_jounal_daily_mail($data) {
+  
+  $sender = (object) array(
+    'name' => 'System Mail'
+  );
+  
+  $journal_list = db_query("SELECT * FROM (SELECT j.jid, MAX(d.changed) last_update FROM open_journal_journal j, open_journal_discussion d WHERE d.jid = j.jid GROUP BY j.jid) t WHERE CEIL((unix_timestamp(CURRENT_TIMESTAMP) - t.last_update)/(60*60*24)) = ".OPEN_JOURNAL_REMINDER_DAYS)->fetchAll();
+  
+  
+  
+  foreach ($journal_list as $journal) {
+    $data = (object) array();
+  
+    $user_list = open_journal_people_active_list($journal->jid);
+    $data->journal = open_journal_journal_load($journal->jid, TRUE);
+        
+    foreach ($user_list as $reciver) {
     
-    open_journal_reviewer_warning_mail();
-    variable_set('open_journal_next_execution', time() + $interval);
+      if (!user_access('receive daily reminder email', $reciver)) {
+        continue;
+      }
+    
+      $data->sender = $sender;
+      $data->reciver = $reciver;
+      
+      drupal_mail('open_journal', 'open_journal_reminder_daily', $reciver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
+    }
+  
   }
+
 }
 
-function open_journal_reviewer_warning_mail(){
-  // Get reviewer user in active journal(includeing infomation review, document review and library catalogue status) for checking about updated discussion, comment or infomal status
-  $user_reviewer_active = db_query(" SELECT jp.jid, 
-    jp.uid, 
-    jp.informal_approve_status, 
-    j.`status`, 
-    j.reject
-    FROM open_journal_journal_people jp 
-    LEFT JOIN open_journal_journal j ON jp.jid = j.jid 
-    WHERE j.`status` <> 3 AND j.reject <> 1 "
-  );
-
-  $user_reviewer_active_list = $user_reviewer_active->fetchAll();
-
-  foreach ($user_reviewer_active_list as $user_reviewer_active) {
-    // Check only reviewer user
-    $user_info = user_load($user_reviewer_active->uid);
-
-    if(in_array('reviewer', $user_info->roles)) {
-      // If user not informal approve, discussion, comment  sending mail
-      if(!$user_reviewer_active->informal_approve_status) {
-        $sql = " SELECT d.uid AS du, 
-          c.uid AS cu
-          FROM open_journal_discussion d 
-          LEFT JOIN open_journal_comment c ON d.did = c.did
-          WHERE (d.uid = :uid OR c.uid = :uid) AND d.jid = :jid ";
-        
-          $result = db_query($sql, array(':uid' => $user_reviewer_active->uid, ':jid' => $user_reviewer_active->jid));
-          $result = $result->fetchAll();
-          if(!$result) {
-            // Sending mail
-            $user_admin = user_load(1);
-
-            $sender_info = open_journal_get_display_user_info($user_admin);
-            $sender->name = $sender_info['display_name_text'];
-
-            $data = array('message' => 'You have the article waiting for you review. Please click this link for review article.');
-            $data = (object) $data;
-
-            $data->journal = open_journal_journal_load($user_reviewer_active->jid);
-            $data->sender = $user_admin;
-            $data->reciver = user_load($user_reviewer_active->uid);
-
-            drupal_mail('open_journal', 'open_journal_people_invite', $user_info->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
-
-          }
-      }
-
-    }
+function open_journal_cron() {
+  //$cron_last = variable_set('open_journal_cron_last', 0); 
+  
+  $cron_last = variable_get('open_journal_cron_last', 0);  
+  if(date('ymd', $cron_last) != date('ymd', time())) {
+    
+    open_jounal_daily_mail($journal);
+    
+    variable_set('open_journal_cron_last', REQUEST_TIME);
   }
   
-
+  
+  
 }
-*/
+
+
+
+
+
+
+
 
 
