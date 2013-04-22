@@ -120,7 +120,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
 //open_journal_multi_textfield($title='' , $values = FALSE, $name, $add_more_text='Add another', $add_more_text_show=TRUE ,$initail_show_field=2)
 //($title='' , $values = FALSE, $name, $add_more_text='Add another', $add_more_text_show=TRUE ,$initail_show_field=2, $data=NULL, $required=FALSE)
 
-
+  
   $author_label = 'Author';
   if (OPEN_JOURNAL_SUB_LANG_ENABLE) {
     $form['data']['group']['creator_sub'] = open_journal_multi_textfield(OPEN_JOURNAL_SUB_LANG_AUTHOR_LABEL ,open_journal_get_field($data, 'creator_sub'), 'dc_creator', 'Add co-author', TRUE, 1, NULL, TRUE);
