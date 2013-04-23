@@ -548,9 +548,9 @@ function open_journal_permission() {
       'title' => t('Receive daily reminder email'),
       'description' => t('Allow people that active on article can receive email notification when article not active after '.OPEN_JOURNAL_REMINDER_DAYS.' days'),
     ),
-    'can not view authors list' => array(
-      'title' => t('Can not view authors list'),
-      'description' => t('Specify user can not view author list. Recommented for reviewer role'),
+    'can not view authors data' => array(
+      'title' => t('Can not view authors data'),
+      'description' => t('Specify user can not view author list and view last file only. Recommented for reviewer role'),
     ),
     
 
@@ -1615,7 +1615,14 @@ function open_journal_overview($journal) {
     $discussion_data[$i]['url'] = '';
     $discussion_data[$i]['jid'] = $journal->jid;
     $discussion_data[$i]['contributor_only'] = $row->contributor_only;
-    $discussion_data[$i]['fid'] = $row->fid;
+      
+    // Reviewer can view lastest file only
+    global $user;
+    if($user->uid == 1 || !user_access('can not view authors data')  || $row->fid == $file_last[0]->fid) {
+      $discussion_data[$i]['fid'] = $row->fid;  
+    }
+
+    
     $i++;
   }
   // calculate total more link to discussion journal
@@ -1685,7 +1692,7 @@ function open_journal_overview($journal) {
   }
 
   global $user;
-  if(($information_field['creator_sub'] || $information_field['creator_en']) && ($user->uid == 1 || !user_access('can not view authors list'))) {
+  if(($information_field['creator_sub'] || $information_field['creator_en']) && ($user->uid == 1 || !user_access('can not view authors data'))) {
 
     $creator_label = 'Author';
     $co_author_label = 'Co-Authors';
@@ -1876,6 +1883,16 @@ function open_journal_discussion_list($journal) {
 
 
   $discussion_list = open_journal_discussion_list_limit($journal);
+
+  // Reviewer view lastest file only
+  $file_last = open_journal_get_file_list($journal->jid, 1);
+  foreach ($discussion_list as &$discussion) {
+    global $user;
+    if(!($user->uid == 1 || !user_access('can not view authors data')  || $discussion->fid == $file_last[0]->fid)) {
+      $discussion->fid = 0;  
+    }
+
+  }
 
   $mpath = drupal_get_path('module', 'open_journal');
   $image_file = theme('image', array(
@@ -2089,6 +2106,11 @@ function open_journal_discussion_detail($journal, $discussion) {
   $discussion->description = check_markup(Markdown($discussion->description), 'filtered_html');
   $discussion->file = $discussion->fid? file_load($discussion->fid): NULL;
   $discussion->can_edit = $user->uid == $discussion->uid;
+  // Revewer can view lastest file only
+  $file_last = open_journal_get_file_list($journal->jid, 1);
+  if(!($user->uid == 1 || !user_access('can not view authors data')  || $discussion->fid == $file_last[0]->fid)) {
+    $discussion->file = NULL;  
+  }
 
   $comment_list = open_journal_comment_load_all($discussion->did);
   foreach ($comment_list as &$comment) {
@@ -2096,6 +2118,10 @@ function open_journal_discussion_detail($journal, $discussion) {
     $comment->message = check_markup(Markdown($comment->message), 'filtered_html');
     $comment->file = $comment->fid? file_load($comment->fid): NULL;
     $comment->can_edit = $user->uid == $comment->uid;
+    // Revewer can view lastest file only
+    if(!($user->uid == 1 || !user_access('can not view authors data')  || $comment->fid == $file_last[0]->fid)) {
+      $comment->file = NULL;  
+    }
   }
 
 
@@ -2199,7 +2225,16 @@ function open_journal_get_file_list($jid, $limit=NULL) {
 
 function open_journal_file($journal) {
 
-  $file_list = open_journal_get_file_list($journal->jid);
+  // Revewer can view lastest file only
+  global $user;
+  if($user->uid == 1 || !user_access('can not view authors data')) {
+    $file_list = open_journal_get_file_list($journal->jid);
+  }
+  else {
+    $file_list = open_journal_get_file_list($journal->jid, 1);  
+  }
+
+  
 
   return theme('open_journal_detail', array(
     'content' => theme('open_journal_file', array(
@@ -2515,7 +2550,7 @@ function open_journal_display_roles($user_roles) {
 function open_journal_get_field_settings() {
   // DC field settings
   global $user;
-  if($user->uid == 1 || !user_access('can not view authors list')) {
+  if($user->uid == 1 || !user_access('can not view authors data')) {
     $access_author = 1;
   }
   else {
