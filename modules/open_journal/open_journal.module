@@ -1927,6 +1927,7 @@ function open_journal_overview($journal) {
   foreach($discussion as $row) {
 
     $discussion_data[$i]['did'] = $row->did;
+    $discussion_data[$i]['uid'] = $row->uid;
     $discussion_data[$i]['user_info'] = $row->user;
 
     // System discussion 
@@ -3310,6 +3311,7 @@ function open_journal_get_display_user_info($account, $variables=array()) {
   if ($account->uid == 0) {
     $info['display_name'] = 'System';
     $info['display_name_text'] = 'System';
+    $info['display_picture'] = strip_tags($info['display_picture'], '<img>');
   }
   return $info;
 

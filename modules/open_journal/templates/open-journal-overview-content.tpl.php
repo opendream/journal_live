@@ -54,7 +54,9 @@
         </div>
 
         <div class="discus-title">
-          <?php if($data['fid']):?>
+          <?php if ($data['uid'] == 0):?>
+            <?php print $data['title']; ?>
+          <?php elseif($data['fid']):?>
             <?php  print l($data['title'].'<span class="file-attach">'.$image_file.'</span>', OPEN_JOURNAL_PREFIX_PATH.'/'.$data['jid'].'/discussion/'.$data['did'], array('html' => TRUE));?>
           <?php else:?>
             <?php  print l($data['title'], OPEN_JOURNAL_PREFIX_PATH.'/'.$data['jid'].'/discussion/'.$data['did'], array('html' => TRUE));?>
