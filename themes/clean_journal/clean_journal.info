@@ -1,0 +1,11 @@
+name = Clean journal
+description = A clean e journal theme.
+package = open_journal
+version = VERSION
+core = 7.x
+stylesheets[screen][] = reset.css
+stylesheets[screen][] = style.css
+scripts[] = main.js
+scripts[] = open_journal_list_compact.js
+regions[content] = Content
+

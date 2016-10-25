@@ -1,0 +1,1249 @@
+<?php
+
+function open_journal_schema() {
+	$schema['open_journal_journal'] = array(
+    'fields' => array(
+      'jid' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'uid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'created' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'changed' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'sid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0
+      ),
+      'status_changed' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      
+      'title_en' => array(
+        'type' => 'text',
+        'size' => 'normal'
+      ),
+      'title_sub' => array(
+        'type' => 'text',
+        'size' => 'normal'
+      ),
+      'description_en' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
+      'description_sub' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
+      'subject_en' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
+      'subject_sub' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
+      'creator_en' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
+      'creator_sub' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
+      'publisher_en' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
+      'publisher_sub' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
+      'contributor_en' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
+      'contributor_sub' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
+      'coverage_en' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'coverage_sub' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'right_en' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'right_sub' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      
+      'address_en' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
+      'address_sub' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
+      'address' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
+      
+
+      // Dublin core
+      'dc_title' => array(
+        'type' => 'text',
+        'size' => 'normal'
+      ),
+      'dc_description' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
+      'dc_subject' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
+      'dc_creator' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
+      'dc_publisher' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
+      'dc_contributor' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
+      'dc_date' => array(
+        'type' => 'int',
+        'not null' => FALSE,
+      ),
+      'dc_language' => array(
+        'type' => 'varchar',
+        'length' => 2,
+        'not null' => FALSE,
+      ),
+      'dc_identifier' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+
+      // Hidden column
+      'dc_type' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'dc_format' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'dc_coverage' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'dc_right' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'reject' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'reject_reason' => array(
+        'type' => 'text',
+        'not null' => FALSE,
+      ),
+
+    ),
+    'primary key' => array('jid'),
+  );
+
+  $schema['open_journal_journal_people'] = array(
+    'fields' => array(
+      'jid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'uid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'created' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'informal_approve_status' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'status' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 1,
+      ),
+      'role_list' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+    ),
+  );
+
+  $schema['open_journal_discussion'] = array(
+    'fields' => array(
+      'did' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'uid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'jid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'title' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'description' => array(
+        'type' => 'text',
+        'size' => 'big'
+      ),
+      'fid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'contributor_only' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'size' => 'tiny',
+        'default' => 0
+      ),
+      'permanent' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'size' => 'tiny',
+        'default' => 0
+      ),
+      'created' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'changed' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('did'),
+  );
+
+  $schema['open_journal_comment'] = array(
+    'fields' => array(
+      'cid' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'uid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'did' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'message' => array(
+        'type' => 'text',
+        'size' => 'big'
+      ),
+      'fid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'created' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'changed' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('cid'),
+  );
+
+  $schema['open_journal_issue'] = array(
+    'fields' => array(
+      'iid' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'title' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'uid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'status' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 1,
+      ),
+      'volume' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'number' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'year' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'publish_date' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'access_date' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'current' => array(
+        'type' => 'int',
+        'length' => 1,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'published' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 1,
+      ),
+      'created' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'changed' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('iid'),
+  );
+
+  $schema['open_journal_issue_section'] = array(
+    'fields' => array(
+      'sid' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'iid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'title' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'weight' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ), 
+    ),
+    'primary key' => array('sid', 'iid'),
+  );
+
+  $schema['open_journal_issue_journal'] = array(
+    'fields' => array(
+      'jid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'sid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'iid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'weight' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('jid', 'iid', 'sid'),
+  );
+
+  $schema['open_journal_state'] = array(
+    'fields' => array(
+      'sid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'code' => array(
+        'type' => 'varchar',
+        'length' => 100,
+        'not null' => TRUE,
+        'default' => '', 
+      ),
+      'name' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '', 
+      ),
+      'description' => array(
+        'type' => 'text',
+        'size' => 'normal'
+      ),
+      'next_sid' => array(
+        'type' => 'int',
+        'not null' => FALSE,
+        'default' => 0,
+      ),
+      'parent_sid' => array(
+        'type' => 'int',
+        'not null' => FALSE,
+        'default' => 0,
+      ),
+      'is_root' => array(
+        'type' => 'int',
+        'not null' => FALSE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('sid'),
+  );
+
+  $schema['open_journal_journal_state'] = array(
+    'fields' => array(
+      'jsid' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'jid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'sid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'start_date' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'end_date' => array(
+        'type' => 'int',
+        'not null' => FALSE,
+      ),
+    ),
+    'primary key' => array('jsid'),
+  );
+  $schema['open_journal_template'] = array(
+    'fields' => array(
+      'tpid' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'sid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'title' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'template_title' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'body' => array(
+        'type' => 'text',
+        'size' => 'normal'
+      ),
+      'auto' => array(
+        'type' => 'int',
+        'not null' => FALSE,
+        'default' => 0,
+      ),
+      'reject' => array(
+        'type' => 'int',
+        'not null' => FALSE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('tpid'),
+  );
+
+  $schema['open_journal_template_role'] = array(
+    'fields' => array(
+      'trid' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'rid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'tpid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('trid'),
+
+  );
+
+  $schema['open_journal_discussion_role'] = array(
+    'fields' => array(
+      'dsid' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'rid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'did' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('dsid'),
+  );
+
+  $schema['open_journal_discussion_file'] = array(
+    'fields' => array(
+      'dfid' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'fid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'did' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('dfid'),
+  );
+  return $schema;
+
+}
+
+/**
+ * Implements hook_update_N().
+ */
+ /*
+function open_journal_update_7002(&$sandbox) {
+  $schema = drupal_get_schema_unprocessed('open_journal');
+  db_create_table('open_journal_issue', $schema['open_journal_issue']);
+  db_create_table('open_journal_issue_section', $schema['open_journal_issue_section']);
+  db_create_table('open_journal_issue_journal', $schema['open_journal_issue_journal']);
+  return 'Add the open_journal_issue, open_journal_issue_section, open_journal_issue_journal tables for the open journal module.';
+}
+*/
+function open_journal_update_7003(&$sandbox) {
+
+  $schema = open_journal_schema();
+  db_create_table('open_journal_state', $schema['open_journal_state']);
+
+  $data = array(
+    array(
+      'sid' => 0,
+      'code' => 'information_review',
+      'name' => 'Information review',
+      'description' => 'Information review state',
+      'next_sid' => 4,
+      'parent_sid' => NULL,
+      'is_root' => 1,
+    ),
+    array(
+      'sid' => 4,
+      'code' => 'editor_first_view',
+      'name' => 'Editor first view',
+      'description' => 'Editor first view state',
+      'next_sid' => 5,
+      'parent_sid' => NULL,
+      'is_root' => 1,
+    ),
+    array(
+      'sid' => 5,
+      'code' => 'document_review',
+      'name' => 'Document review',
+      'description' => 'Document review state',
+      'next_sid' => 1,
+      'parent_sid' => NULL,
+    ),
+    array(
+      'sid' => 1,
+      'code' => 'reviewers',
+      'name' => 'Reviewers',
+      'description' => 'Reviewers state',
+      'next_sid' => 6,
+      'parent_sid' => 5,
+      'is_root' => 1,
+    ),
+    array(
+      'sid' => 6,
+      'code' => 'revision',
+      'name' => 'Revision',
+      'description' => 'Revision state',
+      'next_sid' => 7,
+      'parent_sid' => 5,
+    ),
+    array(
+      'sid' => 7,
+      'code' => 'edit_1',
+      'name' => 'Edit 1',
+      'description' => 'Edit 1 state',
+      'next_sid' => 8,
+      'parent_sid' => 5,
+    ),
+    array(
+      'sid' => 8,
+      'code' => 'edit_2',
+      'name' => 'Edit 2',
+      'description' => 'Edit 2 state',
+      'next_sid' => 9,
+      'parent_sid' => 5,
+    ),
+    array(
+      'sid' => 9,
+      'code' => 'editor_approval',
+      'name' => 'Editor approval (MS Words)',
+      'description' => 'Editor approval (MS Words) state',
+      'next_sid' => 10,
+      'parent_sid' => 5,
+    ),
+    array(
+      'sid' => 10,
+      'code' => 'artwork',
+      'name' => 'Artwork',
+      'description' => 'Artwork state',
+      'next_sid' => 11,
+      'parent_sid' => 5,
+    ),
+    array(
+      'sid' => 11,
+      'code' => 'author_check',
+      'name' => 'Author check',
+      'description' => 'Author check state',
+      'next_sid' => 12,
+      'parent_sid' => 5,
+    ),
+    array(
+      'sid' => 12,
+      'code' => 'editor_approval_of_artwork',
+      'name' => 'Editor approval of artwork',
+      'description' => 'Editor approval of artwork state',
+      'next_sid' => 13,
+      'parent_sid' => 5,
+    ),
+    array(
+      'sid' => 13,
+      'code' => 'proofreading',
+      'name' => 'Proofreading',
+      'description' => 'Proofreading state',
+      'next_sid' => 2,
+      'parent_sid' => 5,
+    ),
+    array(
+      'sid' => 2,
+      'code' => 'library_catalogue',
+      'name' => 'Library catalogue',
+      'description' => 'Library catalogue state',
+      'next_sid' => 3,
+      'is_root' => 1,
+      'parent_sid' => NULL,
+    ),
+    array(
+      'sid' => 3,
+      'code' => 'publication',
+      'name' => 'Publication',
+      'description' => 'Publication state',
+      'next_sid' => NULL,
+      'is_root' => 1,
+      'parent_sid' => NULL,
+    ),
+  );
+
+    $query = db_insert('open_journal_state')->fields(array(
+      'sid',
+      'code',
+      'name',
+      'description',
+      'next_sid',
+      'is_root',
+      'parent_sid',
+      )
+    );
+
+    foreach ($data as $record) {
+      $query->values($record);
+    }
+    $query->execute();
+
+}
+function open_journal_update_7004(&$sandbox) {
+
+    $schema = open_journal_schema();
+    db_create_table('open_journal_journal_state', $schema['open_journal_journal_state']);
+}
+
+function open_journal_update_7005(&$sandbox) {
+  $schema = open_journal_schema();
+  db_change_field('open_journal_journal', 'status', 'sid', $schema['open_journal_journal']['fields']['sid']);
+
+}
+
+function open_journal_update_7006(&$sandbox) {
+  $schema = open_journal_schema();
+  db_create_table('open_journal_template', $schema['open_journal_template']);
+  db_create_table('open_journal_template_role', $schema['open_journal_template_role']);
+}
+
+function open_journal_update_7007(&$sandbox) {
+  $schema = open_journal_schema();
+  db_create_table('open_journal_discussion_role', $schema['open_journal_discussion_role']);
+}
+
+function open_journal_update_7008(&$sandbox) {
+
+  $schema = open_journal_schema();
+  db_change_field('open_journal_journal_people', 'joined', 'created', $schema['open_journal_journal_people']['fields']['created']);
+
+  db_add_field('open_journal_journal_people', 'status', $schema['open_journal_journal_people']['fields']['status']);
+  db_add_field('open_journal_journal_people', 'role_list', $schema['open_journal_journal_people']['fields']['role_list']);
+
+}
+function open_journal_update_7009(&$sandbox) {
+  db_drop_primary_key('open_journal_journal_people');
+  db_add_primary_key('open_journal_journal_people', array('jid', 'uid', 'status'));
+}
+function open_journal_update_7010(&$sandbox) {
+  db_drop_primary_key('open_journal_journal_people');
+}
+
+function open_journal_update_7014(&$sandbox) {
+
+  $data = array(
+    array(
+      'tpid' => 4,
+      'sid' => 0,
+      'title' => 'Info review 1 (ส่งไปยังผู้ upload บทความ)',
+      'body' => 'เรียน @author 
+
+ตามที่ ท่านส่งบทความเรื่อง 
+@journal_id - @journal_title 
+มายังวารสารวิจัยระบบสาธารณสุขเพื่อรับการตีพิมพ์และ ทางวารสารฯ ได้รับบทความของท่านเรียบร้อยแล้ว
+ฝ่ายจัดการวารสาร',
+      'auto' => 1,
+      'reject' => 0,
+    ),
+    array(
+      'tpid' => 5,
+      'sid' => 0,
+      'title' => 'Info review 2 (ส่งไปยัง co-author ทั้งหมดที่กรอกในหน้า Add new article)',
+      'body' => 'เรียน @receiver 
+
+ด้วย @author ได้ส่งบทความเรื่อง
+@journal_id - @journal_title 
+มายังวารสารวิจัยระบบสาธารณสุขเพื่อรับการตีพิมพ์ โดยมีท่านเป็นผู้เขียนร่วม ทางวารสารฯ ขอให้ท่านแจ้งยืนยันหรือปฏิเสธภายใน 3 วันโดยคลิกที่ลิงค์เพื่อส่งข้อความถึงทางวารสาร และหากทางวารสารไม่ได้รับคำตอบจากท่านภายในกำหนดดังกล่าว จะขอถือว่าท่านเห็นด้วยกับการส่งบทความเพื่อรับการตีพิมพ์กับทางวารสาร
+ฝ่ายจัดการวารสาร
+',
+      'auto' => 2,
+      'reject' => 0,
+    ),
+    array(
+      'tpid' => 6,
+      'sid' => 0,
+      'title' => 'Info review 3 (ส่งไปยัง ผู้ส่งบทความ)',
+      'body' => 'เรียน @author
+
+ตามที่ ท่านส่งบทความเรื่อง
+@journal_id - @journal_title 
+มายังวารสารวิจัยระบบสาธารณสุขเพื่อรับการตีพิมพ์ ในเบื้องต้น ทางวารสารฯ ขอให้ท่านปรับแก้ ดังนี้
+.....
+
+โปรดดำเนินการภายใน 3 วัน หากท่านไม่สามารถดำเนินการได้ตามกำหนด ระบบจะส่งข้อความปฏิเสธการตีพิมพ์โดยอัตโนมัติ
+เมื่อท่านปฏิบัติตามคำแนะนำแล้วเราจึงจะส่งบทความเพื่อให้ผู้ทรงคุณวุฒิพิจารณา ขออภัยในความไม่สะดวกมา ณ ที่นี้ด้วย
+ฝ่ายจัดการวารสาร
+',
+      'auto' => 0,
+      'reject' => 0,
+    ),
+
+    array(
+      'tpid' => 7,
+      'sid' => 4,
+      'title' => 'Editor first 1 โดยบรรณาธิการ',
+      'body' => 'เรียน @author
+
+ตามที่ ท่านส่งบทความเรื่อง
+@journal_id - @journal_title 
+มายังวารสารวิจัยระบบสาธารณสุขเพื่อรับการตีพิมพ์ ในเบื้องต้น ทางวารสารฯ ขอให้ท่านปรับแก้ ดังนี้
+.....
+โปรดดำเนินการภายใน 10 วัน หากท่านไม่สามารถดำเนินการได้ตามกำหนด ระบบจะส่งข้อความปฏิเสธการตีพิมพ์โดยอัตโนมัติ
+เมื่อท่านปฏิบัติตามคำแนะนำแล้วเราจึงจะส่งบทความเพื่อให้ผู้ทรงคุณวุฒิพิจารณา ขออภัยในความไม่สะดวกมา ณ ที่นี้ด้วย
+ฝ่ายจัดการวารสาร
+',
+      'auto' => 1,
+      'reject' => 0,
+    ),
+
+    array(
+      'tpid' => 8,
+      'sid' => 4,
+      'title' => 'Editor first 2 - reject โดยบรรณาธิการ',
+      'body' => 'เรียน @author 
+
+ตามที่ ท่านส่งบทความเรื่อง
+@journal_id - @journal_title 
+มายังวารสารวิจัยระบบสาธารณสุขเพื่อรับการตีพิมพ์ ทางวารสารฯ ขอปฏิเสธการตีพิมพ์เนื่องจาก
+.....
+ทางวารสารฯ ขอขอบคุณ และหวังว่า โอกาสหน้าคงได้รับการติดต่อจากท่านอีก
+ฝ่ายจัดการวารสาร
+',
+      'auto' => 0,
+      'reject' => 1,
+    ),
+
+    array(
+      'tpid' => 9,
+      'sid' => 4,
+      'title' => 'Editor first 3',
+      'body' => '
+@journal_id - @journal_title 
+
+ชื่อ reviewers คือ
+1………………….
+2………………….
+3………………….
+',
+      'auto' => 0,
+      'reject' => 2,
+    ),
+    array(
+      'tpid' => 10,
+      'sid' => 1,
+      'title' => 'Reviewers alert',
+      'body' => 'เรียน @author
+
+ตามที่ ท่านส่งบทความเรื่อง
+@journal_id - @journal_title 
+มายังวารสารวิจัยระบบสาธารณสุขเพื่อรับการตีพิมพ์ ทางวารสารฯ ขอเรียนว่าบทความของท่านกำลังได้รับการพิจารณาโดยผู้ทรงคุณวุฒิ เมื่อทางวารสารรวบรวมความเห็นจากผู้ทรงคุณวุฒิเรียบร้อยแล้ว จะแจ้งผลให้ท่านทราบในโอกาสต่อไป
+ฝ่ายจัดการวารสาร
+',
+      'auto' => 1,
+      'reject' => 0,
+    ),
+    array(
+      'tpid' => 11,
+      'sid' => 6,
+      'title' => 'Revision alert 1',
+      'body' => 'เรียน @author
+
+ตามที่ ท่านส่งบทความเรื่อง @journal_id - @journal_title มายังวารสารวิจัยระบบสาธารณสุขเพื่อรับการตีพิมพ์ นั้น บัดนี้ ผู้ทรงคุณวุฒิได้พิจารณาบทความดังกล่าวแล้วมีความเห็นดังไฟล์ที่แนบ กรุณานำบทความที่แก้ไขแล้ว มาเขียนต่อท้ายในไฟล์ที่แนบนี้เลยค่ะ อย่าลืมไฮไลท์ส่วนที่ปรับแก้และเพิ่มเติมด้วย โดยขอให้ส่งกลับมาภายใน 30 วัน
+จึงเรียนมาเพื่อโปรดพิจารณาแก้ไขและส่งบทความกลับมาภายในกำหนดเวลาด้วย จะขอบคุณยิ่ง
+ฝ่ายจัดการวารสาร
+-- -- -- 
+',
+      'auto' => 0,
+      'reject' => 0,
+    ),
+
+    array(
+      'tpid' => 12,
+      'sid' => 6,
+      'title' => 'Revision alert 2',
+      'body' => 'เรียน @author
+
+ตามที่ ท่านส่งบทความเรื่อง ใส่ @journal_id - @journal_title มายังวารสารวิจัยระบบสาธารณสุขเพื่อรับการตีพิมพ์และ ทางวารสารฯ ได้แจ้งผลการพิจารณาบทความไปแล้ว นั้น
+โปรดทราบว่าท่านเหลือเวลาอีกเพียง 8 วันในการปรับแก้บทความ
+หากท่านไม่สามารถส่งบทความที่แก้ไขกลับมาได้ภายในกำหนด ท่านสามารถส่งข้อความขอเลื่อนกำหนดส่งไปได้อีก 15 วัน โดยท่านต้องส่งข้อความกลับมายัง สวรส. ทางระบบ e-journal ภายในวันพรุ่งนี้ เวลา 12.00 น.
+ในกรณีที่ทางวารสารฯ ไม่ได้รับข้อความขอเลื่อนกำหนดจากท่านภายในวันพรุ่งนี้ เวลา 12.00 น. และ ท่านไม่ได้ส่งบทความกลับไปยัง สวรส. ภายในกำหนด ระบบจะส่งข้อความปฏิเสธการตีพิมพ์โดยอัตโนมัติไปยังท่านในวันถัดจากวันครบกำหนด
+ฝ่ายจัดการวารสาร
+Link เพื่อไปคลิกขยายเวลา :
+-- -- -- 
+',
+      'auto' => 2,
+      'reject' => 0,
+    ),
+
+    array(
+      'tpid' => 13,
+      'sid' => 6,
+      'title' => 'Revision alert 6',
+      'body' => 'เรียน @author 
+
+ตามที่ ท่านส่งบทความเรื่อง ใส่ @journal_id - @journal_title มายังวารสารวิจัยระบบสาธารณสุขเพื่อรับการตีพิมพ์และ ทางวารสารฯ ได้แจ้งผลการพิจารณาบทความไปแล้ว นั้น
+โปรดทราบว่าท่านเหลือเวลาอีกเพียง 7 วันในการปรับแก้บทความ และไม่สามารถเลื่อนกำหนดส่งได้อีกแล้ว
+หากท่านไม่สามารถส่งบทความที่แก้ไขกลับมาได้ภายในกำหนด ระบบจะส่งข้อความปฏิเสธการตีพิมพ์โดยอัตโนมัติไปยังท่านในวันถัดจากวันครบกำหนด
+ฝ่ายจัดการวารสาร
+-- -- -- 
+',
+      'auto' => 2,
+      'reject' => 0,
+    ),
+
+    array(
+      'tpid' => 14,
+      'sid' => 6,
+      'title' => 'Revision alert 7',
+      'body' => 'เรียน @author 
+
+ตามที่ ท่านส่งบทความเรื่อง @journal_id - @journal_title มายังวารสารวิจัยระบบสาธารณสุขเพื่อรับการตีพิมพ์และ ทางวารสารฯ ได้แจ้งผลการพิจารณาบทความไปแล้ว นั้น
+โปรดทราบว่า เราจำเป็นต้องปฏิเสธการตีพิมพ์เนื่องจากท่านมิได้ส่งบทความที่แก้ไขกลับมาภายในกำหนด หากท่านประสงค์จะส่งบทความที่แก้ไขกลับมาให้ทางวารสารฯ พิจารณาอีกครั้ง กรุณา submit เข้ามาใหม่ โดยใส่ “resubmit” หน้าชื่อเรื่องด้วย
+ทางวารสารฯ ขอขอบคุณ และหวังว่า โอกาสหน้าคงได้รับการติดต่อจากท่านอีก
+ฝ่ายจัดการวารสาร
+-- -- --
+',
+      'auto' => 2,
+      'reject' => 0,
+    ),
+
+    array(
+      'tpid' => 15,
+      'sid' => 7,
+      'title' => 'Edit 1 โดยรองบรรณาธิการ',
+      'body' => 'เรียน @author 
+
+ตามที่ ท่านส่งบทความเรื่อง
+@journal_id - @journal_title
+มายังวารสารวิจัยระบบสาธารณสุขเพื่อรับการตีพิมพ์ และท่านได้ปรับแก้ตามความเห็นผู้ทรงคุณวุฒิบ้างแล้ว นั้น ผู้ตรวจการแก้ไข ขอให้ท่านพิจารณาปรับแก้เพิ่มเติม ดังนี้
+.....
+โปรดดำเนินการภายใน 7 วัน หากท่านไม่สามารถดำเนินการได้ตามกำหนด ระบบจะส่งข้อความปฏิเสธการตีพิมพ์โดยอัตโนมัติ
+ฝ่ายจัดการวารสาร
+-- -- --
+',
+      'auto' => 1,
+      'reject' => 0,
+    ),
+    array(
+      'tpid' => 16,
+      'sid' => 9,
+      'title' => 'Editor approval',
+      'body' => 'เรียน @author 
+
+ตามที่ ท่านส่งบทความเรื่อง @journal_id - @journal_title มายังวารสารวิจัยระบบสาธารณสุขเพื่อรับการตีพิมพ์และ ท่านได้ปรับแก้บทความกลับมาแล้ว นั้น
+โปรดทราบว่า ขณะนี้ บรรณาธิการได้ให้ความเห็นชอบการปรับแก้บทความของท่านก่อนการจัด artwork แล้ว
+ฝ่ายจัดการวารสาร
+-- -- --
+',
+      'auto' => 1,
+      'reject' => 0,
+    ),
+    array(
+      'tpid' => 17,
+      'sid' => 9,
+      'title' => 'editor ให้ adjust​',
+      'body' => '???????????
+',
+      'auto' => 0,
+      'reject' => 0,
+    ),
+    array(
+      'tpid' => 18,
+      'sid' => 11,
+      'title' => 'Author check 1​',
+      'body' => 'เรียน @author
+
+ตามที่ท่านได้ส่งบทความเรื่อง @journal_id - @journal_title มายังวารสารวิจัยระบบสาธารณสุขเพื่อรับการตีพิมพ์ นั้น
+บัดนี้เรื่องของท่านผ่านเข้าสู่การจัด artwork เป็นที่เรียบร้อย
+ขอได้โปรดตรวจสอบความถูกต้องเป็นครั้งสุดท้าย ก่อนจะเผยแพร่ผ่านทางเว็บไซต์
+ท่านสามารถแก้ไขโดยทำเป็น comment มาในไฟล์ pdf  โปรด upload ไฟล์กลับมาในระบบภายใน 3 วัน หากเลยกำหนดนี้ไปแล้ว ขออนุญาตถือว่าท่านยอมรับในเนื้อหาทั้งหมด
+ฝ่ายจัดการวารสาร
+@discussion_add_link
+ 
+-- -- --
+',
+      'auto' => 1,
+      'reject' => 0,
+    ),
+
+    array(
+      'tpid' => 19,
+      'sid' => 11,
+      'title' => 'Author check 2​',
+      'body' => 'xxxxxxxxxxxxxxxxxxxx',
+      'auto' => 2,
+      'reject' => 0,
+    ),
+
+    array(
+      'tpid' => 20,
+      'sid' => 3,
+      'title' => 'แจ้ง publication​',
+      'body' => 'เรียน @author 
+
+ตามที่ ท่านส่งบทความมายังวารสารวิจัยระบบสาธารณสุขเพื่อรับการตีพิมพ์ นั้น บัดนี้ บทความดังกล่าวได้รับการตีพิมพ์แล้ว ท่านสามารถ download บทความนี้ได้จากลิงค์ด้านล่าง ขอขอบคุณและหวังว่าโอกาสหน้าท่านจะเสนอบทความมายังวารสารฯ อีก
+บทความ: ชื่อบทความ (ตามของเดิม)
+ท่านสามารถติดตามรายละเอียดเพิ่มเติมได้ที่: @information_link 
+',
+      'auto' => 1,
+      'reject' => 0,
+    ),
+    array(
+      'tpid' => 21,
+      'sid' => 10,
+      'title' => 'Edit approval 2[test]​',
+      'body' => 'Edit approval 2[test]​',
+      'auto' => 1,
+      'reject' => 0,
+    ),
+
+  );
+
+  $query = db_insert('open_journal_template')->fields(array(
+    'sid',
+    'title',
+    'body',
+    'auto',
+    'reject'
+    )
+  );
+
+  foreach ($data as $record) {
+    $query->values($record);
+  }
+  $query->execute();
+}
+function open_journal_update_7015(&$sandbox) {
+  $schema = open_journal_schema();
+  db_create_table('open_journal_discussion_file', $schema['open_journal_discussion_file']);
+}
+
+function open_journal_update_7016(&$sandbox) {
+  $data = array(
+    array(
+      'rid' => 8,
+      'tpid' => 1,
+    ),
+    array(
+      'rid' => 8,
+      'tpid' => 3,
+    ),
+    array(
+      'rid' => 8,
+      'tpid' => 7,
+    ),
+    array(
+      'rid' => 4,
+      'tpid' => 4,
+    ),
+    array(
+      'rid' => 3,
+      'tpid' => 6,
+    ),
+    array(
+      'rid' => 8,
+      'tpid' => 7,
+    ),
+    array(
+      'rid' => 8,
+      'tpid' => 8,
+    ),
+    array(
+      'rid' => 8,
+      'tpid' => 9,
+    ),
+    array(
+      'rid' => 8,
+      'tpid' => 10,
+    ),
+    array(
+      'rid' => 3,
+      'tpid' => 11,
+    ),
+    array(
+      'rid' => 4,
+      'tpid' => 12,
+    ),
+    array(
+      'rid' => 4,
+      'tpid' => 13,
+    ),
+    array(
+      'rid' => 8,
+      'tpid' => 14,
+    ),
+    array(
+      'rid' => 8,
+      'tpid' => 18,
+    ),
+    array(
+      'rid' => 3,
+      'tpid' => 18,
+    ),
+    array(
+      'rid' => 8,
+      'tpid' => 15,
+    ),
+    array(
+      'rid' => 8,
+      'tpid' => 16,
+    ),
+    array(
+      'rid' => 3,
+      'tpid' => 17,
+    ),
+    array(
+      'rid' => 8,
+      'tpid' => 17,
+    ),
+    array(
+      'rid' => 4,
+      'tpid' => 17,
+    ),
+    array(
+      'rid' => 6,
+      'tpid' => 17,
+    ),
+    array(
+      'rid' => 5,
+      'tpid' => 17,
+    ),
+    array(
+      'rid' => 3,
+      'tpid' => 1,
+    ),
+    array(
+      'rid' => 4,
+      'tpid' => 1,
+    ),
+    array(
+      'rid' => 6,
+      'tpid' => 1,
+    ),
+    array(
+      'rid' => 5,
+      'tpid' => 1,
+    ),
+  );
+
+  $query = db_insert('open_journal_template_role')->fields(array(
+    'rid',
+    'tpid',
+    )
+  );
+
+  foreach ($data as $record) {
+    $query->values($record);
+  }
+  $query->execute();
+}
+
+function open_journal_update_7017(&$sandbox) {
+
+  $schema = open_journal_schema();
+
+  db_add_field('open_journal_template', 'template_title', $schema['open_journal_template']['fields']['template_title']);
+
+}

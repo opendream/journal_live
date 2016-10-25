@@ -1,0 +1,15 @@
+#issue-sections-form-table td.section-flag {
+	white-space: nowrap;
+	width: 4em;
+}
+
+.issue-journals-wrapper .tabledrag-toggle-weight-wrapper {
+	display: none;
+}
+
+.title-remove-wrapper .form-type-textfield {
+	float: left;
+}
+input.remove-section-button {
+	margin-left: 25px;
+}
