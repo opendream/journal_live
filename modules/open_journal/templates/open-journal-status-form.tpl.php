@@ -8,9 +8,9 @@
 	<?php foreach($status_list as $key_status => $value_status):?>
 	<div 
 	<?php 
-	if($value_status['sid'] < $journal->sid):print " class='status-active' ";
-	elseif($value_status['sid'] == (count($status_list)-1) && $value_status['sid'] == $journal->sid):print " class='status-active finish' ";
-	elseif($value_status['sid'] == $journal->sid):print " class='status-active current' ";
+	if($value_status['active']): print " class='status-active' ";
+	elseif($key_status == (count($status_list)-1) && $value_status['active']):print " class='status-active finish' ";
+	elseif($value_status['current']):print " class='status-active current' ";
 	else:print " class='status-disabled' ";endif;?>>
 
 		<?php 
