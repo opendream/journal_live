@@ -1927,9 +1927,20 @@ function open_journal_overview($journal) {
   foreach($discussion as $row) {
 
     $discussion_data[$i]['did'] = $row->did;
+    $discussion_data[$i]['uid'] = $row->uid;
     $discussion_data[$i]['user_info'] = $row->user;
-    $discussion_data[$i]['title'] = open_journal_trim($row->title, 50);
-    $discussion_data[$i]['description'] = open_journal_trim($row->description, 100);
+
+    // System discussion 
+    if ($row->uid != 0) {
+      $discussion_data[$i]['title'] = open_journal_trim($row->title, 50);
+      $discussion_data[$i]['description'] = open_journal_trim($row->description, 100);
+    }
+    else {
+      $discussion_data[$i]['title'] = $row->title;
+      $discussion_data[$i]['description'] = $row->description;
+
+    }
+
     $discussion_data[$i]['url'] = '';
     $discussion_data[$i]['jid'] = $journal->jid;
     $discussion_data[$i]['contributor_only'] = $row->contributor_only;
@@ -2210,7 +2221,6 @@ function open_journal_discussion_list_limit($journal, $limit=0) {
     $discussion_item = $discussion;
 
   }
-  dpm($discussion_list);
   
   return $discussion_list;
 }
@@ -3301,6 +3311,7 @@ function open_journal_get_display_user_info($account, $variables=array()) {
   if ($account->uid == 0) {
     $info['display_name'] = 'System';
     $info['display_name_text'] = 'System';
+    $info['display_picture'] = strip_tags($info['display_picture'], '<img>');
   }
   return $info;
 
