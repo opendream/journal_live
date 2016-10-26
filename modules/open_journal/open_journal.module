@@ -791,7 +791,6 @@ function open_journal_journal_load($jid, $ignore_access=FALSE) {
   
   $data = $data->execute();
   $data = $data->fetchObject();
-  
   if(!$ignore_access && (!$can_access || empty($data))) {
     return 0;
   }
@@ -861,6 +860,7 @@ function open_journal_journal_save($data, $change_status=FALSE) {
 
   if (!$pk) {
     $data->created = REQUEST_TIME;
+    $data->changed = REQUEST_TIME;
   }
   if (!$pk || $change_status) {
     $data->status_changed = REQUEST_TIME;
@@ -892,6 +892,8 @@ function open_journal_journal_save($data, $change_status=FALSE) {
 
     // Auto active people when status change
     open_journal_auto_active_people($data);
+    open_journal_discussion_when_state_change($data);
+
   }
 
 
@@ -912,7 +914,7 @@ function open_journal_journal_save($data, $change_status=FALSE) {
     }
 
     */
-
+    /*
     // create first discussion.
     $discussion = array(
       'uid' => $data->uid,
@@ -937,6 +939,7 @@ function open_journal_journal_save($data, $change_status=FALSE) {
     }
     $discussion = (object) $discussion;
     open_journal_discussion_save($discussion, array('exclude_me' => FALSE));
+    */
 
     // Todo rit1 send mail to co-author not create discussion
     // --- code ---
@@ -1807,7 +1810,6 @@ function open_journal_information($data=NULL) {
 }
 
 function open_journal_overview($journal) {
-
   // add dublincore meta data tag to html hearder
   $tags = array(
     'DC.Title' => array(
@@ -2266,6 +2268,64 @@ function open_journal_discussion_list($journal) {
     'sidebar' => $sidebar,
     'jid' => $journal->jid
   ));
+
+
+}
+function open_journal_discussion_when_state_change($journal) {
+  // Todo plug to state change function
+  $next_status = $journal->sid;
+  $status_list = open_journal_get_status_list();
+  $status_name = $status_list[$next_status];
+  $sql = "SELECT * FROM {open_journal_template} WHERE sid = :sid AND auto = :auto AND reject = :reject"; 
+  $result = db_query($sql, array(':sid' => $next_status, ':auto' => 1, ':reject' => 0));
+  $template_list = $result->fetchAll();
+
+  if (!empty($template_list)) {
+    open_journal_replace_template_string($template_list, $journal);
+
+    foreach ($template_list as $key => $value) {
+
+      // Todo rit remove hardcode
+      if ($journal->sid == 0) {
+        $exclude_me = FALSE;
+      }
+      else {
+        $exclude_me = TRUE;
+      }
+
+      $discussion = array(
+        'jid' => $journal->jid,
+        'title' => $value->template_title,
+        'uid' => 0,
+        'description' => $value->body,
+      );
+      if($journal->file) {
+        $discussion['fid'] = $journal->file;
+      }
+      $discussion['roles'] = array();
+      $role_list = open_journal_get_template_role_list($value->tpid);
+
+      foreach ($role_list as $key2 => $value2) {
+        $discussion['roles'][] = $value2->rid;
+      }
+
+      $discussion = (object) $discussion;
+      open_journal_discussion_save($discussion, array('exclude_me' => $exclude_me));
+
+    }
+  }
+  else {
+    // Todo remove this because it move to template
+    $discussion = array(
+      'jid' => $jid,
+      'title' => t('Congratulations! Status is now changed to '.ucwords($status_name) ),
+      'description' => 'Your comments are now welcome in Discussions.',
+      'roles' => array(),
+    );
+    $discussion = (object) $discussion;
+    open_journal_discussion_save($discussion);
+
+  }
 
 
 }
@@ -2860,7 +2920,7 @@ function open_journal_get_status_attributes($journal) {
   }
   return array('class' => $class, 'name' => $name);
 }
-
+// Todo rit change wording status to state
 function open_journal_get_status_list($full=FALSE) {
 
   // Todo return full only

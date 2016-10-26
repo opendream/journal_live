@@ -167,7 +167,8 @@ function open_journal_approve_sidebar_form_submit($form, &$form_state) {
 	$journal->sid = $next_status;
 	$journal = (object) $journal;
 	open_journal_journal_save($journal, TRUE);
-	
+  
+  /*
 	// Create new discustion
 	//$status_list = unserialize(OPEN_JOUNAL_STATUS);
   $status_list = open_journal_get_status_list();
@@ -212,6 +213,7 @@ function open_journal_approve_sidebar_form_submit($form, &$form_state) {
 
   $discussion = (object) $discussion;
   open_journal_discussion_save($discussion);
+  */
 
   // Create discussion when have approve reason
   if ($approve_reason) {

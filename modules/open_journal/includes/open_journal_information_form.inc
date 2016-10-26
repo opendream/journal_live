@@ -379,14 +379,13 @@ function open_journal_information_form_submit($form, &$form_state) {
 
   $is_new = (isset($data->jid) && $data->jid)? FALSE: TRUE;
   
-  open_journal_journal_save($data);
-  
   if ($is_new) {
-
+    open_journal_journal_save($data, TRUE);
     drupal_set_message(t('Your submission is completed. It is now waiting for information review.'));
     drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->jid.'/overview');
   }
   else {
+    open_journal_journal_save($data);
     drupal_set_message(t('This article information has been updated.'));
     drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->jid.'/overview');
   }
