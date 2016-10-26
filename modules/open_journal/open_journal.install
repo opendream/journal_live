@@ -498,6 +498,33 @@ function open_journal_schema() {
         'not null' => FALSE,
         'default' => 0,
       ),
+
+      'next_ssid' => array(
+        'type' => 'int',
+        'not null' => FALSE,
+        'default' => 0,
+      ),
+      'is_substate' => array(
+        'type' => 'int',
+        'not null' => FALSE,
+        'default' => 0,
+      ),
+      'timeout_auto_reminder' => array(
+        'type' => 'int',
+        'not null' => FALSE,
+        'default' => 0,
+      ),
+      'timeout_auto_approve' => array(
+        'type' => 'int',
+        'not null' => FALSE,
+        'default' => 0,
+      ),
+      'timeout_auto_reject' => array(
+        'type' => 'int',
+        'not null' => FALSE,
+        'default' => 0,
+      ),
+
     ),
     'primary key' => array('sid'),
   );
@@ -1245,5 +1272,17 @@ function open_journal_update_7017(&$sandbox) {
   $schema = open_journal_schema();
 
   db_add_field('open_journal_template', 'template_title', $schema['open_journal_template']['fields']['template_title']);
+
+}
+
+function open_journal_update_7018(&$sandbox) {
+
+  $schema = open_journal_schema();
+
+  db_add_field('open_journal_state', 'next_ssid', $schema['open_journal_state']['fields']['next_ssid']);
+  db_add_field('open_journal_state', 'is_substate', $schema['open_journal_state']['fields']['is_substate']);
+  db_add_field('open_journal_state', 'timeout_auto_reminder', $schema['open_journal_state']['fields']['timeout_auto_reminder']);
+  db_add_field('open_journal_state', 'timeout_auto_approve', $schema['open_journal_state']['fields']['timeout_auto_approve']);
+  db_add_field('open_journal_state', 'timeout_auto_reject', $schema['open_journal_state']['fields']['timeout_auto_reject']);
 
 }
