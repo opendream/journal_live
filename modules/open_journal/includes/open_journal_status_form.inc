@@ -155,11 +155,20 @@ function open_journal_approve_sidebar_form_validate($element, &$form_state) {
   }
 }
 
+  
 function open_journal_approve_sidebar_form_submit($form, &$form_state) {
-	$next_status = $form['next_status']['#value'];
+  $next_status = $form['next_status']['#value'];
+  $jid = $form_state['build_info']['args'][0]->jid;
+
   $approve_reason = $form['approve_reason']['#value'];
   $approve_tpid = $form['approve_tpid']['#value'];
-	$jid = $form_state['build_info']['args'][0]->jid;
+
+  open_journal_approve_submit($jid, $next_status, $approve_reason, $approve_tpid);
+
+}
+
+function open_journal_approve_submit($jid, $next_status, $approve_reason=NULL, $approve_tpid=NULL) {
+
   // TODO use $form_state['value'] for block hacker
  	//$sql = "UPDATE open_journal_journal SET status = ".$next_status." staWHERE jid = ".$jid;
 	//db_query($sql);
@@ -233,7 +242,19 @@ function open_journal_approve_sidebar_form_submit($form, &$form_state) {
     open_journal_discussion_save($discussion);
 
   }
-  
+
+  $result_next = db_query("SELECT next_ssid from {open_journal_state} WHERE sid = :sid", array(":sid" => $journal->sid))->fetchObject();
+  $bypass = FALSE;
+
+  // TODO: check bypass condition here
+  if ($result_next->next_ssid) {
+    $bypass = TRUE;
+  }
+
+  if ($bypass) {
+    open_journal_approve_submit($jid, $result_next->next_ssid);
+  }
+
   if (user_access('invite people to journal')) {
     drupal_set_message(t('Please invite your contributors.'));
     drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$jid .'/people');

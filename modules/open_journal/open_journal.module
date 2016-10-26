@@ -2336,7 +2336,7 @@ function open_journal_get_status_form_variables($journal) {
 
   // Prepare data to status side bar form
   //$status_list = unserialize(OPEN_JOUNAL_STATUS);
-  $status_list = open_journal_get_status_list(TRUE);
+  $status_list = open_journal_get_status_list(TRUE, $journal);
   $vars = array();
 
   $vars['status_list'] = $status_list;
@@ -2923,7 +2923,7 @@ function open_journal_get_status_attributes($journal) {
   return array('class' => $class, 'name' => $name);
 }
 // Todo rit change wording status to state
-function open_journal_get_status_list($full=FALSE) {
+function open_journal_get_status_list($full=FALSE, $journal=NULL) {
 
   // Todo return full only
   if ($full) {
@@ -2947,11 +2947,23 @@ function open_journal_get_status_list($full=FALSE) {
         $tmp_list[$i] = $data_list[$i];
       }
       else {
+        $next_sid = $tmp_list[$i-1]['next_ssid'] ? $tmp_list[$i-1]['next_ssid']: $tmp_list[$i-1]['next_ssid'];
         $tmp_list[$i] = $data_list[$tmp_list[$i-1]['next_sid']];
       }
     }
 
     $data_list = $tmp_list;
+
+    if ($journal) {
+      $active = TRUE;
+      foreach ($data_list as &$value) {
+        if ($value['sid'] == $journal->sid) {
+          $value['current'] = TRUE;
+          $active = FALSE;
+        }
+        $value['active'] = $active;
+      }
+    }
 
   }
   else {
