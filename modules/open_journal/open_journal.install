@@ -1361,3 +1361,13 @@ function open_journal_update_7021(&$sandbox) {
   db_add_field('open_journal_discussion', 'auto', $schema['open_journal_discussion']['fields']['auto']);
 
 }
+
+
+function open_journal_update_7022(&$sandbox) {
+
+  db_update('open_journal_state')
+    ->fields(array('next_sid' => 6))
+    ->condition('sid', 102)
+    ->execute();
+
+}
