@@ -176,7 +176,8 @@ function open_journal_approve_submit($jid, $next_status, $approve_reason=NULL, $
 	$journal->sid = $next_status;
 	$journal = (object) $journal;
 	open_journal_journal_save($journal, TRUE);
-	
+  
+  /*
 	// Create new discustion
 	//$status_list = unserialize(OPEN_JOUNAL_STATUS);
   $status_list = open_journal_get_status_list();
@@ -221,6 +222,7 @@ function open_journal_approve_submit($jid, $next_status, $approve_reason=NULL, $
 
   $discussion = (object) $discussion;
   open_journal_discussion_save($discussion);
+  */
 
   // Create discussion when have approve reason
   if ($approve_reason) {
