@@ -1931,9 +1931,10 @@ function open_journal_overview($journal) {
     $discussion_data[$i]['did'] = $row->did;
     $discussion_data[$i]['uid'] = $row->uid;
     $discussion_data[$i]['user_info'] = $row->user;
+    $discussion_data[$i]['auto'] = $row->auto;
 
     // System discussion 
-    if ($row->uid != 0) {
+    if (!$row->auto) {
       $discussion_data[$i]['title'] = open_journal_trim($row->title, 50);
       $discussion_data[$i]['description'] = open_journal_trim($row->description, 100);
     }
@@ -2160,7 +2161,8 @@ function open_journal_discussion_list_limit($journal, $limit=0) {
   $sql = " SELECT
     max(d.did) as  did,
     max(c.cid) as cid,
-    if(c.cid IS NOT NULL, c.uid, d.uid) as user
+    if(c.cid IS NOT NULL, c.uid, d.uid) as user,
+    d.auto as auto
 
     FROM
       open_journal_discussion d
@@ -2210,20 +2212,20 @@ function open_journal_discussion_list_limit($journal, $limit=0) {
      $discussion->description = $latest_comment->message;
     }
     // System discussion
-    if ($discussion->uid != 0) {
+    if (!$discussion->auto) {
       $discussion->description = open_journal_trim(Markdown($discussion->description), 100);
       $discussion->title = open_journal_trim($discussion->title, 50);
 
     }
 
     if(isset($discussion_item->user)) {
-      $discussion->user = open_journal_get_display_user_info($discussion_item->user);
+      $discussion->user = open_journal_get_display_user_info($discussion_item->user, array('auto' => $discussion_item->auto));
     }
 
     $discussion_item = $discussion;
 
   }
-  
+ 
   return $discussion_list;
 }
 
@@ -2296,7 +2298,7 @@ function open_journal_discussion_when_state_change($journal) {
       $discussion = array(
         'jid' => $journal->jid,
         'title' => $value->template_title,
-        'uid' => 0,
+        'auto' => 1,
         'description' => $value->body,
       );
       if($journal->file) {
@@ -3212,8 +3214,6 @@ function open_journal_get_display_user_info($account, $variables=array()) {
   );
 
   $variables = array_merge($default_variables, $variables);
-
-
   $image_style = image_style_load($variables['image_style']);
   $size = array();
   if ($width = $image_style['effects'][0]['data']['width']) {
@@ -3368,7 +3368,7 @@ function open_journal_get_display_user_info($account, $variables=array()) {
     }
   }
   // System info
-  if ($account->uid == 0) {
+  if ($variables['auto']) {
     $info['display_name'] = 'System';
     $info['display_name_text'] = 'System';
     $info['display_picture'] = strip_tags($info['display_picture'], '<img>');

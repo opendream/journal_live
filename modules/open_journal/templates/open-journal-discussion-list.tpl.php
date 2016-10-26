@@ -16,7 +16,7 @@
 	      
 	      <div class="discus-title">
 	      	
-	      	<?php if($discussion_item->uid == 0):?>
+	      	<?php if($discussion_item->auto):?>
 	      		<?php  print $discussion_item->title; ?>
 	      	<?php elseif($discussion_item->fid):?>
 	      		<?php  print l($discussion_item->title.' <span class="file-attach">'.$image_file.'</span>', OPEN_JOURNAL_PREFIX_PATH.'/'.$jid.'/discussion/'.$discussion_item->did, array('html' => TRUE));?>
