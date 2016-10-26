@@ -292,6 +292,11 @@ function open_journal_schema() {
         'type' => 'int',
         'not null' => TRUE,
       ),
+      'auto' => array(
+        'type' => 'int',
+        'not null' => FALSE,
+        'default' => 0,
+      ),
     ),
     'primary key' => array('did'),
   );
@@ -1340,11 +1345,19 @@ function open_journal_update_7019(&$sandbox) {
 
 function open_journal_update_7020(&$sandbox) {
 
-  variable_set('devel_debug_mail_file_format', '%datetime--%to.mail.txt')
+  variable_set('devel_debug_mail_file_format', '%datetime--%to.mail.txt');
 
   db_update('open_journal_state')
     ->fields(array('next_ssid' => 101))
     ->condition('sid', 6)
     ->execute();
+
+}
+
+function open_journal_update_7021(&$sandbox) {
+
+  $schema = open_journal_schema();
+
+  db_add_field('open_journal_discussion', 'auto', $schema['open_journal_discussion']['fields']['auto']);
 
 }
