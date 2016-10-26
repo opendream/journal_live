@@ -498,6 +498,33 @@ function open_journal_schema() {
         'not null' => FALSE,
         'default' => 0,
       ),
+
+      'next_ssid' => array(
+        'type' => 'int',
+        'not null' => FALSE,
+        'default' => 0,
+      ),
+      'is_substate' => array(
+        'type' => 'int',
+        'not null' => FALSE,
+        'default' => 0,
+      ),
+      'timeout_auto_reminder' => array(
+        'type' => 'int',
+        'not null' => FALSE,
+        'default' => 0,
+      ),
+      'timeout_auto_approve' => array(
+        'type' => 'int',
+        'not null' => FALSE,
+        'default' => 0,
+      ),
+      'timeout_auto_reject' => array(
+        'type' => 'int',
+        'not null' => FALSE,
+        'default' => 0,
+      ),
+
     ),
     'primary key' => array('sid'),
   );
@@ -1245,5 +1272,79 @@ function open_journal_update_7017(&$sandbox) {
   $schema = open_journal_schema();
 
   db_add_field('open_journal_template', 'template_title', $schema['open_journal_template']['fields']['template_title']);
+
+}
+
+function open_journal_update_7018(&$sandbox) {
+
+  $schema = open_journal_schema();
+
+  db_add_field('open_journal_state', 'next_ssid', $schema['open_journal_state']['fields']['next_ssid']);
+  db_add_field('open_journal_state', 'is_substate', $schema['open_journal_state']['fields']['is_substate']);
+  db_add_field('open_journal_state', 'timeout_auto_reminder', $schema['open_journal_state']['fields']['timeout_auto_reminder']);
+  db_add_field('open_journal_state', 'timeout_auto_approve', $schema['open_journal_state']['fields']['timeout_auto_approve']);
+  db_add_field('open_journal_state', 'timeout_auto_reject', $schema['open_journal_state']['fields']['timeout_auto_reject']);
+
+}
+
+function open_journal_update_7019(&$sandbox) {
+
+  $data = array(
+    array(
+      'sid' => 101,
+      'code' => 'revision-1',
+      'name' => 'Revision 1',
+      'description' => 'Reminder 1',
+      'next_sid' => 102,
+      'parent_sid' => 6,
+      'is_substate' => 1,
+      'timeout_auto_reminder' => 23,
+      'timeout_auto_approve' => 30,
+      'timeout_auto_reject' => 30
+    ),
+    array(
+      'sid' => 102,
+      'code' => 'revision-2',
+      'name' => 'Revision 2',
+      'description' => 'Reminder 2',
+      'next_sid' => NULL,
+      'parent_sid' => 6,
+      'is_substate' => 1,
+      'timeout_auto_reminder' => 23,
+      'timeout_auto_approve' => NULL,
+      'timeout_auto_reject' => 30
+    )
+  );
+
+  $query = db_insert('open_journal_state')->fields(array(
+    'sid',
+    'code',
+    'name',
+    'description',
+    'next_sid',
+    'parent_sid',
+    'is_substate',
+    'timeout_auto_reminder',
+    'timeout_auto_approve',
+    'timeout_auto_reject'
+    )
+  );
+
+  foreach ($data as $record) {
+    $query->values($record);
+  }
+  $query->execute();
+
+}
+
+
+function open_journal_update_7020(&$sandbox) {
+
+  variable_set('devel_debug_mail_file_format', '%datetime--%to.mail.txt')
+
+  db_update('open_journal_state')
+    ->fields(array('next_ssid' => 101))
+    ->condition('sid', 6)
+    ->execute();
 
 }
