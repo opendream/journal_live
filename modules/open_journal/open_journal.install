@@ -491,7 +491,7 @@ function open_journal_schema() {
       'next_sid' => array(
         'type' => 'int',
         'not null' => FALSE,
-        'default' => 0,
+        //'default' => 0,
       ),
       'parent_sid' => array(
         'type' => 'int',
@@ -507,7 +507,7 @@ function open_journal_schema() {
       'next_ssid' => array(
         'type' => 'int',
         'not null' => FALSE,
-        'default' => 0,
+        //'default' => 0,
       ),
       'is_substate' => array(
         'type' => 'int',
@@ -1370,4 +1370,22 @@ function open_journal_update_7022(&$sandbox) {
     ->condition('sid', 102)
     ->execute();
 
+}
+
+function open_journal_update_7023(&$sandbox) {
+
+  $schema = open_journal_schema();
+
+  db_change_field('open_journal_state', 'next_sid', 'next_sid', $schema['open_journal_state']['fields']['next_sid']);
+  db_change_field('open_journal_state', 'next_ssid', 'next_ssid', $schema['open_journal_state']['fields']['next_ssid']);
+
+  db_update('open_journal_state')
+    ->fields(array('next_sid' => NULL))
+    ->condition('next_sid', 0)
+    ->execute();
+
+  db_update('open_journal_state')
+    ->fields(array('next_ssid' => NULL))
+    ->condition('next_ssid', 0)
+    ->execute();
 }
