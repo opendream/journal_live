@@ -891,6 +891,8 @@ function open_journal_journal_save($data, $change_status=FALSE) {
     open_journal_journal_state_save($journal_state);
 
     // Auto active people when status change
+    global $user;
+    open_journal_journal_people_active($data, $user->uid);
     open_journal_auto_active_people($data);
     open_journal_discussion_when_state_change($data);
 
@@ -900,9 +902,6 @@ function open_journal_journal_save($data, $change_status=FALSE) {
   // When create first
   if (!$pk) {
 
-    // Active auto user
-    global $user;
-    open_journal_journal_people_active($data, $user->uid);
 
     /*
     $user_auto_active_list = db_query("SELECT uid FROM users_roles ur, role_permission rp WHERE rp.permission = 'auto active when create journal' AND rp.rid = ur.rid")->fetchAllKeyed(0, 0);
