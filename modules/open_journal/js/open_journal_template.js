@@ -40,7 +40,9 @@ $(document).ready(function () {
 			$('#edit-roles').find('input').attr({'checked': false});
 			var select_value = $(this).val();
 			var text = template_list[select_value]['body'];
+			var template_title = template_list[select_value]['template_title'];
 			$('#wmd-input-editor').val(text);
+			$('#edit-title').val(template_title);
 
 			$.each(template_list[select_value]['role'], function( index, value ) {
 				$('#edit-roles-'+value['rid']).attr({'checked': true});
@@ -49,6 +51,7 @@ $(document).ready(function () {
 		}
 		else {
 			$('#wmd-input-editor').val('');
+			$('#edit-title').val('');
 			$('.form-type-plupload').hide();
 			$('#select_all').trigger('click');
 
