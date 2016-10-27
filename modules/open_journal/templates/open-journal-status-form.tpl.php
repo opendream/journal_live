@@ -7,11 +7,12 @@
 	?>
 	<?php foreach($status_list as $key_status => $value_status):?>
 	<div 
-	<?php 
+	<?php
 	if($value_status['current']):print " class='status-active current' ";
 	elseif($key_status == (count($status_list)-1) && $value_status['active']):print " class='status-active finish' ";
 	elseif($value_status['active']): print " class='status-active' ";
-	else:print " class='status-disabled' ";endif;?>>
+	else:print " class='status-disabled' ";endif;?>
+	<?php if ($value_status['is_substate']):print " style='display: none;' "; endif;?>>
 
 		<?php 
 			if ($value_status['parent_sid']) {
