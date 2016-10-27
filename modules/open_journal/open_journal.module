@@ -2216,6 +2216,9 @@ function open_journal_discussion_list_limit($journal, $limit=0) {
       $discussion->title = open_journal_trim($discussion->title, 50);
 
     }
+    else {
+      $discussion->description = nl2br($discussion->description);
+    }
 
     if(isset($discussion_item->user)) {
       $discussion->user = open_journal_get_display_user_info($discussion_item->user, array('auto' => $discussion_item->auto));
@@ -2470,7 +2473,7 @@ function open_journal_replace_template_string($template_list, $journal, $add_rol
 
   $user_journal = user_load($journal->uid);
   $replace_code_list = array('@author', '@journal_id', '@journal_title', '@discussion_add_link', '@information_link', '@reciever_roles');
-  
+
   foreach ($template_list as $key => $value) {
     $role_list = open_journal_get_template_role_list($value->tpid);
     $reciever_roles = '';
