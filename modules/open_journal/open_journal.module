@@ -2469,18 +2469,35 @@ function open_journal_discussion_add($journal) {
 function open_journal_replace_template_string($template_list, $journal, $add_role=FALSE) {
 
   $user_journal = user_load($journal->uid);
-  $replace_code_list = array('@author', '@journal_id', '@journal_title', '@discussion_add_link', '@information_link');
+  $replace_code_list = array('@author', '@journal_id', '@journal_title', '@discussion_add_link', '@information_link', '@reciever_roles');
+  
   foreach ($template_list as $key => $value) {
+    $role_list = open_journal_get_template_role_list($value->tpid);
+    $reciever_roles = '';
+    $i = 1;
+    foreach ($role_list as $role_key => $role_value) {
+      $reciever_roles .= ucfirst($role_value->name);
+      if (count($role_list) != $i) {
+        $reciever_roles .= ', ';
+      }
+      $i++;
+
+    }
 
     $author_replace = $user_journal->data['firstname']." ".$user_journal->data['lastname'];
-    $replace_code_to = array($author_replace, $journal->jid, $journal->title, l('Create discussion link', 'journal/'.$journal->jid.'/discussion/add', array('absolute' => TRUE)), l('Information', 'journal/'.$journal->jid.'/information', array('absolute' => TRUE)));
+    $replace_code_to = array($author_replace, $journal->jid, $journal->title, l('Create discussion link', 'journal/'.$journal->jid.'/discussion/add', array('absolute' => TRUE)), l('Information', 'journal/'.$journal->jid.'/information', array('absolute' => TRUE)), $reciever_roles);
     $template_list[$key]->body = str_replace($replace_code_list, $replace_code_to, $value->body);
 
     if ($add_role) {
-      $template_list[$key]->role = open_journal_get_template_role_list($value->tpid);
+      $template_list[$key]->role = $role_list;
 
     }
   }
+
+}
+
+function open_journal_replace_template_reciever_string($template_string, $roles) {
+
 
 }
 
