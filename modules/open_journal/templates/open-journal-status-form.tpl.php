@@ -8,9 +8,9 @@
 	<?php foreach($status_list as $key_status => $value_status):?>
 	<div 
 	<?php 
-	if($value_status['active']): print " class='status-active' ";
+	if($value_status['current']):print " class='status-active current' ";
 	elseif($key_status == (count($status_list)-1) && $value_status['active']):print " class='status-active finish' ";
-	elseif($value_status['current']):print " class='status-active current' ";
+	elseif($value_status['active']): print " class='status-active' ";
 	else:print " class='status-disabled' ";endif;?>>
 
 		<?php 

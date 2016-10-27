@@ -2934,33 +2934,69 @@ function open_journal_get_status_list($full=FALSE, $journal=NULL) {
   }
   $result = db_query($sql);
   $data = $result->fetchAll();
+  $state_map = array();
   $data_list = array();
 
   if ($full) {
-    foreach ($data as $row) {
-      $data_list[] = (array) $row;
-    }
-    // Re-order state list
-    $tmp_list = array();
-    for($i=0; $i<count($data_list); $i++) {
-      if($i == 0){
-        $tmp_list[$i] = $data_list[$i];
-      }
-      else {
-        $next_sid = $tmp_list[$i-1]['next_ssid'] ? $tmp_list[$i-1]['next_ssid']: $tmp_list[$i-1]['next_ssid'];
-        $tmp_list[$i] = $data_list[$tmp_list[$i-1]['next_sid']];
-      }
+
+    // Build state map
+    foreach ($data as $state) {
+      $state_map[$state->sid] = $state;
     }
 
-    $data_list = $tmp_list;
+    // Find root state
+    $children_state_map = array();
+    foreach ($data as $sid => $state) {
+      if ($state->next_sid != NULL) {
+        $children_state_map[$state->next_sid] = $state;
+      }
+      if ($state->next_ssid != NULL) {
+        $children_state_map[$state->next_ssid] = $state;
+      }
+    }
+    $root_sid_list = array_diff(array_keys($state_map), array_keys($children_state_map));
+    $root_sid = current($root_sid_list);
+
+    // Build list
+    $stamp_sid_list = array();
+    $stamp_ssid_list = array();
+    $state = $state_map[$root_sid];
+    while ($state) {
+      if (!in_array($state->sid, $stamp_sid_list)) {
+        $data_list[$state->sid] = (array) $state_map[$state->sid];
+        $stamp_sid_list[] = $state->sid;
+      }
+
+      $next_sid = $state->next_sid;
+      if ($state->next_ssid && !in_array($state->next_ssid, $stamp_ssid_list)) {
+        $next_sid = $state->next_ssid;
+        $stamp_ssid_list[] = $state->next_ssid;
+      }
+      $state = $state_map[$next_sid];
+    }
 
     if ($journal) {
       $active = TRUE;
       foreach ($data_list as &$value) {
+
+        // Active current substate and parent state
+        if ($value['next_ssid'] != NULL) {
+          $substate = $state_map[$value['next_ssid']];
+          while ($substate->is_substate) {
+            if ($substate->sid == $journal->sid) {
+              $value['current'] = TRUE;
+              break;
+            }
+            $substate = $state_map[$substate->next_sid];
+          }
+        }
+
+        // case normal active and current
         if ($value['sid'] == $journal->sid) {
           $value['current'] = TRUE;
           $active = FALSE;
         }
+
         $value['active'] = $active;
       }
     }
