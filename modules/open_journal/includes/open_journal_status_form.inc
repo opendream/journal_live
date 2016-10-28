@@ -187,7 +187,7 @@ function open_journal_approve_sidebar_form_submit($form, &$form_state) {
 
 }
 
-function open_journal_approve_submit($jid, $next_status, $approve_reason=NULL, $approve_tpid=NULL) {
+function open_journal_approve_submit($jid, $next_status, $approve_reason=NULL, $approve_tpid=NULL, $redirect=TRUE) {
 
   // TODO use $form_state['value'] for block hacker
  	//$sql = "UPDATE open_journal_journal SET status = ".$next_status." staWHERE jid = ".$jid;
@@ -272,16 +272,18 @@ function open_journal_approve_submit($jid, $next_status, $approve_reason=NULL, $
   }
 
   if ($bypass) {
-    open_journal_approve_submit($jid, $result_next->next_ssid);
+    open_journal_approve_submit($jid, $result_next->next_ssid, NULL, NULL, $redirect);
   }
 
-  if (user_access('invite people to journal')) {
-    drupal_set_message(t('Please invite your contributors.'));
-    drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$jid .'/people');
-  }
-  else {
-    drupal_set_message(t('Approve complete.'));
-    drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$jid .'/overview');
+  if ($redirect) {
+    if (user_access('invite people to journal')) {
+      drupal_set_message(t('Please invite your contributors.'));
+      drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$jid .'/people');
+    }
+    else {
+      drupal_set_message(t('Approve complete.'));
+      drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$jid .'/overview');
+    }
   }
 
 
@@ -377,5 +379,17 @@ function open_journal_informal_approve_sidebar_form_submit($form, &$form_state) 
     */
     
   
+}
+
+function open_journal_update_state($journal) {
+  dpm($journal);
+  $next_sid= open_journal_next_sid($journal->sid);
+  open_journal_approve_submit($journal->jid, $next_sid, NULL, NULL, FALSE);
+  return 'open_journal_update_state';
+}
+
+function open_journal_reject_state($journal) {
+  dpm($journal);
+  return 'open_journal_reject_state';
 }
 

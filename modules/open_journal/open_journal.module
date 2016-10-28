@@ -226,6 +226,23 @@ function open_journal_menu() {
     'file' => 'includes/open_journal_comment_form.inc',
   );
 
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/update-state'] = array(
+    'title' => t('Update state'),
+    'page callback' => 'open_journal_update_state',
+    'page arguments' => array($arg),
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_status_form.inc',
+  );
+
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/reject-state'] = array(
+    'title' => t('Update state'),
+    'page callback' => 'open_journal_reject_state',
+    'page arguments' => array($arg),
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_status_form.inc',
+  );
 
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/file'] = array(
