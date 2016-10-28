@@ -213,7 +213,13 @@ function open_journal_approve_sidebar_form_submit($form, &$form_state) {
   $approve_reason = $form['approve_reason']['#value'];
   $template_title = $form_state['values']['template_title'];
   $roles = $form_state['values']['roles'];
-  open_journal_approve_submit($jid, $next_status, $approve_reason, $template_title, $roles);
+
+  $redirect = TRUE;
+  if (open_journal_get_last_state() == $next_status) {
+    $redirect = FALSE;
+  }
+
+  open_journal_approve_submit($jid, $next_status, $approve_reason, $template_title, $roles, $redirect);
 
 }
 

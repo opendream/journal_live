@@ -2295,6 +2295,9 @@ function open_journal_discussion_list($journal) {
 function open_journal_discussion_when_state_change($journal) {
   // Todo plug to state change function
   $next_status = $journal->sid;
+  if (open_journal_get_last_state() == $journal->sid) {
+    drupal_set_message(t('Congratulation this article is published.'));
+  }
   $status_list = open_journal_get_status_list();
   $status_name = $status_list[$next_status];
   $sql = "SELECT * FROM {open_journal_template} WHERE sid = :sid AND name = :name"; 
