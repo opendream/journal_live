@@ -9,7 +9,7 @@ function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL,
       ),
     'type' => 'setting',
   );
-
+dpm($template_list);
   $form['#attached']['js']['open_journal_template'] = drupal_get_path('module', 'open_journal').'/js/open_journal_template.js';
  
   $form['#attached']['css']['wmd'] = drupal_get_path('module', 'open_journal').'/wmd/wmd.css';
@@ -60,6 +60,7 @@ function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL,
   $form['roles'] = array(
     '#title' => t('Email this message to roles on the article.'),
     '#type' => 'checkboxes',
+    '#id' => 'edit-roles',
     '#options' => $user_role_list,
     '#access' => user_access('access select roles'),
     '#prefix' => '<div style="display:none" class="select-roles-control"><span id="select_all">Select all</span> | <span id="select_none">Select none</span></div>',

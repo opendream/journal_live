@@ -598,6 +598,16 @@ function open_journal_schema() {
         'not null' => FALSE,
         'default' => 0,
       ),
+      'name' => array(
+        'type' => 'varchar',
+        'length' => 100,
+        'not null' => FALSE,
+      ),
+      'type' => array(
+        'type' => 'varchar',
+        'length' => 100,
+        'not null' => FALSE,
+      ),
     ),
     'primary key' => array('tpid'),
   );
@@ -1388,4 +1398,13 @@ function open_journal_update_7023(&$sandbox) {
     ->fields(array('next_ssid' => NULL))
     ->condition('next_ssid', 0)
     ->execute();
+}
+
+function open_journal_update_7024(&$sandbox) {
+
+  $schema = open_journal_schema();
+
+  db_add_field('open_journal_template', 'name', $schema['open_journal_template']['fields']['name']);
+  db_add_field('open_journal_template', 'type', $schema['open_journal_template']['fields']['type']);
+
 }

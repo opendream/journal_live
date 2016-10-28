@@ -2280,8 +2280,8 @@ function open_journal_discussion_when_state_change($journal) {
   $next_status = $journal->sid;
   $status_list = open_journal_get_status_list();
   $status_name = $status_list[$next_status];
-  $sql = "SELECT * FROM {open_journal_template} WHERE sid = :sid AND auto = :auto AND reject = :reject"; 
-  $result = db_query($sql, array(':sid' => $next_status, ':auto' => 1, ':reject' => 0));
+  $sql = "SELECT * FROM {open_journal_template} WHERE sid = :sid AND name = :name"; 
+  $result = db_query($sql, array(':sid' => $next_status, ':name' => 'auto'));
   $template_list = $result->fetchAll();
 
   if (!empty($template_list)) {
@@ -2351,14 +2351,14 @@ function open_journal_get_status_form_variables($journal) {
   if ((user_access('approve with unanimity') || user_access('reject journal')) && !$journal->reject && $vars['next_status']) {
     if (user_access('reject journal')) {
       // Get reject template
-      $template_list = open_journal_get_template_list($journal, 1);
+      $template_list = open_journal_get_template_list($journal, 'reject');
       // Replace string
       open_journal_replace_template_string($template_list, $journal, TRUE);
       $vars['reject_form'] = drupal_render(drupal_get_form('open_journal_reject_sidebar_form', $journal, $template_list));
     }
     if (user_access('approve with unanimity')) {
       // Get approve template
-      $template_list = open_journal_get_template_list($journal, 2);
+      $template_list = open_journal_get_template_list($journal, 'approve');
       // Replace string
       open_journal_replace_template_string($template_list, $journal);
       if (!empty($template_list)) {
@@ -2439,9 +2439,9 @@ function open_journal_get_discussion_field($did, $field) {
   return $result[0]->$field;
 }
 
-function open_journal_get_template_list($journal, $reject=0, $auto=0) {
-  $sql = "SELECT * FROM {open_journal_template} WHERE sid = :sid AND reject = :reject AND auto = :auto";
-  $result = db_query($sql, array(':sid' => $journal->sid, ':reject' => $reject, ':auto' => $auto));
+function open_journal_get_template_list($journal, $name='template') {
+  $sql = "SELECT * FROM {open_journal_template} WHERE sid = :sid AND name = :name";
+  $result = db_query($sql, array(':sid' => $journal->sid, ':name' => $name));
   return $result->fetchAll();
 }
 
