@@ -108,9 +108,12 @@ function open_journal_approve_sidebar_form($form, &$form_state, $journal , $next
     drupal_get_path('module', 'open_journal') . '/js/open_journal_status_sidebar.js',
     drupal_get_path('module', 'open_journal') . '/js/jquery.qtip.min.js',
   );
-
   if($template_list) {
     $default_value = $template_list[0]->body;
+    $roles = array();
+    foreach ($template_list[0]->role as $key => $value) {
+      $roles[$value->rid] = $value->rid;
+    }
     $form['approve_reason'] = array(
       '#type' => 'textarea',
       '#default_value' => $default_value,
@@ -126,10 +129,15 @@ function open_journal_approve_sidebar_form($form, &$form_state, $journal , $next
         'attributes' => array('id' => 'approve-popup-cancel-link')
       )),
     );
-
-    $form['approve_tpid'] = array(
+    $form['roles'] = array(
       '#type' => 'hidden',
-      '#value' => $template_list[0]->tpid,
+      '#value' => $roles,
+      '#access' => FALSE,
+    );
+
+    $form['template_title'] = array(
+      '#type' => 'hidden',
+      '#value' => $template_list[0]->template_title,
       '#access' => FALSE,
     );
     $form['#attached']['js'][] = drupal_get_path('module', 'open_journal').'/js/open_journal_status_sidebar_approve_popup.js'; 
@@ -178,15 +186,14 @@ function open_journal_approve_sidebar_form_validate($element, &$form_state) {
 function open_journal_approve_sidebar_form_submit($form, &$form_state) {
   $next_status = $form['next_status']['#value'];
   $jid = $form_state['build_info']['args'][0]->jid;
-
   $approve_reason = $form['approve_reason']['#value'];
-  $approve_tpid = $form['approve_tpid']['#value'];
-
-  open_journal_approve_submit($jid, $next_status, $approve_reason, $approve_tpid);
+  $template_title = $form_state['values']['template_title'];
+  $roles = $form_state['values']['roles'];
+  open_journal_approve_submit($jid, $next_status, $approve_reason, $template_title, $roles);
 
 }
 
-function open_journal_approve_submit($jid, $next_status, $approve_reason=NULL, $approve_tpid=NULL) {
+function open_journal_approve_submit($jid, $next_status, $approve_reason=NULL, $template_title=NULL, $roles=array()) {
 
   // TODO use $form_state['value'] for block hacker
  	//$sql = "UPDATE open_journal_journal SET status = ".$next_status." staWHERE jid = ".$jid;
@@ -247,15 +254,10 @@ function open_journal_approve_submit($jid, $next_status, $approve_reason=NULL, $
   if ($approve_reason) {
     $discussion = array(
       'jid' => $jid,
-      'title' => 'Approve description title',
+      'title' => $template_title,
       'description' => $approve_reason,
     );
-    $discussion['roles'] = array();
-
-    $role_list = open_journal_get_template_role_list($approve_tpid);
-    foreach ($role_list as $key => $value) {
-      $discussion['roles'][] = $value->rid;
-    }
+    $discussion['roles'] = $roles; 
 
     $discussion = (object) $discussion;
     open_journal_discussion_save($discussion);
