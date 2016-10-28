@@ -2444,6 +2444,12 @@ function open_journal_before_sid($sid) {
     return $before_sid;
 }
 
+function open_journal_parent_sid($sid) { 
+    $result = db_query("SELECT parent_sid from {open_journal_state} WHERE sid = :sid", array(":sid" => $sid));
+    $result = $result->fetchAll();
+    return $result[0]->parent_sid;
+}
+
 function open_journal_get_comment_field($cid, $field) {
   $sql = " SELECT ".$field."  FROM open_journal_comment WHERE  cid=".$cid."  ";
   $result = db_query($sql)->fetchAll();
@@ -2457,8 +2463,9 @@ function open_journal_get_discussion_field($did, $field) {
 }
 
 function open_journal_get_template_list($journal, $name='template') {
-  $sql = "SELECT * FROM {open_journal_template} WHERE sid = :sid AND name = :name";
-  $result = db_query($sql, array(':sid' => $journal->sid, ':name' => $name));
+  $parent_sid = open_journal_parent_sid($journal->sid);
+  $sql = "SELECT * FROM {open_journal_template} WHERE (sid = :sid OR sid = :parent_sid) AND name = :name";
+  $result = db_query($sql, array(':sid' => $journal->sid, ':name' => $name, ':parent_sid' => $parent_sid));
   return $result->fetchAll();
 }
 

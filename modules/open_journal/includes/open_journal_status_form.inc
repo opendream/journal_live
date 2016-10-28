@@ -12,6 +12,11 @@ function open_journal_reject_sidebar_form($form, &$form_state, $journal, $templa
       '#value' => $template_list[0]->tpid,
       '#access' => FALSE,
     );
+    $form['template_title'] = array(
+      '#type' => 'hidden',
+      '#value' => $template_list[0]->template_title,
+      '#access' => FALSE,
+    );
 
     $form['roles'] = array(
       '#type' => 'hidden',
@@ -40,7 +45,7 @@ function open_journal_reject_sidebar_form($form, &$form_state, $journal, $templa
 	return $form;
 }
 
-function open_journal_reject_submit($jid, $reject_reason='', $redirect=TRUE) {
+function open_journal_reject_submit($jid, $reject_reason='', $roles=FALSE, $template_title=FALSE, $redirect=TRUE) {
   $sql = "UPDATE open_journal_journal SET reject = 1, reject_reason = '".$reject_reason."' WHERE jid = ".$jid;
   db_query($sql);
 
@@ -53,8 +58,16 @@ function open_journal_reject_submit($jid, $reject_reason='', $redirect=TRUE) {
     
   );
 
-  if (isset($form_state['values']['roles'])) {
-    $discussion['roles'] = $form_state['values']['roles'];
+  if ($template_title) {
+    $discussion['title'] = $template_title;
+  }
+  else {
+    $discussion['title'] = t('This journal has been rejected.');
+
+  }
+
+  if ($roles) {
+    $discussion['roles'] = $roles;
   }
 
   $discussion = (object) $discussion;
@@ -69,11 +82,14 @@ function open_journal_reject_submit($jid, $reject_reason='', $redirect=TRUE) {
 
 function open_journal_reject_sidebar_form_submit($form, &$form_state) {
 	$reject_reason = $form['reject_reason']['#value'];
+  $roles = $form['roles']['#value'];
+  $template_title = $form['template_title']['#value'];
 	$jid = $form_state['build_info']['args'][0]->jid;
 
-  open_journal_reject_submit($jid, $reject_reason);
+  open_journal_reject_submit($jid, $reject_reason, $roles, $template_title);
 	
 }
+
 function open_journal_not_reject_form($form, &$form_state) {
 	global $user;
 
@@ -400,7 +416,7 @@ function open_journal_update_state($journal) {
 function open_journal_reject_state($journal) {
   dpm($journal);
   $reject_reason = '';
-  open_journal_reject_submit($journal->jid, $reject_reason, FALSE);
+  open_journal_reject_submit($journal->jid, $reject_reason, FALSE, FALSE, FALSE);
   return 'open_journal_reject_state';
 }
 
