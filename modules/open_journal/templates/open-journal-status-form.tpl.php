@@ -12,7 +12,7 @@
 	elseif($key_status == (count($status_list)-1) && $value_status['active']):print " class='status-active finish' ";
 	elseif($value_status['active']): print " class='status-active' ";
 	else:print " class='status-disabled' ";endif;?>
-	<?php if ($value_status['is_substate']):print " style='display: none;' "; endif;?>>
+	<?php if ($value_status['is_substate']):print " style='display: block;' "; endif;?>>
 
 		<?php 
 			if ($value_status['parent_sid']) {
@@ -39,18 +39,20 @@
 		  <?php print $value_status['name'];?>
 		</div>
 
-		
-		<?php if ($approve_form): ?>
-		<?php if($journal->sid == $value_status['sid'] && $value_status['next_sid'] != NULL && !$journal->reject):?>
-			<?php print $approve_form;?>
+		<?php if($approve_form): ?>
+		<?php if(!$value_status['is_substate'] && $value_status['current'] && $value_status['next_sid'] != NULL && !$journal->reject):?>
+			<?php print $approve_form; ?>
+			<?php //print drupal_render(drupal_get_form('open_journal_approve_sidebar_form', $journal, open_journal_next_sid($value_status['sid']), $vars['template_list'])); ?>
+
 			<?php if($approve_template):?>
+
 				<div class="approve-popup-button">
 					<?php print l('Approve' ,'', array('attributes' => array('id' => 'approve_popup_bottom')));?>
 				</div>
 
 			<?php endif;?>
 		<?php endif;?>
-		<?php endif ?>
+		<?php endif;?>
 	
 	</div>
 

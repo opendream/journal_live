@@ -177,6 +177,7 @@ function open_journal_approve_sidebar_form_validate($element, &$form_state) {
   
 function open_journal_approve_sidebar_form_submit($form, &$form_state) {
   $next_status = $form['next_status']['#value'];
+
   $jid = $form_state['build_info']['args'][0]->jid;
 
   $approve_reason = $form['approve_reason']['#value'];
