@@ -2377,7 +2377,7 @@ function open_journal_get_status_form_variables($journal) {
       // Get approve template
       $template_list = open_journal_get_template_list($journal, 'approve');
       // Replace string
-      open_journal_replace_template_string($template_list, $journal);
+      open_journal_replace_template_string($template_list, $journal, TRUE);
       if (!empty($template_list)) {
         $vars['approve_template'] = TRUE;
       }
