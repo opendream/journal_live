@@ -2353,7 +2353,7 @@ function open_journal_get_status_form_variables($journal) {
       // Get reject template
       $template_list = open_journal_get_template_list($journal, 1);
       // Replace string
-      open_journal_replace_template_string($template_list, $journal);
+      open_journal_replace_template_string($template_list, $journal, TRUE);
       $vars['reject_form'] = drupal_render(drupal_get_form('open_journal_reject_sidebar_form', $journal, $template_list));
     }
     if (user_access('approve with unanimity')) {

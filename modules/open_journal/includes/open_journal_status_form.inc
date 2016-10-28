@@ -3,6 +3,22 @@ function open_journal_reject_sidebar_form($form, &$form_state, $journal, $templa
   $default_value = '';
   if ($template_list) {
     $default_value = $template_list[0]->body;
+    $roles = array();
+    foreach ($template_list[0]->role as $key => $value) {
+      $roles[$value->rid] = $value->rid;
+    }
+    $form['tpid'] = array(
+      '#type' => 'hidden',
+      '#value' => $template_list[0]->tpid,
+      '#access' => FALSE,
+    );
+
+    $form['roles'] = array(
+      '#type' => 'hidden',
+      '#value' => $roles,
+      '#access' => FALSE,
+    );
+
   }
 	$form['reject_reason'] = array(
 		'#type' => 'textarea',
@@ -25,7 +41,6 @@ function open_journal_reject_sidebar_form($form, &$form_state, $journal, $templa
 }
 
 function open_journal_reject_sidebar_form_submit($form, &$form_state) {
-	
 	$reject_reason = $form['reject_reason']['#value'];
 	$jid = $form_state['build_info']['args'][0]->jid;
 	$sql = "UPDATE open_journal_journal SET reject = 1, reject_reason = '".$reject_reason."' WHERE jid = ".$jid;
@@ -39,6 +54,10 @@ function open_journal_reject_sidebar_form_submit($form, &$form_state) {
     'description' => $reject_reason,
     
   );
+
+  if (isset($form_state['values']['roles'])) {
+    $discussion['roles'] = $form_state['values']['roles'];
+  }
 
   $discussion = (object) $discussion;
   open_journal_discussion_save($discussion);
