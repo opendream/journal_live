@@ -226,6 +226,23 @@ function open_journal_menu() {
     'file' => 'includes/open_journal_comment_form.inc',
   );
 
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/update-state'] = array(
+    'title' => t('Update state'),
+    'page callback' => 'open_journal_update_state',
+    'page arguments' => array($arg),
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_status_form.inc',
+  );
+
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/reject-state'] = array(
+    'title' => t('Update state'),
+    'page callback' => 'open_journal_reject_state',
+    'page arguments' => array($arg),
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_status_form.inc',
+  );
 
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/file'] = array(
@@ -2347,7 +2364,7 @@ function open_journal_get_status_form_variables($journal) {
   $vars['reject_form'] = '';
   $vars['approve_form'] = '';
   
-  $vars['next_status'] = open_journal_next_sid($journal->sid);
+  $vars['next_status'] = open_journal_next_sid($journal->sid, TRUE);
   if ((user_access('approve with unanimity') || user_access('reject journal')) && !$journal->reject && $vars['next_status']) {
     if (user_access('reject journal')) {
       // Get reject template
@@ -2364,6 +2381,8 @@ function open_journal_get_status_form_variables($journal) {
       if (!empty($template_list)) {
         $vars['approve_template'] = TRUE;
       }
+      $vars['template_list'] = $template_list;
+
       $vars['approve_form'] = drupal_render(drupal_get_form('open_journal_approve_sidebar_form', $journal, $vars['next_status'], $template_list));
     }
     $vars['status_add_class'] = ' can-approve';
@@ -2374,17 +2393,17 @@ function open_journal_get_status_form_variables($journal) {
   return $vars;
 }
 
-function open_journal_next_sid($sid) {
-    $result = db_query("SELECT next_sid from {open_journal_state} WHERE sid = :sid", array(":sid" => $sid));
+function open_journal_next_sid($sid, $check_substate=FALSE) {
+    $result = db_query("SELECT next_sid, is_substate, parent_sid from {open_journal_state} WHERE sid = :sid", array(":sid" => $sid));
     $result = $result->fetchAll();
     $state = $result[0];
 
     if($state->next_sid == NULL) {
       return FALSE;
-
     }
 
-    $result_next = db_query("SELECT next_sid, parent_sid, is_root, sid from {open_journal_state} WHERE sid = :sid", array(":sid" => $state->next_sid));
+
+    $result_next = db_query("SELECT next_sid, parent_sid, is_root, sid, is_substate from {open_journal_state} WHERE sid = :sid", array(":sid" => $state->next_sid));
     $result_next = $result_next->fetchAll();
     $state_next  = $result_next[0];
 
@@ -2392,7 +2411,12 @@ function open_journal_next_sid($sid) {
       $next_sid = open_journal_next_sid($state->next_sid);
     }
     else {
-      $next_sid = $state->next_sid;
+      if ($check_substate && $state->is_substate) {
+        $next_sid = open_journal_next_sid($state->parent_sid);
+      }
+      else {
+        $next_sid = $state->next_sid;
+      }
     }
     open_journal_before_sid(1);
     return $next_sid;
