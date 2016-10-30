@@ -1492,7 +1492,9 @@ function open_journal_update_7027(&$sandbox) {
       'body' => 'เรียน @reciever_roles
 เนื่องจาก @author ได้ส่งบทความใหม่
 @journal_id - @journal_title 
-มายังวารสารวิจัยระบบสาธารณสุขเพื่อรับการตีพิมพ์',
+มายังวารสารวิจัยระบบสาธารณสุขเพื่อรับการตีพิมพ์
+กรุณาตรวจสอบบทความ
+',
       'template_title' => 'มีบทความใหม่เข้ามาใหม่',
       'name' => 'auto',
     ),
@@ -1500,8 +1502,8 @@ function open_journal_update_7027(&$sandbox) {
       'tpid' => 23,
       'sid' => 0,
       'title' => 'ปฏิเสธการตีพิมพ์ที่ Editor first view',
-      'body' => '',
-      'template_title' => $reject_author,
+      'body' => $reject_author,
+      'template_title' => 'ขอปฏิเสธการตีพิมพ์',
       'name' => 'reject',
     ),
     array(
@@ -1588,7 +1590,9 @@ function open_journal_update_7027(&$sandbox) {
       'body' => 'เรียน @reciever_roles
 เนื่องจาก @author ได้ส่งบทความใหม่
 @journal_id - @journal_title 
-มายังวารสารวิจัยระบบสาธารณสุขเพื่อรับการตีพิมพ์',
+มายังวารสารวิจัยระบบสาธารณสุขเพื่อรับการตีพิมพ์
+กรุณาตรวจสอบบทความ
+',
       'template_title' => 'มีบทความใหม่มาให้พิจารณา',
       'name' => 'auto',
     ),
