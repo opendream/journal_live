@@ -201,7 +201,7 @@ function open_journal_approve_sidebar_form_submit($form, &$form_state) {
 
 }
 
-function open_journal_approve_submit($jid, $next_status, $approve_reason=NULL, $template_title=NULL, $roles=array(), $redirect=TRUE) {
+function open_journal_approve_submit($jid, $next_status, $approve_reason=NULL, $template_title=NULL, $roles=array(), $redirect=TRUE, $commit=TRUE, $silent=FALSE) {
 
   // TODO use $form_state['value'] for block hacker
  	//$sql = "UPDATE open_journal_journal SET status = ".$next_status." staWHERE jid = ".$jid;
@@ -281,7 +281,7 @@ function open_journal_approve_submit($jid, $next_status, $approve_reason=NULL, $
   }
 
   if ($bypass) {
-    open_journal_approve_submit($jid, $result_next->next_ssid, NULL, NULL, array(), $redirect);
+    open_journal_approve_submit($jid, $result_next->next_ssid, NULL, NULL, array(), $redirect, $commit, $silent);
   }
 
   if ($redirect) {
@@ -403,4 +403,54 @@ function open_journal_reject_state($journal) {
   open_journal_reject_submit($journal->jid, $reject_reason, FALSE);
   return 'open_journal_reject_state';
 }
+
+function open_journal_timeout_check() {
+  $now = time();
+  $sql = "SELECT * FROM {open_journal_state} WHERE timeout_auto_reminder > 0 OR timeout_auto_approve > 0 OR timeout_auto_reject > 0";
+
+  $state_list = db_query($sql)->fetchAll();
+  foreach ($state_list as $state) {
+      $sql = "SELECT * FROM {open_journal_journal} WHERE sid = :sid AND reject = 0";
+      $journal_list = db_query($sql, array(':sid' => $state->sid))->fetchAll();
+
+      foreach ($journal_list as $journal) {
+        if ($state->timeout_auto_reminder > 0) {
+          dpm('timeout_auto_reminder '.$journal->jid). ' '. $journal->state_changed;
+        }
+        if ($state->timeout_auto_approve > 0) {
+          dpm('timeout_auto_approve '.$journal->jid);
+        }
+        if ($state->timeout_auto_reject > 0) {
+          dpm('timeout_auto_reject '.$journal->jid);
+        } 
+      }
+
+
+  }
+
+  return '';
+
+  //open_journal_approve_submit($jid, $next_status, $approve_reason=NULL, $template_title=NULL, $roles=array(), $redirect=TRUE, $commit=TRUE, $silent=FALSE)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

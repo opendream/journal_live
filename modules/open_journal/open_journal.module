@@ -244,6 +244,15 @@ function open_journal_menu() {
     'file' => 'includes/open_journal_status_form.inc',
   );
 
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/timeout-check'] = array(
+    'title' => t('Update state'),
+    'page callback' => 'open_journal_timeout_check',
+    'page arguments' => array($arg),
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_status_form.inc',
+  );
+
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/file'] = array(
     'title' => t('Files'),
@@ -839,7 +848,7 @@ function open_journal_journal_load($jid, $ignore_access=FALSE) {
   return $data;
 }
 
-function open_journal_journal_save($data, $change_status=FALSE) {
+function open_journal_journal_save($data, $change_status=FALSE, $commit=TRUE, $silent=FALSE) {
   if(!$change_status) {
     $data->changed = REQUEST_TIME;
   }
@@ -889,7 +898,10 @@ function open_journal_journal_save($data, $change_status=FALSE) {
   else {
     $data->title = $data->title_en? $data->title_en: $data->title_sub;
   }
-  $jid = drupal_write_record('open_journal_journal', $data, $pk);
+
+  if ($commit) {
+    drupal_write_record('open_journal_journal', $data, $pk);
+  }
 
   if (isset($data->file) && $data->file) {
     $file->status = FILE_STATUS_PERMANENT;
@@ -911,8 +923,9 @@ function open_journal_journal_save($data, $change_status=FALSE) {
     global $user;
     open_journal_journal_people_active($data, $user->uid);
     open_journal_auto_active_people($data);
-    open_journal_discussion_when_state_change($data);
-
+    if (!$silent) {
+      open_journal_discussion_when_state_change($data);
+    }
   }
 
 
