@@ -9,7 +9,7 @@ function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL,
       ),
     'type' => 'setting',
   );
-  
+
   $form['#attached']['js']['open_journal_template'] = drupal_get_path('module', 'open_journal').'/js/open_journal_template.js';
  
   $form['#attached']['css']['wmd'] = drupal_get_path('module', 'open_journal').'/wmd/wmd.css';
@@ -113,7 +113,7 @@ function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL,
 
   // Multiple upload file
   // Todo rit1 remove hardcode
-  if ($journal->sid == 6) {
+  if ($journal->sid == 6 || open_journal_parent_sid($journal->sid) == 6) {
 
     $form['files_upload'] = array( 
       '#type' => 'plupload', 
