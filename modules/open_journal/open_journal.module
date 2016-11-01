@@ -1351,6 +1351,14 @@ function open_jounal_discussion_mail($data, $params=array()) {
     $sender_info = open_journal_get_display_user_info($sender, array('user' => $reciver));
     $sender->name = $sender_info['display_name_text'];
 
+    // Replate sender name
+    if ($data->auto == 1) {
+      $sender->name = 'System';
+    }
+    else {
+      $sender->name = open_journal_replace_sender_name($sender);
+    }
+
     $data->sender = $sender;
     $data->reciver = $reciver;
     if (!$data->contributor_only || user_access('access contributor process', $reciver)) {
@@ -1362,6 +1370,15 @@ function open_jounal_discussion_mail($data, $params=array()) {
 
 }
 
+/**
+ * Replace sender name to role
+ */
+function open_journal_replace_sender_name($sender) {
+  foreach ($sender->roles as $key => $value) {
+    $sender_name = $value;
+  }
+  return $sender_name;
+}
 
 /**
  * Comment method
@@ -1445,6 +1462,14 @@ function open_jounal_comment_mail($data) {
     $sender->name = $org_name;
     $sender_info = open_journal_get_display_user_info($sender, array('user' => $reciver));
     $sender->name = $sender_info['display_name_text'];
+
+    // Replate sender name
+    if ($data->discussion->auto == 1) {
+      $sender->name = 'System';
+    }
+    else {
+      $sender->name = open_journal_replace_sender_name($sender);
+    }
 
     $data->sender = $sender;
     $data->reciver = $reciver;
@@ -2503,7 +2528,7 @@ function open_journal_get_template_role_list($tpid) {
 function open_journal_discussion_add($journal) {
 
   $user_role_list = user_roles(FALSE, 'send email template');
-  // Pass template to discustion form
+  // Pass template to discussion form
   $template_list = open_journal_get_template_list($journal);
 
   // Replace special string from body template
@@ -2576,7 +2601,7 @@ function open_journal_discussion_edit($journal, $discussion) {
   }
 
   $user_role_list = user_roles(FALSE, 'send email template');
-  // Pass template to discustion form
+  // Pass template to discussion form
   $template_list = open_journal_get_template_list($journal);
   $discussion->roles = open_journal_get_discussion_role($discussion->did);
   return theme('open_journal_detail', array(
