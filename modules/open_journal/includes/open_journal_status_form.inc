@@ -233,53 +233,6 @@ function open_journal_approve_submit($jid, $next_status, $approve_reason=NULL, $
 	$journal = (object) $journal;
 	open_journal_journal_save($journal, TRUE);
   
-  /*
-	// Create new discustion
-	//$status_list = unserialize(OPEN_JOUNAL_STATUS);
-  $status_list = open_journal_get_status_list();
-	$status_name = $status_list[$next_status];
-
-  // Auto create discussion when stage change
-  $sql = "SELECT * FROM {open_journal_template} WHERE sid = :sid AND auto = :auto AND reject = :reject"; 
-  $result = db_query($sql, array(':sid' => $next_status, ':auto' => 1, ':reject' => 0));
-  $template_list = $result->fetchAll();
-
-  if (!empty($template_list)) {
-    open_journal_replace_template_string($template_list, $journal);
-
-    foreach ($template_list as $key => $value) {
-
-      $discussion = array(
-        'jid' => $jid,
-        'title' => t('Congratulations! Status is now changed to '.ucwords($status_name) ),
-      );
-      $discussion['roles'] = array();
-      $role_list = open_journal_get_template_role_list($value->tpid);
-
-      foreach ($role_list as $key2 => $value2) {
-        $discussion['roles'][] = $value2->rid;
-      }
-      $discussion['description'] = $value->body;
-
-    }
-
-
-
-  }
-  else {
-    $discussion = array(
-      'jid' => $jid,
-      'title' => t('Congratulations! Status is now changed to '.ucwords($status_name) ),
-      'description' => 'Your comments are now welcome in Discussions.',
-      'roles' => array(),
-    );
-
-  }
-
-  $discussion = (object) $discussion;
-  open_journal_discussion_save($discussion);
-  */
-
   // Create discussion when have approve reason
   if ($approve_reason) {
     $discussion = array(
@@ -426,6 +379,34 @@ function open_journal_reject_state($journal) {
   return 'open_journal_reject_state';
 }
 
+function open_journal_check_timeout_exist($journal, $state, $type, $now=NULL) {
+
+  if (!$state->{$type}) {
+    return FALSE;
+  }
+
+  $now = $now? $now: time();
+  $seconds_per_day = variable_get('seconds_per_day', 60*60*24);
+
+  $days_after_status_changed = (($now - $journal->status_changed)/$seconds_per_day);
+
+  $exist = db_query("SELECT * FROM {open_journal_timeout} WHERE jid = :jid AND sid = :sid AND type = :type", array(
+    ':jid' => $journal->jid,
+    ':sid' => $state->sid,
+    ':type' => $type
+  ))->rowCount();
+
+  if ($days_after_status_changed >= $state->{$type} && !$exist) {
+    db_insert('open_journal_timeout')
+      ->fields(array('jid' => $journal->jid, 'sid' => $state->sid, 'type' => $type))
+      ->execute();
+
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
 function open_journal_timeout_check() {
   $now = time();
   $sql = "SELECT * FROM {open_journal_state} WHERE timeout_auto_reminder > 0 OR timeout_auto_approve > 0 OR timeout_auto_reject > 0";
@@ -436,13 +417,23 @@ function open_journal_timeout_check() {
       $journal_list = db_query($sql, array(':sid' => $state->sid))->fetchAll();
 
       foreach ($journal_list as $journal) {
-        if ($state->timeout_auto_reminder > 0) {
-          dpm('timeout_auto_reminder '.$journal->jid). ' '. $journal->state_changed;
+        if (open_journal_check_timeout_exist($journal, $state, 'timeout_auto_reminder', $now)) {
+          dpm('timeout_auto_reminder '.$journal->jid);
+          open_journal_discussion_when_state_change($journal, 'time');
         }
-        if ($state->timeout_auto_approve > 0) {
+
+        if (open_journal_check_timeout_exist($journal, $state, 'timeout_auto_approve', $now)) {
           dpm('timeout_auto_approve '.$journal->jid);
         }
-        if ($state->timeout_auto_reject > 0) {
+
+        if (open_journal_check_timeout_exist($journal, $state, 'timeout_auto_reject', $now)) {
+          $reject_reason = 'Timeout';
+          db_update('open_journal_journal')
+            ->fields(array('reject' => 1, 'reject_reason' => $reject_reason))
+            ->condition('jid', $journal->jid)
+            ->execute();
+            
+          open_journal_discussion_when_state_change($journal, 'reject');
           dpm('timeout_auto_reject '.$journal->jid);
         } 
       }

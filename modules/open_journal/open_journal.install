@@ -681,6 +681,32 @@ function open_journal_schema() {
     ),
     'primary key' => array('dfid'),
   );
+
+  $schema['open_journal_timeout'] = array(
+    'fields' => array(
+      'tid' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'jid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'sid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'type' => array(
+        'type' => 'varchar',
+        'length' => 100,
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('tid'),
+  );
   return $schema;
 
 }
@@ -2226,4 +2252,10 @@ function open_journal_update_7031(&$sandbox) {
   db_insert('open_journal_template_role')
     ->fields(array('rid' => 8, 'tpid' => 200))
     ->execute();
+}
+
+
+function open_journal_update_7032(&$sandbox) {
+  $schema = open_journal_schema();
+  db_create_table('open_journal_timeout', $schema['open_journal_timeout']);
 }

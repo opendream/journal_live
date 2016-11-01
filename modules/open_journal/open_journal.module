@@ -2310,7 +2310,7 @@ function open_journal_discussion_list($journal) {
 
 
 }
-function open_journal_discussion_when_state_change($journal) {
+function open_journal_discussion_when_state_change($journal, $name='auto') {
   // Todo plug to state change function
   $next_status = $journal->sid;
   if (open_journal_get_last_state() == $journal->sid) {
@@ -2319,8 +2319,10 @@ function open_journal_discussion_when_state_change($journal) {
   $status_list = open_journal_get_status_list();
   $status_name = $status_list[$next_status];
   $sql = "SELECT * FROM {open_journal_template} WHERE sid = :sid AND name = :name"; 
-  $result = db_query($sql, array(':sid' => $next_status, ':name' => 'auto'));
+  $result = db_query($sql, array(':sid' => $next_status, ':name' => $name));
   $template_list = $result->fetchAll();
+
+  dpm($sql);dpm(array(':sid' => $next_status, ':name' => $name));
 
   if (!empty($template_list)) {
     open_journal_replace_template_string($template_list, $journal);
@@ -2368,6 +2370,8 @@ function open_journal_discussion_when_state_change($journal) {
     open_journal_discussion_save($discussion);
 
   }
+
+  db_delete('open_journal_timeout')->condition('jid', $journal->jid)->execute();
 
 
 }
@@ -2942,7 +2946,7 @@ function open_journal_load_multiple($user=NULL, $after_jid=NULL, $limit=NULL, $s
 
   $query_var = array();
   $sql =
-   "SELECT j.*
+   "SELECT DISTINCT j.*
     FROM
       {open_journal_journal_people} jp
     LEFT JOIN
