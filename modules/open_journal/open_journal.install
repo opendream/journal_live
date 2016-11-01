@@ -2177,3 +2177,68 @@ function open_journal_update_7029(&$sandbox) {
   ->execute();
 
 }
+
+function open_journal_update_7030(&$sandbox) {
+  
+  //
+  db_update('open_journal_template')
+    ->fields(array('sid' => 101, 'template_title' => 'ท่านเหลือเวลาอีก 8 วันในการปรับแก้บทความ'))
+    ->condition('tpid', 9)
+    ->execute();
+
+  db_update('open_journal_template')
+    ->fields(array('sid' => 102, 'template_title' => 'ท่านเหลือเวลาอีก 7 วันในการปรับแก้บทความ'))
+    ->condition('tpid', 10)
+    ->execute();
+  
+  db_update('open_journal_template')
+    ->fields(array('sid' => 101, 'name' => 'reject', 'title' => 'Revision alert 5', 'template_title' => 'ขอปฏิเสธการตีพิมพ์บทความของท่าน'))
+    ->condition('tpid', 11)
+    ->execute();
+
+  $data = array(
+      'tpid' => 200,
+      'sid' => 102,
+      'title' => 'Revision alert 7',
+      'name' => 'reject',
+      'template_title' => 'ขอปฏิเสธการตีพิมพ์บทความของท่าน',
+      'body' => 'เรียน @author 
+
+ตามที่ ท่านส่งบทความเรื่อง @journal_id - @journal_title มายังวารสารวิจัยระบบสาธารณสุขเพื่อรับการตีพิมพ์และ ทางวารสารฯ ได้แจ้งผลการพิจารณาบทความไปแล้ว นั้น
+โปรดทราบว่า เราจำเป็นต้องปฏิเสธการตีพิมพ์เนื่องจากท่านมิได้ส่งบทความที่แก้ไขกลับมาภายในกำหนด หากท่านประสงค์จะส่งบทความที่แก้ไขกลับมาให้ทางวารสารฯ พิจารณาอีกครั้ง กรุณา submit เข้ามาใหม่ โดยใส่ “resubmit” หน้าชื่อเรื่องด้วย
+ทางวารสารฯ ขอขอบคุณ และหวังว่า โอกาสหน้าคงได้รับการติดต่อจากท่านอีก
+ฝ่ายจัดการวารสาร
+-- -- --
+' );
+
+  db_insert('open_journal_template')
+    ->fields($data)
+    ->execute();
+
+  // $data = array(
+  //   array(
+  //     'rid' => 8,
+  //     'tpid' => 1,
+  //   ),
+  //   array(
+  //     'rid' => 8,
+  //     'tpid' => 3,
+  //   ),
+  //   array(
+  //     'rid' => 8,
+  //     'tpid' => 7,
+  //   ),
+  // );
+
+  // $query = db_insert('open_journal_template_role')->fields(array(
+  //   'rid',
+  //   'tpid',
+  //   )
+  // );
+
+  // foreach ($data as $record) {
+  //   $query->values($record);
+  // }
+  // $query->execute();
+
+}
