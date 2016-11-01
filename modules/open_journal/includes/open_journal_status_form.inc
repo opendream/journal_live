@@ -417,6 +417,14 @@ function open_journal_timeout_check() {
       $journal_list = db_query($sql, array(':sid' => $state->sid))->fetchAll();
 
       foreach ($journal_list as $journal) {
+
+        if (OPEN_JOURNAL_SUB_LANG_ENABLE && $journal->dc_language != 'en') {
+          $journal->title = $journal->title_sub? $journal->title_sub: $journal->title_en;
+        }
+        else {
+          $journal->title = $journal->title_en? $journal->title_en: $journal->title_sub;
+        }
+
         if (open_journal_check_timeout_exist($journal, $state, 'timeout_auto_reminder', $now)) {
           dpm('timeout_auto_reminder '.$journal->jid);
           open_journal_discussion_when_state_change($journal, 'time');
@@ -432,7 +440,7 @@ function open_journal_timeout_check() {
             ->fields(array('reject' => 1, 'reject_reason' => $reject_reason))
             ->condition('jid', $journal->jid)
             ->execute();
-            
+
           open_journal_discussion_when_state_change($journal, 'reject');
           dpm('timeout_auto_reject '.$journal->jid);
         } 
