@@ -2264,14 +2264,14 @@ function open_journal_discussion_list_limit($journal, $limit=0) {
     $sql .= " AND d.contributor_only = 0";
   }
   */
-  $sql .= " AND (dr.rid IS NULL OR dr.rid IN (:user_role_list) OR d.uid = :uid)";
+  $sql .= " AND (dr.rid IS NULL OR dr.rid IN (:user_role_list))";
   $sql .= " GROUP BY d.did ORDER BY d.changed DESC";
   
   if ($limit) {
     $sql .= " LIMIT 0, ".$limit;
   }
 
-  $discussion_list = db_query($sql, array(':jid' => $journal->jid, ':user_role_list' => $user_role_list, ':uid' => $user->uid))->fetchAll();
+  $discussion_list = db_query($sql, array(':jid' => $journal->jid, ':user_role_list' => $user_role_list))->fetchAll();
 
   foreach ($discussion_list as &$discussion_item) {
 
@@ -2298,7 +2298,6 @@ function open_journal_discussion_list_limit($journal, $limit=0) {
     $discussion_item = $discussion;
 
   }
- 
   return $discussion_list;
 }
 
