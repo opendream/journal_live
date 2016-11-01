@@ -1485,7 +1485,7 @@ function open_jounal_comment_mail($data) {
  * Mail method
  */
 function open_journal_mail($key, &$message, $data) {
-
+  
   $site_name = variable_get('site_name', t('E-Journal'));
   
   switch ($key) {
@@ -1511,7 +1511,13 @@ function open_journal_mail($key, &$message, $data) {
       }
       $body .= "\n".'------------------------------------------------------------------------';
       $body .= "\n".'More details on link below.';
-      $body .= "\n".url(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->journal->jid.'/discussion/'.$data->did, array('absolute' => TRUE));
+
+      if (isset($data->auto) && $data->auto == 1) {
+        $body .= "\n".url(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->journal->jid.'/discussion', array('absolute' => TRUE));
+      }
+      else {
+        $body .= "\n".url(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->journal->jid.'/discussion/'.$data->did, array('absolute' => TRUE));
+      }
 
 
       $message['body'][] = $body;
