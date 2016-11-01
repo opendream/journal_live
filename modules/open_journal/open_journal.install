@@ -203,6 +203,12 @@ function open_journal_schema() {
         'not null' => FALSE,
       ),
 
+      'approve_by_timer' => array(
+        'type' => 'int',
+        'not null' => FALSE,
+        'default' => 0,
+      ),
+
     ),
     'primary key' => array('jid'),
   );
@@ -2259,3 +2265,9 @@ function open_journal_update_7032(&$sandbox) {
   $schema = open_journal_schema();
   db_create_table('open_journal_timeout', $schema['open_journal_timeout']);
 }
+
+function open_journal_update_7033(&$sandbox) {
+  $schema = open_journal_schema();
+  db_add_field('open_journal_journal', 'approve_by_timer', $schema['open_journal_journal']['fields']['approve_by_timer']);
+}
+
