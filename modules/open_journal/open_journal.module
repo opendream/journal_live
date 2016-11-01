@@ -1438,7 +1438,6 @@ function open_jounal_comment_mail($data) {
     $creator = user_load($data->discussion->uid);
     $user_list[$creator->uid] = $creator;
   }
-  dpm($user_list);
 
   $org_name = $sender->name;
   foreach ($user_list as $reciver) {
@@ -2540,7 +2539,8 @@ function open_journal_replace_template_string($template_list, $journal, $add_rol
 
     }
 
-    $author_replace = $user_journal->data['firstname']." ".$user_journal->data['lastname'];
+    //$author_replace = $user_journal->data['firstname']." ".$user_journal->data['lastname'];
+    $author_replace = "ผู้เขียน"; 
     $replace_code_to = array($author_replace, $journal->jid, $journal->title, l('Create discussion link', 'journal/'.$journal->jid.'/discussion/add', array('absolute' => TRUE)), l('Information', 'journal/'.$journal->jid.'/information', array('absolute' => TRUE)), $reciever_roles);
     $template_list[$key]->body = str_replace($replace_code_list, $replace_code_to, $value->body);
 
