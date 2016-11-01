@@ -1,7 +1,7 @@
 <?php
 
 function open_journal_comment_form($form, $form_state, $journal, $discussion, $data=NULL) {
-  
+
   global $user;
   
   $form['#attached']['css']['wmd'] = drupal_get_path('module', 'open_journal').'/wmd/wmd.css';
@@ -73,6 +73,14 @@ function open_journal_comment_form($form, $form_state, $journal, $discussion, $d
   $form['uid'] = array(
     '#type' => 'hidden',
     '#value' => $user->uid,
+    '#access' => FALSE,
+  );
+
+  // Roles of discussion
+  $roles = open_journal_get_discussion_role($discussion->did);
+  $form['roles'] = array(
+    '#type' => 'hidden',
+    '#value' => $roles,
     '#access' => FALSE,
   );
   

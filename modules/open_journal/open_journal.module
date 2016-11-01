@@ -1427,12 +1427,18 @@ function open_journal_comment_save($data) {
 }
 
 function open_jounal_comment_mail($data) {
-
+  global $user;
   $sender = user_load($data->uid);
   $data->discussion = open_journal_discussion_load($data->did);
   $data->journal = open_journal_journal_load($data->discussion->jid);
 
-  $user_list = open_journal_people_active_list($data->journal->jid, $data->uid);
+  $user_list = open_journal_people_active_role_list($data);
+  // Include creator discussion 
+  if ($user->uid != $data->discussion->uid) {
+    $creator = user_load($data->discussion->uid);
+    $user_list[$creator->uid] = $creator;
+  }
+  dpm($user_list);
 
   $org_name = $sender->name;
   foreach ($user_list as $reciver) {
