@@ -529,6 +529,11 @@ function open_journal_schema() {
         'not null' => FALSE,
         'default' => 0,
       ),
+      'upload_auto_approve' => array(
+        'type' => 'int',
+        'not null' => FALSE,
+        'default' => 0,
+      ),
 
     ),
     'primary key' => array('sid'),
@@ -2159,4 +2164,16 @@ function open_journal_update_7028(&$sandbox) {
     $query->values($record);
   }
   $query->execute();
+}
+
+function open_journal_update_7029(&$sandbox) {
+
+  $schema = open_journal_schema();
+  db_add_field('open_journal_state', 'upload_auto_approve', $schema['open_journal_state']['fields']['upload_auto_approve']);
+
+  db_update('open_journal_state')
+  ->fields(array('upload_auto_approve' => 1))
+  ->condition('sid', array(6, 101, 102), 'IN')
+  ->execute();
+
 }
