@@ -2215,30 +2215,15 @@ function open_journal_update_7030(&$sandbox) {
     ->fields($data)
     ->execute();
 
-  // $data = array(
-  //   array(
-  //     'rid' => 8,
-  //     'tpid' => 1,
-  //   ),
-  //   array(
-  //     'rid' => 8,
-  //     'tpid' => 3,
-  //   ),
-  //   array(
-  //     'rid' => 8,
-  //     'tpid' => 7,
-  //   ),
-  // );
+}
 
-  // $query = db_insert('open_journal_template_role')->fields(array(
-  //   'rid',
-  //   'tpid',
-  //   )
-  // );
+function open_journal_update_7031(&$sandbox) {
+  db_update('open_journal_template_role')
+    ->fields(array('rid' => 8))
+    ->condition('tpid', 11)
+    ->execute();
 
-  // foreach ($data as $record) {
-  //   $query->values($record);
-  // }
-  // $query->execute();
-
+  db_insert('open_journal_template_role')
+    ->fields(array('rid' => 8, 'tpid' => 200))
+    ->execute();
 }
