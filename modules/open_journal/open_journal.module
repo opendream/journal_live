@@ -2986,6 +2986,18 @@ function open_journal_load_multiple($user=NULL, $after_jid=NULL, $limit=NULL, $s
       {open_journal_journal} j
     ON
       jp.jid = j.jid
+    LEFT JOIN
+      {open_journal_state} s1
+    ON
+      j.sid = s1.sid
+    LEFT JOIN
+      {open_journal_state} s2
+    ON
+      s1.parent_sid = s2.sid
+    LEFT JOIN
+      {open_journal_state} s3 
+    ON
+      s2.parent_sid = s3.sid
     WHERE
       1 = 1";
 
@@ -2994,7 +3006,7 @@ function open_journal_load_multiple($user=NULL, $after_jid=NULL, $limit=NULL, $s
     $query_var[':uid'] = $user->uid;
   }
   if($status != 'all') {
-    $sql .= " AND j.sid = :sid ";
+    $sql .= " AND (s1.sid = :sid OR s2.sid = :sid OR s3.sid = :sid)";
     $query_var[':sid'] = $status;
   }
 

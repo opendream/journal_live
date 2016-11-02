@@ -31,7 +31,10 @@ function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL,
     $submit_text = t('Start new discussion');
   }
 
+  $include_template_wrapper = FALSE;
+
   if ($template_list && $data == NULL) {
+    $include_template_wrapper = TRUE;
     $options_template = array('none' => t('-- No select --'));
     foreach ($template_list as $key => $value) {
       $options_template[$key] = $value->title;
@@ -43,30 +46,13 @@ function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL,
       '#description' => t('This options depend on status of article.'),
       '#options' => $options_template,
       '#access' => user_access('access select template'),
-    ); 
+    );
 
+    $form['template_wrapper_start'] = array(
+      '#markup' => '<div class="select-template-wrapper">',
+    );
   }
 
-  $default_roles = array();
-  if (isset($data->roles)) {
-    $default_roles = $data->roles;
-  }
-  else {
-    foreach ($user_role_list as $key => $value) {
-      $default_roles[] = $key;
-    }
-
-  }
-  $form['roles'] = array(
-    '#title' => t('Email this message to roles on the article.'),
-    '#type' => 'checkboxes',
-    '#id' => 'edit-roles',
-    '#options' => $user_role_list,
-    '#access' => user_access('access select roles'),
-    '#prefix' => '<div style="display:none" class="select-roles-control"><span id="select_all">Select all</span> | <span id="select_none">Select none</span></div>',
-    '#default_value' => $default_roles,
-  );
-  
   $form['title'] = array(
     '#type' => 'textfield',
     '#title' => t('Title'),
@@ -131,6 +117,28 @@ function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL,
     );
 
   }
+
+
+  $default_roles = array();
+  if (isset($data->roles)) {
+    $default_roles = $data->roles;
+  }
+  else {
+    foreach ($user_role_list as $key => $value) {
+      $default_roles[] = $key;
+    }
+
+  }
+  $form['roles'] = array(
+    '#title' => t('Email this message to roles on the article.'),
+    '#type' => 'checkboxes',
+    '#id' => 'edit-roles',
+    '#options' => $user_role_list,
+    '#access' => user_access('access select roles'),
+    '#prefix' => '<div style="display:none" class="select-roles-control"><span id="select_all">Select all</span> | <span id="select_none">Select none</span></div>',
+    '#default_value' => $default_roles,
+  );
+  
       
   $form['contributor_only'] = array(
     '#title' => t('Contributors only'),
@@ -166,6 +174,12 @@ function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL,
       '#type' => 'hidden',
       '#value' => $data->did,
       '#access' => FALSE,
+    );
+  }
+
+  if ($include_template_wrapper) {
+    $form['template_wrapper_end'] = array(
+      '#markup' => '</div>',
     );
   }
 

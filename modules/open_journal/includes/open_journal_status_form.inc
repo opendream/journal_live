@@ -264,7 +264,7 @@ function open_journal_approve_submit($jid, $next_status, $approve_reason=NULL, $
     open_journal_approve_submit($jid, $result_next->next_ssid, NULL, NULL, array(), $redirect, $commit, $silent);
   }
 
-  if ($redirect) {
+  if (FALSE && $redirect) {
     if (user_access('invite people to journal')) {
       drupal_set_message(t('Please invite your contributors.'));
       drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$jid .'/people');
@@ -273,6 +273,9 @@ function open_journal_approve_submit($jid, $next_status, $approve_reason=NULL, $
       drupal_set_message(t('Approve complete.'));
       drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$jid .'/overview');
     }
+  }
+  else {
+    drupal_set_message(t('Approve complete.'));
   }
 
 
