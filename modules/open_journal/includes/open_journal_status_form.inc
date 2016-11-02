@@ -398,7 +398,7 @@ function open_journal_informal_approve_sidebar_form_submit($form, &$form_state) 
 
 function open_journal_update_state($journal) {
   dpm($journal);
-  $next_sid= open_journal_next_sid($journal->sid);
+  $next_sid= open_journal_next_sid($journal->sid, TRUE);
   open_journal_approve_submit($journal->jid, $next_sid, NULL, NULL, array(), FALSE);
   return 'open_journal_update_state';
 }
