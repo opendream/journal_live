@@ -9,7 +9,14 @@ function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL,
       ),
     'type' => 'setting',
   );
-
+  $form['#attached']['js'][] = array(
+    'data' => array(
+      'open_journal' => array(
+          'current_user_roles' => $user->roles,
+        ),
+      ),
+    'type' => 'setting',
+  );
   $form['#attached']['js']['open_journal_template'] = drupal_get_path('module', 'open_journal').'/js/open_journal_template.js';
  
   $form['#attached']['css']['wmd'] = drupal_get_path('module', 'open_journal').'/wmd/wmd.css';

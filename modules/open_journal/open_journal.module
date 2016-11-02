@@ -1301,7 +1301,7 @@ function open_journal_discussion_file_save($did, $fid) {
   drupal_write_record('open_journal_discussion_file', $data, array());
 }
 
-function open_journal_people_active_role_list($data, $exclude_me=TRUE) {
+function open_journal_people_active_role_list($data, $exclude_roles_me=TRUE) {
 
     global $user;
     $role_list = array();
@@ -1310,16 +1310,21 @@ function open_journal_people_active_role_list($data, $exclude_me=TRUE) {
 
     foreach ($roles as $key => $value) {
       if ($value) {
-        $role_list[] = $value;
+
+        if ($exclude_roles_me) {
+          if (!isset($user->roles[$value])) {
+            $role_list[] = $value;
+          }
+        }
+        else {
+          $role_list[] = $value;
+        }
       }
     }
 
     if (!empty($role_list)) {
 
       $sql = 'SELECT DISTINCT(ur.uid) FROM {users_roles} ur INNER JOIN {open_journal_journal_people} jp ON jp.uid = ur.uid WHERE ur.rid IN (:rids) AND jp.jid = :jid'; 
-      if ($exclude_me) {
-        $sql .= " AND jp.uid <> ".$user->uid;
-      }
       $result = db_query($sql, array(':rids' => $role_list, ':jid' => $jid));
       $uids = $result->fetchCol();
 
@@ -1340,8 +1345,8 @@ function open_jounal_discussion_mail($data, $params=array()) {
 
   // New logic send mail when select roles in discussion form
   if (!empty($data->roles)) {
-    if (isset($params['exclude_me'])) {
-      $user_list = open_journal_people_active_role_list($data, $params['exclude_me']);
+    if (isset($params['exclude_roles_me'])) {
+      $user_list = open_journal_people_active_role_list($data, $params['exclude_roles_me']);
     }
     else {
       $user_list = open_journal_people_active_role_list($data);
@@ -1459,11 +1464,6 @@ function open_jounal_comment_mail($data) {
   $data->journal = open_journal_journal_load($data->discussion->jid);
 
   $user_list = open_journal_people_active_role_list($data);
-  // Include creator discussion 
-  if ($user->uid != $data->discussion->uid) {
-    $creator = user_load($data->discussion->uid);
-    $user_list[$creator->uid] = $creator;
-  }
 
   $org_name = $sender->name;
   foreach ($user_list as $reciver) {
@@ -1520,7 +1520,13 @@ function open_journal_mail($key, &$message, $data) {
       }
       $body .= "\n".'------------------------------------------------------------------------';
       $body .= "\n".'More details on link below.';
-      $body .= "\n".url(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->journal->jid.'/discussion/'.$data->did, array('absolute' => TRUE));
+
+      if (isset($data->auto) && $data->auto == 1) {
+        $body .= "\n".url(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->journal->jid.'/discussion', array('absolute' => TRUE));
+      }
+      else {
+        $body .= "\n".url(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->journal->jid.'/discussion/'.$data->did, array('absolute' => TRUE));
+      }
 
 
       $message['body'][] = $body;
@@ -2262,14 +2268,14 @@ function open_journal_discussion_list_limit($journal, $limit=0) {
     $sql .= " AND d.contributor_only = 0";
   }
   */
-  $sql .= " AND (dr.rid IS NULL OR dr.rid IN (:user_role_list) OR d.uid = :uid)";
+  $sql .= " AND (dr.rid IS NULL OR dr.rid IN (:user_role_list))";
   $sql .= " GROUP BY d.did ORDER BY d.changed DESC";
   
   if ($limit) {
     $sql .= " LIMIT 0, ".$limit;
   }
 
-  $discussion_list = db_query($sql, array(':jid' => $journal->jid, ':user_role_list' => $user_role_list, ':uid' => $user->uid))->fetchAll();
+  $discussion_list = db_query($sql, array(':jid' => $journal->jid, ':user_role_list' => $user_role_list))->fetchAll();
 
   foreach ($discussion_list as &$discussion_item) {
 
@@ -2296,7 +2302,6 @@ function open_journal_discussion_list_limit($journal, $limit=0) {
     $discussion_item = $discussion;
 
   }
- 
   return $discussion_list;
 }
 
@@ -2363,10 +2368,10 @@ function open_journal_discussion_when_state_change($journal, $name='auto', $clea
 
       // Todo rit remove hardcode
       if ($journal->sid == 0) {
-        $exclude_me = FALSE;
+        $exclude_roles_me = FALSE;
       }
       else {
-        $exclude_me = TRUE;
+        $exclude_roles_me = TRUE;
       }
 
       $discussion = array(
@@ -2386,7 +2391,7 @@ function open_journal_discussion_when_state_change($journal, $name='auto', $clea
       }
 
       $discussion = (object) $discussion;
-      open_journal_discussion_save($discussion, array('exclude_me' => $exclude_me));
+      open_journal_discussion_save($discussion, array('exclude_roles_me' => $exclude_roles_me));
 
     }
   }
@@ -2578,7 +2583,7 @@ function open_journal_replace_template_string($template_list, $journal, $add_rol
 
     //$author_replace = $user_journal->data['firstname']." ".$user_journal->data['lastname'];
     $author_replace = "ผู้เขียน"; 
-    $replace_code_to = array($author_replace, $journal->jid, $journal->title, l('Create discussion link', 'journal/'.$journal->jid.'/discussion/add', array('absolute' => TRUE)), l('Information', 'journal/'.$journal->jid.'/information', array('absolute' => TRUE)), $reciever_roles);
+    $replace_code_to = array($author_replace, $journal->jid, $journal->title, l('กดที่ลิงก์นี้ เมื่อท่านเห็นชอบกับไฟล์ Artwork', 'journal/'.$journal->jid.'/discussion/add', array('absolute' => TRUE)), l('Information', 'journal/'.$journal->jid.'/information', array('absolute' => TRUE)), $reciever_roles);
     $template_list[$key]->body = str_replace($replace_code_list, $replace_code_to, $value->body);
 
     if ($add_role) {

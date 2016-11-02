@@ -127,6 +127,7 @@ function open_journal_not_reject_form_submit($form, &$form_state) {
 
 function open_journal_approve_sidebar_form($form, &$form_state, $journal , $next_status, $template_list=FALSE) {
 
+  global $user;
   $form['#attached']['js'] = array(
     drupal_get_path('module', 'open_journal') . '/js/open_journal_status_sidebar.js',
     drupal_get_path('module', 'open_journal') . '/js/jquery.qtip.min.js',
@@ -137,10 +138,32 @@ function open_journal_approve_sidebar_form($form, &$form_state, $journal , $next
     foreach ($template_list[0]->role as $key => $value) {
       $roles[$value->rid] = $value->rid;
     }
+    // Include creator user roles to discussion
+    $access_roles = user_roles(FALSE, 'send email template');
+    foreach ($user->roles as $key => $value) {
+      if (isset($access_roles[$key])) {
+        $roles[$key] = $key;
+      }
+    }
+
     $form['approve_reason'] = array(
       '#type' => 'textarea',
       '#default_value' => $default_value,
     );
+    // Todo add file to approve form
+    /*
+    $form['fid'] = array(
+      '#type' => 'managed_file',
+      '#title' => t('File'),
+      '#description' => t('File type allowed: %s',array('%s' => OPEN_JOURNAL_ALLOWED_FILE_TYPE)),
+      '#upload_validators' => array(
+        'file_validate_extensions' => array(OPEN_JOURNAL_ALLOWED_FILE_TYPE),
+      ),
+      '#upload_location' => "public://journal/",
+      '#default_value' => open_journal_get_field($data, 'fid'),
+    );
+    */
+
 
     $form['actions'] = array('#type' => 'actions');
     $form['actions']['submit'] = array(

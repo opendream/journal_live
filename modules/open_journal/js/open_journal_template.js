@@ -1,6 +1,13 @@
 $ = jQuery;
 // For faster hide form
 $(document).ready(function () {
+
+	// Hide current user roles from checklist
+	var current_user_roles = Drupal.settings.open_journal.current_user_roles;
+	$.each(current_user_roles, function( index, value ) {
+		$('#edit-roles').find('.form-item-roles-'+index).hide();
+	});
+
 	$('.form-item-roles > label').after($('.select-roles-control'));
 	$('.select-roles-control').show();
 	$('.form-type-plupload').hide();
@@ -37,7 +44,7 @@ $(document).ready(function () {
 
 			$('.form-type-plupload').show();
 			// Clear select role
-			$('#edit-roles').find('input').attr({'checked': false});
+			$('#select_none').trigger('click');
 			var select_value = $(this).val();
 			var text = template_list[select_value]['body'];
 			var template_title = template_list[select_value]['template_title'];
@@ -64,14 +71,19 @@ $(document).ready(function () {
 	$('#select_all').click(function () {
 
 		$("#edit-roles > .form-item").each(function( index ) {
-			$(this).find('input').attr({'checked': true});
+			if($(this).css('display') != 'none') {
+				$(this).find('input').attr({'checked': true});
+
+			}
 		});
 
 	});
 	$('#select_none').click(function () {
 
 		$("#edit-roles > .form-item").each(function( index ) {
-			$(this).find('input').attr({'checked': false});
+			if($(this).css('display') != 'none') {
+				$(this).find('input').attr({'checked': false});
+			}
 		});
 
 	});
