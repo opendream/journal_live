@@ -44,7 +44,7 @@ $(document).ready(function () {
 
 			$('.form-type-plupload').show();
 			// Clear select role
-			$('#edit-roles').find('input').attr({'checked': false});
+			$('#select_none').trigger('click');
 			var select_value = $(this).val();
 			var text = template_list[select_value]['body'];
 			var template_title = template_list[select_value]['template_title'];
