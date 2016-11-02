@@ -2259,3 +2259,17 @@ function open_journal_update_7032(&$sandbox) {
   $schema = open_journal_schema();
   db_create_table('open_journal_timeout', $schema['open_journal_timeout']);
 }
+
+function open_journal_update_7034(&$sandbox) {
+    $sql = "SELECT * FROM open_journal_template WHERE body LIKE('%-- -- --%')";
+    $result = db_query($sql);
+    $result = $result->fetchAll();
+
+    foreach ($result as $key => $value) {
+      $new_body = str_replace('-- -- --', '', $value->body);
+      db_update('open_journal_template')
+      ->fields(array('body' => $new_body))
+      ->condition('tpid', $value->tpid)
+      ->execute();
+    }
+}
