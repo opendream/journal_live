@@ -2273,3 +2273,17 @@ function open_journal_update_7034(&$sandbox) {
       ->execute();
     }
 }
+
+function open_journal_update_7035(&$sandbox) {
+    $sql = "SELECT * FROM open_journal_template WHERE body LIKE('%@discussion_add_link :%')";
+    $result = db_query($sql);
+    $result = $result->fetchAll();
+
+    foreach ($result as $key => $value) {
+      $new_body = str_replace('@discussion_add_link :', '@discussion_add_link', $value->body);
+      db_update('open_journal_template')
+      ->fields(array('body' => $new_body))
+      ->condition('tpid', $value->tpid)
+      ->execute();
+    }
+}

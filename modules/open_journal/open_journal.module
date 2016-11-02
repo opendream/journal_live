@@ -2575,7 +2575,7 @@ function open_journal_replace_template_string($template_list, $journal, $add_rol
 
     //$author_replace = $user_journal->data['firstname']." ".$user_journal->data['lastname'];
     $author_replace = "ผู้เขียน"; 
-    $replace_code_to = array($author_replace, $journal->jid, $journal->title, l('Create discussion link', 'journal/'.$journal->jid.'/discussion/add', array('absolute' => TRUE)), l('Information', 'journal/'.$journal->jid.'/information', array('absolute' => TRUE)), $reciever_roles);
+    $replace_code_to = array($author_replace, $journal->jid, $journal->title, l('กดที่ลิงก์นี้ เมื่อท่านเห็นชอบกับไฟล์ Artwork', 'journal/'.$journal->jid.'/discussion/add', array('absolute' => TRUE)), l('Information', 'journal/'.$journal->jid.'/information', array('absolute' => TRUE)), $reciever_roles);
     $template_list[$key]->body = str_replace($replace_code_list, $replace_code_to, $value->body);
 
     if ($add_role) {
