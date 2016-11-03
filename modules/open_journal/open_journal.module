@@ -2422,7 +2422,7 @@ function open_journal_discussion_when_state_change($journal, $name='auto', $clea
       'roles' => array(),
     );
     $discussion = (object) $discussion;
-    //open_journal_discussion_save($discussion);
+    open_journal_discussion_save($discussion);
 
   }
 
