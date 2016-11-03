@@ -49,7 +49,7 @@ function open_journal_reject_submit($jid, $reject_reason='', $roles=FALSE, $temp
   $sql = "UPDATE open_journal_journal SET reject = 1, reject_reason = '".$reject_reason."' WHERE jid = ".$jid;
   db_query($sql);
 
-  // Create new discustion
+  // Create new discussion
   $reject_reason = open_journal_trim($reject_reason)? $reject_reason:'We are sorry. If you want to more information to rejected, you can talk on this discussion.' ;
   $discussion = array(
     'jid' => $jid,
@@ -150,8 +150,7 @@ function open_journal_approve_sidebar_form($form, &$form_state, $journal , $next
       '#type' => 'textarea',
       '#default_value' => $default_value,
     );
-    // Todo add file to approve form
-    /*
+
     $form['fid'] = array(
       '#type' => 'managed_file',
       '#title' => t('File'),
@@ -160,9 +159,7 @@ function open_journal_approve_sidebar_form($form, &$form_state, $journal , $next
         'file_validate_extensions' => array(OPEN_JOURNAL_ALLOWED_FILE_TYPE),
       ),
       '#upload_location' => "public://journal/",
-      '#default_value' => open_journal_get_field($data, 'fid'),
     );
-    */
 
 
     $form['actions'] = array('#type' => 'actions');
@@ -241,13 +238,14 @@ function open_journal_approve_sidebar_form_submit($form, &$form_state) {
   if (open_journal_get_last_state() == $next_status) {
     $redirect = FALSE;
   }
-
-  open_journal_approve_submit($jid, $next_status, $approve_reason, $template_title, $roles, $redirect);
+  if (isset($form_state['values']['fid'])) {
+    $fid = $form_state['values']['fid'];
+  }
+  open_journal_approve_submit($jid, $next_status, $approve_reason, $template_title, $roles, $redirect, TRUE, FALSE, $fid);
 
 }
 
-function open_journal_approve_submit($jid, $next_status, $approve_reason=NULL, $template_title=NULL, $roles=array(), $redirect=TRUE, $commit=TRUE, $silent=FALSE) {
-
+function open_journal_approve_submit($jid, $next_status, $approve_reason=NULL, $template_title=NULL, $roles=array(), $redirect=TRUE, $commit=TRUE, $silent=FALSE, $fid=FALSE) {
   // TODO use $form_state['value'] for block hacker
  	//$sql = "UPDATE open_journal_journal SET status = ".$next_status." staWHERE jid = ".$jid;
 	//db_query($sql);
@@ -263,8 +261,10 @@ function open_journal_approve_submit($jid, $next_status, $approve_reason=NULL, $
       'title' => $template_title,
       'description' => $approve_reason,
     );
+    if ($fid) {
+      $discussion['fid'] = $fid;
+    }
     $discussion['roles'] = $roles; 
-
     $discussion = (object) $discussion;
     open_journal_discussion_save($discussion);
 
