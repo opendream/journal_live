@@ -6,13 +6,14 @@
 		//dpm(open_journal_next_sid(2));
 	?>
 	<?php foreach($status_list as $key_status => $value_status):?>
+	<?php if ($value_status['is_substate']) { continue; } ?>
 	<div 
 	<?php
 	if($value_status['current']):print " class='status-active current' ";
 	elseif($key_status == (count($status_list)-1) && $value_status['active']):print " class='status-active finish' ";
 	elseif($value_status['active']): print " class='status-active' ";
 	else:print " class='status-disabled' ";endif;?>
-	<?php if ($value_status['is_substate']):print " style='display: block;' "; endif;?>>
+	<?php if ($value_status['is_substate']):print " style='display: none;' "; endif;?>>
 
 		<?php 
 			if ($value_status['parent_sid']) {
@@ -47,7 +48,7 @@
 			<?php if($approve_template):?>
 
 				<div class="approve-popup-button">
-					<?php print l('Approve' ,'', array('attributes' => array('id' => 'approve_popup_bottom')));?>
+					<?php print l('Approve +' ,'', array('attributes' => array('id' => 'approve_popup_bottom')));?>
 				</div>
 
 			<?php endif;?>

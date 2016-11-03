@@ -14,7 +14,9 @@
 	<ul id="journal-filter-item-list">
 		<li class="journal-filter-item"><?php print l('All articles', OPEN_JOURNAL_PREFIX_PATH);?></li>
 		<?php foreach($status_list as $key_status => $status):?>
+		<?php if (!$status['is_subclass']): ?>			
 		<li class="journal-filter-item"><?php print l($status['name'], OPEN_JOURNAL_PREFIX_PATH.'/list/'.$status['sid']);?></li>
+		<?php endif ?>
 		<?php endforeach;?>
 		
 	</ul>

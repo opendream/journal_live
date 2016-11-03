@@ -254,6 +254,11 @@ function open_journal_approve_submit($jid, $next_status, $approve_reason=NULL, $
 	$journal = (object) $journal;
 	open_journal_journal_save($journal, TRUE);
   
+  db_update('open_journal_journal')
+  ->fields(array('approve_by_timer' => 0))
+  ->condition('jid', $journal->jid)
+  ->execute();
+
   // Create discussion when have approve reason
   if ($approve_reason) {
     $discussion = array(
@@ -282,7 +287,7 @@ function open_journal_approve_submit($jid, $next_status, $approve_reason=NULL, $
     open_journal_approve_submit($jid, $result_next->next_ssid, NULL, NULL, array(), $redirect, $commit, $silent);
   }
 
-  if ($redirect) {
+  if (FALSE && $redirect) {
     if (user_access('invite people to journal')) {
       drupal_set_message(t('Please invite your contributors.'));
       drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$jid .'/people');
@@ -291,6 +296,9 @@ function open_journal_approve_submit($jid, $next_status, $approve_reason=NULL, $
       drupal_set_message(t('Approve complete.'));
       drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$jid .'/overview');
     }
+  }
+  else {
+    drupal_set_message(t('Approve complete.'));
   }
 
 
@@ -390,9 +398,19 @@ function open_journal_informal_approve_sidebar_form_submit($form, &$form_state) 
 
 function open_journal_update_state($journal) {
   dpm($journal);
-  $next_sid= open_journal_next_sid($journal->sid);
+  $next_sid= open_journal_next_sid($journal->sid, TRUE);
   open_journal_approve_submit($journal->jid, $next_sid, NULL, NULL, array(), FALSE);
   return 'open_journal_update_state';
+}
+
+function open_journal_approve_by_timer($journal) {
+  db_update('open_journal_journal')
+    ->fields(array('approve_by_timer' => 1))
+    ->condition('jid', $journal->jid)
+    ->execute();
+
+  // TODO: redirect
+  return 'open_journal_approve_by_timer';
 }
 
 function open_journal_reject_state($journal) {
@@ -419,6 +437,7 @@ function open_journal_check_timeout_exist($journal, $state, $type, $now=NULL) {
     ':type' => $type
   ))->rowCount();
 
+
   if ($days_after_status_changed >= $state->{$type} && !$exist) {
     db_insert('open_journal_timeout')
       ->fields(array('jid' => $journal->jid, 'sid' => $state->sid, 'type' => $type))
@@ -440,23 +459,32 @@ function open_journal_timeout_check() {
       $journal_list = db_query($sql, array(':sid' => $state->sid))->fetchAll();
 
       foreach ($journal_list as $journal) {
+
+        if (OPEN_JOURNAL_SUB_LANG_ENABLE && $journal->dc_language != 'en') {
+          $journal->title = $journal->title_sub? $journal->title_sub: $journal->title_en;
+        }
+        else {
+          $journal->title = $journal->title_en? $journal->title_en: $journal->title_sub;
+        }
+
         if (open_journal_check_timeout_exist($journal, $state, 'timeout_auto_reminder', $now)) {
           dpm('timeout_auto_reminder '.$journal->jid);
-          open_journal_discussion_when_state_change($journal, 'time');
+          open_journal_discussion_when_state_change($journal, 'time', FALSE);
         }
-
-        if (open_journal_check_timeout_exist($journal, $state, 'timeout_auto_approve', $now)) {
+        else if (open_journal_check_timeout_exist($journal, $state, 'timeout_auto_approve', $now) && $journal->approve_by_timer) {
           dpm('timeout_auto_approve '.$journal->jid);
+          $next_sid= open_journal_next_sid($journal->sid);
+          dpm($next_sid);
+          open_journal_approve_submit($journal->jid, $next_sid, NULL, NULL, array(), FALSE);
         }
-
-        if (open_journal_check_timeout_exist($journal, $state, 'timeout_auto_reject', $now)) {
+        else if (open_journal_check_timeout_exist($journal, $state, 'timeout_auto_reject', $now)) {
           $reject_reason = 'Timeout';
           db_update('open_journal_journal')
             ->fields(array('reject' => 1, 'reject_reason' => $reject_reason))
             ->condition('jid', $journal->jid)
             ->execute();
-            
-          open_journal_discussion_when_state_change($journal, 'reject');
+
+          open_journal_discussion_when_state_change($journal, 'reject', FALSE);
           dpm('timeout_auto_reject '.$journal->jid);
         } 
       }

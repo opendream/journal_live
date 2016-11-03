@@ -235,6 +235,15 @@ function open_journal_menu() {
     'file' => 'includes/open_journal_status_form.inc',
   );
 
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/approve-by-timer'] = array(
+    'title' => t('Approve by Timer'),
+    'page callback' => 'open_journal_approve_by_timer',
+    'page arguments' => array($arg),
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_status_form.inc',
+  );
+
   $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/reject-state'] = array(
     'title' => t('Update state'),
     'page callback' => 'open_journal_reject_state',
@@ -1491,19 +1500,19 @@ function open_journal_mail($key, &$message, $data) {
   switch ($key) {
     case 'open_journal_discussion_add':
       //$message['subject'] = '['.truncate_utf8($data->journal->title, 10, FALSE, TRUE).']'.$data->title;
-      $message['subject'] = open_journal_trim($data->journal->title, 20).' - '.open_journal_trim($data->title);
+      $message['subject'] = '['.$site_name.'] '.open_journal_trim($data->title).' - '.open_journal_trim($data->journal->title, 20);
 
-      $body = "\n";
-      $body .= "\n".'Article: '.$data->journal->title;
-      $body .= "\n".'------------------------------------------------------------------------';
-      $body .= "\n";
+      //$body = "\n";
+      //$body .= "\n".'Article: '.$data->journal->title;
+      //$body .= "\n".'------------------------------------------------------------------------';
+      //$body .= "\n";
       if ($data->is_new) {
-      $body .= "\n".'Discussion was initialed by '.$data->sender->name;
+      //$body .= "\n".'Discussion was initialed by '.$data->sender->name;
       }
       else {
-      $body .= "\n".'Update discussion by : '.$data->sender->name;
+      //$body .= "\n".'Update discussion by : '.$data->sender->name;
       }
-      $body .= "\n".'Title: '.open_journal_trim($data->title);
+      //$body .= "\n".'Title: '.open_journal_trim($data->title);
       if (open_journal_trim($data->description)) {
         $body .= "\n";
         $body .= "\n".$data->description;
@@ -1526,7 +1535,7 @@ function open_journal_mail($key, &$message, $data) {
 
     case 'open_journal_comment_add':
 
-      $message['subject'] = 'Re: '.open_journal_trim($data->journal->title, 20).' - '.open_journal_trim($data->discussion->title);
+      $message['subject'] = '['.$site_name.'] '.'Re: '.open_journal_trim($data->discussion->title).' - '.open_journal_trim($data->journal->title, 20);
 
       $body = "\n";
       $body .= "\n".'Article: '.$data->journal->title;
@@ -1547,7 +1556,7 @@ function open_journal_mail($key, &$message, $data) {
 
     case 'open_journal_people_invite':
 
-      $message['subject'] = "A new submission : ".open_journal_trim($data->journal->title, 20);
+      $message['subject'] = '['.$site_name.'] '."A new submission : ".open_journal_trim($data->journal->title, 20);
 
       $body = "\n";
       $body .= "\n"."You're invited to initiate the reviewing process the article.";
@@ -1563,7 +1572,7 @@ function open_journal_mail($key, &$message, $data) {
     
     case 'open_journal_issue_published':
       
-      $message['subject'] = open_journal_trim($data->journal->title, 20).' was published on issue '.open_journal_trim($data->issue->title, 20);
+      $message['subject'] = '['.$site_name.'] '.open_journal_trim($data->journal->title, 20).' was published on issue '.open_journal_trim($data->issue->title, 20);
 
       $body = "\n";
       $body .= "\n".'Article: '.$data->journal->title;
@@ -1582,7 +1591,7 @@ function open_journal_mail($key, &$message, $data) {
       
     case 'open_journal_reminder_daily':
     
-      $message['subject'] = 'Reminder for article '. open_journal_trim($data->journal->title, 20);
+      $message['subject'] = '['.$site_name.'] '.'Reminder for article '. open_journal_trim($data->journal->title, 20);
       
       $body = "\n";
       $body .= "\n".'Article: '.$data->journal->title;
@@ -2340,7 +2349,7 @@ function open_journal_discussion_list($journal) {
 
 
 }
-function open_journal_discussion_when_state_change($journal, $name='auto') {
+function open_journal_discussion_when_state_change($journal, $name='auto', $clean_timeout=True) {
   // Todo plug to state change function
   $next_status = $journal->sid;
   if (open_journal_get_last_state() == $journal->sid) {
@@ -2351,8 +2360,6 @@ function open_journal_discussion_when_state_change($journal, $name='auto') {
   $sql = "SELECT * FROM {open_journal_template} WHERE sid = :sid AND name = :name"; 
   $result = db_query($sql, array(':sid' => $next_status, ':name' => $name));
   $template_list = $result->fetchAll();
-
-  dpm($sql);dpm(array(':sid' => $next_status, ':name' => $name));
 
   if (!empty($template_list)) {
     open_journal_replace_template_string($template_list, $journal);
@@ -2401,8 +2408,9 @@ function open_journal_discussion_when_state_change($journal, $name='auto') {
 
   }
 
-  db_delete('open_journal_timeout')->condition('jid', $journal->jid)->execute();
-
+  if ($clean_timeout) {  
+    db_delete('open_journal_timeout')->condition('jid', $journal->jid)->execute();
+  }
 
 }
 
@@ -2983,6 +2991,18 @@ function open_journal_load_multiple($user=NULL, $after_jid=NULL, $limit=NULL, $s
       {open_journal_journal} j
     ON
       jp.jid = j.jid
+    LEFT JOIN
+      {open_journal_state} s1
+    ON
+      j.sid = s1.sid
+    LEFT JOIN
+      {open_journal_state} s2
+    ON
+      s1.parent_sid = s2.sid
+    LEFT JOIN
+      {open_journal_state} s3 
+    ON
+      s2.parent_sid = s3.sid
     WHERE
       1 = 1";
 
@@ -2991,7 +3011,7 @@ function open_journal_load_multiple($user=NULL, $after_jid=NULL, $limit=NULL, $s
     $query_var[':uid'] = $user->uid;
   }
   if($status != 'all') {
-    $sql .= " AND j.sid = :sid ";
+    $sql .= " AND (s1.sid = :sid OR s2.sid = :sid OR s3.sid = :sid)";
     $query_var[':sid'] = $status;
   }
 
