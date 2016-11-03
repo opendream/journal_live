@@ -1513,8 +1513,9 @@ function open_jounal_comment_mail($data) {
  */
 function open_journal_mail($key, &$message, $data) {
 
-  $site_name = variable_get('site_name', t('E-Journal'));
-  
+  //$site_name = variable_get('site_name', t('E-Journal'));
+  $site_name = t('E-Journal');
+
   switch ($key) {
     case 'open_journal_discussion_add':
       //$message['subject'] = '['.truncate_utf8($data->journal->title, 10, FALSE, TRUE).']'.$data->title;
@@ -2422,7 +2423,7 @@ function open_journal_discussion_when_state_change($journal, $name='auto', $clea
       'roles' => array(),
     );
     $discussion = (object) $discussion;
-    open_journal_discussion_save($discussion);
+    //open_journal_discussion_save($discussion);
 
   }
 
