@@ -251,7 +251,7 @@ function open_journal_approve_submit($jid, $next_status, $approve_reason=NULL, $
   // TODO use $form_state['value'] for block hacker
  	//$sql = "UPDATE open_journal_journal SET status = ".$next_status." staWHERE jid = ".$jid;
 	//db_query($sql);
-	$journal = open_journal_journal_load($jid);
+	$journal = open_journal_journal_load($jid, TRUE);
 	$journal->sid = $next_status;
 	$journal = (object) $journal;
 	open_journal_journal_save($journal, TRUE);
@@ -397,7 +397,9 @@ function open_journal_informal_approve_sidebar_form_submit($form, &$form_state) 
 }
 
 function open_journal_update_state($journal) {
-  dpm($journal);
+
+  // TODO: check state can approve by author or remove this url and trigger by upload file
+
   $next_sid= open_journal_next_sid($journal->sid, TRUE);
   open_journal_approve_submit($journal->jid, $next_sid, NULL, NULL, array(), FALSE);
   return 'open_journal_update_state';
@@ -409,7 +411,9 @@ function open_journal_approve_by_timer($journal) {
     ->condition('jid', $journal->jid)
     ->execute();
 
-  // TODO: redirect
+  drupal_set_message(t('Your postpone has been approved'));
+  drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid .'/discussion');
+
   return 'open_journal_approve_by_timer';
 }
 
@@ -468,13 +472,12 @@ function open_journal_timeout_check() {
         }
 
         if (open_journal_check_timeout_exist($journal, $state, 'timeout_auto_reminder', $now)) {
-          dpm('timeout_auto_reminder '.$journal->jid);
+          drupal_set_message('timeout_auto_reminder : '.$journal->jid);
           open_journal_discussion_when_state_change($journal, 'time', FALSE);
         }
         else if (open_journal_check_timeout_exist($journal, $state, 'timeout_auto_approve', $now) && $journal->approve_by_timer) {
-          dpm('timeout_auto_approve '.$journal->jid);
+          drupal_set_message('timeout_auto_approve : '.$journal->jid);
           $next_sid= open_journal_next_sid($journal->sid);
-          dpm($next_sid);
           open_journal_approve_submit($journal->jid, $next_sid, NULL, NULL, array(), FALSE);
         }
         else if (open_journal_check_timeout_exist($journal, $state, 'timeout_auto_reject', $now)) {
@@ -485,7 +488,7 @@ function open_journal_timeout_check() {
             ->execute();
 
           open_journal_discussion_when_state_change($journal, 'reject', FALSE);
-          dpm('timeout_auto_reject '.$journal->jid);
+          drupal_set_message('timeout_auto_reject : '.$journal->jid);
         } 
       }
 
@@ -494,7 +497,6 @@ function open_journal_timeout_check() {
 
   return '';
 
-  //open_journal_approve_submit($jid, $next_status, $approve_reason=NULL, $template_title=NULL, $roles=array(), $redirect=TRUE, $commit=TRUE, $silent=FALSE)
 }
 
 

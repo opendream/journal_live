@@ -208,6 +208,11 @@ function open_journal_schema() {
         'not null' => FALSE,
         'default' => 0,
       ),
+      'approve_by_upload' => array(
+        'type' => 'int',
+        'not null' => FALSE,
+        'default' => 0,
+      ),
 
     ),
     'primary key' => array('jid'),
@@ -2297,4 +2302,28 @@ function open_journal_update_7035(&$sandbox) {
       ->condition('tpid', $value->tpid)
       ->execute();
     }
+}
+
+function open_journal_update_7036(&$sandbox) {
+  $sql = "SELECT * FROM open_journal_template WHERE title = 'Revision alert 2'";
+  $result = db_query($sql);
+  $result = $result->fetchAll();
+
+  foreach ($result as $key => $value) {
+    $new_body = str_replace('Link เพื่อไปคลิกขยายเวลา :', 'Link เพื่อไปคลิกขยายเวลา : @approve_by_timer_link', $value->body);
+    db_update('open_journal_template')
+    ->fields(array('body' => $new_body))
+    ->condition('tpid', $value->tpid)
+    ->execute();
+  }
+}
+
+function open_journal_update_7037(&$sandbox) {
+  $schema = open_journal_schema();
+  db_add_field('open_journal_state', 'approve_by_upload', $schema['open_journal_journal']['fields']['approve_by_upload']);
+  db_update('open_journal_state')
+    ->fields(array('approve_by_upload' => 1))
+    ->condition('sid', array(101, 102), 'IN')
+    ->execute();
+
 }

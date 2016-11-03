@@ -257,7 +257,7 @@ function open_journal_menu() {
     'title' => t('Update state'),
     'page callback' => 'open_journal_timeout_check',
     'page arguments' => array($arg),
-    'access arguments' => array('access open journal'),
+    'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_status_form.inc',
   );
@@ -1261,6 +1261,14 @@ function open_journal_discussion_save($data, $params=array()) {
     open_jounal_discussion_mail($data, $params);
   }
 
+  // Auto app state when state has flag approve_by_upload
+  $journal = open_journal_journal_load($data->jid);
+  $state = db_query("SELECT * FROM {open_journal_state} WHERE sid = :sid", array(':sid' => $journal->sid))->fetchObject();
+  if (($data->files_upload || $data->fid) && $state->upload_auto_approve) {
+    $next_sid= open_journal_next_sid($journal->sid, TRUE);
+    open_journal_approve_submit($journal->jid, $next_sid, NULL, NULL, array(), FALSE);
+  }
+
   return $data;
 }
 
@@ -1341,7 +1349,7 @@ function open_journal_people_active_role_list($data, $exclude_roles_me=TRUE) {
 function open_jounal_discussion_mail($data, $params=array()) {
 
   $sender = user_load($data->uid);
-  $data->journal = open_journal_journal_load($data->jid);
+  $data->journal = open_journal_journal_load($data->jid, TRUE);
 
   // New logic send mail when select roles in discussion form
   if (!empty($data->roles)) {
@@ -1367,7 +1375,7 @@ function open_jounal_discussion_mail($data, $params=array()) {
 
     // Replate sender name
     if ($data->auto == 1) {
-      $sender->name = 'System';
+      $sender->name = 'E-Journal';
     }
     else {
       $sender->name = open_journal_replace_sender_name($sender);
@@ -1454,6 +1462,16 @@ function open_journal_comment_save($data) {
     open_jounal_comment_mail($data);
   }
 
+    // Auto app state when state has flag approve_by_upload
+  dpm($data);
+  $journal = $data->journal;
+  $state = db_query("SELECT * FROM {open_journal_state} WHERE sid = :sid", array(':sid' => $journal->sid))->fetchObject();
+  if (($data->files_upload || $data->fid) && $state->upload_auto_approve) {
+    $next_sid= open_journal_next_sid($journal->sid, TRUE);
+    open_journal_approve_submit($journal->jid, $next_sid, NULL, NULL, array(), FALSE);
+  }
+
+
   return $data;
 }
 
@@ -1461,7 +1479,7 @@ function open_jounal_comment_mail($data) {
   global $user;
   $sender = user_load($data->uid);
   $data->discussion = open_journal_discussion_load($data->did);
-  $data->journal = open_journal_journal_load($data->discussion->jid);
+  $data->journal = open_journal_journal_load($data->discussion->jid, TRUE);
 
   $user_list = open_journal_people_active_role_list($data);
 
@@ -2404,7 +2422,7 @@ function open_journal_discussion_when_state_change($journal, $name='auto', $clea
       'roles' => array(),
     );
     $discussion = (object) $discussion;
-    open_journal_discussion_save($discussion);
+    //open_journal_discussion_save($discussion);
 
   }
 
@@ -2566,7 +2584,7 @@ function open_journal_discussion_add($journal) {
 function open_journal_replace_template_string($template_list, $journal, $add_role=FALSE) {
 
   $user_journal = user_load($journal->uid);
-  $replace_code_list = array('@author', '@journal_id', '@journal_title', '@discussion_add_link', '@information_link', '@reciever_roles');
+  $replace_code_list = array('@author', '@journal_id', '@journal_title', '@discussion_add_link', '@information_link', '@reciever_roles', '@approve_by_timer_link');
 
   foreach ($template_list as $key => $value) {
     $role_list = open_journal_get_template_role_list($value->tpid);
@@ -2583,7 +2601,17 @@ function open_journal_replace_template_string($template_list, $journal, $add_rol
 
     //$author_replace = $user_journal->data['firstname']." ".$user_journal->data['lastname'];
     $author_replace = "ผู้เขียน"; 
-    $replace_code_to = array($author_replace, $journal->jid, $journal->title, l('กดที่ลิงก์นี้ เมื่อท่านเห็นชอบกับไฟล์ Artwork', 'journal/'.$journal->jid.'/discussion/add', array('absolute' => TRUE)), l('Information', 'journal/'.$journal->jid.'/information', array('absolute' => TRUE)), $reciever_roles);
+    $replace_code_to = array(
+      $author_replace, 
+      $journal->jid, 
+      $journal->title, 
+      l('กดที่ลิงก์นี้ เมื่อท่านเห็นชอบกับไฟล์ Artwork', 'journal/'.$journal->jid.'/discussion/add', array('absolute' => TRUE)), 
+      l('Information', 'journal/'.$journal->jid.'/information', array('absolute' => TRUE)), 
+      $reciever_roles,
+      url('journal/'.$journal->jid.'/approve-by-timer', array('absolute' => TRUE)), 
+
+    );
+
     $template_list[$key]->body = str_replace($replace_code_list, $replace_code_to, $value->body);
 
     if ($add_role) {
