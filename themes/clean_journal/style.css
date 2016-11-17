@@ -3125,3 +3125,62 @@ border: 2px solid red !important;
 .page-user-password ul.primary {
     display: none;
 }
+
+
+/* report */
+.report-list-wrapper {
+  margin: 0 -10px;
+}
+.report-item {
+  width: 306px;
+  display: block;
+  box-sizing: border-box;
+  margin: 10px;
+  float: left;
+  height: 190px;
+  position: relative;
+}
+.report-title {
+    font-size: 28px;
+}
+.report-subtitle {
+  color: #777;
+}
+.report-export {
+    display: block;
+    height: 30px;
+    line-height: 30px;
+    text-transform: uppercase;
+    padding: 0 15px;
+    background-color: #55b0d6;
+    color: #FFF;
+    width: 50px;
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    margin-left: -40px;
+}
+
+.report-filter {
+  margin-top: 30px;
+}
+
+.filter-date {
+  display: inline-block;
+  margin-right: 15px;
+}
+.filter-date.filter-end-date {
+  margin-right: 0;
+}
+.filter-date-wrapper {
+  margin: 5px 0;
+}
+.filter-date-value {
+  opacity: 0.5;
+  width: 345px;
+  padding: 10px 10px;
+}
+.filter-date-value.selected {
+  opacity: 1;
+  border: solid 1px #eee;
+}
