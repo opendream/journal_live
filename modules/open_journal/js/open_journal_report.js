@@ -52,4 +52,6 @@ $(document).ready(function () {
 		update_query();
 	});
 
+	$('input[name=options]').change();
+
 });

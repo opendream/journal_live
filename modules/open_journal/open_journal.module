@@ -72,6 +72,9 @@ define('OPEN_JOUNAL_INFORMAL_STATUS', serialize (
 define('OPEN_JOUNAL_HELP_DESCRIPTION_SUB', 'สรุปบทความโดยสังเขป');
 
 
+$path = drupal_get_path('module', 'open_journal');
+require_once($path .'/includes/open_journal_report.inc');
+
 /**
  * Implements of hook_menu().
  */
@@ -321,7 +324,7 @@ function open_journal_menu() {
     'file' => 'includes/open_journal_issue.inc',
   );
   */
-
+  
   // Report
   $items[OPEN_JOURNAL_PREFIX_PATH.'/report'] = array(
     'page callback' => 'open_journal_report_list',
@@ -331,62 +334,15 @@ function open_journal_menu() {
 
   );
 
-  // 5.1
-  $items[OPEN_JOURNAL_PREFIX_PATH.'/report/journal-list'] = array(
-    'title' => t('Report : Journal list'),
-    'page callback' => 'open_journal_report_journal_list',
-    'access arguments' => array('access open journal'),
-    'type' => MENU_CALLBACK,
-    'file' => 'includes/open_journal_report.inc',
-  );
-  // 5.2 5.6 5.7
-  $items[OPEN_JOURNAL_PREFIX_PATH.'/report/journal-summary'] = array(
-    'title' => t('Report : Journal summary'),
-    'page callback' => 'open_journal_report_journal_summary',
-    'access arguments' => array('access open journal'),
-    'type' => MENU_CALLBACK,
-    'file' => 'includes/open_journal_report.inc',
-  );
-  // 5.3
-  $items[OPEN_JOURNAL_PREFIX_PATH.'/report/journal-publication'] = array(
-    'title' => t('Report : Journal publication'),
-    'page callback' => 'open_journal_report_journal_publication',
-    'access arguments' => array('access open journal'),
-    'type' => MENU_CALLBACK,
-    'file' => 'includes/open_journal_report.inc',
-  );
-  // 5.4
-  $items[OPEN_JOURNAL_PREFIX_PATH.'/report/journal-reject'] = array(
-    'title' => t('Report : Journal reject'),
-    'page callback' => 'open_journal_report_journal_reject',
-    'access arguments' => array('access open journal'),
-    'type' => MENU_CALLBACK,
-    'file' => 'includes/open_journal_report.inc',
-  );
-  // 5.5
-  $items[OPEN_JOURNAL_PREFIX_PATH.'/report/journal-withdraw'] = array(
-    'title' => t('Report : Journal withdraw'),
-    'page callback' => 'open_journal_report_withdraw_time',
-    'access arguments' => array('access open journal'),
-    'type' => MENU_CALLBACK,
-    'file' => 'includes/open_journal_report.inc',
-  );
-  // 5.8
-  $items[OPEN_JOURNAL_PREFIX_PATH.'/report/journal-reviewer'] = array(
-    'title' => t('Report : Journal reviewer'),
-    'page callback' => 'open_journal_report_journal_reviewer',
-    'access arguments' => array('access open journal'),
-    'type' => MENU_CALLBACK,
-    'file' => 'includes/open_journal_report.inc',
-  );
-  // 5.9
-  $items[OPEN_JOURNAL_PREFIX_PATH.'/report/reviewer-journal'] = array(
-    'title' => t('Report : Reviewer journal'),
-    'page callback' => 'open_journal_report_reviewer_journal',
-    'access arguments' => array('access open journal'),
-    'type' => MENU_CALLBACK,
-    'file' => 'includes/open_journal_report.inc',
-  );
+  foreach (open_journal_report_data() as $value) {
+    $items[$value['url']] = array(
+      'title' => $value['title'],
+      'page callback' => $value['callback'],
+      'access arguments' => array('access open journal'),
+      'type' => MENU_CALLBACK,
+      'file' => 'includes/open_journal_report.inc',
+    );
+  }
 
   // Issue paths.
   $items['issue'] = array(
