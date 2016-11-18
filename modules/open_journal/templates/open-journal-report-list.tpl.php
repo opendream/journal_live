@@ -77,7 +77,7 @@
 			<div class="report-subtitle"><?php print $report['subtitle'] ?></div>
 		</div>
 		<div class="report-action">
-			<a class="report-export" href="<?php print $report['url'] ?>" target="_blank">EXPORT</a>
+			<a class="report-export" href="<?php print url($report['url']); ?>" target="_blank">EXPORT</a>
 		</div>
 	</div>
 	<?php endforeach ?>

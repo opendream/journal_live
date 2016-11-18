@@ -1177,16 +1177,16 @@ function open_journal_journal_state_save($data) {
   // Create new journal state and update end date before state
   if ($data->sid != 0) {
     // Update before state
-    $before_sid = open_journal_before_sid($data->sid);
+    // $before_sid = open_journal_before_sid($data->sid);
 
-    $sql = "SELECT jsid FROM {open_journal_journal_state} WHERE sid = :sid AND jid = :jid ORDER BY jsid DESC";
-    $result = db_query($sql, array(':sid' => $before_sid, ':jid' => $data->jid));
-    $result = $result->fetchAll();
-    $before_jsid = $result[0]->jsid;
+    // $sql = "SELECT jsid FROM {open_journal_journal_state} WHERE sid = :sid AND jid = :jid ORDER BY jsid DESC";
+    // $result = db_query($sql, array(':sid' => $before_sid, ':jid' => $data->jid));
+    // $result = $result->fetchAll();
+    // $before_jsid = $result[0]->jsid;
 
     $now = REQUEST_TIME;
-    $sql = "UPDATE {open_journal_journal_state} SET end_date = :now WHERE jsid = :jsid";
-    db_query($sql, array(':now' => $now, ':jsid' => $before_jsid));
+    $sql = "UPDATE {open_journal_journal_state} SET end_date = :now WHERE jid = :jid AND end_date IS NULL";
+    db_query($sql, array(':now' => $now, ':jid' => $data->jid));
 
   }
 
@@ -2531,7 +2531,7 @@ function open_journal_next_sid($sid, $check_substate=FALSE) {
         $next_sid = $state->next_sid;
       }
     }
-    open_journal_before_sid(1);
+
     return $next_sid;
 }
 

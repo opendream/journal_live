@@ -75,7 +75,7 @@ function open_journal_get_query() {
     $end_date = strtotime($_GET['end_date']);
   }
 
-  return array('start_date' => $start_date, 'end_date' => $end_date);
+  return array(':start_date' => $start_date, ':end_date' => $end_date);
 }
 
 function open_journal_get_filename($prefix) {
@@ -98,9 +98,9 @@ function open_journal_result_to_csv($result) {
 
   foreach ($result as $line) {
      //Gets the line so we can flip it and get the column names
-    $column_names = get_object_vars($line); 
+    $column_names = get_object_vars($line);
     if ($first) {
-      $field_names = array_flip($column_names);
+      $field_names = array_keys($column_names);
       fputcsv($fp, $field_names);
       $first = FALSE; // Only happens once
     }
@@ -139,21 +139,24 @@ function open_journal_report_journal_list() {
   'title' => 'รายงานบทความ',
   'subtitle' => 'แสดง : ID, ชื่อบทความ, สถานะปัจจุบัน, วันที่ส่งบทความ และ วันสุดท้ายที่มีการเปลี่ยนแปลงสถานะครั้งล่าสุด',
   */
+  // TODO: j.jid -> j.code, WHERE j.withdraw = 0
+
   $query = open_journal_get_query();
   $result = db_query("SELECT 
       j.jid `ID`, 
       j.title_en `Title`, 
       j.title_sub `Sub title`, 
-      s.name `State name`, 
+      s.name `State`, 
       DATE_FORMAT(FROM_UNIXTIME(j.created), '%Y-%m-%d %T') `Created at`, 
       DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%m-%d %T') `Last state changed at` 
     FROM 
       {open_journal_journal} j, 
       {open_journal_state} s 
     WHERE 
-      j.sid = s.sid AND j.reject = 0
-  ");
-  // TODO: j.jid -> j.code, WHERE j.withdraw = 0
+      j.sid = s.sid AND j.reject = 0 AND j.created >= :start_date AND j.created <= :end_date
+    ORDER BY
+      j.created DESC
+  ", $query);
 
   open_journal_result_to_csv($result);
 
@@ -165,6 +168,60 @@ function open_journal_report_journal_summary() {
   'title' => 'รายงานจำนวนบทความ',
   'subtitle' => 'แสดง : จำนวนบทความในแต่ละสถานะทั้งแบบรวมและไม่รวมบทความที่ตีพิมพ์แล้ว และแจกแจงเมื่อมีการตีพิมพ์คนละปี',
   */
+  $query = open_journal_get_query();
+
+  /*
+  SELECT s.name, COUNT(j.jid) `include published`, IFNULL(COUNT(j.jid) - SUM(j.sid = 3), 0) `exclude published`  FROM open_journal_state s LEFT JOIN (SELECT * FROM (SELECT sid, jid FROM open_journal_journal_state WHERE start_date <= 1479457121 ORDER BY start_date DESC, jsid DESC) sjs GROUP BY sjs.jid) js ON s.sid = js.sid LEFT JOIN open_journal_journal j ON js.jid = j.jid GROUP BY s.sid;
+  */
+
+  $query = array(
+    ':last_sid' => open_journal_get_last_state(),
+    ':end_date' => $query[':end_date']
+  );
+
+  $published_years = db_query("SELECT 
+      DATE_FORMAT(FROM_UNIXTIME(start_date), '%Y') year 
+    FROM open_journal_journal_state 
+    WHERE start_date <= :end_date AND sid = :last_sid  
+    GROUP BY year
+  ", $query)->fetchAll();
+
+  $cols = "";
+  if(count($published_years) > 0) {
+    foreach ($published_years as $year) {
+      $cols .= "IFNULL(SUM(j.sid = :last_sid AND DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y') = '".$year->year."'), 0) `Published on ".$year->year."`, ";
+    }
+  }
+
+  $result = db_query("SELECT 
+      s.name `State`, 
+      COUNT(j.jid) `Include published`, 
+      $cols
+      IFNULL(COUNT(j.jid) - SUM(j.sid = :last_sid), 0) `Exclude published` 
+    FROM 
+      {open_journal_state} s 
+    LEFT JOIN 
+      (
+        SELECT * FROM 
+          (
+            SELECT sid, jid 
+            FROM {open_journal_journal_state} 
+            WHERE start_date <= :end_date  
+            ORDER BY start_date DESC, jsid DESC
+          ) sjs 
+        GROUP BY sjs.jid
+      ) js 
+    ON 
+      s.sid = js.sid 
+    LEFT JOIN 
+      {open_journal_journal} j 
+    ON 
+      js.jid = j.jid 
+    GROUP BY 
+      s.sid
+  ", $query);
+
+  open_journal_result_to_csv($result);
   return 'open_journal_report_journal_summary';
 }
 
