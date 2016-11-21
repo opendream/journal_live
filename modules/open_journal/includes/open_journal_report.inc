@@ -36,7 +36,7 @@ function open_journal_report_data() {
       'title' => 'รายงานบทความที่ถอน',
       'subtitle' => 'แสดง : ID, ชื่อบทความ, ผู้เขียนหลัก, วันที่ถอน, จำนวนวันจากวันที่ส่งบทความถึงวันที่ถอน, สถานะ ณ วันที่ถอน และ เหตุผล',
       'url' => OPEN_JOURNAL_PREFIX_PATH.'/report/journal-withdraw',
-      'callback' => 'open_journal_report_withdraw'
+      'callback' => 'open_journal_report_journal_withdraw'
     ),
     //5.8
     array(
@@ -144,8 +144,8 @@ function open_journal_report_journal_list() {
   $query = open_journal_get_query();
   $result = db_query("SELECT 
       j.jid `ID`, 
-      j.title_en `Title`, 
-      j.title_sub `Sub title`, 
+      j.title_en `Title (en)`, 
+      j.title_sub `Title (th)`, 
       s.name `State`, 
       DATE_FORMAT(FROM_UNIXTIME(j.created), '%Y-%m-%d %T') `Created at`, 
       DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%m-%d %T') `Last state changed at` 
@@ -222,7 +222,7 @@ function open_journal_report_journal_summary() {
   ", $query);
 
   open_journal_result_to_csv($result);
-  return 'open_journal_report_journal_summary';
+
 }
 
 // 5.3
@@ -231,8 +231,27 @@ function open_journal_report_journal_publication() {
   'title' => 'รายงานบทความที่ตีพิมพ์',
   'subtitle' => 'แสดง : ID, ชื่อบทความ, ผู้เขียนหลัก, ฉบับที่ตีพิมพ์ และ วันเดือนปีที่ตีพิมพ์', 
   */
+  // TODO: j.jid -> j.code, WHERE j.withdraw = 0
   $query = open_journal_get_query();
-  return 'open_journal_report_journal_publication';
+  $query[':last_sid'] = open_journal_get_last_state();
+
+  $result = db_query("SELECT 
+      j.jid `ID`, 
+      j.title_en `Title (en)`, 
+      j.title_sub `Title (th)`, 
+      SUBSTRING_INDEX(j.creator_en, ',', 1) `Author (en)`, 
+      SUBSTRING_INDEX(j.creator_sub, ',', 1) `Author (th)`, 
+      DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%m-%d %T') `Published at` 
+    FROM 
+      {open_journal_journal} j  
+    WHERE 
+      j.sid = :last_sid AND j.reject = 0 AND j.status_changed >= :start_date AND j.status_changed <= :end_date 
+    ORDER BY
+      j.status_changed DESC
+  ", $query);
+
+  open_journal_result_to_csv($result);
+
 }
 
 // 5.4
@@ -241,8 +260,31 @@ function open_journal_report_journal_reject() {
   'title' => 'รายงานบทความที่ปฏิเสธ',
   'subtitle' => 'แสดง : ID, ชื่อบทความ, ผู้เขียนหลัก, วันที่ปฏิเสธ, จำนวนวันจากวันที่ส่งบทความถึงวันที่ปฏิเสธ, สถานะ ณ วันที่ปฏิเสธ และ เหตุผล',
   */
+  // TODO: j.jid -> j.code
+
   $query = open_journal_get_query();
-  return 'open_journal_report_journal_reject';
+
+  $result = db_query("SELECT 
+      j.jid `ID`, 
+      j.title_en `Title (en)`, 
+      j.title_sub `Title (th)`, 
+      SUBSTRING_INDEX(j.creator_en, ',', 1) `Author (en)`, 
+      SUBSTRING_INDEX(j.creator_sub, ',', 1) `Author (th)`, 
+      DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%m-%d %T') `Rejected at`,
+      CEIL((status_changed - created)/(60*60*24)) `Duration (days)`, 
+      s.name `State`,
+      j.reject_reason `Reason`  
+    FROM 
+      {open_journal_journal} j, 
+      {open_journal_state} s 
+    WHERE 
+      j.sid = s.sid AND j.reject = 1 AND j.status_changed >= :start_date AND j.status_changed <= :end_date 
+    ORDER BY
+      j.status_changed DESC
+  ", $query);
+
+  open_journal_result_to_csv($result);
+
 }
 
 // 5.5
@@ -251,8 +293,30 @@ function open_journal_report_journal_withdraw() {
   'title' => 'รายงานบทความที่ถอน',
   'subtitle' => 'แสดง : ID, ชื่อบทความ, ผู้เขียนหลัก, วันที่ถอน, จำนวนวันจากวันที่ส่งบทความถึงวันที่ถอน, สถานะ ณ วันที่ถอน และ เหตุผล',
   */
+  // TODO: j.jid -> j.code
+
   $query = open_journal_get_query();
-  return 'open_journal_report_journal_withdraw';
+
+  $result = db_query("SELECT 
+      j.jid `ID`, 
+      j.title_en `Title (en)`, 
+      j.title_sub `Title (th)`, 
+      SUBSTRING_INDEX(j.creator_en, ',', 1) `Author (en)`, 
+      SUBSTRING_INDEX(j.creator_sub, ',', 1) `Author (th)`, 
+      DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%m-%d %T') `Withdraw( at`,
+      CEIL((status_changed - created)/(60*60*24)) `Duration (days)`, 
+      s.name `State`,
+      j.withdraw_reason `Reason`  
+    FROM 
+      {open_journal_journal} j, 
+      {open_journal_state} s 
+    WHERE 
+      j.sid = s.sid AND j.withdraw = 1 AND j.status_changed >= :start_date AND j.status_changed <= :end_date 
+    ORDER BY
+      j.status_changed DESC
+  ", $query);
+
+  open_journal_result_to_csv($result);
 }
 
 // 5.8

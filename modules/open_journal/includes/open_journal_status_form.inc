@@ -46,8 +46,8 @@ function open_journal_reject_sidebar_form($form, &$form_state, $journal, $templa
 }
 
 function open_journal_reject_submit($jid, $reject_reason='', $roles=FALSE, $template_title=FALSE, $redirect=TRUE) {
-  $sql = "UPDATE open_journal_journal SET reject = 1, reject_reason = '".$reject_reason."' WHERE jid = ".$jid;
-  db_query($sql);
+  $sql = "UPDATE open_journal_journal SET reject = 1, status_changed = :status_changed, reject_reason = :reject_reason WHERE jid = ".$jid;
+  db_query($sql, array(':status_changed' => REQUEST_TIME, ':reject_reason' => $reject_reason));
 
   // Create new discussion
   $reject_reason = open_journal_trim($reject_reason)? $reject_reason:'We are sorry. If you want to more information to rejected, you can talk on this discussion.' ;
