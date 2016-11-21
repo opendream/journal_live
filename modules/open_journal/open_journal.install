@@ -2327,3 +2327,7 @@ function open_journal_update_7037(&$sandbox) {
     ->execute();
 
 }
+
+function open_journal_update_7038(&$sandbox) {
+  db_query("UPDATE {open_journal_journal_people} jp LEFT JOIN (SELECT ur.uid uid, GROUP_CONCAT(r.name SEPARATOR ', ') role_list FROM {users_roles} ur, role r WHERE ur.rid = r.rid GROUP BY ur.uid) rl ON jp.uid = rl.uid SET jp.role_list = rl.role_list WHERE jp.role_list IS NULL");
+}

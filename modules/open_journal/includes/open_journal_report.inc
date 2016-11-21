@@ -325,8 +325,54 @@ function open_journal_report_journal_reviewer() {
   'title' => 'รายงานบทความ และผู้ทรงคุณวุฒิ',
   'subtitle' => 'แสดง : ID, ชื่อบทความ, ผู้เขียนหลัก และ รายชื่อผู้ทรงคุณวุฒิ',
   */
+  // TODO: j.jid -> j.code
+
   $query = open_journal_get_query();
-  return 'open_journal_report_journal_reviewer';
+
+  $result = db_query("SELECT 
+      j.jid `ID`, 
+      j.title_en `Title (en)`, 
+      j.title_sub `Title (th)`, 
+      SUBSTRING_INDEX(j.creator_en, ',', 1) `Author (en)`, 
+      SUBSTRING_INDEX(j.creator_sub, ',', 1) `Author (th)`, 
+      GROUP_CONCAT(u.uid SEPARATOR ',') `Reviewers` 
+    FROM 
+      {open_journal_journal} j 
+    LEFT JOIN 
+      (
+        SELECT * 
+        FROM 
+          (
+            SELECT jid, uid, status 
+            FROM  {open_journal_journal_people} 
+            WHERE role_list LIKE '%reviewer%' AND created >= :start_date AND created <= :end_date 
+            ORDER BY created DESC
+          ) jp 
+        GROUP BY jp.jid, jp.uid 
+        HAVING jp.status = 1
+      ) jp 
+    ON 
+      j.jid = jp.jid 
+    LEFT JOIN 
+      {users} u 
+    ON 
+      jp.uid = u.uid 
+    GROUP BY 
+      jp.jid 
+    HAVING 
+      Reviewers IS NOT NULL
+  ", $query)->fetchAll();
+
+  foreach ($result as &$line) {
+    $reviewers = array();
+    foreach (explode(',', $line->Reviewers) as $uid) {
+      $reviewer = user_load($uid);
+      $reviewers[] = $reviewer->data['firstname'].' '.$reviewer->data['lastname'].' [uid:'.$reviewer->uid.']';
+    }
+    $line->Reviewers = implode(', ', $reviewers);
+  }
+
+  open_journal_result_to_csv($result);
 }
 
 // 5.9
