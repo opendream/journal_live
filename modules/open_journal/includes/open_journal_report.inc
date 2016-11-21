@@ -381,6 +381,47 @@ function open_journal_report_reviewer_journal() {
   'title' => 'รายงานผลการทำงานของผู้ทรงคุณวุฒิ',
   'subtitle' => 'แสดง : ชื่อผู้ทรงคุณวุฒิ จำนวนบทความที่ได้พิจารณา และรายชื่อบทความ',
   */
+  // TODO: j.jid -> j.code
+
   $query = open_journal_get_query();
-  return 'open_journal_report_reviewer_journal';
+
+  $result = db_query("SELECT 
+      u.uid `Reviewer`,
+      COUNT(j.jid) `Total reviews`,  
+      GROUP_CONCAT(CONCAT('[en] ', j.title_en, ' / [th]', j.title_sub, ' [jid:', j.jid, ']') SEPARATOR ', ') `Journals` 
+    FROM 
+      {users} u 
+    LEFT JOIN 
+      (
+        SELECT * 
+        FROM 
+          (
+            SELECT jid, uid, status 
+            FROM  {open_journal_journal_people} 
+            WHERE role_list LIKE '%reviewer%' AND created >= :start_date AND created <= :end_date 
+            ORDER BY created DESC
+          ) jp 
+        GROUP BY jp.jid, jp.uid 
+        HAVING jp.status = 1
+      ) jp 
+    ON 
+      u.uid = jp.uid 
+    LEFT JOIN 
+      {open_journal_journal} j 
+    ON 
+      jp.jid = j.jid 
+    GROUP BY 
+      jp.uid 
+    HAVING 
+      Journals IS NOT NULL
+  ", $query)->fetchAll();
+
+  foreach ($result as &$line) {
+    $reviewer = user_load($line->Reviewer);
+
+    $line->Reviewer = $reviewer->data['firstname'].' '.$reviewer->data['lastname'].' [uid:'.$reviewer->uid.']';
+  }
+
+  open_journal_result_to_csv($result);
+
 }
