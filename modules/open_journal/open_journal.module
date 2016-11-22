@@ -283,7 +283,15 @@ function open_journal_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_people_form.inc',
   );
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/%open_journal_journal/people/add'] = array(
+    'title' => t('Create people'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('open_journal_people_create_form', $arg),
+    'access arguments' => array('invite people to journal'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_people_form.inc',
 
+  );
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/account/%user'] = array(
     'title' => t('Account'),
@@ -1918,6 +1926,7 @@ function open_journal_people($journal) {
   return theme('open_journal_detail', array(
     'jid' => $journal->jid,
     'content' => theme('open_journal_people', array(
+      'jid' => $journal->jid,
       'people_creator' => $people_creator,
       'people_contributor_list' => $people_contributor_list,
     )),

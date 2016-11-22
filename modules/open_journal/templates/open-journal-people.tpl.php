@@ -29,7 +29,14 @@
     <!-- Creator Section -->
     <div class="journal-block-content people-contributor">
 
-    	<h3 class="people-section-title">Contributors</h3>
+    	<h3 class="people-section-title">
+        Contributors
+        <?php if (user_access('invite people to journal')): ?>
+        <div class="add-user-btn">
+          <?php print l(t('Add new reviewer'), OPEN_JOURNAL_PREFIX_PATH.'/'.$jid.'/people/add', array('query' => array('role' => 5))); ?>
+        </div>
+        <?php endif ?>
+      </h3>
 
     	<!-- People item -->
     	<ul>

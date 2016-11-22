@@ -1724,6 +1724,23 @@ input.form-submit:hover {
 		.relate-peoples li.more-people a:hover {
 			text-decoration: none;
 		}
+
+  .add-user-btn {
+    display: inline-block;
+    margin-left: 20px;
+  }
+  .add-user-btn a {
+    font-size: 20px;
+    text-transform: none;
+    display: inline-block;
+    padding: 2px 10px 0px 30px;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    color: #FFF;
+    background: url(images/ic-add-journal-btn.png) #55b0d6 no-repeat 7px 3px;
+}
+
 #journal-list .load-more {
 	display: block;
 	width: 140px;
@@ -3183,4 +3200,9 @@ border: 2px solid red !important;
 .filter-date-value.selected {
   opacity: 1;
   border: solid 1px #eee;
+}
+
+/* people add */
+.sub-page-title {
+  font-size: 28px;
 }
