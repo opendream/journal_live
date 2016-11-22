@@ -21,6 +21,7 @@
 		
 	</ul>
 	<?php print $not_reject_form;?>
+	<?php print $not_withdraw_form;?>
 	<div class="add-journal-btn">
 		<?php if(!user_access('access contributor process')):?>
 		<?php print l(t('Add new'), OPEN_JOURNAL_PREFIX_PATH.'/add'); ?>

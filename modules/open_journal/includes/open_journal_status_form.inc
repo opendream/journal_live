@@ -1,4 +1,7 @@
 <?php
+
+// Reject
+
 function open_journal_reject_sidebar_form($form, &$form_state, $journal, $template_list=FALSE) {
   $default_value = '';
   if ($template_list) {
@@ -124,7 +127,133 @@ function open_journal_not_reject_form_submit($form, &$form_state) {
 	drupal_goto($_SERVER['HTTP_REFERER']);
 }
 
+// Withdraw
+function open_journal_withdraw_sidebar_form($form, &$form_state, $journal, $template_list=FALSE) {
+  $default_value = '';
+  if ($template_list) {
+    $default_value = $template_list[0]->body;
+    $roles = array();
+    foreach ($template_list[0]->role as $key => $value) {
+      $roles[$value->rid] = $value->rid;
+    }
+    $form['tpid'] = array(
+      '#type' => 'hidden',
+      '#value' => $template_list[0]->tpid,
+      '#access' => FALSE,
+    );
+    $form['template_title'] = array(
+      '#type' => 'hidden',
+      '#value' => $template_list[0]->template_title,
+      '#access' => FALSE,
+    );
 
+    $form['roles'] = array(
+      '#type' => 'hidden',
+      '#value' => $roles,
+      '#access' => FALSE,
+    );
+
+  }
+  $form['withdraw_reason'] = array(
+    '#type' => 'textarea',
+    '#default_value' => $default_value,
+  );
+
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Confirm'),
+  );
+    $form['actions']['cancel'] = array(
+      '#markup' => l(t('Cancel'), $_SERVER['HTTP_REFERER'], array(
+        'attributes' => array('id' => 'withdraw-cancel-link')
+      )),
+    );
+
+  
+  return $form;
+}
+
+function open_journal_withdraw_submit($jid, $withdraw_reason='', $roles=FALSE, $template_title=FALSE, $redirect=TRUE) {
+  $sql = "UPDATE open_journal_journal SET withdraw = 1, status_changed = :status_changed, withdraw_reason = :withdraw_reason WHERE jid = ".$jid;
+  db_query($sql, array(':status_changed' => REQUEST_TIME, ':withdraw_reason' => $withdraw_reason));
+
+  // Create new discussion
+  $withdraw_reason = open_journal_trim($withdraw_reason)? $withdraw_reason:'We are sorry. If you want to more information to withdrawn, you can talk on this discussion.' ;
+  $discussion = array(
+    'jid' => $jid,
+    'title' => t('This journal has been withdrawn.'),
+    'description' => $withdraw_reason,
+    
+  );
+
+  if ($template_title) {
+    $discussion['title'] = $template_title;
+  }
+  else {
+    $discussion['title'] = t('This journal has been withdrawn.');
+
+  }
+
+  if ($roles) {
+    $discussion['roles'] = $roles;
+  }
+
+  $discussion = (object) $discussion;
+  open_journal_discussion_save($discussion);
+  
+  if ($redirect) {
+    drupal_set_message('This journal is withdrawn.');
+    drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$jid .'/discussion/'.$discussion->did);
+  }
+  
+}
+
+function open_journal_withdraw_sidebar_form_submit($form, &$form_state) {
+  $withdraw_reason = $form['withdraw_reason']['#value'];
+  $roles = $form['roles']['#value'];
+  $template_title = $form['template_title']['#value'];
+  $jid = $form_state['build_info']['args'][0]->jid;
+
+  open_journal_withdraw_submit($jid, $withdraw_reason, $roles, $template_title);
+  
+}
+
+function open_journal_not_withdraw_form($form, &$form_state) {
+  global $user;
+
+  if(!isset($user->data['not_show_withdraw'])) {
+    $value = 0;
+  }
+  else {
+    $value = $user->data['not_show_withdraw'];
+  }
+
+  $form['not_show_withdraw'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Include withdrawn articles',
+    '#attributes' => array('class' => array('not_withdraw_checkbox')),
+    '#default_value' => !$value,
+
+  );
+
+  $form['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('submit'),
+      '#attributes' => array('id' => array('not_withdraw_btu')),
+  );
+  return $form;
+}
+function open_journal_not_withdraw_form_submit($form, &$form_state) {
+  global $user;
+
+  $account = user_load($user->uid);
+  user_save($account, array('data' => array('not_show_withdraw' => !$form_state['values']['not_show_withdraw'])));
+
+  drupal_goto($_SERVER['HTTP_REFERER']);
+}
+
+// Approve
 function open_journal_approve_sidebar_form($form, &$form_state, $journal , $next_status, $template_list=FALSE) {
 
   global $user;

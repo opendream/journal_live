@@ -1517,7 +1517,7 @@ input.form-submit:hover {
   			background-color: #4084a0;
   		}
 
-#open-journal-not-reject-form {
+#open-journal-not-reject-form, #open-journal-not-withdraw-form {
 	float: left;
 	margin-left: 20px;
 	line-height: 26px;
@@ -1634,7 +1634,8 @@ input.form-submit:hover {
 			background-color: #69c5ae;
 		}
 
-		#journal-list .journal-item .statusreject {
+		#journal-list .journal-item .statusreject,
+    #journal-list .journal-item .statuswithdraw {
 			background-color: #ff5f65;
 		}
 		#journal-list .journal-item .finish-publish {
@@ -1871,7 +1872,7 @@ h2.journal-block-title {
 	.status-block h2.status1 {background-color: #c6aadd;}
 	.status-block h2.status2 {background-color: #cd935e;}
 	.status-block h2.status3 {background-color: #69c5ae;}
-	.status-block h2.statusreject {background-color: #fc6064;}
+	.status-block h2.statusreject, .status-block h2.statuswithdraw {background-color: #fc6064;}
 	
 #overview-discussion,
 #file-list-item {
@@ -2321,7 +2322,8 @@ h2.journal-block-title {
 }
 #open-journal-comment-form .form-actions a,
 #open-journal-discussion-form .form-actions a,
-#open-journal-reject-sidebar-form .form-actions a {
+#open-journal-reject-sidebar-form .form-actions a,
+#open-journal-withdraw-sidebar-form .form-actions a  {
 	color: #555;
 	line-height: 35px;
 }
@@ -2818,7 +2820,8 @@ h3.people-section-title {
 }
 #open-journal-approve-sidebar-form .form-submit,
 #approve_popup_bottom,
-#reject_bottom {
+#reject_bottom,
+#withdraw_bottom {
   font-family: "Lucida Grande", Verdana, sans-serif;
 	font-size: 10px;
 	padding: 5px 10px;
@@ -2836,16 +2839,19 @@ h3.people-section-title {
 }
 
 #open-journal-approve-sidebar-form .form-submit:hover,
-#reject_bottom:hover {
+#reject_bottom:hover,
+#withdraw_bottom:hover {
 	background-color: #55b0d6;
 	text-decoration: none;
 }
 
-.reject-button {
+.reject-button,
+.withdraw-button {
 	display: block;
 	text-align: center;
 }
-.reject-tag {
+.reject-tag,
+.withdraw-tag {
 	float: left;
 	width: 252px;
 	padding: 10px 0;

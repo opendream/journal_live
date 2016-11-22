@@ -2492,9 +2492,19 @@ function open_journal_get_status_form_variables($journal) {
   $vars['journal'] = $journal;
 
   $vars['reject_form'] = '';
+  $vars['withdraw_form'] = '';
   $vars['approve_form'] = '';
 
   $vars['next_status'] = open_journal_next_sid($journal->sid, TRUE);
+  
+
+  // Get withdraw template
+  $template_list = open_journal_get_template_list($journal, 'withdraw');
+  // Replace string
+  open_journal_replace_template_string($template_list, $journal, TRUE);
+  $vars['withdraw_form'] = drupal_render(drupal_get_form('open_journal_withdraw_sidebar_form', $journal, $template_list));
+  
+
   if ((user_access('approve with unanimity') || user_access('reject journal')) && !$journal->reject && $vars['next_status']) {
     if (user_access('reject journal')) {
       // Get reject template
@@ -3099,6 +3109,9 @@ function open_journal_load_multiple($user=NULL, $after_jid=NULL, $limit=NULL, $s
   if(isset($user->data['not_show_reject']) && $user->data['not_show_reject']) {
     $sql .= ' AND j.reject = 0 ';
   }
+  if(isset($user->data['not_show_withdraw']) && $user->data['not_show_withdraw']) {
+    $sql .= ' AND j.withdraw = 0 ';
+  }
   $sql .= " ORDER BY j.jid DESC";
 
   if($limit) {
@@ -3118,6 +3131,10 @@ function open_journal_get_status_attributes($journal) {
   if($journal->reject) {
     $class = 'reject';
     $name = 'Reject';
+  }
+  elseif($journal->withdraw) {
+    $class = 'withdraw';
+    $name = 'Withdraw';
   }
   else {
     $class = $journal->sid;
@@ -3222,11 +3239,11 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
   $mpath = drupal_get_path('module', 'open_journal');
   drupal_add_js($mpath.'/js/open_journal_list_load_more.js');
 
-  // Get checkbox not reject form
   module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
+  // Get checkbox not reject form
   $not_reject_form = drupal_render(drupal_get_form('open_journal_not_reject_form'));
-
-
+  // Get checkbox not withdraw form
+  $not_withdraw_form = drupal_render(drupal_get_form('open_journal_not_withdraw_form'));
 
   // TODO: Refactor to use COUNT function in SQL
   $list = open_journal_load_multiple($user);
@@ -3312,6 +3329,7 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
     'current_status_name' => $current_status_name,
     'status' => $status,
     'not_reject_form' => $not_reject_form,
+    'not_withdraw_form' => $not_withdraw_form,
     'user_roles' => $user_roles,
 
   ));
@@ -3750,7 +3768,7 @@ function open_jounal_daily_mail($data) {
     'name' => 'System Mail'
   );
 
-  $journal_list = db_query("SELECT * FROM (SELECT j.jid, MAX(d.changed) last_update FROM open_journal_journal j, open_journal_discussion d WHERE d.jid = j.jid AND j.reject = 0 GROUP BY j.jid) t WHERE CEIL((unix_timestamp(CURRENT_TIMESTAMP) - t.last_update)/(60*60*24)) = ".OPEN_JOURNAL_REMINDER_DAYS)->fetchAll();
+  $journal_list = db_query("SELECT * FROM (SELECT j.jid, MAX(d.changed) last_update FROM open_journal_journal j, open_journal_discussion d WHERE d.jid = j.jid AND j.reject = 0 AND j.withdraw = 0 GROUP BY j.jid) t WHERE CEIL((unix_timestamp(CURRENT_TIMESTAMP) - t.last_update)/(60*60*24)) = ".OPEN_JOURNAL_REMINDER_DAYS)->fetchAll();
 
 
 

@@ -41,7 +41,7 @@
 		</div>
 
 		<?php if($approve_form): ?>
-		<?php if(!$value_status['is_substate'] && $value_status['current'] && $value_status['next_sid'] != NULL && !$journal->reject):?>
+		<?php if(!$value_status['is_substate'] && $value_status['current'] && $value_status['next_sid'] != NULL && !$journal->reject && !$journal->withdraw):?>
 			<?php print $approve_form; ?>
 			<?php //print drupal_render(drupal_get_form('open_journal_approve_sidebar_form', $journal, open_journal_next_sid($value_status['sid']), $vars['template_list'])); ?>
 
@@ -60,6 +60,7 @@
 	<?php endforeach;?>
 	
 	<?php if ($reject_form): ?>
+	<br />
 	<?php print $reject_form;?>
 	<div class="reject-button">
 		<?php print 'or '.l('Reject' ,'', array('attributes' => array('id' => 'reject_bottom')));?>
@@ -67,9 +68,25 @@
 	<?php endif ?>
 	
 	<?php if ($journal->reject): ?>
-  <div class="reject-tag">
-    Rejected
-  </div>
+	<br />
+  	<div class="reject-tag">
+    	Rejected
+  	</div>
+	<?php endif ?>
+
+	<?php if ($withdraw_form): ?>
+	<br />
+	<?php print $withdraw_form;?>
+	<div class="withdraw-button">
+		<?php print 'or '.l('Withdraw' ,'', array('attributes' => array('id' => 'withdraw_bottom')));?>
+	</div>
+	<?php endif ?>
+	
+	<?php if ($journal->withdraw): ?>
+	<br />
+  	<div class="withdraw-tag">
+    	Withdrawn
+  	</div>
 	<?php endif ?>
 
 </div>

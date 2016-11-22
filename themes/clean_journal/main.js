@@ -51,4 +51,11 @@ jQuery(document).ready(function () {
 		
 		$('#open-journal-not-reject-form').submit();
 	});
+
+	$('#not_withdraw_btu').hide();
+	$('.not_withdraw_checkbox').click(function(e) {
+		
+		$('#open-journal-not-withdraw-form').submit();
+	});
+
 });

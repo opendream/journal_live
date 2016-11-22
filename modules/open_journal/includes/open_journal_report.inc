@@ -303,7 +303,7 @@ function open_journal_report_journal_withdraw() {
       j.title_sub `Title (th)`, 
       SUBSTRING_INDEX(j.creator_en, ',', 1) `Author (en)`, 
       SUBSTRING_INDEX(j.creator_sub, ',', 1) `Author (th)`, 
-      DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%m-%d %T') `Withdraw( at`,
+      DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%m-%d %T') `Withdraw at`,
       CEIL((status_changed - created)/(60*60*24)) `Duration (days)`, 
       s.name `State`,
       j.withdraw_reason `Reason`  
