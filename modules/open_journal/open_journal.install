@@ -30,6 +30,12 @@ function open_journal_schema() {
         'type' => 'int',
         'not null' => TRUE,
       ),
+
+      'code' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
       
       'title_en' => array(
         'type' => 'text',
@@ -199,6 +205,15 @@ function open_journal_schema() {
         'default' => 0,
       ),
       'reject_reason' => array(
+        'type' => 'text',
+        'not null' => FALSE,
+      ),
+      'withdraw' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'withdraw_reason' => array(
         'type' => 'text',
         'not null' => FALSE,
       ),
@@ -2330,4 +2345,13 @@ function open_journal_update_7037(&$sandbox) {
 
 function open_journal_update_7038(&$sandbox) {
   db_query("UPDATE {open_journal_journal_people} jp LEFT JOIN (SELECT ur.uid uid, GROUP_CONCAT(r.name SEPARATOR ', ') role_list FROM {users_roles} ur, role r WHERE ur.rid = r.rid GROUP BY ur.uid) rl ON jp.uid = rl.uid SET jp.role_list = rl.role_list WHERE jp.role_list IS NULL");
+}
+
+function open_journal_update_7039(&$sandbox) {
+  $schema = open_journal_schema();
+  
+  db_add_field('open_journal_journal', 'code', $schema['open_journal_journal']['fields']['code']);
+  db_add_field('open_journal_journal', 'withdraw', $schema['open_journal_journal']['fields']['withdraw']);
+  db_add_field('open_journal_journal', 'withdraw_reason', $schema['open_journal_journal']['fields']['withdraw_reason']);
+
 }

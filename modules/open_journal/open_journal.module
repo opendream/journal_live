@@ -935,6 +935,14 @@ function open_journal_journal_save($data, $change_status=FALSE, $commit=TRUE, $s
   if (!$pk) {
     $data->created = REQUEST_TIME;
     $data->changed = REQUEST_TIME;
+    
+    // generate journal code
+    $current_year = date('y', REQUEST_TIME);
+    $code = variable_get('open_journal_latest_code_'.$current_year, 0);
+    $code++;
+    $code = str_pad($code, 3, '0', STR_PAD_LEFT);
+    $code = $current_year.'-'.$code;
+    $data->code = $code;
   }
   if (!$pk || $change_status) {
     $data->status_changed = REQUEST_TIME;
@@ -2644,7 +2652,7 @@ function open_journal_replace_template_string($template_list, $journal, $add_rol
     $author_replace = "ผู้เขียน";
     $replace_code_to = array(
       $author_replace,
-      $journal->jid,
+      $journal->code,
       $journal->title,
       l('กดที่ลิงก์นี้ เมื่อท่านเห็นชอบกับไฟล์ Artwork', 'journal/'.$journal->jid.'/discussion/add', array('absolute' => TRUE)),
       l('Information', 'journal/'.$journal->jid.'/information', array('absolute' => TRUE)),
