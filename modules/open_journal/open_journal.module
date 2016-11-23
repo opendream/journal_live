@@ -3853,3 +3853,27 @@ function open_journal_cron() {
 
 
 }
+
+
+function open_journal_user_access($string, $account = NULL) {
+  global $user;
+
+  if (!isset($account)) {
+    $account = $user;
+  }
+
+  // User #1 has all privileges:
+  if ($account->uid == 1) {
+    return TRUE;
+  }
+
+  $role_permissions = user_role_permissions($account->roles);
+
+  $perms = array();
+  foreach ($role_permissions as $one_role) {
+    $perms += $one_role;
+  }
+  
+
+  return isset($perms[$string]);
+}

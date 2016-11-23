@@ -42,6 +42,9 @@
  *
  * @ingroup themeable
  */
+
+$account = user_load($user->uid);
+
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN"
   "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php print $language->language; ?>" version="XHTML+RDFa 1.0" dir="<?php print $language->dir; ?>"<?php print $rdf_namespaces; ?>>
@@ -74,8 +77,10 @@
         <?php print l(t('View articles'), OPEN_JOURNAL_PREFIX_PATH, array('attributes' => array('class' => array('view-all-journal')))); ?>
         <div class="user-dropdown">
           <?php print $user_info['display_picture_small']; ?>
-          <span class="dropdown-link"><?php print $user_info['display_name']; ?></span>
+          <span class="dropdown-link"><?php print $user_info['display_name']; ?><?php if (open_journal_user_access('access contributor process', $account) && count($account->roles) > 2): ?><a href="" class="user-name-wrapper"> (<?php print ucfirst(end($user->roles)); ?>)</a><?php endif; ?></span>
           <ul class="dropdown active-dropdown">
+
+
             <?php if (user_access('export issue to ojs xml format')): ?>
             <li><?php print l(t('OJS export'), OPEN_JOURNAL_PREFIX_PATH.'/ojs/export'); ?></li>  
             <?php endif ?>
@@ -87,6 +92,17 @@
             <?php endif;?>
             <li><?php print l(t('Account settings'), OPEN_JOURNAL_PREFIX_PATH.'/account/setting'); ?></li>
             <li><?php print l(t('Logout'), 'user/logout'); ?></li>
+
+            <?php if (open_journal_user_access('access contributor process', $account) && count($account->roles) > 2): ?>
+            <li class="switch-role-heading"><a>Switch role to</a></li>
+            <?php foreach ($account->roles as $rid => $name): ?>
+            <?php if ($name != 'authenticated user'): ?>
+            <li class="switch-role-item"><?php print l(ucfirst($name), OPEN_JOURNAL_PREFIX_PATH.'/account/switch-role/'.$rid, array('query' => drupal_get_destination())); ?></li>
+            <?php endif ?>
+            <?php endforeach ?>              
+            <?php endif ?>
+
+
           </ul>
         </div>
 
