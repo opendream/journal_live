@@ -1,6 +1,10 @@
 <?php 
 function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL, $template_list=array(), $user_role_list=array()) {
   global $user; 
+
+  drupal_add_js(drupal_get_path('module', 'open_journal') . '/js/open_journal_status_sidebar.js');
+  drupal_add_js(drupal_get_path('module', 'open_journal') . '/js/jquery.qtip.min.js');
+
   $form['#attached']['js'][] = array(
     'data' => array(
       'open_journal' => array(

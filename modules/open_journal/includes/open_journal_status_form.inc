@@ -257,10 +257,9 @@ function open_journal_not_withdraw_form_submit($form, &$form_state) {
 function open_journal_approve_sidebar_form($form, &$form_state, $journal , $next_status, $template_list=FALSE) {
 
   global $user;
-  $form['#attached']['js'] = array(
-    drupal_get_path('module', 'open_journal') . '/js/open_journal_status_sidebar.js',
-    drupal_get_path('module', 'open_journal') . '/js/jquery.qtip.min.js',
-  );
+  drupal_add_js(drupal_get_path('module', 'open_journal') . '/js/open_journal_status_sidebar.js');
+  drupal_add_js(drupal_get_path('module', 'open_journal') . '/js/jquery.qtip.min.js');
+  
   if($template_list) {
     $default_value = $template_list[0]->body;
     $roles = array();

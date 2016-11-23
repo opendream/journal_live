@@ -56,7 +56,6 @@
   <div id="skip-link">
     <a href="#main-content" class="element-invisible element-focusable"><?php print t('Skip to main content'); ?></a>
   </div>
-  
 
   <div id="header-profile" class="<?php print $header_class; ?>">
 
@@ -90,6 +89,7 @@
             <li><?php print l(t('Logout'), 'user/logout'); ?></li>
           </ul>
         </div>
+
       </div>
     </div>
     <?php endif;?>

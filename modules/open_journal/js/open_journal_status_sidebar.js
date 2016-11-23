@@ -2,7 +2,6 @@ jQuery(document).ready(function () {
 
   $ = jQuery;
 
-
   function bind_btn_action(code) {
     
     $('#open-journal-'+code+'-sidebar-form').hide();

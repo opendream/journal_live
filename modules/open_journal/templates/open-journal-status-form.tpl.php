@@ -59,12 +59,26 @@
 
 	<?php endforeach;?>
 	
-	<?php if ($reject_form): ?>
-	<br />
+	<?php if ($reject_form || $withdraw_form): ?>
+	
 	<?php print $reject_form;?>
-	<div class="reject-button">
-		<?php print 'or '.l('Reject' ,'', array('attributes' => array('id' => 'reject_bottom')));?>
+	<?php print $withdraw_form;?>
+
+	<div class="reject-button withdraw-button">
+		or
+		<?php if ($reject_form): ?>
+		<?php print l('Reject' ,'', array('attributes' => array('id' => 'reject_bottom')));?>
+		<?php endif ?>
+
+		<?php if ($reject_form && $withdraw_form): ?>
+		·
+		<?php endif; ?>
+		
+		<?php if ($withdraw_form): ?>
+		<?php print l('Withdraw' ,'', array('attributes' => array('id' => 'withdraw_bottom')));?>
+		<?php endif ?>
 	</div>
+
 	<?php endif ?>
 	
 	<?php if ($journal->reject): ?>
@@ -74,13 +88,6 @@
   	</div>
 	<?php endif ?>
 
-	<?php if ($withdraw_form): ?>
-	<br />
-	<?php print $withdraw_form;?>
-	<div class="withdraw-button">
-		<?php print 'or '.l('Withdraw' ,'', array('attributes' => array('id' => 'withdraw_bottom')));?>
-	</div>
-	<?php endif ?>
 	
 	<?php if ($journal->withdraw): ?>
 	<br />

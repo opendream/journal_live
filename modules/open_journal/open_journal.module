@@ -72,13 +72,15 @@ define('OPEN_JOUNAL_INFORMAL_STATUS', serialize (
 define('OPEN_JOUNAL_HELP_DESCRIPTION_SUB', 'สรุปบทความโดยสังเขป');
 
 
-$path = drupal_get_path('module', 'open_journal');
-require_once($path .'/includes/open_journal_report.inc');
+
 
 /**
  * Implements of hook_menu().
  */
 function open_journal_menu() {
+  
+  $path = drupal_get_path('module', 'open_journal');
+  require_once($path .'/includes/open_journal_report.inc');
 
   $arg = count(explode('/', OPEN_JOURNAL_PREFIX_PATH));
 
@@ -137,6 +139,15 @@ function open_journal_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'includes/open_journal_account_setting_form.inc',
   );
+  $items[OPEN_JOURNAL_PREFIX_PATH.'/account/switch-role/%user_role'] = array(
+    'title' => t('Switch role'),
+    'page callback' => 'open_journal_account_switch_role',
+    'page arguments' => array($arg+2),
+    'access arguments' => array('access open journal'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal_account_switch_role.inc',
+  );
+
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/add'] = array(
     'title' => t('Add new article'),
@@ -762,6 +773,31 @@ function open_journal_preprocess_page(&$vars) {
   elseif(arg(0) == 'issue' && !arg(1)) {
     $vars['outer_header'] = '<div class="back-to-all-issue">'.l('Add issue', 'issue/add', array('attributes' => array('class' => array('issue-add-link')))).'</div>';
   }
+}
+
+function open_journal_boot() {
+  
+  global $user;
+
+  if ($user->uid && $_GET['q'] != OPEN_JOURNAL_PREFIX_PATH.'/account/switch-role') {
+
+    
+
+    $current_role = $user->data['current_role'];
+
+    if (!$current_role) {
+      $current_role = end(array_keys($user->roles));
+    }
+    
+    if ($user->roles[$current_role]) {
+      $user->roles = array(
+        2 => 'authenticated user',
+        $current_role => $user->roles[$current_role],
+      );
+    }
+  
+  }
+
 }
 
 function open_journal_form_alter(&$form, &$form_state, $form_id) {
@@ -2295,6 +2331,9 @@ function open_journal_discussion_list_limit($journal, $limit=0) {
 
   module_load_include('php', 'open_journal', 'includes/markdown');
 
+  drupal_add_js(drupal_get_path('module', 'open_journal') . '/js/open_journal_status_sidebar.js');
+  drupal_add_js(drupal_get_path('module', 'open_journal') . '/js/jquery.qtip.min.js');
+
   if (is_numeric($journal)) {
     $journal = (object) array('jid' => $journal);
   }
@@ -2374,6 +2413,8 @@ function open_journal_discussion_list_limit($journal, $limit=0) {
 
 function open_journal_discussion_list($journal) {
 
+  drupal_add_js(drupal_get_path('module', 'open_journal') . '/js/open_journal_status_sidebar.js');
+  drupal_add_js(drupal_get_path('module', 'open_journal') . '/js/jquery.qtip.min.js');
 
   $discussion_list = open_journal_discussion_list_limit($journal);
 
@@ -2798,6 +2839,9 @@ function open_journal_discussion_detail($journal, $discussion) {
 
   global $user;
   module_load_include('inc', 'open_journal', 'includes/open_journal_status_form');
+  
+  drupal_add_js(drupal_get_path('module', 'open_journal') . '/js/open_journal_status_sidebar.js');
+  drupal_add_js(drupal_get_path('module', 'open_journal') . '/js/jquery.qtip.min.js');
 
   $discussion->user_info = open_journal_get_display_user_info($discussion->uid);
   $discussion->description = check_markup(Markdown($discussion->description), 'filtered_html');

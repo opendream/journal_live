@@ -4,6 +4,9 @@ function open_journal_comment_form($form, $form_state, $journal, $discussion, $d
 
   global $user;
   
+  drupal_add_js(drupal_get_path('module', 'open_journal') . '/js/open_journal_status_sidebar.js');
+  drupal_add_js(drupal_get_path('module', 'open_journal') . '/js/jquery.qtip.min.js');
+
   $form['#attached']['css']['wmd'] = drupal_get_path('module', 'open_journal').'/wmd/wmd.css';
   $form['#attached']['js']['wmd'] = drupal_get_path('module', 'open_journal').'/wmd/wmd.js';
   $form['#attached']['js']['open_journal_editor'] = drupal_get_path('module', 'open_journal').'/js/open_journal_editor.js';
