@@ -2498,14 +2498,15 @@ function open_journal_get_status_form_variables($journal) {
   $vars['next_status'] = open_journal_next_sid($journal->sid, TRUE);
   
 
-  // Get withdraw template
-  $template_list = open_journal_get_template_list($journal, 'withdraw');
-  // Replace string
-  open_journal_replace_template_string($template_list, $journal, TRUE);
-  $vars['withdraw_form'] = drupal_render(drupal_get_form('open_journal_withdraw_sidebar_form', $journal, $template_list));
-  
+  if (!$journal->reject && !$journal->withdraw && $vars['next_status']) {
+    // Get withdraw template
+    $template_list = open_journal_get_template_list($journal, 'withdraw');
+    // Replace string
+    open_journal_replace_template_string($template_list, $journal, TRUE);
+    $vars['withdraw_form'] = drupal_render(drupal_get_form('open_journal_withdraw_sidebar_form', $journal, $template_list));
+  }
 
-  if ((user_access('approve with unanimity') || user_access('reject journal')) && !$journal->reject && $vars['next_status']) {
+  if ((user_access('approve with unanimity') || user_access('reject journal')) && !$journal->reject && !$journal->withdraw && $vars['next_status']) {
     if (user_access('reject journal')) {
       // Get reject template
       $template_list = open_journal_get_template_list($journal, 'reject');
