@@ -1,4 +1,12 @@
+
 <div class="journal-discussion-list-block block-bg-shadow">
+
+	<div class="latest-file-link">
+		<img typeof="foaf:Image" src="/sites/all/modules/open_journal/images/ic-has-file.png" alt="has file attach">
+		<?php print l(t('Latest file'), file_create_url($file->uri)); ?>
+		by <?php print $file->user_info['display_name']; ?>
+	</div>
+
 	<div class="add-discussion-btn">
 		<?php print l(t('Start new discussion'), OPEN_JOURNAL_PREFIX_PATH.'/'.$jid.'/discussion/add'); ?>
 	</div>

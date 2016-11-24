@@ -539,6 +539,7 @@ function open_journal_theme() {
     'open_journal_discussion_list' =>array(
       'variables' => array(
         'discussion_list' => NULL,
+        'file' => NULL
       ),
       'template' => 'templates/open-journal-discussion-list'
     ),
@@ -2452,6 +2453,7 @@ function open_journal_discussion_list($journal) {
       'discussion_list' => $discussion_list,
       'jid' => $journal->jid,
       'image_file' => $image_file,
+      'file' => open_journal_get_file_list($journal->jid, 1)[0]
     )),
     'sidebar' => $sidebar,
     'jid' => $journal->jid
