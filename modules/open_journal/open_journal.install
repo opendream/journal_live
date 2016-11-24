@@ -2370,6 +2370,6 @@ function open_journal_update_7040(&$sandbox) {
 function open_journal_update_7041(&$sandbox) {
   db_query("DELETE rp FROM {role_permission} rp INNER JOIN {role} r ON rp.rid = r.rid  WHERE r.name = 'editor' AND rp.permission IN ('auto active when create journal', 'invite people to journal')");
   
-  db_query("INSERT INTO {role_permission} VALUES(4, 'can not view authors data', 'open_journal')")
+  db_query("INSERT INTO {role_permission} VALUES(4, 'can not view authors data', 'open_journal')");
 
 }

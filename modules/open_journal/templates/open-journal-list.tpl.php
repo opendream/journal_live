@@ -12,7 +12,7 @@
 		<div class="journal-filter-active"><?php print $current_status_name; ?></div>
 	</div>
 	<ul id="journal-filter-item-list">
-		<li class="journal-filter-item"><?php print l('All articles', OPEN_JOURNAL_PREFIX_PATH);?></li>
+		<li class="journal-filter-item"><?php print l('All articles', OPEN_JOURNAL_PREFIX_PATH.'/list/all');?></li>
 		<?php foreach($status_list as $key_status => $status):?>
 		<?php if (!$status['is_subclass']): ?>			
 		<li class="journal-filter-item"><?php print l($status['name'], OPEN_JOURNAL_PREFIX_PATH.'/list/'.$status['sid']);?></li>

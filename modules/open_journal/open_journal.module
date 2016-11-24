@@ -64,7 +64,6 @@ define('OPEN_JOURNAL_INFORMAL_STATUS_FAIL', 2);
 define('OPEN_JOUNAL_INFORMAL_STATUS', serialize (
   array(
     OPEN_JOURNAL_INFORMAL_STATUS_REVIEWING => 'Reviewing',
-    OPEN_JOURNAL_INFORMAL_STATUS_AGREE => 'Yes',
     OPEN_JOURNAL_INFORMAL_STATUS_FAIL => 'No',
   )
 ));
@@ -91,7 +90,7 @@ function open_journal_menu() {
     'type' => MENU_CALLBACK,
   );
   $items[OPEN_JOURNAL_PREFIX_PATH.'/list']     = $items[OPEN_JOURNAL_PREFIX_PATH];
-  $items[OPEN_JOURNAL_PREFIX_PATH.'/list/all'] = $items[OPEN_JOURNAL_PREFIX_PATH];
+  //$items[OPEN_JOURNAL_PREFIX_PATH.'/list/all'] = $items[OPEN_JOURNAL_PREFIX_PATH];
 
   $items[OPEN_JOURNAL_PREFIX_PATH.'/list/%']  = array(
     'title' => t('Article list'),
@@ -739,6 +738,7 @@ function open_journal_preprocess_page(&$vars) {
 
     if ($_GET['q'] == OPEN_JOURNAL_PREFIX_PATH ||
         $_GET['q'] == OPEN_JOURNAL_PREFIX_PATH.'/list'  ||
+        $_GET['q'] == OPEN_JOURNAL_PREFIX_PATH.'/list/all'  ||
         (strpos($_GET['q'], OPEN_JOURNAL_PREFIX_PATH) === 0 && is_numeric(arg($arg+1)))){
       $vars['page_class'] = 'page-normal page-journal-list';
     }
@@ -2446,6 +2446,8 @@ function open_journal_discussion_list($journal) {
 
   // Addition file download sidebar
   $sidebar .= theme('open_journal_download_file_sidebar');
+  $files = open_journal_get_file_list($journal->jid, 1);
+  $file = $files[0];
 
   return theme('open_journal_detail', array(
     'content' => theme('open_journal_discussion_list', array(
@@ -2453,7 +2455,7 @@ function open_journal_discussion_list($journal) {
       'discussion_list' => $discussion_list,
       'jid' => $journal->jid,
       'image_file' => $image_file,
-      'file' => open_journal_get_file_list($journal->jid, 1)[0]
+      'file' => $file,
     )),
     'sidebar' => $sidebar,
     'jid' => $journal->jid
@@ -3280,10 +3282,22 @@ function open_journal_get_status_list($full=FALSE, $journal=NULL) {
   return $data_list;
 }
 
-function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_LIST_IPP) {
+function open_journal_list($status=NULL, $after_jid=NULL, $limit=OPEN_JOURNAL_LIST_IPP) {
   open_journal_get_status_list();
   drupal_set_title('');
   global $user;
+
+  if ($status !== NULL) {
+    $account = user_load($user->uid);
+    user_save($account, array('data' => array('journal_filter_status' => $status)));
+  }
+  elseif ($user->data['journal_filter_status'] !== NULL) {
+    $status = $user->data['journal_filter_status'];
+    drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/list/'.$status);
+  }
+  else {
+    $status = 'all';
+  }
 
   $mpath = drupal_get_path('module', 'open_journal');
   drupal_add_js($mpath.'/js/open_journal_list_load_more.js');
