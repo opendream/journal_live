@@ -7,6 +7,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
   $mpath = drupal_get_path('module', 'open_journal');
   
   $form['#attached']['js'][] = $mpath.'/js/open_journal_multi_textfield.js';
+  $form['#attached']['js'][] = $mpath.'/js/open_journal_author.js';
   $form['#attached']['js'][] = $mpath.'/js/jquery.qtip.min.js';
   $form['#attached']['js'][] = $mpath.'/js/open_journal_help.js';
   
@@ -118,6 +119,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
   $form['data']['data_title'] = array('#markup' => '<h3>'.t('Data').'</h3>');
 
   $form['data']['group'] = array('#type' => 'fieldset');
+  $form['data']['group']['author'] = array('#type' => 'fieldset');
 
 //open_journal_multi_textfield($title='' , $values = FALSE, $name, $add_more_text='Add another', $add_more_text_show=TRUE ,$initail_show_field=2)
 //($title='' , $values = FALSE, $name, $add_more_text='Add another', $add_more_text_show=TRUE ,$initail_show_field=2, $data=NULL, $required=FALSE)
@@ -125,11 +127,13 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
   
   $author_label = 'Author';
   if (OPEN_JOURNAL_SUB_LANG_ENABLE) {
-    $form['data']['group']['creator_sub'] = open_journal_multi_textfield(OPEN_JOURNAL_SUB_LANG_AUTHOR_LABEL ,open_journal_get_field($data, 'creator_sub'), 'dc_creator', 'Add co-author', TRUE, 1, NULL, TRUE);
+    $form['data']['group']['author']['creator_sub'] = open_journal_multi_textfield(OPEN_JOURNAL_SUB_LANG_AUTHOR_LABEL ,open_journal_get_field($data, 'creator_sub'), 'dc_creator', 'Add co-author', TRUE, 1, NULL, TRUE);
     $author_label .= ' ('.OPEN_JOURNAL_LANG_FULL_TEXT.')';
   }
     
-  $form['data']['group']['creator_en'] = open_journal_multi_textfield($author_label ,open_journal_get_field($data, 'creator_en'), 'dc_creator', 'Add co-author', TRUE, 1, NULL, TRUE);
+  $form['data']['group']['author']['creator_en'] = open_journal_multi_textfield($author_label ,open_journal_get_field($data, 'creator_en'), 'dc_creator', 'Add co-author', TRUE, 1, NULL, TRUE);
+
+  $form['data']['group']['author']['creator_email'] = open_journal_multi_textfield('Author (email)' ,open_journal_get_field($data, 'creator_email'), 'dc_creator.email', 'Add co-author', TRUE, 1, NULL, TRUE);
   
   
   $keywords_label = 'Keywords';
@@ -298,6 +302,7 @@ function open_journal_multi_textfield($title='' , $values = FALSE, $name, $add_m
     'dc_publisher' => 'Health Systems Research Institute',
     'dc_contributor' => 'Funding organizations',
     'dc_creator' => 'Name of principal researcher',
+    'dc_creator.email' => 'Email of principal researcher',
   );
 
   $help_text = isset($help_map[$name])? $help_map[$name]: 'Help me please.';
@@ -394,9 +399,9 @@ function open_journal_information_form_submit($form, &$form_state) {
 
 function open_journal_label_help($label='', $help_text='', $leftside=FALSE) {
   if ($leftside) {
-    return t($label).'<span class="label-help tip-right">'.$help_text.'</span>';
+    return '<span class="label-text">'.t($label).'</span><span class="label-help tip-right">'.$help_text.'</span>';
   }
   else {
-    return t($label).'<span class="label-help">'.$help_text.'</span>';
+    return '<span class="label-text">'.t($label).'</span><span class="label-help">'.$help_text.'</span>';
   }
 }

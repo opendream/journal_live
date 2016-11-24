@@ -2098,6 +2098,7 @@ h2.journal-block-title {
 #edit-subject-en,
 #edit-creator-en,
 #edit-creator-sub,
+#edit-creator-email,
 #edit-dc-publisher,
 #edit-dc-contributor {
 	padding-top: 0;
@@ -2145,6 +2146,7 @@ h2.journal-block-title {
 	#edit-subject-en .fieldset-wrapper .form-item,
 	#edit-creator-en .fieldset-wrapper .form-item,
   #edit-creator-sub .fieldset-wrapper .form-item,
+  #edit-creator-email .fieldset-wrapper .form-item,
 	#edit-dc-publisher .fieldset-wrapper .form-item,
 	#edit-dc-contributor .fieldset-wrapper .form-item,
 	#edit-date .fieldset-wrapper .form-item,
@@ -2260,6 +2262,43 @@ h2.journal-block-title {
 .form-item-address .grippie {
   display: none;
 }
+
+#open-journal-information-form #edit-data fieldset#edit-group {
+  padding-top: 10px;
+}
+#edit-data #edit-author {
+  padding-top: 0;
+}
+.author-item {
+  border-top: solid 1px #eee;
+  padding-top: 10px;
+  margin-left: 10px;
+}
+.author-item {
+  display: none;
+}
+.author-item.visible {
+  display: block;
+}
+.author-container .description {
+  padding-left: 155px;
+  color: red;
+}
+.author-container .visible:first-child {
+  border-top: none;
+}
+.add-author-group {
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+
+
+.author-item .form-item {
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
 /* Add Discussion
 ----------------------------------------------------------------*/
 .form-item-title .form-text,

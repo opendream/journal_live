@@ -75,6 +75,11 @@ function open_journal_schema() {
         'size' => 'big',
         'not null' => FALSE,
       ),
+      'creator_email' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
       'publisher_en' => array(
         'type' => 'text',
         'size' => 'big',
@@ -2353,5 +2358,12 @@ function open_journal_update_7039(&$sandbox) {
   db_add_field('open_journal_journal', 'code', $schema['open_journal_journal']['fields']['code']);
   db_add_field('open_journal_journal', 'withdraw', $schema['open_journal_journal']['fields']['withdraw']);
   db_add_field('open_journal_journal', 'withdraw_reason', $schema['open_journal_journal']['fields']['withdraw_reason']);
+
+}
+
+function open_journal_update_7040(&$sandbox) {
+  $schema = open_journal_schema();
+  
+  db_add_field('open_journal_journal', 'creator_email', $schema['open_journal_journal']['fields']['creator_email']);
 
 }

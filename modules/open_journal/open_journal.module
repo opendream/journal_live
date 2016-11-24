@@ -24,7 +24,7 @@ define('OPEN_JOURNAL_KEYWORDS_REQUIRED', TRUE);
 
 
 define('OPEN_JOURNAL_ABSTRACT_MAX_LENGTH', 2000);
-define('OPEN_JOURNAL_MAX_MULTI_TEXTFIELD', 10);
+define('OPEN_JOURNAL_MAX_MULTI_TEXTFIELD', 20);
 
 
 // Constant
@@ -911,6 +911,7 @@ function open_journal_journal_load($jid, $ignore_access=FALSE) {
   $data->dc_contributor = explode(',' ,$data->dc_contributor);
   $data->creator_sub = explode(',' ,$data->creator_sub);
   $data->creator_en = explode(',' ,$data->creator_en);
+  $data->creator_email = explode(',' ,$data->creator_email);
 
   if (OPEN_JOURNAL_SUB_LANG_ENABLE && $data->dc_language != 'en') {
     $data->title = $data->title_sub? $data->title_sub: $data->title_en;
@@ -941,6 +942,7 @@ function open_journal_journal_save($data, $change_status=FALSE, $commit=TRUE, $s
 
   open_journal_update_field($data, 'creator_en');
   open_journal_update_field($data, 'creator_sub');
+  open_journal_update_field($data, 'creator_email');
 
   // Dublin core
   open_journal_update_field($data, 'dc_title', $data->title_sub.','.$data->title_en);
@@ -3425,6 +3427,7 @@ function open_journal_get_field_settings() {
     'dc_right'      => 1,
     'creator_sub'   => $access_author,
     'creator_en'   => $access_author,
+    'creator_email'   => $access_author,
     'address' => 1,
     'title_sub' => 1,
     'title_en' => 1,
