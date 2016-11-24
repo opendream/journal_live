@@ -1549,7 +1549,6 @@ function open_journal_comment_save($data) {
   }
 
     // Auto app state when state has flag approve_by_upload
-  dpm($data);
   $journal = $data->journal;
   $state = db_query("SELECT * FROM {open_journal_state} WHERE sid = :sid", array(':sid' => $journal->sid))->fetchObject();
   if (($data->files_upload || $data->fid) && $state->upload_auto_approve) {
@@ -1972,6 +1971,7 @@ function open_journal_people($journal) {
 
   return theme('open_journal_detail', array(
     'jid' => $journal->jid,
+    'journal' => $journal,
     'content' => theme('open_journal_people', array(
       'jid' => $journal->jid,
       'people_creator' => $people_creator,
@@ -1986,6 +1986,7 @@ function open_journal_information($data=NULL) {
     'content' => drupal_render(drupal_get_form('open_journal_information_form',$data)),
     'sidebar' => '',
     'jid' => open_journal_get_field($data, 'jid'),
+    'journal' => $data,
   ));
 }
 
@@ -2326,7 +2327,8 @@ function open_journal_overview($journal) {
       'uid' => $journal->uid,
       )
     ),
-    'jid' => $journal->jid
+    'jid' => $journal->jid,
+    'journal' => $journal,
   ));
 }
 
@@ -2458,7 +2460,8 @@ function open_journal_discussion_list($journal) {
       'file' => $file,
     )),
     'sidebar' => $sidebar,
-    'jid' => $journal->jid
+    'jid' => $journal->jid,
+    'journal' => $journal,
   ));
 
 
@@ -2684,7 +2687,8 @@ function open_journal_discussion_add($journal) {
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
     'content' => drupal_render(drupal_get_form('open_journal_discussion_form', $journal, NULL, $template_list, $user_role_list)),
     'sidebar' => $sidebar,
-    'jid' => $journal->jid
+    'jid' => $journal->jid,
+    'journal' => $journal,
 
   ));
 }
@@ -2756,7 +2760,8 @@ function open_journal_discussion_edit($journal, $discussion) {
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
     'content' => drupal_render(drupal_get_form('open_journal_discussion_form', $journal, $discussion, $template_list, $user_role_list)),
     'sidebar' => $sidebar,
-    'jid' => $journal->jid
+    'jid' => $journal->jid,
+    'journal' => $journal,
 
   ));
 }
@@ -2781,7 +2786,8 @@ function open_journal_discussion_delete($journal, $discussion) {
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
     'content' => drupal_render(drupal_get_form('open_journal_discussion_delete_form', $journal, $discussion)),
     'sidebar' => $sidebar,
-    'jid' => $journal->jid
+    'jid' => $journal->jid,
+    'journal' => $journal,
 
   ));
 }
@@ -2805,7 +2811,8 @@ function open_journal_comment_edit($journal, $discussion, $comment) {
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
     'content' => drupal_render(drupal_get_form('open_journal_comment_form', $journal, $discussion, $comment)),
     'sidebar' => $sidebar,
-    'jid' => $journal->jid
+    'jid' => $journal->jid,
+    'journal' => $journal,
 
   ));
 }
@@ -2828,7 +2835,8 @@ function open_journal_comment_delete($journal, $discussion, $comment) {
     'menu_active_url' => OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid.'/discussion',
     'content' => drupal_render(drupal_get_form('open_journal_comment_delete_form', $journal, $discussion, $comment)),
     'sidebar' => $sidebar,
-    'jid' => $journal->jid
+    'jid' => $journal->jid,
+    'journal' => $journal,
 
   ));
 }
@@ -2888,6 +2896,7 @@ function open_journal_discussion_detail($journal, $discussion) {
     )),
     'sidebar' => $sidebar,
     'jid' => $journal->jid,
+    'journal' => $journal,
   ));
 }
 
@@ -2992,7 +3001,8 @@ function open_journal_file($journal) {
         'alt' => 'has file attach',
       )),
     )),
-    'jid' => $journal->jid
+    'jid' => $journal->jid,
+    'journal' => $journal,
   ));
 }
 

@@ -5,6 +5,8 @@ function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL,
   drupal_add_js(drupal_get_path('module', 'open_journal') . '/js/open_journal_status_sidebar.js');
   drupal_add_js(drupal_get_path('module', 'open_journal') . '/js/jquery.qtip.min.js');
 
+  $form_disabled = ($journal && !user_access('access contributor process') && ($journal->reject || $journal->withdraw || $journal->status == open_journal_get_last_state()));
+
   $form['#attached']['js'][] = array(
     'data' => array(
       'open_journal' => array(
@@ -92,6 +94,7 @@ function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL,
       ),
       '#upload_location' => "public://journal/",
       '#default_value' => open_journal_get_field($data, 'fid'),
+      '#access' => !$form_disabled
     );
   }
   else {
@@ -105,27 +108,30 @@ function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL,
       ),
       '#upload_location' => "public://journal/",
       '#default_value' => open_journal_get_field($data, 'fid'),
+      '#access' => !$form_disabled
     );
   }
 
   // Multiple upload file
   // Todo rit1 remove hardcode
   if ($journal->sid == 6 || open_journal_parent_sid($journal->sid) == 6) {
-
-    $form['files_upload'] = array( 
-      '#type' => 'plupload', 
-      '#title' => t('Upload other files.'), 
-      '#size' => 50, 
-      '#upload_location' => "public://journal/",
-      '#autoupload' => TRUE,
-      '#plupload_settings' => array(
-        'runtimes' => 'html5,flash', // Also consider the order of technologies.
-        'chunk_size' => '10mb',
-        'unique_names' => TRUE,
-        'flash_swf_url' => file_create_url(_plupload_library_path() . '/js/plupload.flash.swf'),
-        'multiple_queues' => TRUE,
-      ),
-    );
+    if (!$form_disabled) {
+      $form['files_upload'] = array( 
+        '#type' => 'plupload', 
+        '#title' => t('Upload other files.'), 
+        '#size' => 50, 
+        '#upload_location' => "public://journal/",
+        '#autoupload' => TRUE,
+        '#plupload_settings' => array(
+          'runtimes' => 'html5,flash', // Also consider the order of technologies.
+          'chunk_size' => '10mb',
+          'unique_names' => TRUE,
+          'flash_swf_url' => file_create_url(_plupload_library_path() . '/js/plupload.flash.swf'),
+          'multiple_queues' => TRUE,
+        ),
+        '#access' => !$form_disabled
+      );
+    }
 
   }
 

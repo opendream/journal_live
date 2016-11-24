@@ -51,17 +51,18 @@ jQuery(document).ready(function () {
 
   scope.append(container);
 
-  var add_button = $('<button class="add-author-group add-multi-textfield">Add co-author</button>');
-  add_button.click(function (e) {
-    e.preventDefault();
-    $('.author-item:hidden:first').show();
-    if (!$('.author-item:hidden').length) {
-      $(this).hide();
-      container.append('<div class="description">Maximum to added are ' + $('.author-item').length + ' items.</div>');
-    }
-  });
-  scope.append(add_button);
-
+  if (!$('.author-item input').attr('disabled')) {
+    var add_button = $('<button class="add-author-group add-multi-textfield">Add co-author</button>');
+    add_button.click(function (e) {
+      e.preventDefault();
+      $('.author-item:hidden:first').show();
+      if (!$('.author-item:hidden').length) {
+        $(this).hide();
+        container.append('<div class="description">Maximum to added are ' + $('.author-item').length + ' items.</div>');
+      }
+    });
+    scope.append(add_button);
+  }
   $('.author-item').eq(0).find('label').eq(0).show().find('.label-text').html('Authors');
   
 });

@@ -12,6 +12,8 @@ function open_journal_comment_form($form, $form_state, $journal, $discussion, $d
   $form['#attached']['js']['open_journal_editor'] = drupal_get_path('module', 'open_journal').'/js/open_journal_editor.js';
   
   $form['#attached']['js']['open_journal_compact'] = drupal_get_path('module', 'open_journal').'/js/open_journal_compact.js';
+
+  $form_disabled = ($journal && !user_access('access contributor process') && ($journal->reject || $journal->withdraw || $journal->status == open_journal_get_last_state()));
   
   $submit_text = t('Add this comment');
   if (open_journal_get_field($data, 'cid')) {
@@ -34,7 +36,6 @@ function open_journal_comment_form($form, $form_state, $journal, $discussion, $d
     //'#prefix' => '<div id="wmd-toolbar-editor" class="wmd-toolbar">'.'</div>',
     
   );
-  
   if($journal->sid < open_journal_get_last_state()) {
     $form['fid'] = array(
     '#type' => 'managed_file',
@@ -46,20 +47,22 @@ function open_journal_comment_form($form, $form_state, $journal, $discussion, $d
     ),
     '#upload_location' => "public://journal/",
     '#default_value' => open_journal_get_field($data, 'fid'),
+    '#access' => !$form_disabled
     );
   }
   else {
     $form['fid'] = array(
-    '#type' => 'managed_file',
-    '#title' => t('File'),
-    '#description' => t('Allowed file types: %s',array('%s' => OPEN_JOURNAL_ALLOWED_FINAL_STATUS_FILE_TYPE)),
-    '#upload_validators' => array(
-      'file_validate_extensions' => array(OPEN_JOURNAL_ALLOWED_FINAL_STATUS_FILE_TYPE),
-      //'file_validate_size' => array(2 * 1048576),
-    ),
-    '#upload_location' => "public://journal/",
-    '#default_value' => open_journal_get_field($data, 'fid'),
-  );
+      '#type' => 'managed_file',
+      '#title' => t('File'),
+      '#description' => t('Allowed file types: %s',array('%s' => OPEN_JOURNAL_ALLOWED_FINAL_STATUS_FILE_TYPE)),
+      '#upload_validators' => array(
+        'file_validate_extensions' => array(OPEN_JOURNAL_ALLOWED_FINAL_STATUS_FILE_TYPE),
+        //'file_validate_size' => array(2 * 1048576),
+      ),
+      '#upload_location' => "public://journal/",
+      '#default_value' => open_journal_get_field($data, 'fid'),
+      '#access' => !$form_disabled
+    );
   }
 
   

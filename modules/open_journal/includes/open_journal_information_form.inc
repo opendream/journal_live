@@ -13,6 +13,8 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
   
   $fs = open_journal_get_field_settings();
 
+  $form_disabled = $data && !user_access('access contributor process') && ($data->reject || $data->withdraw || $data->status == open_journal_get_last_state());
+
   // Main form
   $form['main'] = array('#type' => 'container');
 
@@ -29,6 +31,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
       '#maxlength' => 1028,
       '#default_value' => open_journal_get_field($data, 'title_sub'),
       '#access' => $fs['title_sub'],
+      '#disabled' => $form_disabled,
     );
     $title_label .= ' ('.OPEN_JOURNAL_LANG_FULL_TEXT.')';
   }
@@ -40,6 +43,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
     '#maxlength' => 1028,
     '#default_value' => open_journal_get_field($data, 'title_en'),
     '#access' => $fs['title_en'],
+    '#disabled' => $form_disabled,
   );
 
   
@@ -54,6 +58,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
       '#default_value' => open_journal_get_field($data, 'description_sub'),
       '#rows' => 10,
       '#access' => $fs['dc_description'],
+      '#disabled' => $form_disabled,
     );
     
     $abstract_label .= ' ('.OPEN_JOURNAL_LANG_FULL_TEXT.')';
@@ -68,6 +73,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
     '#default_value' => open_journal_get_field($data, 'description_en'),
     '#rows' => 10,
     '#access' => $fs['dc_description'],
+    '#disabled' => $form_disabled,
   );
 
   if(isset($data->jid)) {
@@ -92,25 +98,29 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
       ),
       '#upload_location' => "public://journal/",
       '#required' => TRUE,
+      '#disabled' => $form_disabled,
     );
 
     $form['main']['guideline'] = array(
       '#title' => t('I have read the submission guidelines.').' '.l(t('Download guideline'), ''),
       '#type' => 'checkbox',
       '#required' => TRUE,
+      '#disabled' => $form_disabled,
     );
     
     $submit_text = t('Submit');
   }
 
-  $form['main']['actions'] = array('#type' => 'actions');
-  $form['main']['actions']['submit'] = array(
-    '#type' => 'submit',
-    '#value' => $submit_text,
-  );
-  $form['main']['actions']['cancel'] = array(
-    '#markup' => l(t('Cancel'), $_SERVER['HTTP_REFERER']),
-  );
+  if (!$form_disabled) {
+    $form['main']['actions'] = array('#type' => 'actions');
+    $form['main']['actions']['submit'] = array(
+      '#type' => 'submit',
+      '#value' => $submit_text,
+    );
+    $form['main']['actions']['cancel'] = array(
+      '#markup' => l(t('Cancel'), $_SERVER['HTTP_REFERER']),
+    );
+  }
 
 
   // Sidebar form
@@ -118,8 +128,8 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
   $form['data'] = array('#type' => 'container');
   $form['data']['data_title'] = array('#markup' => '<h3>'.t('Data').'</h3>');
 
-  $form['data']['group'] = array('#type' => 'fieldset');
-  $form['data']['group']['author'] = array('#type' => 'fieldset', '#access' => FALSE);
+  $form['data']['group'] = array('#type' => 'fieldset', '#disabled' => $form_disabled);
+  $form['data']['group']['author'] = array('#type' => 'fieldset', '#access' => FALSE, '#disabled' => $form_disabled);
   if ($user->uid == 1 || !user_access('can not view authors data')) {
     $form['data']['group']['author']['#access'] = TRUE;
   }
@@ -130,22 +140,26 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
   
   $author_label = 'Author';
   if (OPEN_JOURNAL_SUB_LANG_ENABLE) {
-    $form['data']['group']['author']['creator_sub'] = open_journal_multi_textfield(OPEN_JOURNAL_SUB_LANG_AUTHOR_LABEL ,open_journal_get_field($data, 'creator_sub'), 'dc_creator', 'Add co-author', TRUE, 1, NULL, TRUE);
+    $form['data']['group']['author']['creator_sub'] = open_journal_multi_textfield(OPEN_JOURNAL_SUB_LANG_AUTHOR_LABEL ,open_journal_get_field($data, 'creator_sub'), 'dc_creator', 'Add co-author', !$form_disabled, 1, NULL, TRUE);
     $author_label .= ' ('.OPEN_JOURNAL_LANG_FULL_TEXT.')';
+    $form['data']['group']['author']['creator_sub']['#disabled'] = $form_disabled;
+
   }
     
-  $form['data']['group']['author']['creator_en'] = open_journal_multi_textfield($author_label ,open_journal_get_field($data, 'creator_en'), 'dc_creator', 'Add co-author', TRUE, 1, NULL, TRUE);
+  $form['data']['group']['author']['creator_en'] = open_journal_multi_textfield($author_label ,open_journal_get_field($data, 'creator_en'), 'dc_creator', 'Add co-author', !$form_disabled, 1, NULL, TRUE);
+  $form['data']['group']['author']['creator_en']['#disabled'] = $form_disabled;
 
-  $form['data']['group']['author']['creator_email'] = open_journal_multi_textfield('Author (email)' ,open_journal_get_field($data, 'creator_email'), 'dc_creator.email', 'Add co-author', TRUE, 1, NULL, TRUE);
-  
+  $form['data']['group']['author']['creator_email'] = open_journal_multi_textfield('Author (email)' ,open_journal_get_field($data, 'creator_email'), 'dc_creator.email', 'Add co-author', !$form_disabled, 1, NULL, TRUE);
+  $form['data']['group']['author']['creator_email']['#disabled'] = $form_disabled;
   
   $keywords_label = 'Keywords';
   if (OPEN_JOURNAL_SUB_LANG_ENABLE) {
-    $form['data']['group']['subject_sub'] = open_journal_multi_textfield(OPEN_JOURNAL_SUB_LANG_KEYWORDS_LABEL.'',open_journal_get_field($data, 'subject_sub'), 'dc_subject', 'Add another', TRUE, 2, NULL, TRUE);
+    $form['data']['group']['subject_sub'] = open_journal_multi_textfield(OPEN_JOURNAL_SUB_LANG_KEYWORDS_LABEL.'',open_journal_get_field($data, 'subject_sub'), 'dc_subject', 'Add another', !$form_disabled, 2, NULL, TRUE);
     $keywords_label .= ' ('.OPEN_JOURNAL_LANG_FULL_TEXT.')';
+    $form['data']['group']['subject_sub']['#disabled'] = $form_disabled;
   }
-  $form['data']['group']['subject_en'] = open_journal_multi_textfield($keywords_label,open_journal_get_field($data, 'subject_en'), 'dc_subject', 'Add another', TRUE, 2, NULL, TRUE);
-  
+  $form['data']['group']['subject_en'] = open_journal_multi_textfield($keywords_label,open_journal_get_field($data, 'subject_en'), 'dc_subject', 'Add another', !$form_disabled, 2, NULL, TRUE);
+  $form['data']['group']['subject_en']['#disabled'] = $form_disabled;
  
 
   
@@ -156,10 +170,13 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
     '#default_value' => open_journal_get_field($data, 'address'),
     '#rows' => 3,
     '#access' => $fs['address'],
+    '#disabled' => $form_disabled,
   );
 
   $form['data']['group']['dc_publisher'] = open_journal_multi_textfield('Publisher' ,open_journal_get_field($data, 'dc_publisher'), 'dc_publisher', '', FALSE, 1);
+  $form['data']['group']['dc_publisher']['#disabled'] = $form_disabled;
   $form['data']['group']['dc_contributor'] = open_journal_multi_textfield('Contributors', open_journal_get_field($data, 'dc_contributor'), 'dc_contributor', '', FALSE, 1);
+  $form['data']['group']['dc_contributor']['#disabled'] = $form_disabled;
 
   // Setting date to display form
   if(isset($data->jid)) {
@@ -180,6 +197,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
     '#type' => 'fieldset',
     '#tree' => TRUE,
     '#access' => $fs['dc_date'],
+    '#disabled' => $form_disabled,
   );
   $form['data']['group']['date']['year'] = array(
     '#title' => t('Year'),
@@ -187,6 +205,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
     '#options' => open_journal_get_date_option(date('Y')-10,date('Y')),
     '#default_value' => $year,
     '#suffix' => '<span>/</span>',
+    '#disabled' => $form_disabled,
   );
   $form['data']['group']['date']['month'] = array(
     '#title' => t('Month'),
@@ -194,13 +213,14 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
     '#options' => open_journal_get_date_option(1,12),
     '#default_value' => $month,
     '#suffix' => '<span>/</span>',
-
+    '#disabled' => $form_disabled,
   );
   $form['data']['group']['date']['day'] = array(
     '#title' => t('Day'),
     '#type' => 'select',
     '#options' => open_journal_get_date_option(1,30),
     '#default_value' => $day,
+    '#disabled' => $form_disabled,
   );
 
   if (OPEN_JOURNAL_SUB_LANG_ENABLE) {
@@ -213,6 +233,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
       ),
       '#default_value' => open_journal_get_field($data, 'dc_language'),
       '#access' => $fs['dc_language'],
+      '#disabled' => $form_disabled,
     );
   }
   else {
@@ -228,6 +249,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
     '#type' => 'textfield',
     '#default_value' => open_journal_get_field($data, 'dc_coverage'),
     '#access' => $fs['dc_coverage'],
+    '#disabled' => $form_disabled,
   );
   
   $form['data']['group']['dc_type'] = array(
@@ -235,6 +257,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
     '#type' => 'textfield',
     '#default_value' => open_journal_get_field($data, 'dc_type', 'Article'),
     '#access' => user_access('access contributor process') && $fs['dc_identifier'],
+    '#disabled' => $form_disabled,
   );
 
   $form['data']['group']['dc_format'] = array(
@@ -242,6 +265,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
     '#type' => 'textfield',
     '#default_value' => open_journal_get_field($data, 'dc_format', 'TEXT/HTML'),
     '#access' => user_access('access contributor process') && $fs['dc_identifier'],
+    '#disabled' => $form_disabled,
   );
 
   $form['data']['group']['dc_right'] = array(
@@ -249,6 +273,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
     '#type' => 'textfield',
     '#default_value' => open_journal_get_field($data, 'dc_right'),
     '#access' => user_access('access contributor process') && $fs['dc_identifier'],
+    '#disabled' => $form_disabled,
   );
   
   $form['data']['group']['dc_identifier'] = array(
@@ -256,6 +281,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
     '#type' => 'textfield',
     '#access' => user_access('access contributor process') && $fs['dc_identifier'],
     '#default_value' => open_journal_get_field($data, 'dc_identifier'),
+    '#disabled' => $form_disabled,
   );
 
   // Hidden field
