@@ -119,7 +119,10 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
   $form['data']['data_title'] = array('#markup' => '<h3>'.t('Data').'</h3>');
 
   $form['data']['group'] = array('#type' => 'fieldset');
-  $form['data']['group']['author'] = array('#type' => 'fieldset');
+  $form['data']['group']['author'] = array('#type' => 'fieldset', '#access' => FALSE);
+  if ($user->uid == 1 || !user_access('can not view authors data')) {
+    $form['data']['group']['author']['#access'] = TRUE;
+  }
 
 //open_journal_multi_textfield($title='' , $values = FALSE, $name, $add_more_text='Add another', $add_more_text_show=TRUE ,$initail_show_field=2)
 //($title='' , $values = FALSE, $name, $add_more_text='Add another', $add_more_text_show=TRUE ,$initail_show_field=2, $data=NULL, $required=FALSE)
