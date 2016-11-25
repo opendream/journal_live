@@ -3839,7 +3839,7 @@ function open_jounal_daily_mail($data) {
     'name' => 'System Mail'
   );
 
-  $journal_list = db_query("SELECT * FROM (SELECT j.jid, MAX(d.changed) last_update FROM open_journal_journal j, open_journal_discussion d WHERE d.jid = j.jid AND j.reject = 0 AND j.withdraw = 0 GROUP BY j.jid) t WHERE CEIL((unix_timestamp(CURRENT_TIMESTAMP) - t.last_update)/(60*60*24)) = ".OPEN_JOURNAL_REMINDER_DAYS)->fetchAll();
+  $journal_list = db_query("SELECT * FROM (SELECT j.jid, MAX(d.changed) last_update FROM open_journal_journal j, open_journal_discussion d WHERE d.jid = j.jid AND j.reject = 0 AND j.withdraw = 0 AND j.sid <> :sid GROUP BY j.jid) t WHERE CEIL((unix_timestamp(CURRENT_TIMESTAMP) - t.last_update)/(60*60*24)) = ".OPEN_JOURNAL_REMINDER_DAYS, array(':sid' => open_journal_get_last_state()))->fetchAll();
 
 
 
