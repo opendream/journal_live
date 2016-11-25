@@ -11,8 +11,8 @@
 	<?php
 	if($value_status['current']):print " class='status-active current' ";
 	elseif($key_status == (count($status_list)-1) && $value_status['active']):print " class='status-active finish' ";
-	elseif($value_status['active']): print " class='status-active' ";
-	else:print " class='status-disabled' ";endif;?>
+	elseif($value_status['active']): print " class='status-active".($value_status['parent_sid']? " status-children": "")."' ";
+	else:print " class='status-disabled".($value_status['parent_sid']? " status-children": "")."' ";endif;?>
 	<?php if ($value_status['is_substate']):print " style='display: none;' "; endif;?>>
 
 		<?php 

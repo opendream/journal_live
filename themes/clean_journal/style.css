@@ -2782,6 +2782,11 @@ h3.people-section-title {
 	color: #626262;
 	margin-bottom: 10px;
 }
+
+.sidebar-status-block .status-children {
+  display: none;
+}
+
 .sidebar-status-block .status-active.current .can-approve {
 	line-height: 28px;
 }
