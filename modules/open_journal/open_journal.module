@@ -1397,6 +1397,9 @@ function open_journal_discussion_file_save($did, $fid) {
 
 function open_journal_people_active_role_list($data, $exclude_roles_me=TRUE) {
 
+    dpm($data);
+    $discussion = $data->discussion ? $data->discussion: $data;
+
     global $user;
     $role_list = array();
     $roles = $data->roles;
@@ -1418,8 +1421,8 @@ function open_journal_people_active_role_list($data, $exclude_roles_me=TRUE) {
 
     if (!empty($role_list)) {
 
-      $sql = 'SELECT DISTINCT(ur.uid) FROM {users_roles} ur INNER JOIN {open_journal_journal_people} jp ON jp.uid = ur.uid WHERE ur.rid IN (:rids) AND jp.jid = :jid';
-      $result = db_query($sql, array(':rids' => $role_list, ':jid' => $jid));
+      $sql = 'SELECT DISTINCT(ur.uid) FROM {users_roles} ur INNER JOIN {open_journal_journal_people} jp ON jp.uid = ur.uid AND jp.created <= :created WHERE ur.rid IN (:rids) AND jp.jid = :jid';
+      $result = db_query($sql, array(':rids' => $role_list, ':jid' => $jid, ':created' => $discussion->created));
       $uids = $result->fetchCol();
 
     }
