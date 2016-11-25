@@ -2344,28 +2344,28 @@ function open_journal_discussion_list_limit($journal, $limit=0) {
   }
   // Query discussion list
   $sql = " SELECT
-    max(d.did) as  did,
-    max(c.cid) as cid,
-    if(c.cid IS NOT NULL, c.uid, d.uid) as user,
-    d.auto as auto
-
+      MAX(d.did) did,
+      MAX(c.cid) cid,
+      IF(c.cid IS NOT NULL, c.uid, d.uid) user,
+      d.auto auto
     FROM
-      open_journal_discussion d
+      {open_journal_discussion} d
     LEFT JOIN
-      open_journal_comment c
+      {open_journal_comment} c
     ON
       d.did = c.did
     LEFT JOIN
-      users u
+      {users} u
     ON
-      c.uid = u.uid OR
-      d.uid = u.uid
-
+      c.uid = u.uid OR d.uid = u.uid
     LEFT JOIN
-      open_journal_discussion_role dr
+      {open_journal_discussion_role} dr
     ON
       dr.did = d.did
-
+    INNER JOIN
+      {open_journal_journal_people} jp 
+    ON
+      jp.jid = d.jid AND jp.uid = :uid AND d.created >= jp.created 
     WHERE
       d.jid = :jid";
 
@@ -2386,7 +2386,7 @@ function open_journal_discussion_list_limit($journal, $limit=0) {
     $sql .= " LIMIT 0, ".$limit;
   }
 
-  $discussion_list = db_query($sql, array(':jid' => $journal->jid, ':user_role_list' => $user_role_list))->fetchAll();
+  $discussion_list = db_query($sql, array(':jid' => $journal->jid, ':user_role_list' => $user_role_list, ':uid' => $user->uid))->fetchAll();
 
   foreach ($discussion_list as &$discussion_item) {
 
