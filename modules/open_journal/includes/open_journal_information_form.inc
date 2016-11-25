@@ -53,7 +53,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
     $form['main']['description_sub'] = array(
       '#title' => open_journal_label_help(OPEN_JOURNAL_SUB_LANG_ABSTRACT_LABEL, OPEN_JOUNAL_HELP_DESCRIPTION_SUB, TRUE),
       '#type' => 'textarea',
-      '#description' => t('No more than !d words.', array('!d' => OPEN_JOURNAL_ABSTRACT_MAX_LENGTH)),
+      '#description' => OPEN_JOURNAL_ABSTRACT_MAX_LENGTH? t('No more than !d words.', array('!d' => OPEN_JOURNAL_ABSTRACT_MAX_LENGTH)): '',
       '#required' => OPEN_JOURNAL_SUB_LANG_ABSTRACT_REQUIRED,
       '#default_value' => open_journal_get_field($data, 'description_sub'),
       '#rows' => 10,
@@ -68,7 +68,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
   $form['main']['description_en'] = array(
     '#title' => open_journal_label_help($abstract_label, 'Summary of the article', TRUE),
     '#type' => 'textarea',
-    '#description' => t('No more than !d words.', array('!d' => OPEN_JOURNAL_ABSTRACT_MAX_LENGTH)),
+    '#description' => OPEN_JOURNAL_ABSTRACT_MAX_LENGTH? t('No more than !d words.', array('!d' => OPEN_JOURNAL_ABSTRACT_MAX_LENGTH)): '',
     '#required' => OPEN_JOURNAL_ABSTRACT_REQUIRED,
     '#default_value' => open_journal_get_field($data, 'description_en'),
     '#rows' => 10,
@@ -391,13 +391,13 @@ function open_journal_information_form_validate($form, &$form_state) {
   
   $values = $form_state['values'];
   
-  if (mb_strlen($values['description_en']) > OPEN_JOURNAL_ABSTRACT_MAX_LENGTH) {
+  if (OPEN_JOURNAL_ABSTRACT_MAX_LENGTH && mb_strlen($values['description_en']) > OPEN_JOURNAL_ABSTRACT_MAX_LENGTH) {
     form_set_error('description_en', t('Abstract field must be later than %d character.', array(
       '%d' => OPEN_JOURNAL_ABSTRACT_MAX_LENGTH
     )));
   }
 
-  if (OPEN_JOURNAL_SUB_LANG_ENABLE && mb_strlen($values['description_sub']) > OPEN_JOURNAL_ABSTRACT_MAX_LENGTH) {
+  if (OPEN_JOURNAL_ABSTRACT_MAX_LENGTH && OPEN_JOURNAL_SUB_LANG_ENABLE && mb_strlen($values['description_sub']) > OPEN_JOURNAL_ABSTRACT_MAX_LENGTH) {
     form_set_error('description_sub', t('!s field must be later than %d character.', array(
       '!s' => OPEN_JOURNAL_SUB_LANG_ABSTRACT_LABEL,
       '%d' => OPEN_JOURNAL_ABSTRACT_MAX_LENGTH
