@@ -11,7 +11,7 @@
 		<?php print l(t('Start new discussion'), OPEN_JOURNAL_PREFIX_PATH.'/'.$jid.'/discussion/add'); ?>
 	</div>
 	<?php foreach($discussion_list as $discussion_item):?>
-	    <div class="journal-discussion-list-item">
+	    <div class="journal-discussion-list-item<?php if ($discussion_item->auto): ?> auto<?php else: ?> human<?php endif; ?>">
 	      
 	      <?php if ($discussion_item->contributor_only): ?>
         <span class="contributor-only-icon">contributor only</span>

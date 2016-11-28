@@ -422,6 +422,35 @@ function open_journal_menu() {
     'file' => 'includes/open_journal_ojs_export.inc',
   );
 
+  // Setting
+  $items['admin/config/open_journal'] = array(
+    'title' => t('Open journal settings'),
+    'position' => 'left',
+    'weight' => -1000,
+    'page callback' => 'system_admin_menu_block_page',
+    'access arguments' => array('access administration pages'),
+    'file' => 'includes/open_journal.admin.inc',
+  );
+
+  $items['admin/config/open_journal/template'] = array(
+    'title' => t('Templates'),
+    'description' => 'Manage templates of open journal',
+    'page callback' => 'open_journal_template_list',
+    'type' => MENU_NORMAL_ITEM,
+    'access arguments' => array('access administration pages'),
+    'file' => 'includes/open_journal.admin.inc',
+  );
+
+  $items['admin/config/open_journal/template/%open_journal_template/edit'] = array(
+    'title' => t('Edit'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('open_journal_template_form', 4),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'includes/open_journal.admin.inc',
+
+  );
+
   return $items;
 }
 
@@ -1076,6 +1105,43 @@ function open_journal_journal_save($data, $change_status=FALSE, $commit=TRUE, $s
 
 }
 
+function open_journal_template_load($tpid) {
+
+  $data = db_select('open_journal_template', 't');
+  $data->fields('t');
+  $data->condition('tpid', $tpid, '=');
+
+  $data = $data->execute();
+  $data = $data->fetchObject();
+
+  $roles = db_query("SELECT r.rid, r.name FROM {open_journal_template_role} tr LEFT JOIN {role} r ON tr.rid = r.rid WHERE tr.tpid = :tpid", array(':tpid' => $tpid))->fetchAll();
+
+  //$data->roles = array();
+  foreach ($roles as $role) {
+    $data->roles[$role->rid] = $role->name;
+  }
+  
+
+
+  return $data;
+}
+
+function open_journal_template_save($data) {
+  $pk = (isset($data->tpid) && $data->tpid)? 'tpid': array();
+  drupal_write_record('open_journal_template', $data, $pk);
+
+  if (isset($data->tpid) && $data->tpid) {
+    db_query("DELETE FROM {open_journal_template_role} WHERE tpid = :tpid", array('tpid' => $data->tpid));
+  }
+
+  foreach ($data->roles as $rid => $role) {
+    db_insert('open_journal_template_role')
+      ->fields(array('tpid' => $data->tpid, 'rid' => $rid))
+      ->execute();
+  }
+
+}
+
 function open_journal_auto_active_people($data) {
     global $user;
     // Get state code
@@ -1397,7 +1463,6 @@ function open_journal_discussion_file_save($did, $fid) {
 
 function open_journal_people_active_role_list($data, $exclude_roles_me=TRUE) {
 
-    dpm($data);
     $discussion = $data->discussion ? $data->discussion: $data;
 
     global $user;
@@ -2142,7 +2207,7 @@ function open_journal_overview($journal) {
     $i++;
   }
   // calculate total more link to discussion journal
-  $more_discussion = count(open_journal_discussion_load_all($journal->jid))-$limit_overview_page;
+  $more_discussion = _open_journal_discussion_list($journal->jid, NULL, TRUE)-$limit_overview_page;
   // get user and file data
   $user_info = $file_last[0]->user_info;
   $file = file_load($file_last[0]->fid);
@@ -2335,12 +2400,7 @@ function open_journal_overview($journal) {
   ));
 }
 
-function open_journal_discussion_list_limit($journal, $limit=0) {
-
-  module_load_include('php', 'open_journal', 'includes/markdown');
-
-  drupal_add_js(drupal_get_path('module', 'open_journal') . '/js/open_journal_status_sidebar.js');
-  drupal_add_js(drupal_get_path('module', 'open_journal') . '/js/jquery.qtip.min.js');
+function _open_journal_discussion_list($journal, $limit=0, $select_count=FALSE) {
 
   if (is_numeric($journal)) {
     $journal = (object) array('jid' => $journal);
@@ -2389,7 +2449,33 @@ function open_journal_discussion_list_limit($journal, $limit=0) {
     $sql .= " LIMIT 0, ".$limit;
   }
 
-  $discussion_list = db_query($sql, array(':jid' => $journal->jid, ':user_role_list' => $user_role_list, ':uid' => $user->uid))->fetchAll();
+  if ($select_count) {
+    $sql = 'SELECT COUNT(t.did) FROM ('.$sql.') t';
+  }
+
+  $discussion_list = db_query($sql, array(':jid' => $journal->jid, ':user_role_list' => $user_role_list, ':uid' => $user->uid));
+
+  if ($select_count) {
+    return $discussion_list->fetchField();
+  }
+
+  return $discussion_list->fetchAll();
+
+}
+
+function open_journal_discussion_list_limit($journal, $limit=0) {
+
+  module_load_include('php', 'open_journal', 'includes/markdown');
+
+  drupal_add_js(drupal_get_path('module', 'open_journal') . '/js/open_journal_status_sidebar.js');
+  drupal_add_js(drupal_get_path('module', 'open_journal') . '/js/jquery.qtip.min.js');
+
+  if (is_numeric($journal)) {
+    $journal = (object) array('jid' => $journal);
+  }
+
+  $discussion_list = _open_journal_discussion_list($journal, $limit);
+
 
   foreach ($discussion_list as &$discussion_item) {
 
@@ -3712,9 +3798,9 @@ function open_journal_get_display_user_info($account, $variables=array()) {
 
   // System info
   if ($variables['auto']) {
-    $info['display_name'] = 'System';
+    $info['display_name'] = '<span class="user-name-wrapper">'.'System'.'</span>';
     $info['display_name_text'] = 'System';
-    $info['display_picture'] = strip_tags($info['display_picture'], '<img>');
+    $info['display_picture'] = '<span class="user-picture-wrapper">'.strip_tags($info['display_picture'], '<img>').'</span>';
   }
   return $info;
 

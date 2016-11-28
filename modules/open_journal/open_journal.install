@@ -2373,3 +2373,19 @@ function open_journal_update_7041(&$sandbox) {
   db_query("INSERT INTO {role_permission} VALUES(4, 'can not view authors data', 'open_journal')");
 
 }
+
+function open_journal_update_7042(&$sandbox) {
+  db_update('open_journal_template')
+  ->fields(array('name' => 'reject'))
+  ->condition('tpid', 47)
+  ->execute();
+
+  db_update('open_journal_template')
+  ->fields(array('name' => 'auto', 'template_title' => 'แจ้งว่ามีท่านเป็นผู้เขียนร่วมในวารสารฯ'))
+  ->condition('tpid', 2)
+  ->execute();
+
+  db_insert('open_journal_template_role')
+      ->fields(array('tpid' => 2, 'rid' => 1))
+      ->execute();
+}

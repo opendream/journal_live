@@ -1749,11 +1749,8 @@ input.form-submit:hover {
     text-transform: none;
     display: inline-block;
     padding: 2px 10px 0px 30px;
-    border-radius: 5px;
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
-    color: #FFF;
-    background: url(images/ic-add-journal-btn.png) #55b0d6 no-repeat 7px 3px;
+    color: #7d7d7d;
+    background: url(images/ic-add-journal-btn-gray.png) transparent no-repeat 7px 3px;
 }
 
 #journal-list .load-more {
@@ -1791,6 +1788,9 @@ input.form-submit:hover {
 	border-radius: 50%;
   -moz-border-radius: 50%;
 	-webkit-border-radius: 50%;
+}
+.journal-discussion-list-item.human .discus-title a {
+  text-decoration: underline !important;
 }
 
 /* Journal Overview
@@ -2467,14 +2467,22 @@ h2.journal-block-title {
 			color: #000;
 			text-decoration: none;
 		}
+
+  .journal-discussion-list-item .user-name-wrapper {
+      max-width: 74px;
+      overflow: hidden;
+      display: inline-block;
+      text-overflow: ellipsis;
+  }
 	.journal-discussion-list-item .discus-title,
 	.journal-discussion-list-item .discus-content {
 		width: 410px;
-		float: left;
-		padding-left: 10px;
+		float: right;
+		padding-right: 10px;
 	}
 	.journal-discussion-list-item .discus-title {
 		margin-bottom: 7px;
+    font-weight: bold;
 	}
 	.journal-discussion-list-item .discus-title a {
 		font-weight: bold;
@@ -2488,6 +2496,10 @@ h2.journal-block-title {
   .latest-file-link {
     position: absolute;
     top: 20px;
+  }
+  .latest-file-link .user-name-wrapper {
+    display: inline;
+    max-width: none;
   }
 /* Discussion Detail
 ----------------------------------------------------------------*/
@@ -3272,4 +3284,9 @@ border: 2px solid red !important;
 /* people add */
 .sub-page-title {
   font-size: 28px;
+}
+
+/* admin settings */
+tr.row-state {
+  font-size: 20px;
 }
