@@ -1052,55 +1052,6 @@ function open_journal_journal_save($data, $change_status=FALSE, $commit=TRUE, $s
     }
   }
 
-
-  // When create first
-  if (!$pk) {
-
-
-    /*
-    $user_auto_active_list = db_query("SELECT uid FROM users_roles ur, role_permission rp WHERE rp.permission = 'auto active when create journal' AND rp.rid = ur.rid")->fetchAllKeyed(0, 0);
-
-    foreach ($user_auto_active_list as $uid) {
-      if ($user->uid != $uid) {
-        open_journal_journal_people_active($data, $uid);
-      }
-    }
-
-    */
-    /*
-    // create first discussion.
-    $discussion = array(
-      'uid' => $data->uid,
-      'jid' => $data->jid,
-      'title' => t('New article has been created.'),
-      'description' => 'Submission is now completed. Information is being reviewed.'."\n\n".'See information with abstract field and journal file on "Information" tab.'."\n".url('journal/'.$data->jid.'/information', array('absolute' => TRUE)),
-      'fid' => $data->file,
-      'permanent' => 1
-    );
-
-    // Get description from template mail setting
-    $sql = "SELECT * FROM {open_journal_template} WHERE sid = :sid AND auto = :auto AND reject = :reject";
-    $result = db_query($sql, array(':sid' => 0, ':auto' => 1, ':reject' => 0));
-    $template_list = $result->fetchAll();
-    open_journal_replace_template_string($template_list, $data);
-    $discussion['description'] = $template_list[0]->body;
-
-    $discussion['roles'] = array();
-    $role_list = open_journal_get_template_role_list($template_list[0]->tpid);
-    foreach ($role_list as $key => $value) {
-      $discussion['roles'][] = $value->rid;
-    }
-    $discussion = (object) $discussion;
-    open_journal_discussion_save($discussion, array('exclude_me' => FALSE));
-    */
-
-    // Todo rit1 send mail to co-author not create discussion
-    // --- code ---
-
-
-  }
-
-
   return $data;
 
 }
@@ -1136,7 +1087,7 @@ function open_journal_template_save($data) {
 
   foreach ($data->roles as $rid => $role) {
     db_insert('open_journal_template_role')
-      ->fields(array('tpid' => $data->tpid, 'rid' => $rid))
+      ->fields(array('tpid' => $data->tpid, 'rid' => $rid, 'type' => $type))
       ->execute();
   }
 
@@ -1241,17 +1192,17 @@ function open_journal_people_mail($data) {
   global $user;
 
   $sender = $user;
-  $reciver = user_load($data->uid);
+  $receiver = user_load($data->uid);
 
-  if ($sender->uid != $reciver->uid) {
+  if ($sender->uid != $receiver->uid) {
 
-    $sender_info = open_journal_get_display_user_info($sender, array('user' => $reciver));
+    $sender_info = open_journal_get_display_user_info($sender, array('user' => $receiver));
     $sender->name = $sender_info['display_name_text'];
 
     $data->sender = $sender;
-    $data->reciver = $reciver;
+    $data->receiver = $receiver;
 
-    drupal_mail('open_journal', 'open_journal_people_invite', $reciver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
+    drupal_mail('open_journal', 'open_journal_people_invite', $receiver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
   }
 
 }
@@ -1514,17 +1465,31 @@ function open_jounal_discussion_mail($data, $params=array()) {
       $user_list = open_journal_people_active_role_list($data);
 
     }
+
+    // Check send mail to anonymous (co-author)
+    if (in_array(1, $data->roles) && $data->journal->creator_email && count($data->journal->creator_email)) {
+
+      foreach ($data->journal->creator_email as $i => $mail) {
+        $user_list[] = (object) array(
+          'name' => $data->journal->creator_sub[$i]? $data->journal->creator_sub[$i]: $data->journal->creator_en[$i],
+          'mail' => $mail
+        );
+      }
+    }
+
   }
   else {
     $user_list = open_journal_people_active_list($data->jid, $data->uid);
   }
 
+  //drupal_set_message(print_r($user_list, 1));
+
   $org_name = $sender->name;
 
-  foreach ($user_list as $reciver) {
+  foreach ($user_list as $receiver) {
 
     $sender->name = $org_name;
-    $sender_info = open_journal_get_display_user_info($sender, array('user' => $reciver));
+    $sender_info = open_journal_get_display_user_info($sender, array('user' => $receiver));
     $sender->name = $sender_info['display_name_text'];
 
     // Replate sender name
@@ -1536,11 +1501,12 @@ function open_jounal_discussion_mail($data, $params=array()) {
     }
 
     $data->sender = $sender;
-    $data->reciver = $reciver;
-    if (!$data->contributor_only || user_access('access contributor process', $reciver)) {
+    $data->receiver = $receiver;
+    $data->description = str_replace('@receiver', $receiver->name, $data->description);
 
+    if (!$data->contributor_only || user_access('access contributor process', $receiver)) {
 
-      drupal_mail('open_journal', 'open_journal_discussion_add', $reciver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
+      drupal_mail('open_journal', 'open_journal_discussion_add', $receiver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
     }
   }
 
@@ -1637,10 +1603,10 @@ function open_jounal_comment_mail($data) {
   $user_list = open_journal_people_active_role_list($data);
 
   $org_name = $sender->name;
-  foreach ($user_list as $reciver) {
+  foreach ($user_list as $receiver) {
 
     $sender->name = $org_name;
-    $sender_info = open_journal_get_display_user_info($sender, array('user' => $reciver));
+    $sender_info = open_journal_get_display_user_info($sender, array('user' => $receiver));
     $sender->name = $sender_info['display_name_text'];
 
     // Replate sender name
@@ -1652,10 +1618,10 @@ function open_jounal_comment_mail($data) {
     }
 
     $data->sender = $sender;
-    $data->reciver = $reciver;
+    $data->receiver = $receiver;
 
-    if (!$data->discussion->contributor_only || user_access('access contributor process', $reciver)) {
-      drupal_mail('open_journal', 'open_journal_comment_add', $reciver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
+    if (!$data->discussion->contributor_only || user_access('access contributor process', $receiver)) {
+      drupal_mail('open_journal', 'open_journal_comment_add', $receiver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
     }
   }
 
@@ -1691,12 +1657,17 @@ function open_journal_mail($key, &$message, $data) {
         $body .= "\n";
       }
       $body .= "\n".'------------------------------------------------------------------------';
-      $body .= "\n".'More details on link below.';
 
-      if (isset($data->auto) && $data->auto == 1) {
+      if (!$data->receiver->uid) {
+        $body .= "\n".'Contact information on link below.';
+        $body .= "\n".url(OPEN_JOURNAL_PREFIX_PATH.'/contact', array('absolute' => TRUE));
+      }
+      elseif (isset($data->auto) && $data->auto == 1) {
+        $body .= "\n".'More details on link below.';
         $body .= "\n".url(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->journal->jid.'/discussion', array('absolute' => TRUE));
       }
       else {
+        $body .= "\n".'More details on link below.';
         $body .= "\n".url(OPEN_JOURNAL_PREFIX_PATH.'/'.$data->journal->jid.'/discussion/'.$data->did, array('absolute' => TRUE));
       }
 
@@ -1783,7 +1754,7 @@ function open_journal_mail($key, &$message, $data) {
 
   global $conf;
   if (isset($conf['debug']) && $conf['debug']) {
-    drupal_set_message('Debug email: '.$data->sender->name.' send '.$key.' to '.$data->reciver->name);
+    drupal_set_message('Debug email: '.$data->sender->name.' send '.$key.' to '.$data->receiver->name);
   }
 
 }
@@ -2784,16 +2755,16 @@ function open_journal_discussion_add($journal) {
 function open_journal_replace_template_string($template_list, $journal, $add_role=FALSE) {
 
   $user_journal = user_load($journal->uid);
-  $replace_code_list = array('@author', '@journal_id', '@journal_title', '@discussion_add_link', '@information_link', '@reciever_roles', '@approve_by_timer_link');
+  $replace_code_list = array('@author', '@journal_id', '@journal_title', '@discussion_add_link', '@information_link', '@receiver_roles', '@approve_by_timer_link');
 
   foreach ($template_list as $key => $value) {
     $role_list = open_journal_get_template_role_list($value->tpid);
-    $reciever_roles = '';
+    $receiver_roles = '';
     $i = 1;
     foreach ($role_list as $role_key => $role_value) {
-      $reciever_roles .= ucfirst($role_value->name);
+      $receiver_roles .= ucfirst($role_value->name);
       if (count($role_list) != $i) {
-        $reciever_roles .= ', ';
+        $receiver_roles .= ', ';
       }
       $i++;
 
@@ -2801,15 +2772,15 @@ function open_journal_replace_template_string($template_list, $journal, $add_rol
 
     //$author_replace = $user_journal->data['firstname']." ".$user_journal->data['lastname'];
     $author_replace = "ผู้เขียน";
+    $receiver_replace = $user_journal->data['firstname']." ".$user_journal->data['lastname'];
     $replace_code_to = array(
       $author_replace,
       $journal->code,
       $journal->title,
       l('กดที่ลิงก์นี้ เมื่อท่านเห็นชอบกับไฟล์ Artwork', 'journal/'.$journal->jid.'/discussion/add', array('absolute' => TRUE)),
       l('Information', 'journal/'.$journal->jid.'/information', array('absolute' => TRUE)),
-      $reciever_roles,
-      url('journal/'.$journal->jid.'/approve-by-timer', array('absolute' => TRUE)),
-
+      $receiver_roles,
+      url('journal/'.$journal->jid.'/approve-by-timer', array('absolute' => TRUE))
     );
 
     $template_list[$key]->body = str_replace($replace_code_list, $replace_code_to, $value->body);
@@ -2822,7 +2793,7 @@ function open_journal_replace_template_string($template_list, $journal, $add_rol
 
 }
 
-function open_journal_replace_template_reciever_string($template_string, $roles) {
+function open_journal_replace_template_receiver_string($template_string, $roles) {
 
 
 }
@@ -3938,16 +3909,16 @@ function open_jounal_daily_mail($data) {
     $user_list = open_journal_people_active_list($journal->jid);
     $data->journal = open_journal_journal_load($journal->jid, TRUE);
 
-    foreach ($user_list as $reciver) {
+    foreach ($user_list as $receiver) {
 
-      if (!user_access('receive daily reminder email', $reciver)) {
+      if (!user_access('receive daily reminder email', $receiver)) {
         continue;
       }
 
       $data->sender = $sender;
-      $data->reciver = $reciver;
+      $data->receiver = $receiver;
 
-      drupal_mail('open_journal', 'open_journal_reminder_daily', $reciver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
+      drupal_mail('open_journal', 'open_journal_reminder_daily', $receiver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
     }
 
   }

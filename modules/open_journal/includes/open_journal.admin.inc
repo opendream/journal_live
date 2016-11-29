@@ -26,7 +26,7 @@ function open_journal_template_list() {
 
   foreach ($templates as $template) {
     $row = array();
-    $row[] = $template->title;
+    $row[] = $template->template_title;
     $row[] = nl2br($template->body);
     $row[] = nl2br($template->roles);
     $row[] = l(t('edit'), 'admin/config/open_journal/template/'. $template->tpid. '/edit', array('query' => drupal_get_destination()));
@@ -37,7 +37,7 @@ function open_journal_template_list() {
 
   }
 
-  return theme('table', array('header' => $header, 'rows' => $rows));
+  return '<style type="text/css" media="all">tr.row-state {background-color: #c3c4bb;}</style>'.theme('table', array('header' => $header, 'rows' => $rows));
 
 }
 
@@ -124,7 +124,7 @@ function open_journal_template_form($form, &$form_state, $template) {
     '#type' => 'fieldset',
     '#title' => t('Receiver'),
   );
-  $roles_options = array(1 => 'co-author');
+  $roles_options = array(1 => 'anonymous user (co-author)');
   $roles_options += user_roles(TRUE);
   unset($roles_options[2]);
   $form['receiver']['roles'] = array(

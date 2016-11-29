@@ -40,7 +40,7 @@ jQuery(document).ready(function () {
     author_email.find('input').attr('placeholder', 'Email');
     author_item.append(author_email);
 
-    if ((has_author_sub_group && author_sub.find('input').val()) || author_en.find('input').val() || author_email.find('input').val()) {
+    if (i == 0 || (has_author_sub_group && author_sub.find('input').val()) || author_en.find('input').val() || author_email.find('input').val()) {
       author_item.addClass('visible');
     }
 

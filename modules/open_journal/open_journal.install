@@ -1495,7 +1495,7 @@ function open_journal_update_7027(&$sandbox) {
 ทางวารสารฯ ขอขอบคุณ และหวังว่า โอกาสหน้าคงได้รับการติดต่อจากท่านอีก
 ฝ่ายจัดการวารสาร';
 
-  $reject_reciever = 'เรียน @reciever_roles
+  $reject_receiver = 'เรียน @receiver_roles
 บทความเรื่อง
 @journal_id  – @journal_title
 ทางวารสารฯ ขอปฏิเสธการตีพิมพ์เนื่องจาก
@@ -1551,7 +1551,7 @@ function open_journal_update_7027(&$sandbox) {
       'tpid' => 19,
       'sid' => 0,
       'title' => '*** Info review 1.2 -> Admin',
-      'body' => 'เรียน @reciever_roles
+      'body' => 'เรียน @receiver_roles
 เนื่องจาก @author ได้ส่งบทความใหม่
 @journal_id - @journal_title 
 มายังวารสารวิจัยระบบสาธารณสุขเพื่อรับการตีพิมพ์
@@ -1601,7 +1601,7 @@ function open_journal_update_7027(&$sandbox) {
       'tpid' => 27,
       'sid' => 1,
       'title' => 'ขอปฏิเสธการตีพิมพ์',
-      'body' => $reject_reciever,
+      'body' => $reject_receiver,
       'template_title' => 'ขอปฏิเสธการตีพิมพ์',
       'name' => 'reject',
     ),
@@ -1609,7 +1609,7 @@ function open_journal_update_7027(&$sandbox) {
       'tpid' => 42,
       'sid' => 2,
       'title' => 'มีบทความเข้าสู่สถานะ Library catalogue',
-      'body' => 'เรียน @reciever_roles
+      'body' => 'เรียน @receiver_roles
 ขณะนี้ บทความ @journal_id - @journal_title ได้เข้าสู่สถานะ Library catalogue แล้ว
 กรุณาตรวจสอบบทความ',
       'template_title' => 'มีบทความเข้าสู่สถานะ Library catalogue',
@@ -1619,7 +1619,7 @@ function open_journal_update_7027(&$sandbox) {
       'tpid' => 43,
       'sid' => 2,
       'title' => 'ขอปฏิเสธการตีพิมพ์',
-      'body' => $reject_reciever,
+      'body' => $reject_receiver,
       'template_title' => 'ขอปฏิเสธการตีพิมพ์',
       'name' => 'reject',
     ),
@@ -1639,7 +1639,7 @@ function open_journal_update_7027(&$sandbox) {
       'tpid' => 44,
       'sid' => 3,
       'title' => 'มีบทความเข้าสู่สถานะ Publication',
-      'body' => 'เรียน @reciever_roles
+      'body' => 'เรียน @receiver_roles
 ขณะนี้ บทความ @journal_id - @journal_title ได้เข้าสู่สถานะ Publication แล้ว
 กรุณาตรวจสอบบทความ',
       'template_title' => 'มีบทความเข้าสู่สถานะ Publication',
@@ -1649,7 +1649,7 @@ function open_journal_update_7027(&$sandbox) {
       'tpid' => 4,
       'sid' => 4,
       'title' => '',
-      'body' => 'เรียน @reciever_roles
+      'body' => 'เรียน @receiver_roles
 เนื่องจาก @author ได้ส่งบทความใหม่
 @journal_id - @journal_title 
 มายังวารสารวิจัยระบบสาธารณสุขเพื่อรับการตีพิมพ์
@@ -1761,7 +1761,7 @@ Link เพื่อไปคลิกขยายเวลา :
       'tpid' => 28,
       'sid' => 6,
       'title' => 'ขอปฏิเสธการตีพิมพ์',
-      'body' => $reject_reciever,
+      'body' => $reject_receiver,
       'template_title' => 'ขอปฏิเสธการตีพิมพ์',
       'name' => 'reject',
     ),
@@ -1769,7 +1769,7 @@ Link เพื่อไปคลิกขยายเวลา :
       'tpid' => 12,
       'sid' => 7,
       'title' => 'Edit 1 โดยรองบรรณาธิการ',
-      'body' => 'เรียน @reciever_roles 
+      'body' => 'เรียน @receiver_roles 
 ผู้ส่งบทความได้ปรับแก้ตามความเห็นผู้ทรงคุณวุฒิและส่งกลับมาแล้ว
 ',
       'template_title' => 'ผู้ส่งบทความได้ปรับแก้ตามความเห็นผู้ทรงคุณวุฒิและส่งกลับมาแล้ว',
@@ -1794,7 +1794,7 @@ Link เพื่อไปคลิกขยายเวลา :
       'tpid' => 30,
       'sid' => 7,
       'title' => 'ขอปฏิเสธการตีพิมพ์',
-      'body' => $reject_reciever,
+      'body' => $reject_receiver,
       'template_title' => 'ขอปฏิเสธการตีพิมพ์',
       'name' => 'reject',
     ),
@@ -1802,7 +1802,7 @@ Link เพื่อไปคลิกขยายเวลา :
       'tpid' => 31,
       'sid' => 8,
       'title' => 'มีบทความเข้าสู่สถานะ Edit 2 (การชำระนิพนธ์ต้นฉบับ)',
-      'body' => 'เรียน @reciever_roles
+      'body' => 'เรียน @receiver_roles
 ขณะนี้ บทความ @journal_id - @journal_title ได้เข้าสู่สถานะ Edit 2 (การชำระนิพนธ์ต้นฉบับ) แล้ว
 กรุณาตรวจสอบบทความ',
       'template_title' => 'มีบทความเข้าสู่สถานะ Edit 2 (การชำระนิพนธ์ต้นฉบับ)',
@@ -1812,7 +1812,7 @@ Link เพื่อไปคลิกขยายเวลา :
       'tpid' => 32,
       'sid' => 8,
       'title' => 'ขอปฏิเสธการตีพิมพ์',
-      'body' => $reject_reciever,
+      'body' => $reject_receiver,
       'template_title' => 'ขอปฏิเสธการตีพิมพ์',
       'name' => 'reject',
     ),
@@ -1832,7 +1832,7 @@ Link เพื่อไปคลิกขยายเวลา :
       'tpid' => 33,
       'sid' => 9,
       'title' => 'มีบทความเข้าสู่สถานะ Editor approval',
-      'body' => 'เรียน @reciever_roles
+      'body' => 'เรียน @receiver_roles
 ขณะนี้ บทความ @journal_id - @journal_title ได้เข้าสู่สถานะ Editor approval แล้ว
 กรุณาตรวจสอบบทความ',
       'template_title' => 'มีบทความเข้าสู่สถานะ Editor approval',
@@ -1842,7 +1842,7 @@ Link เพื่อไปคลิกขยายเวลา :
       'tpid' => 34,
       'sid' => 9,
       'title' => 'ขอปฏิเสธการตีพิมพ์',
-      'body' => $reject_reciever,
+      'body' => $reject_receiver,
       'template_title' => 'ขอปฏิเสธการตีพิมพ์',
       'name' => 'reject',
     ),
@@ -1864,7 +1864,7 @@ Link เพื่อไปคลิกขยายเวลา :
       'tpid' => 18,
       'sid' => 10,
       'title' => 'มีบทความเข้าสู่สถานะ Artwork',
-      'body' => 'เรียน @reciever_roles
+      'body' => 'เรียน @receiver_roles
 ขณะนี้ บทความ @journal_id - @journal_title ได้เข้าสู่สถานะ Artwork แล้ว
 กรุณาตรวจสอบบทความ',
       'template_title' => 'มีบทความเข้าสู่สถานะ Artwork',
@@ -1874,7 +1874,7 @@ Link เพื่อไปคลิกขยายเวลา :
       'tpid' => 36,
       'sid' => 10, 
       'title' => 'ขอปฏิเสธการตีพิมพ์',
-      'body' => $reject_reciever,
+      'body' => $reject_receiver,
       'template_title' => 'ขอปฏิเสธการตีพิมพ์',
       'name' => 'reject',
     ),
@@ -1908,7 +1908,7 @@ Link เพื่อไปคลิกขยายเวลา :
       'tpid' => 37,
       'sid' => 11,
       'title' => 'ขอปฏิเสธการตีพิมพ์',
-      'body' => $reject_reciever,
+      'body' => $reject_receiver,
       'template_title' => 'ขอปฏิเสธการตีพิมพ์',
       'name' => 'reject',
     ),
@@ -1916,7 +1916,7 @@ Link เพื่อไปคลิกขยายเวลา :
       'tpid' => 38,
       'sid' => 12,
       'title' => 'มีบทความเข้าสู่สถานะ Editor approval of artwork',
-      'body' => 'เรียน @reciever_roles
+      'body' => 'เรียน @receiver_roles
 ขณะนี้บทความ @journal_id - @journal_title เข้าสู่สถานะ Editor approval of artwork 
 กรุณาตรวจสอบบทความ',
       'template_title' => 'มีบทความเข้าสู่สถานะ Editor approval of artwork',
@@ -1926,7 +1926,7 @@ Link เพื่อไปคลิกขยายเวลา :
       'tpid' => 39,
       'sid' => 12,
       'title' => 'ขอปฏิเสธการตีพิมพ์',
-      'body' => $reject_reciever,
+      'body' => $reject_receiver,
       'template_title' => 'ขอปฏิเสธการตีพิมพ์',
       'name' => 'reject',
     ),
@@ -1934,7 +1934,7 @@ Link เพื่อไปคลิกขยายเวลา :
       'tpid' => 40,
       'sid' => 13,
       'title' => 'มีบทความเข้าสู่สถานะ Proofreading',
-      'body' => 'เรียน @reciever_roles
+      'body' => 'เรียน @receiver_roles
 ขณะนี้บทความ @journal_id - @journal_title เข้าสู่สถานะ Proofreading 
 กรุณาตรวจสอบบทความ',
       'template_title' => 'มีบทความเข้าสู่สถานะ Proofreading',
@@ -1944,7 +1944,7 @@ Link เพื่อไปคลิกขยายเวลา :
       'tpid' => 41,
       'sid' => 13,
       'title' => 'ขอปฏิเสธการตีพิมพ์',
-      'body' => $reject_reciever,
+      'body' => $reject_receiver,
       'template_title' => 'ขอปฏิเสธการตีพิมพ์',
       'name' => '',
     ),
@@ -2385,7 +2385,14 @@ function open_journal_update_7042(&$sandbox) {
   ->condition('tpid', 2)
   ->execute();
 
-  db_insert('open_journal_template_role')
-      ->fields(array('tpid' => 2, 'rid' => 1))
-      ->execute();
+  db_insert('open_journal_template_role')->fields(array('tpid' => 2, 'rid' => 1))->execute();
+}
+
+function open_journal_update_7043(&$sandbox) {
+  db_query("UPDATE {open_journal_template} SET body = REPLACE(body, 'reciever', 'receiver')");
+  db_query("UPDATE {open_journal_template} SET body = REPLACE(body, 'reciver', 'receiver')");
+}
+
+function open_journal_update_7044(&$sandbox) {
+  db_query("UPDATE {open_journal_template} SET body = REPLACE(body, 'คลิกที่ลิงค์เพื่อส่งข้อความถึง', 'ติดต่อกลับมา')");
 }

@@ -561,15 +561,15 @@ function open_journal_issue_form_submit($form, &$form_state) {
           if ($send_email) {
             
             $_journal = open_journal_journal_load($journal['jid']);
-            $reciver = user_load($_journal->uid);
+            $receiver = user_load($_journal->uid);
             $values['iid'] = $issue_id;
             
             $data->sender = $sender;
-            $data->reciver = $reciver;
+            $data->receiver = $receiver;
             $data->journal = $_journal;
             $data->issue = (object) $values;
             
-            drupal_mail('open_journal', 'open_journal_issue_published', $reciver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
+            drupal_mail('open_journal', 'open_journal_issue_published', $receiver->mail, language_default(), $data, $sender->name.' <'.variable_get('site_mail', ini_get('sendmail_from')).'>');
           }
         }
       }
