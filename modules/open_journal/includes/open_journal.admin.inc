@@ -1,10 +1,25 @@
 <?php
 
 
+function open_journal_template_trigger_on($name=NULL) {
+  $map = array(
+    'template' => 'User select on dropdown',
+    'auto' => 'State change (system)',
+    'approve' => 'Approve with message',
+    'reject' => 'Override reject reason',
+    'time' => 'Timer of state configuration'
+  );
+  if ($name) {
+    return $map[$name];
+  }
+  return $map;
+  
+}
+
 function open_journal_template_list() {
 
 
-  $header = array(t('Title'), t('Body'), t('Roles'), array('data' => t('Operations'), 'colspan' => 2));
+  $header = array(t('Label'), t('Message'), t('Trigger on'), t('Roles'), array('data' => t('Operations'), 'colspan' => 2));
   $rows = array();
 
 
@@ -21,16 +36,21 @@ function open_journal_template_list() {
     continue;
   }
 
-  $row = array(array('data' => '<h2>'.$state['name'].'</h2>', 'colspan' => 5));
+  $row = array(array('data' => '<h2>'.$state['name'].'</h2>', 'colspan' => 6));
   $rows[] = array('data' => $row, 'class' => array('row-state'));
 
   foreach ($templates as $template) {
     $row = array();
-    $row[] = $template->template_title;
-    $row[] = nl2br($template->body);
+    $row[] = $template->title? $template->title: '-';
+    $row[] = '<p><h4>'.$template->template_title.'</h4></p>'.nl2br($template->body);
+    $row[] = open_journal_template_trigger_on($template->name);
     $row[] = nl2br($template->roles);
     $row[] = l(t('edit'), 'admin/config/open_journal/template/'. $template->tpid. '/edit', array('query' => drupal_get_destination()));
     $row[] = l(t('delete'), 'admin/config/open_journal/template/'. $template->tpid. '/delete');
+
+    if ($template->color_code) {
+      $row = array('data' => $row, 'style' => 'background-color: #'.$template->color_code);
+    }
 
     $rows[] = $row;
   }
@@ -83,13 +103,7 @@ function open_journal_template_form($form, &$form_state, $template) {
     '#type' => 'select',
     '#title' => t('Trigger on'),
     '#required' => TRUE,
-    '#options' => array(
-      'template' => 'User select on dropdown',
-      'auto' => 'State change (system)',
-      'approve' => 'Approve with message',
-      'reject' => 'Override reject reason',
-      'time' => 'Timer of state configuration'
-    ),
+    '#options' => open_journal_template_trigger_on(),
     '#default_value' => $template->name,
   );
   $form['info']['title'] = array(
@@ -133,6 +147,25 @@ function open_journal_template_form($form, &$form_state, $template) {
     '#options' => $roles_options,
     '#default_value' => array_keys($template->roles),
     '#description' => 'Unselect all for send this message to all roles'
+  );
+
+  $form['ui'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('User interface'),
+  );
+  $form['ui']['color_code'] = array(
+    '#type' => 'select',
+    '#title' => t('Color'),
+    '#options' => array(
+      '' => '-',
+      'F0E67A' => 'Yellow',
+      'E6B0AA' => 'Red',
+      'AED6F1' => 'Blue',
+      'A9DFBF' => 'Green',
+      'D7BDE2' => 'Purple',
+      'F0B27A' => 'Orange',
+    ),
+    '#default_value' => $template->color_code,
   );
 
   $form['actions'] = array('#type' => 'actions');

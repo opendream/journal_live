@@ -1087,7 +1087,7 @@ function open_journal_template_save($data) {
 
   foreach ($data->roles as $rid => $role) {
     db_insert('open_journal_template_role')
-      ->fields(array('tpid' => $data->tpid, 'rid' => $rid, 'type' => $type))
+      ->fields(array('tpid' => $data->tpid, 'rid' => $rid))
       ->execute();
   }
 
@@ -2755,7 +2755,7 @@ function open_journal_discussion_add($journal) {
 function open_journal_replace_template_string($template_list, $journal, $add_role=FALSE) {
 
   $user_journal = user_load($journal->uid);
-  $replace_code_list = array('@author', '@journal_id', '@journal_title', '@discussion_add_link', '@information_link', '@receiver_roles', '@approve_by_timer_link');
+  $replace_code_list = array('@author', '@journal_id', '@journal_title', '@discussion_add_link', '@information_link', '@receiver_roles', '@approve_by_timer_link', '@author_name');
 
   foreach ($template_list as $key => $value) {
     $role_list = open_journal_get_template_role_list($value->tpid);
@@ -2780,7 +2780,8 @@ function open_journal_replace_template_string($template_list, $journal, $add_rol
       l('กดที่ลิงก์นี้ เมื่อท่านเห็นชอบกับไฟล์ Artwork', 'journal/'.$journal->jid.'/discussion/add', array('absolute' => TRUE)),
       l('Information', 'journal/'.$journal->jid.'/information', array('absolute' => TRUE)),
       $receiver_roles,
-      url('journal/'.$journal->jid.'/approve-by-timer', array('absolute' => TRUE))
+      url('journal/'.$journal->jid.'/approve-by-timer', array('absolute' => TRUE)),
+      $user_journal->data['firstname']." ".$user_journal->data['lastname']
     );
 
     $template_list[$key]->body = str_replace($replace_code_list, $replace_code_to, $value->body);
