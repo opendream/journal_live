@@ -190,6 +190,14 @@ function open_journal_template_list() {
   }
 
   $output  = '<style type="text/css" media="all">
+  table.tableheader-processed tr {
+    border-top: solid 1px #000;
+    border-width: 0 0 0 0;
+    border-color: #aaa;
+  }
+  table.tableheader-processed tr{
+    border-width: 1px 0 0 0;
+  }
   tr.row-state {
     background-color: #c3c4bb;
   } 
