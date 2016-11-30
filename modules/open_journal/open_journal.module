@@ -440,6 +440,16 @@ function open_journal_menu() {
     'access arguments' => array('access administration pages'),
     'file' => 'includes/open_journal.admin.inc',
   );
+  
+  $items['admin/config/open_journal/template/add'] = array(
+    'title' => t('Add template'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('open_journal_template_form'),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_LOCAL_ACTION,
+    'file' => 'includes/open_journal.admin.inc',
+
+  );
 
   $items['admin/config/open_journal/template/%open_journal_template/edit'] = array(
     'title' => t('Edit'),
@@ -450,7 +460,42 @@ function open_journal_menu() {
     'file' => 'includes/open_journal.admin.inc',
 
   );
+  $items['admin/config/open_journal/template/%open_journal_template/delete'] = array(
 
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('open_journal_template_delete_form', 4),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal.admin.inc',
+  );
+
+  $items['admin/config/open_journal/state/add'] = array(
+    'title' => t('Add state'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('open_journal_state_form'),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_LOCAL_ACTION,
+    'file' => 'includes/open_journal.admin.inc',
+
+  );
+
+  $items['admin/config/open_journal/state/%open_journal_state/edit'] = array(
+    'title' => t('Edit'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('open_journal_state_form', 4),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'includes/open_journal.admin.inc',
+
+  );
+  $items['admin/config/open_journal/state/%open_journal_state/delete'] = array(
+
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('open_journal_state_delete_form', 4),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/open_journal.admin.inc',
+  );
   return $items;
 }
 
@@ -1081,8 +1126,12 @@ function open_journal_template_save($data) {
   $pk = (isset($data->tpid) && $data->tpid)? 'tpid': array();
   drupal_write_record('open_journal_template', $data, $pk);
 
+
   if (isset($data->tpid) && $data->tpid) {
     db_query("DELETE FROM {open_journal_template_role} WHERE tpid = :tpid", array('tpid' => $data->tpid));
+  }
+  else {
+    $data->tpid = db_query('SELECT MAX(tpid) FROM {open_journal_template}')->fetchField();;
   }
 
   foreach ($data->roles as $rid => $role) {
@@ -1091,6 +1140,23 @@ function open_journal_template_save($data) {
       ->execute();
   }
 
+}
+
+function open_journal_state_load($sid) {
+
+  $data = db_select('open_journal_state', 's');
+  $data->fields('s');
+  $data->condition('sid', $sid, '=');
+
+  $data = $data->execute();
+  $data = $data->fetchObject();
+
+  return $data;
+}
+
+function open_journal_state_save($data) {
+  $pk = (isset($data->sid) && $data->sid)? 'sid': array();
+  drupal_write_record('open_journal_state', $data, $pk);
 }
 
 function open_journal_auto_active_people($data) {
@@ -1364,7 +1430,7 @@ function open_journal_discussion_save($data, $params=array()) {
     open_jounal_discussion_mail($data, $params);
   }
 
-  // Auto app state when state has flag approve_by_upload
+  // Auto app state when state has flag upload_auto_approve
   $journal = open_journal_journal_load($data->jid);
   $state = db_query("SELECT * FROM {open_journal_state} WHERE sid = :sid", array(':sid' => $journal->sid))->fetchObject();
   if (($data->files_upload || $data->fid) && $state->upload_auto_approve) {
@@ -1582,7 +1648,7 @@ function open_journal_comment_save($data) {
     open_jounal_comment_mail($data);
   }
 
-    // Auto app state when state has flag approve_by_upload
+    // Auto app state when state has flag upload_auto_approve
   $journal = $data->journal;
   $state = db_query("SELECT * FROM {open_journal_state} WHERE sid = :sid", array(':sid' => $journal->sid))->fetchObject();
   if (($data->files_upload || $data->fid) && $state->upload_auto_approve) {
@@ -2778,7 +2844,7 @@ function open_journal_replace_template_string($template_list, $journal, $add_rol
       $journal->code,
       $journal->title,
       l('กดที่ลิงก์นี้ เมื่อท่านเห็นชอบกับไฟล์ Artwork', 'journal/'.$journal->jid.'/discussion/add', array('absolute' => TRUE)),
-      l('Information', 'journal/'.$journal->jid.'/information', array('absolute' => TRUE)),
+      ($journal->dc_identifier? $journal->dc_identifier: url('journal/'.$journal->jid.'/information', array('absolute' => TRUE))),
       $receiver_roles,
       url('journal/'.$journal->jid.'/approve-by-timer', array('absolute' => TRUE)),
       $user_journal->data['firstname']." ".$user_journal->data['lastname']

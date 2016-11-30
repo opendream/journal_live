@@ -529,6 +529,11 @@ function open_journal_schema() {
         'not null' => FALSE,
         'default' => 0,
       ),
+      'actor_rid' => array(
+        'type' => 'int',
+        'not null' => FALSE,
+        //'default' => 0,
+      ),
       'is_root' => array(
         'type' => 'int',
         'not null' => FALSE,
@@ -648,6 +653,11 @@ function open_journal_schema() {
       'color_code' => array(
         'type' => 'varchar',
         'length' => 100,
+        'not null' => FALSE,
+      ),
+      'label' => array(
+        'type' => 'varchar',
+        'length' => 255,
         'not null' => FALSE,
       ),
     ),
@@ -2412,7 +2422,17 @@ function open_journal_update_7045(&$sandbox) {
 
 function open_journal_update_7046(&$sandbox) {
 
-  $new = 'AED6F1'
+  $schema = open_journal_schema();
+
+  db_add_field('open_journal_template', 'label', $schema['open_journal_template']['fields']['label']);
+  db_add_field('open_journal_state', 'actor_rid', $schema['open_journal_state']['fields']['actor_rid']);
+  db_drop_field('open_journal_state', 'approve_by_upload');
+
+}
+
+function open_journal_update_7047(&$sandbox) {
+
+  $new = 'AED6F1';
   $lost = 'F0E67A';
 
   // ===========================================================================
@@ -2465,11 +2485,11 @@ function open_journal_update_7046(&$sandbox) {
     'title' => '',
     'body' => 'เรียน ฝ่ายจัดการวารสาร
 
-เนื่องจาก @author ได้ส่งบทความใหม่เรื่อง
+เนื่องจาก ผู้เขียน ได้ส่งบทความใหม่เรื่อง
 @journal_id - @journal_title 
 มายังวารสารวิจัยระบบสาธารณสุขเพื่อรับการตีพิมพ์ รบกวนกรุณาตรวจสอบบทความด้วย กรุณาคลิก link ด้านล่างเพื่อดำเนินตามขั้นตอนถัดไป
 
-ฝ่ายจัดการวารสารวิจัยระบบสาธารณสุข',
+ผู้เขียน',
     'color_code' => $new
   );
 
@@ -2679,7 +2699,7 @@ Link เพื่อไปคลิกขยายเวลา : @approve_by_tim
   // Revision → Revision 2
   // ===========================================================================
 
-  $t[] = array(
+  $t[10] = array(
     'label' => 'Revision alert 6',
     'title' => '',
     'body' => 'เรียน ผู้เขียน
@@ -2694,7 +2714,7 @@ Link เพื่อไปคลิกขยายเวลา : @approve_by_tim
     'color_code' => $lost
   );
 
-  $t[] = array(
+  $t[200] = array(
     'label' => 'Revision alert 7',
     'title' => 'ขอปฏิเสธการตีพิมพ์',
     'body' => 'เรียน ผู้เขียน 
@@ -2730,7 +2750,7 @@ Link เพื่อไปคลิกขยายเวลา : @approve_by_tim
     'body' => 'เรียน บรรณาธิการ
 
 @journal_id - @journal_title
-เปลี่ยนสถานะ จาก document review → revision เป็น document review → edit 1 แล้ว 
+เปลี่ยนสถานะ จาก document review · revision เป็น document review · edit 1 แล้ว 
 ผู้ส่งบทความได้ปรับแก้ตามความเห็นผู้ทรงคุณวุฒิและส่งกลับมาแล้ว
 กรุณาคลิก link ด้านล่างสุด ไปยังหน้าต่อไป เพื่อพิจารณาความถูกต้องของบทความนี้ 
 - กดที่ปุ่ม approve เพื่อยืนยันความถูกต้อง
@@ -2882,7 +2902,7 @@ Link เพื่อไปคลิกขยายเวลา : @approve_by_tim
   // Document review → Artwork
   // ===========================================================================
 
-  $t[] = array(
+  $t[18] = array(
     'label' => 'Artwork 1',
     'title' => '',
     'body' => 'เรียน ฝ่ายจัดการวารสาร
@@ -2952,7 +2972,7 @@ Link เพื่อไปคลิกขยายเวลา : @approve_by_tim
 ฝ่ายจัดการวารสารวิจัยระบบสาธารณสุข'
   );
 
-  $t[36] = array(
+  $t[37] = array(
     'label' => 'Author check 2',
     'title' => 'ขอปฏิเสธการตีพิมพ์',
     'body' => 'เรียน ผู้เขียน
@@ -3107,15 +3127,176 @@ Link เพื่อไปคลิกขยายเวลา : @approve_by_tim
     'color_code' => $new
   );
 
+  foreach ($t as $tpid => $fields) {
+    db_update('open_journal_template')
+      ->condition('tpid', $tpid)
+      ->fields($fields)
+      ->execute();
+  }
+
 }
 
 
+function open_journal_update_7048(&$sandbox) {
+  db_query("UPDATE {open_journal_state} SET description = ''");
+
+  /*
+  +-----+--------------------+
+  | rid | name               |
+  +-----+--------------------+
+  |   3 | administrator      |
+  |   1 | anonymous user     |
+  |   2 | authenticated user |
+  |   8 | author             |
+  |   4 | editor             |
+  |   6 | librarian          |
+  |   7 | manager            |
+  |   5 | reviewer           |
+  +-----+--------------------+
+  */
+  $states = array(
+    0 => 3,
+    4 => 4,
+    1 => 3,
+    6 => 8,
+    101 => 8,
+    102 => 8,
+    7 => 4,
+    8 => 3,
+    9 => 4,
+    10 => 3,
+    11 => 8,
+    12 => 4,
+    13 => 3,
+    2 => 6,
+    3 => NULL
+
+  );
+
+  foreach ($states as $sid => $actor_rid) {
+    db_update('open_journal_state')
+      ->condition('sid', $sid)
+      ->fields(array('actor_rid' => $actor_rid))
+      ->execute();
+  }
+}
+
+function open_journal_update_7049(&$sandbox) {
+  db_query("DELETE tr FROM open_journal_template_role tr LEFT JOIN open_journal_template t ON tr.tpid = t.tpid WHERE t.name = 'reject' AND tr.rid <> 8;");
+  db_update('open_journal_template')
+    ->condition('tpid', 35)
+    ->fields(array('name' => 'auto', 'sid' => 10))
+    ->execute();
+  db_insert('open_journal_template_role')
+  ->fields(array('tpid' => 17, 'rid' => 1))
+  ->execute();
+}
+
+function open_journal_update_7050(&$sandbox) {
+  db_query("ALTER TABLE open_journal_template CHANGE tpid tpid INT(11)  NOT NULL  AUTO_INCREMENT, AUTO_INCREMENT = 300");
+}
 
 
+function open_journal_update_7051(&$sandbox) {
 
 
+  db_query("DELETE FROM `open_journal_template`");
+  db_query("INSERT INTO `open_journal_template` VALUES (1,0,'','เรียน ผู้เขียน \r\n\r\nตามที่ท่านได้ส่งบทความเรื่อง \r\n@journal_id - @journal_title \r\nมายังวารสารวิจัยระบบสาธารณสุขเพื่อรับการตีพิมพ์และ ทางวารสารฯ ได้รับบทความของท่านเรียบร้อยแล้ว\r\n\r\nวารสารวิจัยระบบสาธารณสุข\r\n\r\n--------------------------------------------\r\n\r\nDear Author,\r\n\r\nThank you for your article,\r\n@journal_id - @journal_title_en,\r\nsubmitted to the Journal of Heath Systems Research for publication. \r\n\r\nPlease be informed that we have duly received your manuscript.\r\n\r\nJournal of Heath Systems Research','ขอบคุณที่ส่งบทความมาที่ สวรส.','auto',NULL,'','Info review 1')");
+  db_query("INSERT INTO `open_journal_template` VALUES (2,0,'','เรียน @receiver \r\n\r\nด้วย @author_name ได้ส่งบทความเรื่อง\r\n@journal_id - @journal_title \r\nมายังวารสารวิจัยระบบสาธารณสุขเพื่อการตีพิมพ์ โดยมีท่านเป็นผู้เขียนร่วม ทางวารสารฯ ขอให้ท่านแจ้งยืนยันหรือปฏิเสธภายใน 3 วันโดยติดต่อกลับมาทางวารสาร (link ติดต่อด้านล่าง)\r\nและหากทางวารสารไม่ได้รับคำตอบจากท่านภายในกำหนดดังกล่าว จะขอถือว่าท่านเห็นด้วยกับการส่งบทความเพื่อเสนอตีพิมพ์กับทางวารสารฯ\r\n\r\nวารสารวิจัยระบบสาธารณสุข\r\n\r\n--------------------------------------------\r\n\r\nDear @receiver,\r\n\r\nRefer to the article,\r\n@journal_id - @journal_title_en,\r\nsubmitted to the Journal of Health Systems Research (JHSR) for publication by @author_name. \r\n\r\nAs your name is listed as one of the authors, the JHSR would like to request your confirmation/declination on the article submission. Please do so within 3 days by contact to JHSR (contact link on bottom). \r\n\r\nIf no response is received by the deadline, the JHSR will assume that you have no objection to the submission.\r\n\r\nJournal of Heath Systems Research','แจ้งว่ามีท่านเป็นผู้เขียนร่วมในวารสารฯ','auto',NULL,'','Info review 2')");
+  db_query("INSERT INTO `open_journal_template` VALUES (3,0,'ขอให้ผู้เขียนปรับแก้บทความ','เรียน ผู้เขียน\r\n\r\nตามที่ท่านได้ส่งบทความเรื่อง\r\n@journal_id - @journal_title \r\nมายังวารสารวิจัยระบบสาธารณสุขเพื่อการตีพิมพ์ ในเบื้องต้น ทางวารสารฯ ขอให้ท่านปรับแก้ ดังนี้\r\n\r\n..... โปรดระบุ .....\r\n\r\nโปรดดำเนินการภายใน 3 วัน\r\nเมื่อท่านปฏิบัติตามคำแนะนำแล้ว เราจึงจะส่งบทความเพื่อให้ผู้ทรงคุณวุฒิพิจารณา ขออภัยในความไม่สะดวกมา ณ ที่นี้ด้วย\r\n\r\nฝ่ายจัดการวารสารวิจัยระบบสาธารณสุข\r\n\r\n--------------------------------------------\r\n\r\nDear Author,\r\n\r\nRefer to your article,\r\n@journal_id - @journal_title_en,\r\nwhich has been submitted to the Journal of Health Systems Research for publication. In this initial stage, we would like to suggest the following improvements:\r\n\r\n..... Please fill in .....\r\n\r\nPlease improve and return the article within 3 days. \r\n\r\nWe could proceed with our reviewing process only upon receiving your improved article. We apologize for any inconvenience this may cause.\r\n\r\nThe JHSR editorial staff\r\n','ขอให้ท่านปรับแก้ไขบทความ','template',NULL,'','Info review 3')");
+  db_query("INSERT INTO `open_journal_template` VALUES (4,4,'','เรียน บรรณาธิการ\r\n\r\n@journal_id - @journal_title \r\nเปลี่ยนสถานะ จาก information review เป็น editor first view แล้ว \r\nกรุณาคลิก link ด้านล่าง ไปยังหน้าต่อไป เพื่อเลือกว่าจะตอบรับพิจารณาความเหมาะสมของบทความนี้ \r\n- กดที่ปุ่ม approve เพื่อยืนยันความเหมาะสม\r\n- กดที่ปุ่ม reject เพื่อปฏิเสธ และหากปฏิเสธ ขอความกรุณากรอกเหตุผล เพื่อแจ้งผู้เขียนด้วย จะขอบพระคุณยิ่ง\r\n\r\nฝ่ายจัดการวารสารวิจัยระบบสาธารณสุข\r\n\r\n--------------------------------------------\r\n\r\nDear Editor,\r\n\r\n@journal_id - @journal_title_en,\r\nThis article has changed the status from “information review” to “editor first view”. Please click the link below to select “accept” or “reject” such article. If reject, please provide constructive reasons to inform the author.\r\n\r\nThank you,\r\n\r\nThe JHSR editorial staff','มีบทความใหม่มาให้พิจารณา','auto',NULL,'D7BDE2','Editor first 1')");
+  db_query("INSERT INTO `open_journal_template` VALUES (5,4,'','เรียน ผู้เขียน\r\n\r\nตามที่ท่านได้ส่งบทความเรื่อง\r\n@journal_id - @journal_title \r\nมายังวารสารวิจัยระบบสาธารณสุขเพื่อการตีพิมพ์ ทางวารสารฯ ขอปฏิเสธการตีพิมพ์เนื่องจาก\r\n\r\n..... โปรดระบุ .....\r\n\r\nทางวารสารฯ ขอขอบคุณ และหวังว่า โอกาสหน้าคงได้รับการติดต่อจากท่านอีก\r\n\r\nวารสารวิจัยระบบสาธารณสุข\r\n\r\n--------------------------------------------\r\n\r\nDear Author,\r\n\r\nRefer to your article,\r\n@journal_id - @journal_title_en,\r\nwhich was submitted to the Journal of Health Systems Research for publication. Please be informed that we have to withdraw the article from publication because:\r\n\r\n..... Please fill in .....\r\n\r\nThank you and look forward to hearing from you.\r\n\r\nJournal of Heath Systems Research','ขอปฏิเสธการตีพิมพ์','reject','button','','Editor first 2')");
+  db_query("INSERT INTO `open_journal_template` VALUES (6,4,'','เรียน ฝ่ายจัดการวารสาร\r\n@journal_id - @journal_title\r\nชื่อ reviewers คือ \r\n1………โปรดระบุ………….\r\n2………โปรดระบุ………….\r\n3………โปรดระบุ………….\r\n\r\nกรุณาคลิก link ด้านล่าง แล้วเข้าไปทีเมนู people เพื่อเลือก reviewer (ในกรณีที่มีอยู่แล้ว) หรือ สร้าง reviewer ใหม่ โดยกดที่ปุ่ม Add new reviewer (ในกรณีที่ยังไม่เคยมี)\r\n\r\nบรรณาธิการ\r\n\r\n--------------------------------------------\r\n\r\nDear the JHSR editorial staff,\r\n\r\n@journal_id - @journal_title_en\r\n\r\nName of peer reviewers:\r\n1………Please fill in………….\r\n2………Please fill in………….\r\n3………Please fill in………….','รบกวนท่าน เรียนเชิญผู้ทรงคุณวุฒิมาพิจารณาบทความ','approve','button','D7BDE2','Editor first 3')");
+  db_query("INSERT INTO `open_journal_template` VALUES (7,1,'','เรียน ผู้เขียน\r\n\r\nตามที่ท่านได้ส่งบทความเรื่อง\r\n@journal_id - @journal_title \r\nมายังวารสารวิจัยระบบสาธารณสุขเพื่อการตีพิมพ์ ทางวารสารฯขอเรียนว่าบทความของท่านกำลังได้รับการพิจารณาโดยผู้ทรงคุณวุฒิ เมื่อทางวารสารฯรวบรวมความเห็นจากผู้ทรงคุณวุฒิเรียบร้อยแล้ว จะแจ้งผลให้ท่านทราบในโอกาสต่อไป\r\n\r\nวารสารวิจัยระบบสาธารณสุข\r\n\r\n--------------------------------------------\r\n\r\nDear Author,\r\n\r\nRefer to your article,\r\n@journal_id - @journal_title_en,\r\nwhich was submitted to the Journal of Health Systems Research for publication. Please be informed that the article is now under the assessment of our expert reviewers. Comments and feedback will be sent to you in due course.\r\n\r\nJournal of Health Systems Research','บทความของท่านกำลังได้รับพิจารณาโดยผู้ทรงคุณวุฒิ','auto',NULL,'','Reviewers alert')");
+  db_query("INSERT INTO `open_journal_template` VALUES (8,6,'ขอให้ผู้เขียนปรับแก้บทความตามความเห็นของผู้ทรงคุณวุฒิ','เรียน ผู้เขียน\r\n\r\nตามที่ท่านได้ส่งบทความเรื่อง\r\n@journal_id - @journal_title \r\nมายังวารสารวิจัยระบบสาธารณสุขเพื่อการตีพิมพ์นั้น บัดนี้ คณะผู้ทรงคุณวุฒิได้พิจารณาบทความดังกล่าวแล้ว โดยมีความเห็นดังไฟล์ที่แนบ \r\nกรุณานำบทความที่แก้ไขแล้ว มาเขียนต่อท้ายจากข้อความในไฟล์ MS Words ที่แนบนี้ อย่าลืมไฮไลท์ส่วนที่ปรับแก้และเขียนเพิ่มเติมด้วย โดยขอให้ส่งกลับมาทางระบบ e-journal ภายใน 30 วัน โดยนับวันที่ของข้อความนี้เป็นวันที่ 0\r\nจึงเรียนมาเพื่อโปรดพิจารณาแก้ไขและส่งบทความกลับมาภายในกำหนดเวลาด้วย จะขอบคุณยิ่ง \r\n\r\nวารสารวิจัยระบบสาธารณสุข\r\n\r\n--------------------------------------------\r\n\r\nDear Author,\r\n\r\nRefer to your article,\r\n@journal_id - @journal_title_en,\r\nwhich was submitted to the Journal of Health Systems Research for publication. \r\n\r\nAttached are comments and feedback from our expert reviewers (see attachment). Please return your improved article by sending it through JHSR e-journal system within 30 days from tomorrow. Kindly highlight all changes, revisions and additions to the manuscript and place the improved version at the end of the attached MS Words file. \r\n\r\nThank you for your cooperation and consideration.\r\n\r\nJournal of Health Systems Research','กรุณาปรับแก้ไขบทความตามความเห็นของผู้ทรงคุณวุฒิ','template',NULL,'','Revision alert 1')");
+  db_query("INSERT INTO `open_journal_template` VALUES (9,101,'','เรียน ผู้เขียน\r\n\r\nตามที่ท่านได้ส่งบทความเรื่อง\r\n@journal_id - @journal_title \r\nมายังวารสารวิจัยระบบสาธารณสุขเพื่อการตีพิมพ์และทางวารสารฯได้แจ้งผลการพิจารณาบทความไปแล้วนั้น \r\nโปรดทราบว่าท่านเหลือเวลาอีกเพียง 7 วันในการปรับแก้บทความ\r\nหากท่านไม่สามารถส่งบทความที่แก้ไขกลับมาได้ภายในกำหนด ท่านสามารถส่งข้อความขอเลื่อนกำหนดส่งไปได้อีก 30 วัน โดยท่านต้องคลิกที่ link ด้านล่างนี้เพื่อทำการขยายเวลา\r\nLink เพื่อไปคลิกขยายเวลา : @approve_by_timer_link\r\n\r\nฝ่ายจัดการวารสารวิจัยระบบสาธารณสุข\r\n\r\n--------------------------------------------\r\n\r\nDear Author,\r\n\r\nRefer to your submitted article,\r\n@journal_id - @journal_title_en,\r\nwhich we have already informed you about our comment/suggestion for improvement. \r\n\r\nPlease be reminded that you have 7 days left to return your improved article. \r\n\r\nIf you are unable to finish it on time, you can extend the improvement period by 30 days. Please send a deadline extension request via JHSR e-journal system by the following link below within 5 days from tomorrow. \r\nLink to extend the improvement period : @approve_by_timer_link\r\n\r\nJournal of Health Systems Research','ท่านเหลือเวลาอีกเพียง 7 วันในการปรับแก้บทความ','time',NULL,'','Revision alert 2')");
+  db_query("INSERT INTO `open_journal_template` VALUES (10,102,'','เรียน ผู้เขียน\r\n\r\nตามที่ท่านได้ส่งบทความเรื่อง\r\n@journal_id - @journal_title \r\nมายังวารสารวิจัยระบบสาธารณสุขเพื่อการตีพิมพ์และทางวารสารฯได้แจ้งผลการพิจารณาบทความไปแล้วนั้น \r\nโปรดทราบว่าท่านเหลือเวลาอีกเพียง 7 วันในการปรับแก้บทความ และไม่สามารถเลื่อนกำหนดส่งได้อีกแล้ว\r\nหากท่านไม่สามารถส่งบทความที่แก้ไขกลับมาได้ภายในกำหนด ระบบจะส่งข้อความปฏิเสธการตีพิมพ์โดยอัตโนมัติไปยังท่านในวันถัดจากวันครบกำหนด\r\n\r\nฝ่ายจัดการวารสารวิจัยระบบสาธารณสุข\r\n\r\n--------------------------------------------\r\n\r\nDear Author,\r\n\r\nRefer to your submitted article,\r\n@journal_id - @journal_title_en,\r\nwhich we have already informed you about our comment/suggestion for revision. \r\n\r\nPlease be reminded that you have the final 7 days from tomorrow to improve your article. \r\n\r\n Journal of Health Systems Research','ท่านเหลือเวลาอีก 7 วันในการปรับแก้บทความ','time',NULL,'','Revision alert 3')");
+  db_query("INSERT INTO `open_journal_template` VALUES (11,101,'ขอปฏิเสธการตีพิมพ์','เรียน ผู้เขียน \n\nตามที่ ท่านส่งบทความเรื่อง \n@journal_id - @journal_title \nมายังวารสารวิจัยระบบสาธารณสุขเพื่อรับการตีพิมพ์และ ทางวารสารฯ ได้แจ้งผลการพิจารณาบทความไปแล้ว นั้น\nโปรดทราบว่า เราจำเป็นต้องปฏิเสธการตีพิมพ์เนื่องจากท่านมิได้ส่งบทความที่แก้ไขกลับมาภายในกำหนด หากท่านประสงค์จะส่งบทความที่แก้ไขกลับมาให้ทางวารสารฯ พิจารณาอีกครั้ง กรุณา submit เข้ามาใหม่ โดยใส่ “resubmit” หน้าชื่อเรื่องด้วย\nทางวารสารฯ ขอขอบคุณ และหวังว่า โอกาสหน้าคงได้รับการติดต่อจากท่านอีก\n\nฝ่ายจัดการวารสารวิจัยระบบสาธารณสุข','ขอปฏิเสธการตีพิมพ์บทความของท่าน','reject',NULL,'AED6F1','Revision alert 5')");
+  db_query("INSERT INTO `open_journal_template` VALUES (12,7,'','เรียน บรรณาธิการ\r\n\r\n@journal_id - @journal_title\r\nเปลี่ยนสถานะ จาก document review · revision เป็น document review · edit 1 แล้ว \r\nผู้ส่งบทความได้ปรับแก้ตามความเห็นผู้ทรงคุณวุฒิและส่งกลับมาแล้ว\r\nกรุณาคลิก link ด้านล่างสุด ไปยังหน้าต่อไป เพื่อพิจารณาความถูกต้องของบทความนี้ \r\n- กดที่ปุ่ม approve เพื่อยืนยันความถูกต้อง\r\n- หากต้องการขอให้ผู้เขียนพิจารณาปรับแก้เพิ่มเติม ให้สร้างห้องสนทนาใหม่โดยกดที่ปุ่ม start new discussion แล้ว select template เป็น \"ขอให้ผู้เขียนพิจารณาปรับแก้เพิ่มเติม\" หลังจากนั้นระบุสิ่งที่อยากให้ปรับแก้ลงในกล่องข้อความ details ในส่วนของ ..... โปรดระบุ .....\r\n- กดที่ปุ่ม reject เพื่อปฏิเสธ และหากปฏิเสธ ขอความกรุณากรอกเหตุผล เพื่อแจ้งผู้เขียนด้วย จะขอบพระคุณยิ่ง\r\n\r\nฝ่ายจัดการวารสารวิจัยระบบสาธารณสุข','ผู้ส่งบทความได้ปรับแก้ตามความเห็นผู้ทรงคุณวุฒิและส่งกลับมาแล้ว','auto',NULL,'AED6F1','Edit 3')");
+  db_query("INSERT INTO `open_journal_template` VALUES (14,9,'ขอให้ผู้เขียนปรับปรุง หรือทำส่วนใดให้ชัดเจนขึ้น (adjust)','เรียน ผู้เขียน\n\nตามที่ ท่านส่งบทความเรื่อง\n@journal_id - @journal_title\nมายังวารสารวิจัยระบบสาธารณสุขเพื่อรับการตีพิมพ์ และท่านได้ปรับแก้ตามความเห็นผู้ทรงคุณวุฒิบ้างแล้ว นั้น ผู้ตรวจการแก้ไข ขอให้ท่านพิจารณาปรับแก้เพิ่มเติม ดังนี้\n\n..... โปรดระบุ .....\n\nโปรดดำเนินการแก้ไขแล้วส่งกลับมาทางระบบ e-journal ภายใน 7 วัน\n\nวารสารวิจัยระบบสาธารณสุข','รบกวนท่าน แก้ไขปรับปรุงบทความของท่าน','template',NULL,'F0E67A','Editor approval 3')");
+  db_query("INSERT INTO `open_journal_template` VALUES (15,11,'','เรียน ผู้เขียน\r\n\r\nตามที่ท่านได้ส่งบทความเรื่อง\r\n@journal_id - @journal_title \r\nมายังวารสารวิจัยระบบสาธารณสุขเพื่อเสนอตีพิมพ์ นั้น\r\nบัดนี้เรื่องของท่านผ่านเข้าสู่การจัด artwork เป็นที่เรียบร้อย\r\nขอได้โปรดตรวจสอบความถูกต้องเป็นครั้งสุดท้าย ก่อนจะเผยแพร่ผ่านทางเว็บไซต์\r\nท่านสามารถแก้ไขโดยทำเป็น comment มาในไฟล์ pdf  โปรด upload ไฟล์กลับมาในระบบภายใน 3 วัน หากเลยกำหนดนี้ไปแล้ว ขออนุญาตถือว่าท่านยอมรับในเนื้อหาทั้งหมด\r\nLink เพื่อ แจ้งเห็นชอบกับไฟล์ Artwork: @approve_by_timer_link\r\n\r\nหรือท่านสามารถกดที่ link ด้านล่างสุด เพื่อ upload ไฟล์ที่ขอแก้ไข โดยการสร้างห้องสนทนาใหม่ (กดที่ปุ่ม start new discussion) แล้วอัพโหลดไฟล์ที่ขอแก้ไขกลับเข้ามา\r\n\r\nฝ่ายจัดการวารสารวิจัยระบบสาธารณสุข\r\n\r\n--------------------------------------------\r\n\r\nDear Author,\r\n\r\nRefer to your article,\r\n@journal_id - @journal_title_en,\r\nwhich was submitted to the Journal of Health Systems Research for publication. \r\n\r\nPlease be informed that your article is now ready to be published. \r\n\r\nKindly read and give us a final approval of the edited article before being published on our web site. For necessary corrections, write your comments directly in the PDF-format file. Please upload the file to our system within 3 days. If no response is received by the deadline, we would assume that you have no objection with the content and we will proceed the publication.\r\n\r\nJournal of Health Systems Research','บทความของท่านผ่านเข้าสู่การจัด Artwork แล้ว รบกวนตรวจสอบความถูกต้อง','auto',NULL,'D7BDE2','Author check 1')");
+  db_query("INSERT INTO `open_journal_template` VALUES (16,11,'','เรียน ผู้เขียน\r\n\r\nตามที่ท่านได้ส่งบทความเรื่อง\r\n@journal_id - @journal_title \r\nมายังวารสารวิจัยระบบสาธารณสุขเพื่อเสนอตีพิมพ์ และวารสารฯได้ส่ง Artwork (PDF file) ให้ท่านตรวจสอบความถูกต้องเป็นครั้งสุดท้ายภายใน 3 วันนั้น\r\nบัดนี้ วารสารฯยังไม่ได้รับการแจ้งขอแก้ไขจากท่าน จึงขอเตือนมาอีกครั้งหนึ่ง หากพ้นกำหนดดังกล่าว จะถือว่าท่านยอมรับรายละเอียดในเนื้อหาทั้งหมด\r\nLink เพื่อ แจ้งเห็นชอบกับไฟล์ Artwork: @approve_by_timer_link\r\n\r\nหรือท่านสามารถกดที่ link ด้านล่างสุด เพื่อ upload ไฟล์ที่ขอแก้ไข โดยการสร้างห้องสนทนาใหม่ (กดที่ปุ่ม start new discussion) แล้วอัพโหลดไฟล์ที่ขอแก้ไขกลับเข้ามา\r\nฝ่ายจัดการวารสารวิจัยระบบสาธารณสุข\r\n\r\n--------------------------------------------\r\n\r\nDear Author,\r\n\r\nRefer to your article,\r\nadd ID – the article title,\r\nwhich was submitted to the Journal of Health Systems Research for publication and we had sent you the PDF file for final checking by yourself within 3 days. \r\n\r\nPlease be reminded that we are waiting for your final correction. If no response is received by the deadline, we would assume that you have no objection with the content and we will proceed the publication.\r\n\r\nJournal of Health Systems Research','รบกวนท่านผู้เขียนตรวจสอบความถูกต้องของ artwork เป็นครั้งสุดท้าย','time',NULL,'D7BDE2','Author check 2')");
+  db_query("INSERT INTO `open_journal_template` VALUES (17,3,'','เรียน @receiver\r\n\r\nตามที่ท่านได้ส่งบทความมายังวารสารวิจัยระบบสาธารณสุขเพื่อการตีพิมพ์นั้น บัดนี้ บทความดังกล่าวได้รับการตีพิมพ์แล้ว ท่านสามารถ download บทความนี้ได้จากลิงค์ด้านล่าง ขอขอบคุณและหวังว่าโอกาสหน้าท่านจะเสนอบทความมายังวารสารฯอีก\r\n\r\nบทความ: @journal_id - @journal_title \r\nท่านสามารถติดตามรายละเอียดเพิ่มเติมได้ที่: @information_link \r\n\r\nวารสารวิจัยระบบสาธารณสุข\r\n\r\n--------------------------------------------\r\n\r\nDear @receiver,\r\n\r\nRefer to your article submitted to the Journal of Health Systems Research for publication. Now the article has been duly published. You can download the article from the link below.\r\n\r\nThank you and look forward to hearing from you again soon.\r\n\r\nArticle: @journal_id - @journal_title_en\r\nClick for more information: @information_link\r\n\r\nJournal of Health Systems Research','ยินดีด้วย บทความของท่านได้ถูกตีพิมพ์แล้ว','auto',NULL,'','Publication 1')");
+  db_query("INSERT INTO `open_journal_template` VALUES (18,10,'','เรียน ฝ่ายจัดการวารสาร\n\nขณะนี้ บทความเรื่อง \n@journal_id - @journal_title \nได้เข้าสู่สถานะ Artwork แล้ว รบกวนกรุณาตรวจสอบบทความด้วย \nกรุณาคลิก link ด้านล่างสุดเพื่อดำเนินตามขั้นตอนถัดไป\n\nบรรณาธิการ','มีบทความเข้าสู่สถานะ Artwork','auto',NULL,'F0E67A','Artwork 1')");
+  db_query("INSERT INTO `open_journal_template` VALUES (19,0,'','เรียน ฝ่ายจัดการวารสาร\n\nเนื่องจาก ผู้เขียน ได้ส่งบทความใหม่เรื่อง\n@journal_id - @journal_title \nมายังวารสารวิจัยระบบสาธารณสุขเพื่อรับการตีพิมพ์ รบกวนกรุณาตรวจสอบบทความด้วย กรุณาคลิก link ด้านล่างเพื่อดำเนินตามขั้นตอนถัดไป\n\nผู้เขียน','มีบทความใหม่เข้ามาใหม่','auto',NULL,'AED6F1','Info review 4')");
+  db_query("INSERT INTO `open_journal_template` VALUES (23,0,'ขอปฏิเสธการตีพิมพ์','เรียน ผู้เขียน \n\nตามที่ ท่านส่งบทความเรื่อง\n@journal_id - @journal_title \nมายังวารสารวิจัยระบบสาธารณสุขเพื่อรับการตีพิมพ์ ทางวารสารฯ ขอปฏิเสธการตีพิมพ์เนื่องจาก\n\n..... โปรดระบุ .....\n\nทางวารสารฯ ขอขอบคุณ และหวังว่า โอกาสหน้าคงได้รับการติดต่อจากท่านอีก\n\nฝ่ายจัดการวารสารวิจัยระบบสาธารณสุข','ขอปฏิเสธการตีพิมพ์','reject',NULL,'AED6F1','Info review 5')");
+  db_query("INSERT INTO `open_journal_template` VALUES (25,4,'ขอให้ผู้เขียนปรับแก้บทความ','เรียน ผู้เขียน\n\nตามที่ท่านได้ส่งบทความเรื่อง\n@journal_id - @journal_title \nมายังวารสารวิจัยระบบสาธารณสุขเพื่อการตีพิมพ์ ในเบื้องต้น ทางวารสารฯ ขอให้ท่านปรับแก้ ดังนี้\n\n..... โปรดระบุ .....\n\nโปรดดำเนินการภายใน 10 วัน\nเมื่อท่านปฏิบัติตามคำแนะนำแล้ว เราจึงจะส่งบทความเพื่อให้ผู้ทรงคุณวุฒิพิจารณา ขออภัยในความไม่สะดวกมา ณ ที่นี้ด้วย\n\nฝ่ายจัดการวารสารวิจัยระบบสาธารณสุข','ขอให้ท่านปรับแก้ไขบทความ','template',NULL,'F0E67A','Editor first 4')");
+  db_query("INSERT INTO `open_journal_template` VALUES (26,1,'ขอให้ผู้เขียนปรับแก้บทความตามความเห็นของผู้ทรงคุณวุฒิ','เรียน ผู้เขียน\n\nตามที่ ท่านส่งบทความเรื่อง\n@journal_id - @journal_title\nมายังวารสารวิจัยระบบสาธารณสุขเพื่อรับการตีพิมพ์ นั้น บัดนี้ ผู้ทรงคุณวุฒิได้พิจารณาบทความดังกล่าวแล้วมีความเห็นดังไฟล์ที่แนบ กรุณานำบทความที่แก้ไขแล้ว มาเขียนต่อท้ายในไฟล์ที่แนบนี้เลยค่ะ อย่าลืมไฮไลท์ส่วนที่ปรับแก้และเพิ่มเติมด้วย โดยขอให้ส่งกลับมาภายใน 30 วัน\nจึงเรียนมาเพื่อโปรดพิจารณาแก้ไขและส่งบทความกลับมาภายในกำหนดเวลาด้วย จะขอบคุณยิ่ง\n\nฝ่ายจัดการวารสารวิจัยระบบสาธารณสุข','กรุณาปรับแก้ไขบทความตามความเห็นของผู้ทรงคุณวุฒิ','approve','button','F0E67A','Reviewers alert 2')");
+  db_query("INSERT INTO `open_journal_template` VALUES (27,1,'ขอปฏิเสธการตีพิมพ์','เรียน ผู้เขียน \n\nตามที่ ท่านส่งบทความเรื่อง\n@journal_id - @journal_title \nมายังวารสารวิจัยระบบสาธารณสุขเพื่อรับการตีพิมพ์ ทางวารสารฯ ขอปฏิเสธการตีพิมพ์เนื่องจาก\n\n..... โปรดระบุ .....\n\nทางวารสารฯ ขอขอบคุณ และหวังว่า โอกาสหน้าคงได้รับการติดต่อจากท่านอีก\n\nฝ่ายจัดการวารสารวิจัยระบบสาธารณสุข','ขอปฏิเสธการตีพิมพ์','reject',NULL,'AED6F1','Reviewers alert 3')");
+  db_query("INSERT INTO `open_journal_template` VALUES (28,6,'ขอปฏิเสธการตีพิมพ์','เรียน ผู้เขียน \n\nตามที่ ท่านส่งบทความเรื่อง\n@journal_id - @journal_title \nมายังวารสารวิจัยระบบสาธารณสุขเพื่อรับการตีพิมพ์ ทางวารสารฯ ขอปฏิเสธการตีพิมพ์เนื่องจาก\n\n..... โปรดระบุ .....\n\nทางวารสารฯ ขอขอบคุณ และหวังว่า โอกาสหน้าคงได้รับการติดต่อจากท่านอีก\n\nฝ่ายจัดการวารสารวิจัยระบบสาธารณสุข','ขอปฏิเสธการตีพิมพ์','reject',NULL,'AED6F1','Reviewers alert 8')");
+  db_query("INSERT INTO `open_journal_template` VALUES (29,7,'ขอให้ผู้เขียนพิจารณาปรับแก้เพิ่มเติม','เรียน ผู้เขียน\r\n\r\nตามที่ท่านได้ส่งบทความเรื่อง\r\n@journal_id - @journal_title\r\nมายังวารสารวิจัยระบบสาธารณสุขเพื่อการตีพิมพ์ และท่านได้ปรับแก้ตามความเห็นของผู้ทรงคุณวุฒิไปบ้างแล้วนั้น ผู้ทรงคุณวุฒิที่ตรวจการแก้ไข ขอให้ท่านพิจารณาปรับแก้เพิ่มเติม ดังนี้\r\n\r\n..... โปรดระบุ .....\r\n\r\nโปรดดำเนินการแก้ไขแล้วส่งกลับมาทางระบบ e-journal ภายใน 7 วัน\r\n\r\nวารสารวิจัยระบบสาธารณสุข\r\n\r\n--------------------------------------------\r\n\r\nDear Author,\r\n\r\nRefer to your submitted article,\r\nadd ID – the article title,\r\nwhich you have already improved as suggested by our expert reviewers. The JHSR editorial member, however, would like to request the additional improvement as follows:\r\n\r\n..... Please fill in .....\r\n\r\nPlease complete the improvement within 7 days. \r\n\r\nJournal of Health Systems Research ','ขอให้ท่านผู้ส่งบทความพิจารณาปรับแก้เพิ่มเติม','template',NULL,'','Edit 2')");
+  db_query("INSERT INTO `open_journal_template` VALUES (30,7,'ขอปฏิเสธการตีพิมพ์','เรียน ผู้เขียน\n\nตามที่ท่านได้ส่งบทความเรื่อง\n@journal_id - @journal_title \nมายังวารสารวิจัยระบบสาธารณสุขเพื่อการตีพิมพ์ ทางวารสารฯ ขอปฏิเสธการตีพิมพ์เนื่องจาก\n\n..... โปรดระบุ .....\n\nทางวารสารฯ ขอขอบคุณ และหวังว่า โอกาสหน้าคงได้รับการติดต่อจากท่านอีก\n\nวารสารวิจัยระบบสาธารณสุข','ขอปฏิเสธการตีพิมพ์','reject',NULL,'AED6F1','Edit 4')");
+  db_query("INSERT INTO `open_journal_template` VALUES (31,8,'','เรียน ฝ่ายจัดการวารสาร\n\nขณะนี้ บทความเรื่อง \n@journal_id - @journal_title \nได้เข้าสู่สถานะ Edit 2 (การชำระนิพนธ์ต้นฉบับ) แล้ว รบกวนกรุณาตรวจสอบบทความด้วย \nกรุณาคลิก link ด้านล่างสุดเพื่อดำเนินตามขั้นตอนถัดไป\n\nบรรณาธิการ','มีบทความเข้าสู่สถานะ Edit 2 (การชำระนิพนธ์ต้นฉบับ)','auto',NULL,'AED6F1','Edit 5')");
+  db_query("INSERT INTO `open_journal_template` VALUES (32,8,'ขอปฏิเสธการตีพิมพ์','เรียน ผู้เขียน\n\nตามที่ท่านได้ส่งบทความเรื่อง\n@journal_id - @journal_title \nมายังวารสารวิจัยระบบสาธารณสุขเพื่อการตีพิมพ์ ทางวารสารฯ ขอปฏิเสธการตีพิมพ์เนื่องจาก\n\n..... โปรดระบุ .....\n\nทางวารสารฯ ขอขอบคุณ และหวังว่า โอกาสหน้าคงได้รับการติดต่อจากท่านอีก\n\nวารสารวิจัยระบบสาธารณสุข','ขอปฏิเสธการตีพิมพ์','reject',NULL,'AED6F1','Edit 6')");
+  db_query("INSERT INTO `open_journal_template` VALUES (33,9,'','เรียน บรรณาธิการ\r\n\r\nขณะนี้ บทความเรื่อง\r\n@journal_id - @journal_title \r\nได้เข้าสู่สถานะ Editor approval (MS Words) แล้ว\r\nกรุณาคลิก link ด้านล่างสุด ไปยังหน้าต่อไป เพื่อพิจารณาความถูกต้องของบทความนี้ \r\n- กดที่ปุ่ม approve เพื่อยืนยันความถูกต้อง\r\n- หากต้องการขอให้ผู้เขียนให้ผู้เขียนปรับปรุง หรือทำส่วนใดให้ชัดเจนขึ้น (adjust) ให้สร้างห้องสนทนาใหม่โดยกดที่ปุ่ม start new discussion แล้ว select template เป็น \"ขอให้ผู้เขียนปรับปรุง หรือทำส่วนใดให้ชัดเจนขึ้น (adjust)\" หลังจากนั้นระบุสิ่งที่อยากให้ปรับแก้ลงในกล่องข้อความ details ในส่วนของ ..... โปรดระบุ .....\r\n- กดที่ปุ่ม reject เพื่อปฏิเสธ และหากปฏิเสธ ขอความกรุณากรอกเหตุผล เพื่อแจ้งผู้เขียนด้วย จะขอบพระคุณยิ่ง\r\n\r\nฝ่ายจัดการวารสารวิจัยระบบสาธารณสุข\r\n\r\n--------------------------------------------\r\n\r\nDear Editor,\r\n\r\nRefer to submitted article\r\n@journal_id - @journal_title_en\r\nThe article has been edited.  Please follow the link at your earliest convenience and click “approve” to send the article to the publishing house, or click “adjust” and fill in the dialog box to send a message to the author if any additional clarification/correction is needed.\r\n\r\nThe JHSR editorial staff','มีบทความเข้าสู่สถานะ Editor approval','auto',NULL,'D7BDE2','Editor approval 1')");
+  db_query("INSERT INTO `open_journal_template` VALUES (34,9,'ขอปฏิเสธการตีพิมพ์','เรียน ผู้เขียน\n\nตามที่ท่านได้ส่งบทความเรื่อง\n@journal_id - @journal_title \nมายังวารสารวิจัยระบบสาธารณสุขเพื่อการตีพิมพ์ ทางวารสารฯ ขอปฏิเสธการตีพิมพ์เนื่องจาก\n\n..... โปรดระบุ .....\n\nทางวารสารฯ ขอขอบคุณ และหวังว่า โอกาสหน้าคงได้รับการติดต่อจากท่านอีก\n\nวารสารวิจัยระบบสาธารณสุข','ขอปฏิเสธการตีพิมพ์','reject',NULL,'AED6F1','Editor approval 4')");
+  db_query("INSERT INTO `open_journal_template` VALUES (35,10,'','เรียน ผู้เขียน\r\n\r\nตามที่ ท่านส่งบทความเรื่อง\r\n@journal_id - @journal_title\r\nมายังวารสารวิจัยระบบสาธารณสุขเพื่อการตีพิมพ์ และท่านได้ปรับแก้บทความกลับมาแล้ว นั้น\r\nโปรดทราบว่า ขณะนี้ บรรณาธิการได้ให้ความเห็นชอบการปรับแก้บทความของท่านก่อนการจัด artwork แล้ว \r\n\r\nวารสารวิจัยระบบสาธารณสุข\r\n\r\n--------------------------------------------\r\n\r\nDear Author,\r\n\r\nRefer to your submitted article,\r\n@journal_id - @journal_title_en,\r\nwhich you have duly made necessary improvements as suggested. Please be informed that your improved article is approved and now under the pre-press process.\r\n\r\nJournal of Health Systems Research','บรรณาธิการได้ให้ความเห็นชอบกับบทความของท่านแล้ว','auto',NULL,'','Editor approval 2')");
+  db_query("INSERT INTO `open_journal_template` VALUES (36,10,'ขอปฏิเสธการตีพิมพ์','เรียน ผู้เขียน\n\nตามที่ท่านได้ส่งบทความเรื่อง\n@journal_id - @journal_title \nมายังวารสารวิจัยระบบสาธารณสุขเพื่อการตีพิมพ์ ทางวารสารฯ ขอปฏิเสธการตีพิมพ์เนื่องจาก\n\n..... โปรดระบุ .....\n\nทางวารสารฯ ขอขอบคุณ และหวังว่า โอกาสหน้าคงได้รับการติดต่อจากท่านอีก\n\nฝ่ายจัดการวารสารวิจัยระบบสาธารณสุข','ขอปฏิเสธการตีพิมพ์','reject',NULL,'AED6F1','Artwork 2')");
+  db_query("INSERT INTO `open_journal_template` VALUES (37,11,'ขอปฏิเสธการตีพิมพ์','เรียน ผู้เขียน\r\n\r\nตามที่ท่านได้ส่งบทความเรื่อง\r\n@journal_id - @journal_title \r\nมายังวารสารวิจัยระบบสาธารณสุขเพื่อการตีพิมพ์ ทางวารสารฯ ขอปฏิเสธการตีพิมพ์เนื่องจาก\r\n\r\n..... โปรดระบุ .....\r\n\r\nทางวารสารฯ ขอขอบคุณ และหวังว่า โอกาสหน้าคงได้รับการติดต่อจากท่านอีก\r\n\r\nฝ่ายจัดการวารสารวิจัยระบบสาธารณสุข','ขอปฏิเสธการตีพิมพ์','reject',NULL,'AED6F1','Author check 3')");
+  db_query("INSERT INTO `open_journal_template` VALUES (38,12,'','เรียน บรรณาธิการ\n\nขณะนี้ บทความเรื่อง\n@journal_id - @journal_title \nได้เข้าสู่สถานะ Editor approval of artwork แล้ว\nกรุณาคลิก link ด้านล่างสุด ไปยังหน้าต่อไป เพื่อพิจารณาความเรียบร้อยของบทความ รวมถึงภาพรวมของ artwork ทั้งหมด \n- กดที่ปุ่ม approve เพื่อยืนยันความเรียบร้อย\n- หากต้องการขอให้ผู้ฝ่ายจัดการวารสารปรับปรุง ให้สร้างห้องสนทนาใหม่โดยกดที่ปุ่ม start new discussion หลังจากนั้นระบุสิ่งที่อยากให้ปรับแก้ลงในกล่องข้อความ details แล้วเลือกส่งหา administrator เท่านั้น\n- กดที่ปุ่ม reject เพื่อปฏิเสธ และหากปฏิเสธ ขอความกรุณากรอกเหตุผล เพื่อแจ้งผู้เขียนด้วย จะขอบพระคุณยิ่ง\n\nฝ่ายจัดการวารสารวิจัยระบบสาธารณสุข','มีบทความเข้าสู่สถานะ Editor approval of artwork','auto',NULL,'AED6F1','Editor approval of artwork 1')");
+  db_query("INSERT INTO `open_journal_template` VALUES (39,12,'ขอปฏิเสธการตีพิมพ์','เรียน ผู้เขียน\n\nตามที่ท่านได้ส่งบทความเรื่อง\n@journal_id - @journal_title \nมายังวารสารวิจัยระบบสาธารณสุขเพื่อการตีพิมพ์ ทางวารสารฯ ขอปฏิเสธการตีพิมพ์เนื่องจาก\n\n..... โปรดระบุ .....\n\nทางวารสารฯ ขอขอบคุณ และหวังว่า โอกาสหน้าคงได้รับการติดต่อจากท่านอีก\n\nวารสารวิจัยระบบสาธารณสุข','ขอปฏิเสธการตีพิมพ์','reject',NULL,'AED6F1','Editor approval of artwork 2')");
+  db_query("INSERT INTO `open_journal_template` VALUES (40,13,'','เรียน ฝ่ายจัดการวารสาร\n\nขณะนี้ บทความเรื่อง \n@journal_id - @journal_title \nได้เข้าสู่สถานะ Proofreading แล้ว รบกวนกรุณาตรวจสอบบทความด้วย \nกรุณาคลิก link ด้านล่างสุดเพื่อดำเนินตามขั้นตอนถัดไป\n\nบรรณาธิการ','มีบทความเข้าสู่สถานะ Proofreading','auto',NULL,'F0E67A','Proofreading 1')");
+  db_query("INSERT INTO `open_journal_template` VALUES (41,13,'ขอปฏิเสธการตีพิมพ์','เรียน ผู้เขียน\r\n\r\nตามที่ท่านได้ส่งบทความเรื่อง\r\n@journal_id - @journal_title \r\nมายังวารสารวิจัยระบบสาธารณสุขเพื่อการตีพิมพ์ ทางวารสารฯ ขอปฏิเสธการตีพิมพ์เนื่องจาก\r\n\r\n..... โปรดระบุ .....\r\n\r\nทางวารสารฯ ขอขอบคุณ และหวังว่า โอกาสหน้าคงได้รับการติดต่อจากท่านอีก\r\n\r\nฝ่ายจัดการวารสารวิจัยระบบสาธารณสุข','ขอปฏิเสธการตีพิมพ์','reject',NULL,'AED6F1','Proofreading 2')");
+  db_query("INSERT INTO `open_journal_template` VALUES (42,2,'','เรียน บรรณารักษ์\n\nขณะนี้ บทความเรื่อง \n@journal_id - @journal_title \nได้เข้าสู่สถานะ Library catalogue แล้ว รบกวนกรุณาตรวจสอบและจัดการบทความด้วย\nกรุณาคลิก link ด้านล่างสุดเพื่อดำเนินตามขั้นตอนถัดไป\n\nฝ่ายจัดการวารสารวิจัยระบบสาธารณสุข','มีบทความเข้าสู่สถานะ Library catalogue','auto',NULL,'AED6F1','Library catalogue 1')");
+  db_query("INSERT INTO `open_journal_template` VALUES (43,2,'ขอปฏิเสธการตีพิมพ์','เรียน ผู้เขียน\n\nตามที่ท่านได้ส่งบทความเรื่อง\n@journal_id - @journal_title \nมายังวารสารวิจัยระบบสาธารณสุขเพื่อการตีพิมพ์ ทางวารสารฯ ขอปฏิเสธการตีพิมพ์เนื่องจาก\n\n..... โปรดระบุ .....\n\nทางวารสารฯ ขอขอบคุณ และหวังว่า โอกาสหน้าคงได้รับการติดต่อจากท่านอีก\n\nฝ่ายบรรณารักษ์วารสารวิจัยระบบสาธารณสุข','ขอปฏิเสธการตีพิมพ์','reject',NULL,'AED6F1','Library catalogue 2')");
+  db_query("INSERT INTO `open_journal_template` VALUES (44,3,'','เรียน บรรณาธิการ และ ฝ่ายจัดการวารสาร\nบทความเรื่อง\n@journal_id - @journal_title\nได้เข้าสู่สถานะ Publication แล้ว (ได้ทำการตีพิมพ์เรียบร้อยแล้ว)\nท่านสามารถติดตามรายละเอียดเพิ่มเติมได้ที่: @information_link \n\nบรรณารักษ์','มีบทความเข้าสู่สถานะ Publication','auto',NULL,'AED6F1','Publication 2')");
+  db_query("INSERT INTO `open_journal_template` VALUES (200,102,'ขอปฏิเสธการตีพิมพ์','เรียน ผู้เขียน \n\nตามที่ ท่านส่งบทความเรื่อง \n@journal_id - @journal_title \nมายังวารสารวิจัยระบบสาธารณสุขเพื่อรับการตีพิมพ์และ ทางวารสารฯ ได้แจ้งผลการพิจารณาบทความไปแล้ว นั้น\nโปรดทราบว่า เราจำเป็นต้องปฏิเสธการตีพิมพ์เนื่องจากท่านมิได้ส่งบทความที่แก้ไขกลับมาภายในกำหนด หากท่านประสงค์จะส่งบทความที่แก้ไขกลับมาให้ทางวารสารฯ พิจารณาอีกครั้ง กรุณา submit เข้ามาใหม่ โดยใส่ “resubmit” หน้าชื่อเรื่องด้วย\nทางวารสารฯ ขอขอบคุณ และหวังว่า โอกาสหน้าคงได้รับการติดต่อจากท่านอีก\n\nฝ่ายจัดการวารสารวิจัยระบบสาธารณสุข','ขอปฏิเสธการตีพิมพ์บทความของท่าน','reject',NULL,'AED6F1','Revision alert 7')");
+  db_query("INSERT INTO `open_journal_template` VALUES (343,7,'','เรียน ผู้เขียน\r\n\r\nตามที่ท่านได้ส่งบทความเรื่อง\r\n@journal_id - @journal_title\r\nทางวารสารวิจัยระบบสาธารณสุขได้รับบทความที่ท่านแก้ไขตามความเห็นของคณะผู้ทรงคุณวุฒิกลับมาแล้ว ผู้ทรงคุณวุฒิจะตรวจบทความที่แก้ไขแล้วนี้ หากยังต้องมีการปรับแก้เพิ่มเติม ทางวารสารฯจะแจ้งให้ท่านทราบในโอกาสต่อไป\r\n\r\nวารสารวิจัยระบบสาธารณสุข\r\n\r\n--------------------------------------------\r\n\r\nDear Author,\r\n\r\nRefer to your submitted article,\r\n@journal_id - @journal_title_en,\r\nwhich you have already improved as suggested by our expert reviewers. The JHSR editorial member will check it later. You would be informed if there are any additional suggestions.\r\n\r\nJournal of Health Systems Research','ขอขอบคุณที่ท่านผู้เขียน ที่ส่งบทความแก้ไขแล้วตามความเห็นของคณะผู้ทรงคุณวุฒิกลับมา','auto',NULL,'','Edit 1')");
+  db_query("INSERT INTO `open_journal_template` VALUES (344,11,'','เรียน ฝ่ายจัดการวารสาร\r\n\r\nเนื่องจาก ผู้เขียน ที่ได้ส่งบทความเรื่อง\r\n@journal_id - @journal_title\r\nและเข้าสู่สถานะ Document review · Author check แล้ว แต่ท่านผู้เขียนไม่ได้กด link เพื่อ แจ้งเห็นชอบกับไฟล์ Artwork ใดๆ\r\nซึ่งขณะนี้จะครบกำหนดระยะเวลาในวันพรุ่งนี้แล้ว ซึ่งทางระบบได้ส่งข้อความแจ้งเตือนไปยังผู้เขียนให้แล้ว \r\n\r\nรบกวนท่านยืนยันเพื่อเปลี่ยนสถานะบทความเป็น Document review · Editor approval of artwork ด้วยตัวเอง หากผู้เขียนไม่กด link ด้วยตัวเองในวันพรุ่งนี้\r\n\r\nจากระบบแจ้งเตือนอัตโนมัติ','แจ้งเตือนผู้เขียนไม่กด link เพื่อ แจ้งเห็นชอบกับไฟล์ Artwork','time',NULL,'AED6F1','Author check 4')");
+
+  db_query("DELETE FROM `open_journal_template_role`");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (10,8,11)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (12,8,14)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (16,3,18)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (17,3,19)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (18,8,23)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (19,8,25)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (20,8,26)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (21,8,27)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (24,8,28)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (27,8,29)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (30,8,30)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (31,3,31)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (34,8,32)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (38,8,34)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (39,8,35)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (42,8,36)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (46,4,38)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (49,8,39)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (50,3,40)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (54,6,42)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (57,8,43)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (59,3,44)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (60,4,44)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (61,8,200)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (80,4,12)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (93,8,5)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (95,1,2)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (96,8,1)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (97,8,3)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (98,4,4)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (99,3,6)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (100,8,7)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (101,8,8)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (102,8,9)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (104,8,10)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (112,8,343)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (113,4,33)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (116,1,17)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (117,8,17)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (118,8,37)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (119,8,41)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (120,8,15)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (122,8,16)");
+  db_query("INSERT INTO `open_journal_template_role` VALUES (124,3,344)");
 
 
+}
+
+
+function open_journal_update_7052(&$sandbox) {
+  db_query("UPDATE {open_journal_state} SET timeout_auto_approve = 3, timeout_auto_reminder = 2 WHERE sid = 11");
+}
 
 
 
