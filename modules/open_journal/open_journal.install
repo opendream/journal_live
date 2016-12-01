@@ -3300,6 +3300,7 @@ function open_journal_update_7052(&$sandbox) {
 
 
 
-
-
+function open_journal_update_7053(&$sandbox) {
+  db_query("INSERT INTO open_journal_journal_state (jid, sid, start_date, end_date) SELECT j.jid, j.sid, j.status_changed, IF(j.sid = 3, j.status_changed, NULL) FROM open_journal_journal j LEFT JOIN open_journal_journal_state js ON j.jid = js.jid WHERE js.jid IS NULL");
+}
 

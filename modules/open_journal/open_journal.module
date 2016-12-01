@@ -2821,7 +2821,7 @@ function open_journal_discussion_add($journal) {
 function open_journal_replace_template_string($template_list, $journal, $add_role=FALSE) {
 
   $user_journal = user_load($journal->uid);
-  $replace_code_list = array('@author', '@journal_id', '@journal_title', '@discussion_add_link', '@information_link', '@receiver_roles', '@approve_by_timer_link', '@author_name');
+  $replace_code_list = array('@author', '@journal_id', '@journal_title', '@journal_title_en', '@discussion_add_link', '@information_link', '@receiver_roles', '@approve_by_timer_link', '@author_name');
 
   foreach ($template_list as $key => $value) {
     $role_list = open_journal_get_template_role_list($value->tpid);
@@ -2842,7 +2842,8 @@ function open_journal_replace_template_string($template_list, $journal, $add_rol
     $replace_code_to = array(
       $author_replace,
       $journal->code,
-      $journal->title,
+      ($journal->title_sub? $journal->title_sub: $journal->title_en),
+      $journal->title_en,
       l('กดที่ลิงก์นี้ เมื่อท่านเห็นชอบกับไฟล์ Artwork', 'journal/'.$journal->jid.'/discussion/add', array('absolute' => TRUE)),
       ($journal->dc_identifier? $journal->dc_identifier: url('journal/'.$journal->jid.'/information', array('absolute' => TRUE))),
       $receiver_roles,
