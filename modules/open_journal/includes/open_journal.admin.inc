@@ -138,7 +138,7 @@ function open_journal_template_list() {
         $info[] = 'When state not change in '.$state['timeout_auto_reject'].' days and @approve_by_timer_link has <u>not</u> been visited, system will reject article '.$with_templates.' automatically!';
       }
       else if ($state['timeout_auto_reject']) {
-        $info[] = 'When state not change in '.$state['timeout_auto_reject'].' days, system will reject article '.$with_templates.' automatically!';
+        $info[] = 'When state not change in '.$state['timeout_auto_reject'].' days, system will reject article and '.$with_templates.' automatically!';
 
       }
 
