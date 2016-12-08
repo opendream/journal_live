@@ -1004,8 +1004,22 @@ function open_journal_journal_load($jid, $ignore_access=FALSE) {
     $data->creator = $data->creator_en? $data->creator_en: $data->creator_sub;
   }
 
+  if (!$data->code) {
+    db_query("UPDATE {open_journal_journal} SET code = :code", array(':code' => open_journal_journal_get_code()));
+  }
+
 
   return $data;
+}
+
+function open_journal_journal_get_code() {
+    // generate journal code
+    $current_year = date('y', REQUEST_TIME);
+    $code = variable_get('open_journal_latest_code_'.$current_year, 0);
+    $code++;
+    $code = str_pad($code, 3, '0', STR_PAD_LEFT);
+    $code = $current_year.'-'.$code;
+    return $code;
 }
 
 function open_journal_journal_save($data, $change_status=FALSE, $commit=TRUE, $silent=FALSE) {
@@ -1048,14 +1062,7 @@ function open_journal_journal_save($data, $change_status=FALSE, $commit=TRUE, $s
   if (!$pk) {
     $data->created = REQUEST_TIME;
     $data->changed = REQUEST_TIME;
-    
-    // generate journal code
-    $current_year = date('y', REQUEST_TIME);
-    $code = variable_get('open_journal_latest_code_'.$current_year, 0);
-    $code++;
-    $code = str_pad($code, 3, '0', STR_PAD_LEFT);
-    $code = $current_year.'-'.$code;
-    $data->code = $code;
+    $data->code = open_journal_journal_get_code();
   }
   if (!$pk || $change_status) {
     $data->status_changed = REQUEST_TIME;
@@ -1538,6 +1545,7 @@ function open_jounal_discussion_mail($data, $params=array()) {
       foreach ($data->journal->creator_email as $i => $mail) {
         $user_list[] = (object) array(
           'name' => $data->journal->creator_sub[$i]? $data->journal->creator_sub[$i]: $data->journal->creator_en[$i],
+          'name_en' => $data->journal->creator_en[$i]? $data->journal->creator_en[$i]: $data->journal->creator_sub[$i],
           'mail' => $mail
         );
       }
@@ -1568,6 +1576,7 @@ function open_jounal_discussion_mail($data, $params=array()) {
 
     $data->sender = $sender;
     $data->receiver = $receiver;
+    $data->description = str_replace('@receiver_en', $receiver->name_en, $data->description);
     $data->description = str_replace('@receiver', $receiver->name, $data->description);
 
     if (!$data->contributor_only || user_access('access contributor process', $receiver)) {
@@ -2821,7 +2830,7 @@ function open_journal_discussion_add($journal) {
 function open_journal_replace_template_string($template_list, $journal, $add_role=FALSE) {
 
   $user_journal = user_load($journal->uid);
-  $replace_code_list = array('@author', '@journal_id', '@journal_title', '@journal_title_en', '@discussion_add_link', '@information_link', '@receiver_roles', '@approve_by_timer_link', '@author_name');
+  $replace_code_list = array('@author_name', '@author', '@journal_id', '@journal_title_en', '@journal_title', '@discussion_add_link', '@information_link', '@receiver_roles', '@approve_by_timer_link');
 
   foreach ($template_list as $key => $value) {
     $role_list = open_journal_get_template_role_list($value->tpid);
@@ -2840,18 +2849,20 @@ function open_journal_replace_template_string($template_list, $journal, $add_rol
     $author_replace = "ผู้เขียน";
     $receiver_replace = $user_journal->data['firstname']." ".$user_journal->data['lastname'];
     $replace_code_to = array(
+      $user_journal->data['firstname']." ".$user_journal->data['lastname'],
       $author_replace,
       $journal->code,
-      ($journal->title_sub? $journal->title_sub: $journal->title_en),
       $journal->title_en,
+      ($journal->title_sub? $journal->title_sub: $journal->title_en),
       l('กดที่ลิงก์นี้ เมื่อท่านเห็นชอบกับไฟล์ Artwork', 'journal/'.$journal->jid.'/discussion/add', array('absolute' => TRUE)),
       ($journal->dc_identifier? $journal->dc_identifier: url('journal/'.$journal->jid.'/information', array('absolute' => TRUE))),
       $receiver_roles,
       url('journal/'.$journal->jid.'/approve-by-timer', array('absolute' => TRUE)),
-      $user_journal->data['firstname']." ".$user_journal->data['lastname']
+      
     );
 
     $template_list[$key]->body = str_replace($replace_code_list, $replace_code_to, $value->body);
+    $template_list[$key]->template_title = str_replace($replace_code_list, $replace_code_to, $value->template_title);
 
     if ($add_role) {
       $template_list[$key]->role = $role_list;

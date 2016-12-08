@@ -149,7 +149,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
   $form['data']['group']['author']['creator_en'] = open_journal_multi_textfield($author_label ,open_journal_get_field($data, 'creator_en'), 'dc_creator', 'Add co-author', !$form_disabled, 1, NULL, TRUE);
   $form['data']['group']['author']['creator_en']['#disabled'] = $form_disabled;
 
-  $form['data']['group']['author']['creator_email'] = open_journal_multi_textfield('Author (email)' ,open_journal_get_field($data, 'creator_email'), 'dc_creator.email', 'Add co-author', !$form_disabled, 1, NULL, TRUE);
+  $form['data']['group']['author']['creator_email'] = open_journal_multi_textfield('Author (email)' ,open_journal_get_field($data, 'creator_email'), 'dc_creator.email', 'Add co-author', !$form_disabled, 1, NULL, !user_access('access contributor process'));
   $form['data']['group']['author']['creator_email']['#disabled'] = $form_disabled;
   
   $keywords_label = 'Keywords';
