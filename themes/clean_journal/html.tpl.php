@@ -89,6 +89,9 @@ $account = user_load($user->uid);
             <?php endif ?>
             <?php if(!user_access('access contributor process')):?>  
             <li><?php print l(t('Add new article'), OPEN_JOURNAL_PREFIX_PATH.'/add'); ?></li>
+            <?php else: ?>
+            <li><?php print l(t('Reports'), OPEN_JOURNAL_PREFIX_PATH.'/report/'); ?></li>
+            
             <?php endif;?>
             <li><?php print l(t('Account settings'), OPEN_JOURNAL_PREFIX_PATH.'/account/setting'); ?></li>
             <li><?php print l(t('Logout'), 'user/logout'); ?></li>

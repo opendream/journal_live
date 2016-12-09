@@ -176,13 +176,14 @@ function open_journal_report_journal_summary() {
 
   $query = array(
     ':last_sid' => open_journal_get_last_state(),
+    ':start_date' => $query[':start_date'],
     ':end_date' => $query[':end_date']
   );
 
   $published_years = db_query("SELECT 
       DATE_FORMAT(FROM_UNIXTIME(start_date), '%Y') year 
     FROM open_journal_journal_state 
-    WHERE start_date <= :end_date AND sid = :last_sid  
+    WHERE start_date >= :start_date AND start_date <= :end_date AND sid = :last_sid  
     GROUP BY year
   ", $query)->fetchAll();
 
@@ -217,6 +218,8 @@ function open_journal_report_journal_summary() {
       {open_journal_journal} j 
     ON 
       js.jid = j.jid 
+    WHERE
+      j.created >= :start_date
     GROUP BY 
       s.sid
   ", $query);

@@ -75,6 +75,12 @@ function open_journal_template_list() {
   $rows = array();
 
   $role_map = user_roles();
+
+  $rs = db_query("SELECT rp.permission permission, GROUP_CONCAT(r.name SEPARATOR ', ') roles FROM role_permission rp LEFT JOIN role r ON rp.rid = r.rid WHERE rp.permission LIKE 'auto active %' GROUP BY rp.permission");
+
+  foreach ($rs as $obj) {
+    $auto_active_roles[$obj->permission] = $obj->roles;
+  }
   
   foreach (open_journal_get_status_list(TRUE) as $state) {
 
@@ -84,8 +90,13 @@ function open_journal_template_list() {
 
     $info = array();
 
+
+    if ($auto_active_roles['auto active '.$state['code']]) {
+      $state['name'] .= '<strong> + Engage · '.$auto_active_roles['auto active '.$state['code']].'</strong><br />';
+    }
+
     if ($state['actor_rid']) {
-      $state['name'] .= '<strong> ♦ Actor · '.$role_map[$state['actor_rid']].'</strong>';
+      $state['name'] .= '<strong> ♦ Actor · '.$role_map[$state['actor_rid']].'</strong><br />';
     }
 
     if ($state['description']) {
