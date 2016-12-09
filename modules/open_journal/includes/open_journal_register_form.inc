@@ -210,7 +210,7 @@ function open_journal_account_form(&$form, &$form_state) {
   $form['data'] = array(
     '#tree' => TRUE,
     '#type' => 'fieldset',
-    '#title' => t('Information'),
+    '#title' => t('Name'),
     //'#description' => t('Only you will see this information display.'),
   );
   $form['data']['firstname'] = array(
@@ -232,7 +232,7 @@ function open_journal_account_form(&$form, &$form_state) {
     '#type' => 'fieldset',
     '#title' => t('Picture'),
     '#weight' => 1,
-    '#access' => (!$register && variable_get('user_pictures', 0)),
+    '#access' => FALSE && (!$register && variable_get('user_pictures', 0)),
   );
   $form['picture']['picture'] = array(
     '#type' => 'value',

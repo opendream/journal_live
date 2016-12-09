@@ -883,8 +883,8 @@ function open_journal_login() {
   $mpath = drupal_get_path('module', 'open_journal');
   
   $condition_list = array(
-    l('For authors', $mpath.'/files/guideline-author.pdf'),
-    l('For authors(confirm form)', $mpath.'/files/confirm_form.doc'),
+    l('For authors', OPEN_JOURNAL_PREFIX_PATH.'/for-authors'),
+    l('For authors(declare form)', OPEN_JOURNAL_PREFIX_PATH.'/declare-form'),
     l('For reviewers', $mpath.'/files/guideline-reviewer.pdf')
   );
 
