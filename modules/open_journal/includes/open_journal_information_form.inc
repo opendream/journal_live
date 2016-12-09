@@ -102,7 +102,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
     );
 
     $form['main']['guideline'] = array(
-      '#title' => t('I have read the submission guidelines.').' '.l(t('Download guideline'), ''),
+      '#title' => t('I have read the submission guidelines.').' '.l(t('Download guideline'), 'sites/all/modules/open_journal/files/guideline-author.pdf'),
       '#type' => 'checkbox',
       '#required' => TRUE,
       '#disabled' => $form_disabled,

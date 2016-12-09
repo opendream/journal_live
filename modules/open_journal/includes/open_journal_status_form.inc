@@ -626,25 +626,3 @@ function open_journal_timeout_check() {
   return '';
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
