@@ -25,6 +25,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
       '#title' => open_journal_label_help(OPEN_JOURNAL_SUB_LANG_TITLE_LABEL, 'Name of the article in '.OPEN_JOURNAL_SUB_LANG_FULL_TEXT.' language', TRUE),
       '#type' => 'textfield',
       '#required' => TRUE,
+      '#maxlength' => 1028,
       '#default_value' => open_journal_get_field($data, 'title_sub'),
       '#access' => $fs['title_sub'],
     );
@@ -35,6 +36,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
     '#title' => open_journal_label_help($title_label, 'Name of the article in '.OPEN_JOURNAL_LANG_FULL_TEXT.' language', TRUE),
     '#type' => 'textfield',
     '#required' => TRUE,
+    '#maxlength' => 1028,
     '#default_value' => open_journal_get_field($data, 'title_en'),
     '#access' => $fs['title_en'],
   );
@@ -92,7 +94,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
     );
 
     $form['main']['guideline'] = array(
-      '#title' => t('I have read the submission guidelines.').' '.l(t('Download guideline'), ''),
+      '#title' => t('I have read the submission guidelines.').' '.l(t('Download guideline'), 'sites/all/modules/open_journal/files/guideline-author.pdf'),
       '#type' => 'checkbox',
       '#required' => TRUE,
     );

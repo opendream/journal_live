@@ -674,7 +674,7 @@ function open_journal_login() {
   
   $mpath = drupal_get_path('module', 'open_journal');
   
-  $condition_list = array(l('For authors', $mpath.'/files/guideline-author.pdf'), l('For reviewers', $mpath.'/files/guideline-reviewer.pdf'));
+  $condition_list = array(l('For authors', $mpath.'/files/guideline-author.pdf'),l('For authors(confirm form)', $mpath.'/files/confirm_form.doc'),l('For reviewers', $mpath.'/files/guideline-reviewer.pdf'));
   return theme('open_journal_login', array(
     'form' => drupal_render(drupal_get_form('open_journal_login_form')),
     'condition_list' => $condition_list,
@@ -1159,9 +1159,14 @@ function open_journal_mail($key, &$message, $data) {
   switch ($key) {
     case 'open_journal_discussion_add':
       //$message['subject'] = '['.truncate_utf8($data->journal->title, 10, FALSE, TRUE).']'.$data->title;
+      
+
       $message['subject'] = open_journal_trim($data->journal->title, 20).' - '.open_journal_trim($data->title);
 
-      $body = "\n";
+      $body  = "===== AUTOMAITICAL EMAIL...DO NOT REPLY TO THIS EMAIL =====\n";
+      $body .= "===== กรุณาอย่าตอบกลับกรุณาใช้ระบบ ejournal ในการติดต่อ =====\n\n";
+	
+
       $body .= "\n".'Article: '.$data->journal->title;
       $body .= "\n".'------------------------------------------------------------------------';
       $body .= "\n";
@@ -1188,7 +1193,7 @@ function open_journal_mail($key, &$message, $data) {
 
     case 'open_journal_comment_add':
 
-      $message['subject'] = 'Re: '.open_journal_trim($data->journal->title, 20).' - '.open_journal_trim($data->discussion->title);
+      $message['subject'] = '[Do not reply] Re: '.open_journal_trim($data->journal->title, 20).' - '.open_journal_trim($data->discussion->title);
 
       $body = "\n";
       $body .= "\n".'Article: '.$data->journal->title;
@@ -1209,7 +1214,7 @@ function open_journal_mail($key, &$message, $data) {
 
     case 'open_journal_people_invite':
 
-      $message['subject'] = "A new submission : ".open_journal_trim($data->journal->title, 20);
+      $message['subject'] = "[Do not reply] A new submission : ".open_journal_trim($data->journal->title, 20);
 
       $body = "\n";
       $body .= "\n"."You're invited to initiate the reviewing process the article.";
@@ -1225,7 +1230,7 @@ function open_journal_mail($key, &$message, $data) {
     
     case 'open_journal_issue_published':
       
-      $message['subject'] = open_journal_trim($data->journal->title, 20).' was published on issue '.open_journal_trim($data->issue->title, 20);
+      $message['subject'] = "[Do not reply] ".open_journal_trim($data->journal->title, 20).' was published on issue '.open_journal_trim($data->issue->title, 20);
 
       $body = "\n";
       $body .= "\n".'Article: '.$data->journal->title;
@@ -2488,7 +2493,7 @@ function open_journal_list($status='all', $after_jid=NULL, $limit=OPEN_JOURNAL_L
 
   // Check rander load more
   // TODO: has_more_page checker better performance
-  $has_more_page = $count_journal && open_journal_load_multiple($user, isset($journal->jid), $limit, $status);
+  $has_more_page = $count_journal && open_journal_load_multiple($user, $journal->jid, $limit, $status);
   $update_load_more_url = FALSE;
 
   if ($has_more_page) {

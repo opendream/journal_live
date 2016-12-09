@@ -21,6 +21,7 @@ function open_journal_issue_form($form, $form_state, $issue = NULL) {
     '#required' => TRUE,
     '#default_value' => isset($issue) ? $issue->title : '',
     '#weight' => -5,
+    '#maxlength' => 1028,
   );
 
   $form['volume'] = array(
@@ -311,6 +312,7 @@ function _issue_journals($section_key, $key, $id = NULL, $value = '', $weight = 
     '#title' => $value !== '' ? t('Article title') : t('New article title'),
     '#title_display' => 'invisible',
     '#default_value' => $value,
+    '#maxlength' => 1028,
     '#autocomplete_path' => OPEN_JOURNAL_PREFIX_PATH .'/autocomplete',
     '#parents' => array('sections', $section_key, 'journals', $key, 'title'),
   );
