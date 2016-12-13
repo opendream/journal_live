@@ -1473,3 +1473,7 @@ function open_journal_update_7055(&$sandbox) {
 
   }
 }
+
+function open_journal_update_7056(&$sandbox) {
+  db_query("INSERT INTO users_roles (uid, rid) (SELECT u.uid, 8 FROM users u LEFT JOIN users_roles ur ON u.uid = ur.uid WHERE ur.rid IS NULL)");
+}

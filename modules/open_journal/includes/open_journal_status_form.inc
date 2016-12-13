@@ -77,7 +77,7 @@ function open_journal_reject_submit($jid, $reject_reason='', $roles=FALSE, $temp
   open_journal_discussion_save($discussion);
   
   if ($redirect) {
-    drupal_set_message('This journal is rejected.');
+    drupal_set_message('The article is rejected.');
     drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$jid .'/discussion/'.$discussion->did);
   }
   
@@ -203,7 +203,7 @@ function open_journal_withdraw_submit($jid, $withdraw_reason='', $roles=FALSE, $
   open_journal_discussion_save($discussion);
   
   if ($redirect) {
-    drupal_set_message('This journal is withdrawn.');
+    drupal_set_message('The article is withdrawn.');
     drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$jid .'/discussion/'.$discussion->did);
   }
   

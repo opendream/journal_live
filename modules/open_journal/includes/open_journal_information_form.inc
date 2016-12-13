@@ -90,7 +90,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
   else {
     $form['main']['file'] = array(
       '#type' => 'managed_file',
-      '#title' => open_journal_label_help('File', 'Upload a full-text file here', TRUE),
+      '#title' => open_journal_label_help('Full text', 'Upload a full-text file here', TRUE),
       '#description' => t('File types allowed: %s',array('%s' => OPEN_JOURNAL_ALLOWED_FILE_TYPE)),
       '#upload_validators' => array(
         'file_validate_extensions' => array(OPEN_JOURNAL_ALLOWED_FILE_TYPE),
@@ -263,7 +263,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
   $form['data']['group']['dc_format'] = array(
     '#title' => open_journal_label_help('Format', 'Format of article'),
     '#type' => 'textfield',
-    '#default_value' => open_journal_get_field($data, 'dc_format', 'TEXT/HTML'),
+    '#default_value' => open_journal_get_field($data, 'dc_format', 'TEXT'),
     '#access' => user_access('access contributor process') && $fs['dc_identifier'],
     '#disabled' => $form_disabled,
   );
@@ -350,7 +350,7 @@ function open_journal_multi_textfield($title='' , $values = FALSE, $name, $add_m
       $alt = 'hide';
       
     }
-    if(!isset($values[$i]) && $name == 'dc_publisher' && $i == 0) {
+    if(!isset($values[$i]) && in_array($name, array('dc_publisher', 'dc_contributor', 'dc_right')) && $i == 0) {
       $values[$i] = OPEN_JOURNAL_DEFAULT_PUBLISHER_NAME;
 
     } 
