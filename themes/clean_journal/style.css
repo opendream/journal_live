@@ -1032,7 +1032,7 @@ h6 {
 }
 
 div.messages ul li {
-	word-wrap: break-word;
+  word-wrap: break-word;
 } 
 
 a.file-download-btn {
@@ -1067,59 +1067,59 @@ a.file-download-sidebar-btn:hover {
 /* Open Journal 
 ----------------------------------------------------------------*/
 body {
-	color: #111;
-	background: url(images/bg-body.png);
+  color: #111;
+  background: url(images/bg-body.png);
 }
 
 /* Header logged out
 ----------------------------------------------------------------*/
 .header-logged-out {
-	background: url(images/bg-header.png) #FFF repeat-x bottom left;
-	height: 50px;
-	text-align: center;
-	overflow: hidden;
+  background: url(images/bg-header.png) #FFF repeat-x bottom left;
+  height: 50px;
+  text-align: center;
+  overflow: hidden;
 }
 #open-journal-sign-logo {
-	text-align: center;
-	margin: 50px 0;
+  text-align: center;
+  margin: 50px 0;
 }
 
 /* Header logged in
 ----------------------------------------------------------------*/
 .header-logged-in {
-	background: url(images/bg-header.png) #FFF repeat-x bottom left;
-	height: 80px;
-	text-align: center;
-	/*overflow: hidden;*/
+  background: url(images/bg-header.png) #FFF repeat-x bottom left;
+  height: 80px;
+  text-align: center;
+  /*overflow: hidden;*/
 }
 .header-logged-in #header-content {
-	width: 960px;
-	margin: 0 auto;
-	position: relative;
+  width: 960px;
+  margin: 0 auto;
+  position: relative;
 }
 #open-journal-small-logo {
-	float: left;
-	margin-top: 20px;
+  float: left;
+  margin-top: 20px;
 }
 .user-manage {
-	float: right;
-	line-height: 80px;
+  float: right;
+  line-height: 80px;
 }
 .user-manage a.view-all-journal {
-	float: left;
-	margin-right: 15px;
+  float: left;
+  margin-right: 15px;
 }
 .user-manage .user-dropdown {
-	float: left;
+  float: left;
 }
 .user-manage .user-dropdown img {
-	float: left;
-	margin-right: 15px;
-	margin-top: 22px;
+  float: left;
+  margin-right: 15px;
+  margin-top: 22px;
 }
 .user-manage .user-dropdown .dropdown-link {
-	background: url(images/arrow-dropdown.png) no-repeat bottom right;
-	padding-right: 20px;
+  background: url(images/arrow-dropdown.png) no-repeat bottom right;
+  padding-right: 20px;
 }
 .user-manage .user-dropdown .user-picture-wrapper,
 #file-list-item .user-picture-wrapper,
@@ -1128,13 +1128,13 @@ body {
 }
 
 .user-manage .user-dropdown ul {
-	position: absolute;
-	top: 80px;
-	right: 0;
-	width: 130px;
-	z-index: 10;
-	list-style: none;
-	margin: 0;
+  position: absolute;
+  top: 80px;
+  right: 0;
+  width: 130px;
+  z-index: 10;
+  list-style: none;
+  margin: 0;
 
   -webkit-box-shadow: 2px 2px 8px -1px rgba(0,0,0,0.57);
   -moz-box-shadow: 2px 2px 8px -1px rgba(0,0,0,0.57);
@@ -1142,16 +1142,16 @@ body {
 
 }
 .user-manage .user-dropdown ul li {
-	line-height: 1.5em;
-	text-align: right;
-	width: 130px;
-	padding: 0;
+  line-height: 1.5em;
+  text-align: right;
+  width: 130px;
+  padding: 0;
 }
 .user-manage .user-dropdown ul li a {
-	background: #FFF;
-	display: block;
-	width: 120px;
-	padding: 5px 10px;
+  background: #FFF;
+  display: block;
+  width: 120px;
+  padding: 5px 10px;
   border-bottom: 1px solid #ccc;
 }
 .user-manage .user-dropdown ul li.switch-role-item a{
@@ -1163,84 +1163,85 @@ body {
   background-color: #F1E5B4;
 }
 
+
 .user-manage .user-dropdown img {
   border-radius: 50%;
-	-moz-border-radius: 50%;
-	-webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
 }
 
 /* Page layout
 ----------------------------------------------------------------*/
 #page.page-sign {
-	width: 436px;
-	margin: 0 auto;
-	background-color: transparent;
-	padding: 0;
+  width: 436px;
+  margin: 0 auto;
+  background-color: transparent;
+  padding: 0;
 }
 #page.page-normal,
 #open-journal-account-setting-form {
-	width: 920px;
-	margin: 0 auto;
-	background-color: transparent;
-	padding: 0;
+  width: 920px;
+  margin: 0 auto;
+  background-color: transparent;
+  padding: 0;
 }
 #page.page-normal {
-	width: 960px;
+  width: 960px;
 }
 #open-journal-account-setting-form {
-	overflow: hidden;
+  overflow: hidden;
 }
 h1.page-title {
-	width: 910px;
-	/* height: 32px; */
-	font-size: 36px;
-	line-height: 36px;
-	margin: 30px auto;
-	padding-left: 50px;
-	background: url(images/bg-page-title.png) no-repeat center left;
-	/* text-transform: uppercase; */
+  width: 910px;
+  /* height: 32px; */
+  font-size: 36px;
+  line-height: 36px;
+  margin: 30px auto;
+  padding-left: 50px;
+  background: url(images/bg-page-title.png) no-repeat center left;
+  /* text-transform: uppercase; */
 }
 
 #journal-detail-content {
-	width: 640px;
-	float: left;
-	margin-top: 20px;
+  width: 640px;
+  float: left;
+  margin-top: 20px;
 }
 .journal-detail-normal #journal-detail-content {
-	width: 960px;
+  width: 960px;
 }
-	.journal-detail-normal #journal-detail-content .journal-block-content {
-		width: 920px;
-	}
+  .journal-detail-normal #journal-detail-content .journal-block-content {
+    width: 920px;
+  }
 #journal-detail-sidebar {
-	width: 300px;
-	float: right;
-	margin-top: 20px;
+  width: 300px;
+  float: right;
+  margin-top: 20px;
 }
-	.journal-detail-has-sidebar #journal-detail-sidebar .block-bg-shadow {
-		padding-top: 5px;
-	}
-	.journal-detail-has-sidebar #journal-detail-sidebar h3 {
-		font-size: 22px;
-	}
-	.journal-detail-has-sidebar #journal-detail-sidebar p {
-		color: #979797;
-		font-size: 0.9em;
-	}
-	.journal-detail-has-sidebar #journal-detail-content {
-		width: 640px;
-	}
-	.journal-detail-has-sidebar #journal-detail-content .journal-block-content {
-		width: 600px;
-	}
-	#journal-detail-sidebar .journal-block-content {
-		width: 260px;
-	}
-	
+  .journal-detail-has-sidebar #journal-detail-sidebar .block-bg-shadow {
+    padding-top: 5px;
+  }
+  .journal-detail-has-sidebar #journal-detail-sidebar h3 {
+    font-size: 22px;
+  }
+  .journal-detail-has-sidebar #journal-detail-sidebar p {
+    color: #979797;
+    font-size: 0.9em;
+  }
+  .journal-detail-has-sidebar #journal-detail-content {
+    width: 640px;
+  }
+  .journal-detail-has-sidebar #journal-detail-content .journal-block-content {
+    width: 600px;
+  }
+  #journal-detail-sidebar .journal-block-content {
+    width: 260px;
+  }
+  
 #open-journal-account-setting-form .user-picture img {
   border-radius: 50%;
-	-moz-border-radius: 50%;
-	-webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
 }
 /* Form Style
 ----------------------------------------------------------------*/
@@ -1254,11 +1255,11 @@ h1.page-title {
 #open-journal-comment-form,
 #open-journal-issue-form,
 .block-bg-shadow {
-	padding: 20px;
-	background-color: #FFF;
-	display: block;
-	box-shadow: 2px 2px 5px #DADADA;
-	margin-bottom: 40px;
+  padding: 20px;
+  background-color: #FFF;
+  display: block;
+  box-shadow: 2px 2px 5px #DADADA;
+  margin-bottom: 40px;
 }
 #open-journal-login-form h2,
 #open-journal-register-form h2,
@@ -1266,37 +1267,37 @@ h2.journal-block-title,
 #open-journal-information-form h2,
 #open-journal-discussion-form h2,
 form#user-pass h2 {
-	background: url(images/ic.png) no-repeat 2px 4px;
-	padding-left: 20px;
-	text-transform: uppercase;
-	margin-bottom: 20px;
-	font-size: 22px;
+  background: url(images/ic.png) no-repeat 2px 4px;
+  padding-left: 20px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  font-size: 22px;
 }
 #open-journal-login-form .form-item,
 #open-journal-register-form .form-item,
 form#user-pass .form-item,
 #open-journal-comment-form .form-item{
-	position: relative;
-	margin: 0;
-	padding: 0;
-	margin-bottom: 20px;
+  position: relative;
+  margin: 0;
+  padding: 0;
+  margin-bottom: 20px;
 }
 #open-journal-login-form label,
 #open-journal-register-form label,
 form#user-pass label,
 #open-journal-comment-form .form-item-message label {
-	color: #acacac;
-	position: absolute;
-	top: 16px;
-	left: 20px;
-	font-family: 'THSarabunNewRegular';
-	font-size: 24px;
+  color: #acacac;
+  position: absolute;
+  top: 16px;
+  left: 20px;
+  font-family: 'THSarabunNewRegular';
+  font-size: 24px;
 }
 #open-journal-login-form label .form-required,
 #open-journal-register-form label .form-required,
 form#user-pass label .form-required,
 #open-journal-comment-form .form-required {
-	display: none;
+  display: none;
 }
 
 #open-journal-login-form #edit-name,
@@ -1306,25 +1307,25 @@ form#user-pass label .form-required,
 #open-journal-register-form #edit-data-firstname,
 #open-journal-register-form #edit-data-lastname,
 form#user-pass #edit-name {
-	padding: 11px 20px;
-	border: none;
-	background: #f1f1f1;
-	color: #111;
-	width: 356px;
-	font-family: 'THSarabunNewRegular';
-	font-size: 22px;
+  padding: 11px 20px;
+  border: none;
+  background: #f1f1f1;
+  color: #111;
+  width: 356px;
+  font-family: 'THSarabunNewRegular';
+  font-size: 22px;
 }
 #open-journal-login-form #edit-name,
 form#user-pass #edit-name {
-	font-size: 28px;
-	padding: 8px 20px;
+  font-size: 28px;
+  padding: 8px 20px;
 }
 #open-journal-login-form #edit-pass {
-	color: #555;
-	font-weight: 200;
-	font-size: 24px;
-	line-height: 24px;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", sans-serif;
+  color: #555;
+  font-weight: 200;
+  font-size: 24px;
+  line-height: 24px;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", sans-serif;
 }
 #open-journal-login-form #edit-name.error,
 #open-journal-login-form #edit-pass.error,
@@ -1332,122 +1333,122 @@ form#user-pass #edit-name {
 #open-journal-register-form #edit-mail.error,
 #open-journal-register-form #edit-data-firstname.error,
 #open-journal-register-form #edit-data-lastname.error {
-	border: 2px solid red;
-	padding: 8px 18px;
+  border: 2px solid red;
+  padding: 8px 18px;
 }
 
 #open-journal-login-form .form-actions,
 #open-journal-register-form .form-actions {
-	margin: 0;
-	display: block;
+  margin: 0;
+  display: block;
 }
 input.form-submit {
-	border-radius: 0;
-	-moz-border-radius: 0;
-	-webkit-border-radius: 0;
-	border: none;
-	background-color: #55b0d6;
-	color: #FFF;
-	text-transform: uppercase;
-	padding: 8px 17px;
-	float: left;
-	margin-bottom: 0;
+  border-radius: 0;
+  -moz-border-radius: 0;
+  -webkit-border-radius: 0;
+  border: none;
+  background-color: #55b0d6;
+  color: #FFF;
+  text-transform: uppercase;
+  padding: 8px 17px;
+  float: left;
+  margin-bottom: 0;
 }
 input.form-submit:hover {
-	background-color: #4084a0;
+  background-color: #4084a0;
 }
 .link-login,
 .link-register,
 .link-forget {
-	color: #909090;
-	text-transform: uppercase;
-	line-height: 33px;
+  color: #909090;
+  text-transform: uppercase;
+  line-height: 33px;
 }
 .link-login,
 .link-register {
-	border-right: 1px solid #909090;
-	padding-right: 10px;
+  border-right: 1px solid #909090;
+  padding-right: 10px;
 }
 .link-forget {
-	padding-left: 10px;
+  padding-left: 10px;
 }
 
 /* register Form fixed
 ----------------------------------------------------------------*/
 #open-journal-register-form fieldset {
-	border: none;
-	padding: 0;
-	margin: 0;
+  border: none;
+  padding: 0;
+  margin: 0;
 }
 #open-journal-register-form fieldset .fieldset-wrapper {
-	padding: 0;
+  padding: 0;
 }
 #open-journal-register-form fieldset#edit-data {
-	padding-top: 5px;
+  padding-top: 5px;
 }
 #open-journal-register-form fieldset#edit-data .fieldset-legend {
-	padding-left: 0;
-	position: relative;
-	text-align: left;
-	margin-left: 0;
+  padding-left: 0;
+  position: relative;
+  text-align: left;
+  margin-left: 0;
 }
 #open-journal-register-form .fieldset-description {
-	color: #ACACAC;
-	margin-bottom: 15px;
+  color: #ACACAC;
+  margin-bottom: 15px;
 }
 #open-journal-register-form .description {
-	color: #acacac;
-	margin-top: 5px;
+  color: #acacac;
+  margin-top: 5px;
 }
 /* Member Condition 
 ----------------------------------------------------------------*/
 #member-condition {
-	background: url(images/ic.png) no-repeat 2px 4px;
-	padding-left: 20px;
-	float: left;
+  background: url(images/ic.png) no-repeat 2px 4px;
+  padding-left: 20px;
+  float: left;
 }
 #member-condition  h3 {
-	color: #767676;
-	text-transform: uppercase;
-	margin-top: 0;
-	font-size: 22px;
+  color: #767676;
+  text-transform: uppercase;
+  margin-top: 0;
+  font-size: 22px;
 }
 #member-condition  div,
 #member-condition a {
-	color: #929292;
+  color: #929292;
 }
 
 
 /* Journal List Page
 ----------------------------------------------------------------*/
 #page.page-journal-list {
-	padding: 0;
-	background-color: transparent;
-	box-shadow: none;
-	margin-bottom: 0;
-	width: 960px;
-	margin: 30px auto 40px auto;
+  padding: 0;
+  background-color: transparent;
+  box-shadow: none;
+  margin-bottom: 0;
+  width: 960px;
+  margin: 30px auto 40px auto;
 }
-	#page.page-journal-list #user-heading {
-		margin-bottom: 16px;
-		overflow: hidden;
-	}
-		#page.page-journal-list #user-heading h1 {
-			text-indent: -999em;
-			overflow: hidden;
-			height: 0;
-			margin: 0;
-		}
-		#page.page-journal-list #user-heading .user-picture-wrapper {
-			float: left;
-			margin-right: 20px;
-			width: 73px;
-		}
-		#page.page-journal-list #user-heading h2 {
-			font-size: 30px;
-			margin-bottom: 0;
-			margin-top: 18px;
-		}
+  #page.page-journal-list #user-heading {
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+    #page.page-journal-list #user-heading h1 {
+      text-indent: -999em;
+      overflow: hidden;
+      height: 0;
+      margin: 0;
+    }
+    #page.page-journal-list #user-heading .user-picture-wrapper {
+      float: left;
+      margin-right: 20px;
+      width: 73px;
+    }
+    #page.page-journal-list #user-heading h2 {
+      font-size: 30px;
+      margin-bottom: 0;
+      margin-top: 18px;
+    }
     #page.page-journal-list #user-heading h3 {
       font-size: 20px;
       margin-bottom: 0;
@@ -1471,155 +1472,155 @@ input.form-submit:hover {
 }
   #page.page-journal-list .journal-filter-tab .journal-filter .journal-filter-active,
   #journal-menu-item-list li a {
-  	line-height: 30px;
-  	font-size: 26px;
-  	font-family: 'THSarabunNewRegular';
-  	float: left;
-  	cursor: pointer;
-  	padding-right: 25px;
-  	background: url(images/journal-filter-dwn-arw.png) no-repeat center right;
+    line-height: 30px;
+    font-size: 26px;
+    font-family: 'THSarabunNewRegular';
+    float: left;
+    cursor: pointer;
+    padding-right: 25px;
+    background: url(images/journal-filter-dwn-arw.png) no-repeat center right;
   }
   #page.page-journal-list .journal-filter-tab ul#journal-filter-item-list {
-  	position: absolute;
-  	z-index: 10;
-  	top: 51px;
-  	left: 0;
-  	list-style: none;
-  	margin: 0;
-  	width: 170px;
-  	box-shadow: 3px 3px 5px 0 #ccc;
+    position: absolute;
+    z-index: 10;
+    top: 51px;
+    left: 0;
+    list-style: none;
+    margin: 0;
+    width: 170px;
+    box-shadow: 3px 3px 5px 0 #ccc;
   }
-  	#page.page-journal-list .journal-filter-tab ul#journal-filter-item-list li {
-  		background: url(images/bg-body.png) repeat-x;
-  		border: 1px solid #555;
-  		border-top: none;
-  		border-left: none;
-  		border-right: none;
-  	}
-  		#page.page-journal-list .journal-filter-tab ul#journal-filter-item-list li a {
-  			display: block;
-  			width: 130px;
-  			padding: 5px 20px;
-  			color: #333;
-  		}
-  		#page.page-journal-list .journal-filter-tab ul#journal-filter-item-list li a.active {
-  			background: url(images/checkmark.png) no-repeat center left;
-  			padding-left: 25px;
-  			width: 125px;
-  		} 
-  		#page.page-journal-list .journal-filter-tab ul#journal-filter-item-list li a:hover {
-  			text-decoration: none;
-  			background-color: #ccc;
-  		}
+    #page.page-journal-list .journal-filter-tab ul#journal-filter-item-list li {
+      background: url(images/bg-body.png) repeat-x;
+      border: 1px solid #555;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+    }
+      #page.page-journal-list .journal-filter-tab ul#journal-filter-item-list li a {
+        display: block;
+        width: 130px;
+        padding: 5px 20px;
+        color: #333;
+      }
+      #page.page-journal-list .journal-filter-tab ul#journal-filter-item-list li a.active {
+        background: url(images/checkmark.png) no-repeat center left;
+        padding-left: 25px;
+        width: 125px;
+      } 
+      #page.page-journal-list .journal-filter-tab ul#journal-filter-item-list li a:hover {
+        text-decoration: none;
+        background-color: #ccc;
+      }
   #page.page-journal-list .journal-filter-tab .add-journal-btn {
-  	position: absolute;
-  	right: 0;
-  	top: 10px;
+    position: absolute;
+    right: 0;
+    top: 10px;
   }
-  	#page.page-journal-list .journal-filter-tab .add-journal-btn a{
-  		display: block;
-  		padding: 5px 10px 5px 30px;
-  		border-radius: 5px;
-  		-moz-border-radius: 5px;
-  		-webkit-border-radius: 5px;
-  		color: #FFF;
-  		background: url(images/ic-add-journal-btn.png) #55b0d6 no-repeat 7px 7px;
-  	}
-  		#page.page-journal-list .journal-filter-tab .add-journal-btn a:hover {
-  			text-decoration: none;
-  			background-color: #4084a0;
-  		}
+    #page.page-journal-list .journal-filter-tab .add-journal-btn a{
+      display: block;
+      padding: 5px 10px 5px 30px;
+      border-radius: 5px;
+      -moz-border-radius: 5px;
+      -webkit-border-radius: 5px;
+      color: #FFF;
+      background: url(images/ic-add-journal-btn.png) #55b0d6 no-repeat 7px 7px;
+    }
+      #page.page-journal-list .journal-filter-tab .add-journal-btn a:hover {
+        text-decoration: none;
+        background-color: #4084a0;
+      }
 
 #open-journal-not-reject-form, #open-journal-not-withdraw-form {
-	float: left;
-	margin-left: 20px;
-	line-height: 26px;
+  float: left;
+  margin-left: 20px;
+  line-height: 26px;
 }
 /* fixed journal menu */
 
 .journal-menu {
-	padding: 10px 0 10px 0;
-	width: 960px;
+  padding: 10px 0 10px 0;
+  width: 960px;
 }
   #journal-menu-item-list li a {
-  	font-size: 22px;
-  	line-height: 31px;
-  	height: 30px;
-  	display: block;
+    font-size: 22px;
+    line-height: 31px;
+    height: 30px;
+    display: block;
   }
     #journal-menu-item-list {
-  		width: 940px;
-  		list-style: none;
-  		margin: 0;
-  	}
-    	#journal-menu-item-list li {
-  			float: left;
-  			margin: 0 10px;
-  		}
-  		#journal-menu-item-list li a {
-  			padding: 0 10px;
-  			margin: 0;
-  			background-image: none;
-  			color: #333;
-  		}
-  		#journal-menu-item-list li a:hover,
-  		#journal-menu-item-list li a.active {
-  			text-decoration: none;
-  			background-color: #55b0d6;
-  			color: #FFF;
-  			border-radius: 5px;
-  			-moz-border-radius: 5px;
-  			-webkit-border-radius: 5px;
-  		}
+      width: 940px;
+      list-style: none;
+      margin: 0;
+    }
+      #journal-menu-item-list li {
+        float: left;
+        margin: 0 10px;
+      }
+      #journal-menu-item-list li a {
+        padding: 0 10px;
+        margin: 0;
+        background-image: none;
+        color: #333;
+      }
+      #journal-menu-item-list li a:hover,
+      #journal-menu-item-list li a.active {
+        text-decoration: none;
+        background-color: #55b0d6;
+        color: #FFF;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+      }
 .profile-picture-big,
 .profile-picture-big img,
 .profile-picture-large,
 .profile-picture-large img,
 .profile-picture-small,
 .profile-picture-small img {
-	border-radius: 50%;
-	-moz-border-radius: 50%;
-	-webkit-border-radius: 50%;
+  border-radius: 50%;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
 }
 /* Journal list content */
 #journal-list {
-	width: 960px;
-	float: left;
-	margin-top: 20px;
-	padding: 0;
+  width: 960px;
+  float: left;
+  margin-top: 20px;
+  padding: 0;
 }
 #journal-list ul {
-	margin: 0;
-	list-style: none;
-	float: left;
+  margin: 0;
+  list-style: none;
+  float: left;
 }
 #journal-list .journal-item {
-	background-color: #FFF;
-	display: block;
-	box-shadow: 2px 2px 5px #DADADA;
-	margin-bottom: 40px;
-	float: left;
-	width: 960px;
-	position: relative;
-	min-height: 120px;
-	padding-bottom: 30px;
+  background-color: #FFF;
+  display: block;
+  box-shadow: 2px 2px 5px #DADADA;
+  margin-bottom: 40px;
+  float: left;
+  width: 960px;
+  position: relative;
+  min-height: 120px;
+  padding-bottom: 30px;
 }
-	/* Journal Status */
-	#journal-list .journal-item .journal-status {
-		display: block;
-		float: left;
-		padding: 10px 15px;
-		background-color: #55b0d6;
-		color: #FFF;
-		text-transform: uppercase;
-		margin-left: -5px;
-		margin-top: 10px;
-		cursor: pointer;
-	}
-	#journal-list .journal-item .journal-status:hover {
-		cursor: pointer;
-		text-decoration: none;
-	}
+  /* Journal Status */
+  #journal-list .journal-item .journal-status {
+    display: block;
+    float: left;
+    padding: 10px 15px;
+    background-color: #55b0d6;
+    color: #FFF;
+    text-transform: uppercase;
+    margin-left: -5px;
+    margin-top: 10px;
+    cursor: pointer;
+  }
+  #journal-list .journal-item .journal-status:hover {
+    cursor: pointer;
+    text-decoration: none;
+  }
     #journal-list .journal-item .status0 {
       background-color: #55b0d6;
     }
@@ -1627,7 +1628,7 @@ input.form-submit:hover {
       background-color: #C05D63;
     }
     #journal-list .journal-item .status5,
-		#journal-list .journal-item .status1,
+    #journal-list .journal-item .status1,
     #journal-list .journal-item .status6,
     #journal-list .journal-item .status7,
     #journal-list .journal-item .status8,
@@ -1638,106 +1639,106 @@ input.form-submit:hover {
     #journal-list .journal-item .status13,
     #journal-list .journal-item .status101,
     #journal-list .journal-item .status102 {
-			background-color: #c6aadd;
-		}
-		#journal-list .journal-item .status2 {
-			background-color: #cd935e;
-		}
-		#journal-list .journal-item .status3 {
-			background-color: #69c5ae;
-		}
+      background-color: #c6aadd;
+    }
+    #journal-list .journal-item .status2 {
+      background-color: #cd935e;
+    }
+    #journal-list .journal-item .status3 {
+      background-color: #69c5ae;
+    }
 
-		#journal-list .journal-item .statusreject,
+    #journal-list .journal-item .statusreject,
     #journal-list .journal-item .statuswithdraw {
-			background-color: #ff5f65;
-		}
-		#journal-list .journal-item .finish-publish {
-			background-color: #69c5ae;
-		}	
-	/* Journal title */
-	#journal-list .journal-item .journal-title {
-		width: 650px;
-		padding: 20px 20px 12px 20px;
-		margin: 0;
-		float: left;
-		margin-right: 250px;
-	}
-	#journal-list .journal-item h3.journal-title a {
-		color: #111111;
-		font-size: 30px;
-		line-height: 30px;
-		font-family: 'THSarabunNewRegular';
-	}
-	#journal-list .journal-item h3.journal-title a:hover {
-		text-decoration: none;
-	}
-	/* Journal update */
-	#journal-list .journal-item .journal-update, #journal-list .journal-item .journal-create {
-		float: left;
-		margin-left: 20px;
-		margin-right: 20px;
-	}
-	/* Journal create */
-	#journal-list .journal-item .journal-lastupdate-ago {
-		float: left;
-	}
-	/* Relate Peoples */
-	#journal-list .journal-item .relate-peoples {
-		position: absolute;
-		right: 20px;
-		top: 33px;
-		width: 250px;
-	}
-	.relate-peoples li {
-		float: left;
-		margin: 0 5px 5px 5px;
-		overflow: hidden;
-		width: 40px;
-		height: 40px;
-	}
-	.relate-peoples li a {
-		display: block;
-		width: 40px;
-		height: 40px;
-		overflow: hidden;
-		position: relative;
-		border-radius: 20px;
-		-moz-border-radius: 20px;
-		-webkit-border-radius: 20px;
-	}
-	span.owner-label {
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		font-size: 7px;
-		display: block;
-		background: #000;
-		opacity: 0.8;
-		color: #FFF;
-		width: 40px;
-		text-align: center;
-		height: 14px;
-		line-height: 13px;
-		overflow: hidden;
-	}
-	.relate-peoples li.more-people {
-		font-size: 20px;
-		width: 40px;
-		height: 40px;
-		text-align: center;
-		line-height: 35px;
-		background-color: #ccc;
-		color: #FFF;
-		border-radius: 20px;
-		-moz-border-radius: 20px;
-		-webkit-border-radius: 20px;
-	}
-		.relate-peoples li.more-people a {
-			color: #FFF;
-		}
-		.relate-peoples li.more-people a:hover {
-			text-decoration: none;
-		}
+      background-color: #ff5f65;
+    }
+    #journal-list .journal-item .finish-publish {
+      background-color: #69c5ae;
+    } 
+  /* Journal title */
+  #journal-list .journal-item .journal-title {
+    width: 650px;
+    padding: 20px 20px 12px 20px;
+    margin: 0;
+    float: left;
+    margin-right: 250px;
+  }
+  #journal-list .journal-item h3.journal-title a {
+    color: #111111;
+    font-size: 30px;
+    line-height: 30px;
+    font-family: 'THSarabunNewRegular';
+  }
+  #journal-list .journal-item h3.journal-title a:hover {
+    text-decoration: none;
+  }
+  /* Journal update */
+  #journal-list .journal-item .journal-update, #journal-list .journal-item .journal-create {
+    float: left;
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+  /* Journal create */
+  #journal-list .journal-item .journal-lastupdate-ago {
+    float: left;
+  }
+  /* Relate Peoples */
+  #journal-list .journal-item .relate-peoples {
+    position: absolute;
+    right: 20px;
+    top: 33px;
+    width: 250px;
+  }
+  .relate-peoples li {
+    float: left;
+    margin: 0 5px 5px 5px;
+    overflow: hidden;
+    width: 40px;
+    height: 40px;
+  }
+  .relate-peoples li a {
+    display: block;
+    width: 40px;
+    height: 40px;
+    overflow: hidden;
+    position: relative;
+    border-radius: 20px;
+    -moz-border-radius: 20px;
+    -webkit-border-radius: 20px;
+  }
+  span.owner-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    font-size: 7px;
+    display: block;
+    background: #000;
+    opacity: 0.8;
+    color: #FFF;
+    width: 40px;
+    text-align: center;
+    height: 14px;
+    line-height: 13px;
+    overflow: hidden;
+  }
+  .relate-peoples li.more-people {
+    font-size: 20px;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    line-height: 35px;
+    background-color: #ccc;
+    color: #FFF;
+    border-radius: 20px;
+    -moz-border-radius: 20px;
+    -webkit-border-radius: 20px;
+  }
+    .relate-peoples li.more-people a {
+      color: #FFF;
+    }
+    .relate-peoples li.more-people a:hover {
+      text-decoration: none;
+    }
 
   .add-user-btn {
     display: inline-block;
@@ -1753,40 +1754,40 @@ input.form-submit:hover {
 }
 
 #journal-list .load-more {
-	display: block;
-	width: 140px;
-	margin: 0 auto;
-	margin-top: 40px;
-	text-align: center;
-	overflow: hidden;
+  display: block;
+  width: 140px;
+  margin: 0 auto;
+  margin-top: 40px;
+  text-align: center;
+  overflow: hidden;
 }
-	#journal-list .load-more a {
-		display: block;
-		padding: 10px 20px;
-		background: #55b0d6;
-		color: #FFF;
-		text-transform: uppercase;
-	}
-		#journal-list .load-more a:hover {
-			background: #4084a0;
-			text-decoration: none;
-		}
+  #journal-list .load-more a {
+    display: block;
+    padding: 10px 20px;
+    background: #55b0d6;
+    color: #FFF;
+    text-transform: uppercase;
+  }
+    #journal-list .load-more a:hover {
+      background: #4084a0;
+      text-decoration: none;
+    }
 
 .user-picture-wrapper {
   position: relative;
   border-radius: 50%;
-	-moz-border-radius: 50%;
-	-webkit-border-radius: 50%;
-	width: 100%;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  width: 100%;
   height: 100%;
   display: block;
 }
 
 .user-picture-wrapper img,
 .journal-discussion-list-item .journal-user img {
-	border-radius: 50%;
+  border-radius: 50%;
   -moz-border-radius: 50%;
-	-webkit-border-radius: 50%;
+  -webkit-border-radius: 50%;
 }
 .journal-discussion-list-item.human .discus-title a {
   text-decoration: underline !important;
@@ -1795,190 +1796,190 @@ input.form-submit:hover {
 /* Journal Overview
 ----------------------------------------------------------------*/
 .journal-block {
-	display: block;
-	float: left;
-	padding-top: 10px;
-	position: relative;
+  display: block;
+  float: left;
+  padding-top: 10px;
+  position: relative;
 }
 .block-bg-shadow {
-	margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 h2.journal-block-title {
-	margin-bottom: 15px;
+  margin-bottom: 15px;
 }
 .people-block-overview .journal-block-content {
-	float: left;
-	margin-bottom: 10px;
+  float: left;
+  margin-bottom: 10px;
 }
 .people-block-overview .relate-peoples {
-	position: relative;
-	width: 260px;
-	margin: 0;
-	display: block;
-	float: left;
+  position: relative;
+  width: 260px;
+  margin: 0;
+  display: block;
+  float: left;
 }
 .people-block-overview .view-all-people {
-	float: right;
-	overflow: hidden;
+  float: right;
+  overflow: hidden;
 }
 .information-block .information-field .label {
-	text-align: right;
-	width: 95px;
-	display: block;
-	padding-right: 15px;
-	float: left;
-	color: #111111;
-	font-weight: bold;
+  text-align: right;
+  width: 95px;
+  display: block;
+  padding-right: 15px;
+  float: left;
+  color: #111111;
+  font-weight: bold;
 }
 .information-block .information-field .value {
-	width: 150px;
-	float: right;
-	color: #333333;
-	word-wrap: break-word;
+  width: 150px;
+  float: right;
+  color: #333333;
+  word-wrap: break-word;
 }
 .information-field {
-	margin-bottom: 15px;
-	float:left;
+  margin-bottom: 15px;
+  float:left;
 }
 .abstract-block .journal-block-content p {
-	padding: 0 20px;
+  padding: 0 20px;
 }
 .journal-file-download {
-	background-color: #ebebeb;
-	display: block;
-	overflow: hidden;
-	/* width: 540px; */
-	width: 550px;
-	margin: 0 20px;
-	padding-left: 10px;
+  background-color: #ebebeb;
+  display: block;
+  overflow: hidden;
+  /* width: 540px; */
+  width: 550px;
+  margin: 0 20px;
+  padding-left: 10px;
 }
-	.journal-file-download .file-download-update,
-	.journal-file-download .file-download-create {
-		float: left;
-		margin-right: 20px;
-		color: #7d7d7d;
-		line-height: 40px;
-	}
+  .journal-file-download .file-download-update,
+  .journal-file-download .file-download-create {
+    float: left;
+    margin-right: 20px;
+    color: #7d7d7d;
+    line-height: 40px;
+  }
 .status-block .journal-update .label,
 .status-block .journal-create .label,
 .status-block .journal-lastupdate-ago .label {
-	font-weight: bold;
+  font-weight: bold;
 }
 .status-block {
-	width: 260px;
+  width: 260px;
 }
-	.status-block .h2-wrapper {
-		width: 316px; 
-		margin-left: -28px;
-		background: url(images/bg-header-block.png) no-repeat;
-		padding-bottom: 15px;
-	}
-	.status-block h2 {
-		width: 271px;
-		background-image: none;
-		background-color: #55b0d6;
-		margin: 0;
-		padding: 17px 15px 13px 30px;
-		color: #FFF;
-		font-family: 'THSarabunNewRegular';
-	}
-	.status-block h2.status1 {background-color: #c6aadd;}
-	.status-block h2.status2 {background-color: #cd935e;}
-	.status-block h2.status3 {background-color: #69c5ae;}
-	.status-block h2.statusreject, .status-block h2.statuswithdraw {background-color: #fc6064;}
-	
+  .status-block .h2-wrapper {
+    width: 316px; 
+    margin-left: -28px;
+    background: url(images/bg-header-block.png) no-repeat;
+    padding-bottom: 15px;
+  }
+  .status-block h2 {
+    width: 271px;
+    background-image: none;
+    background-color: #55b0d6;
+    margin: 0;
+    padding: 17px 15px 13px 30px;
+    color: #FFF;
+    font-family: 'THSarabunNewRegular';
+  }
+  .status-block h2.status1 {background-color: #c6aadd;}
+  .status-block h2.status2 {background-color: #cd935e;}
+  .status-block h2.status3 {background-color: #69c5ae;}
+  .status-block h2.statusreject, .status-block h2.statuswithdraw {background-color: #fc6064;}
+  
 #overview-discussion,
 #file-list-item {
-	list-style: none;
-	margin: 0 20px 0 20px;
-	border-top: 1px solid #e1e1e1;
-	width: 560px;
-	float: left;
+  list-style: none;
+  margin: 0 20px 0 20px;
+  border-top: 1px solid #e1e1e1;
+  width: 560px;
+  float: left;
 }
-	#overview-discussion li,
-	#file-list-item li {
-		position: relative;
-		float:left;
-		padding: 10px 0;
-		border-bottom: 1px solid #e1e1e1;
-	}
-	#overview-discussion li .journal-user,
-	#file-list-item li .journal-user {
-		width: 140px;
-		height: 40px;
-		float: left;
-		/* line-height: 40px; */
-	}
-	#file-list-item li .journal-user {
-		width: 190px;
-	}
-		#overview-discussion li .journal-user a img,
-		#overview-discussion li .journal-user img,
-		#file-list-item li .journal-user .user-picture-wrapper img {
-			float: left;
-			margin-right: 10px;
-		}
-		#overview-discussion li .journal-user a:hover,
-		#file-list-item li .journal-user a:hover {
-			text-decoration: none;
-		}
-		#overview-discussion li .journal-user a span,
-		#file-list-item li .journal-user a span {
-			display: block;
-			line-height: 40px;
-			color: #666666;
-		}
-	#overview-discussion li .discus-title,
-	#overview-discussion li .discus-content {
-		float: right;
-		width: 410px;
-		padding-left: 10px;
-	}
-	#overview-discussion li .discus-title {
-		margin-bottom: 7px;
-	}
-	#overview-discussion li .discus-title a {
-		font-weight: bold;
-		color: #111;
-		float: left;
-		margin-right: 5px;
-	}
-		#overview-discussion li .discus-title a:hover {
-			text-decoration: none;
-		}
-	#overview-discussion li .file-attach img {
-		margin-left: 4px;
-	}
+  #overview-discussion li,
+  #file-list-item li {
+    position: relative;
+    float:left;
+    padding: 10px 0;
+    border-bottom: 1px solid #e1e1e1;
+  }
+  #overview-discussion li .journal-user,
+  #file-list-item li .journal-user {
+    width: 140px;
+    height: 40px;
+    float: left;
+    /* line-height: 40px; */
+  }
+  #file-list-item li .journal-user {
+    width: 190px;
+  }
+    #overview-discussion li .journal-user a img,
+    #overview-discussion li .journal-user img,
+    #file-list-item li .journal-user .user-picture-wrapper img {
+      float: left;
+      margin-right: 10px;
+    }
+    #overview-discussion li .journal-user a:hover,
+    #file-list-item li .journal-user a:hover {
+      text-decoration: none;
+    }
+    #overview-discussion li .journal-user a span,
+    #file-list-item li .journal-user a span {
+      display: block;
+      line-height: 40px;
+      color: #666666;
+    }
+  #overview-discussion li .discus-title,
+  #overview-discussion li .discus-content {
+    float: right;
+    width: 410px;
+    padding-left: 10px;
+  }
+  #overview-discussion li .discus-title {
+    margin-bottom: 7px;
+  }
+  #overview-discussion li .discus-title a {
+    font-weight: bold;
+    color: #111;
+    float: left;
+    margin-right: 5px;
+  }
+    #overview-discussion li .discus-title a:hover {
+      text-decoration: none;
+    }
+  #overview-discussion li .file-attach img {
+    margin-left: 4px;
+  }
 .view-all-discus {
-	margin-left: 20px;
-	margin-top: 20px;
-	float: left;
+  margin-left: 20px;
+  margin-top: 20px;
+  float: left;
 }
 
 #journal-detail-wrapper .journal-discussion-list-block .add-discussion-btn a {
   display: block;
-	padding: 5px 10px 5px 30px;
-	border-radius: 5px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	color: #7d7d7d;
-	background: url(images/ic-add-journal-btn.png) transparent no-repeat 7px 7px;
-	float: right;
-	margin-right: 10px;
-	margin-top: 5px;
+  padding: 5px 10px 5px 30px;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  color: #7d7d7d;
+  background: url(images/ic-add-journal-btn.png) transparent no-repeat 7px 7px;
+  float: right;
+  margin-right: 10px;
+  margin-top: 5px;
 }
 #journal-detail-wrapper .discussion-block .add-discussion-btn {
-	top: 10px;
-	right: 40px;
-	text-align: right;
-	position: absolute;
-	width: 140px;
-	margin-top: 10px;
+  top: 10px;
+  right: 40px;
+  text-align: right;
+  position: absolute;
+  width: 140px;
+  margin-top: 10px;
 }
 #journal-detail-wrapper .discussion-block .add-discussion-btn a {
-	background: url(images/ic-add-journal-btn-gray.png) transparent no-repeat 7px 7px;
-	padding: 7px 0 0 30px;
-	color: #7d7d7d;
+  background: url(images/ic-add-journal-btn-gray.png) transparent no-repeat 7px 7px;
+  padding: 7px 0 0 30px;
+  color: #7d7d7d;
 }
 
 #journal-detail-wrapper .discussion-block .journal-block-title {
@@ -1994,105 +1995,105 @@ h2.journal-block-title {
 /* Journal Add
 ----------------------------------------------------------------*/
 #open-journal-information-form {
-	overflow: hidden;
+  overflow: hidden;
 }
 /* Journal Add label
 ----------------------------------------------------------------*/
 #open-journal-information-form label {
-	float: left;
+  float: left;
 }
 #open-journal-information-form label .label-help,
 #open-journal-information-form #edit-data #edit-date .fieldset-legend .label-help {
-	width: 12px;
-	height: 12px;
-	display: inline-block;
-	background: url(images/ic-hint.png) no-repeat top right;
-	text-indent: -999em;
-	margin-left: 5px;
-	line-height: 12px;
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+  background: url(images/ic-hint.png) no-repeat top right;
+  text-indent: -999em;
+  margin-left: 5px;
+  line-height: 12px;
 }
 /* Journal Add #edit-main
 ----------------------------------------------------------------*/
 #open-journal-information-form #edit-main {
-	width: 510px;
-	float: left;
+  width: 510px;
+  float: left;
 }
-	#open-journal-information-form #edit-main label {
-		margin-bottom: 10px;
-	}
-	#open-journal-information-form #edit-main .form-item {
-		width: 470px;
-		padding: 0 20px;
-	}
-	#open-journal-information-form #edit-main .form-item-guideline {
-		float: left;
-	}
-		#open-journal-information-form #edit-main .form-item-guideline label {
-			line-height: 13px;
-		}
-		#open-journal-information-form #edit-main .form-item-guideline .form-checkbox {
-			float: left;
-			margin-right: 10px;
-		}
-		
+  #open-journal-information-form #edit-main label {
+    margin-bottom: 10px;
+  }
+  #open-journal-information-form #edit-main .form-item {
+    width: 470px;
+    padding: 0 20px;
+  }
+  #open-journal-information-form #edit-main .form-item-guideline {
+    float: left;
+  }
+    #open-journal-information-form #edit-main .form-item-guideline label {
+      line-height: 13px;
+    }
+    #open-journal-information-form #edit-main .form-item-guideline .form-checkbox {
+      float: left;
+      margin-right: 10px;
+    }
+    
 /* Journal Add #edit-data (side-bar)
 ----------------------------------------------------------------*/
 #open-journal-information-form #edit-data {
-	padding: 0 20px;
-	float: left;
-	width: 370px;
-	margin-top: 40px;
+  padding: 0 20px;
+  float: left;
+  width: 370px;
+  margin-top: 40px;
 }
-	#open-journal-information-form #edit-data h3 {
-		font-size: 22px;
-	}
-	#open-journal-information-form #edit-data fieldset {
-		border: none;
-		margin-top: 0;
-	}
-	#open-journal-information-form #edit-data fieldset#edit-group {
-		border: 1px solid #C9C9C9;
-		padding: 25px 10px 20px 0;
-		margin-top: 0;
-		border-radius: 5px;
-		-moz-border-radius: 5px;
-		-webkit-border-radius: 5px;	
-	}	
-		#open-journal-information-form #edit-data #edit-group .fieldset-wrapper,
-		#open-journal-information-form #edit-data #edit-date {
-			padding: 0;
-		}
-			#open-journal-information-form #edit-data label {
-				margin-left: 10px;
-			}
-			#open-journal-information-form #edit-data .multi-textfield {
-				margin-bottom: 10px;
-			}
+  #open-journal-information-form #edit-data h3 {
+    font-size: 22px;
+  }
+  #open-journal-information-form #edit-data fieldset {
+    border: none;
+    margin-top: 0;
+  }
+  #open-journal-information-form #edit-data fieldset#edit-group {
+    border: 1px solid #C9C9C9;
+    padding: 25px 10px 20px 0;
+    margin-top: 0;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px; 
+  } 
+    #open-journal-information-form #edit-data #edit-group .fieldset-wrapper,
+    #open-journal-information-form #edit-data #edit-date {
+      padding: 0;
+    }
+      #open-journal-information-form #edit-data label {
+        margin-left: 10px;
+      }
+      #open-journal-information-form #edit-data .multi-textfield {
+        margin-bottom: 10px;
+      }
 
 #open-journal-information-form #edit-data #edit-date legend {
-	float: left;
-	margin-top: 22px;
-}		
-	#open-journal-information-form #edit-data #edit-date .fieldset-legend {	
-		margin: 0 0 0 10px;
-		padding: 0;
-		position: relative;
-		text-transform: none;
-	}
+  float: left;
+  margin-top: 22px;
+}   
+  #open-journal-information-form #edit-data #edit-date .fieldset-legend { 
+    margin: 0 0 0 10px;
+    padding: 0;
+    position: relative;
+    text-transform: none;
+  }
 #open-journal-information-form #edit-data #edit-date .fieldset-wrapper {
-	float: right;
-	width: 202px;
+  float: right;
+  width: 202px;
 }
-	#open-journal-information-form #edit-data #edit-date .fieldset-wrapper .form-item {
-		margin-right: 5px;
-	}
-	#open-journal-information-form #edit-data #edit-date .fieldset-wrapper label {
-		float: none;
-		margin-left: 0;
-	}
+  #open-journal-information-form #edit-data #edit-date .fieldset-wrapper .form-item {
+    margin-right: 5px;
+  }
+  #open-journal-information-form #edit-data #edit-date .fieldset-wrapper label {
+    float: none;
+    margin-left: 0;
+  }
 
 /* Journal Add form style
-----------------------------------------------------------------*/	
+----------------------------------------------------------------*/  
 #edit-subject-sub,
 #edit-subject-en,
 #edit-creator-en,
@@ -2100,11 +2101,11 @@ h2.journal-block-title {
 #edit-creator-email,
 #edit-dc-publisher,
 #edit-dc-contributor {
-	padding-top: 0;
+  padding-top: 0;
 }
 .form-item-dc-language {
-	margin-bottom: 10px;
-	overflow: hidden;
+  margin-bottom: 10px;
+  overflow: hidden;
 }
 .form-item-dc-identifier,
 .form-item-dc-coverage,
@@ -2112,108 +2113,108 @@ h2.journal-block-title {
 .form-item-dc-format,
 .form-item-dc-right,
 .form-item-address {
-	overflow: hidden;
-	margin-bottom: 0px;
+  overflow: hidden;
+  margin-bottom: 0px;
 }
 
 .form-item-dc-identifier .description,
 .form-item-dc-coverage .description {
-	margin: 10px 0 0 132px !important;
-	float: left;
+  margin: 10px 0 0 132px !important;
+  float: left;
 }
 
 .form-item-title-en,
 .form-item-title-sub,
 .form-item-description-sub,
 .form-item-description-en {
-	margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 #open-journal-information-form #edit-data .form-text,
 #open-journal-information-form #edit-data .form-textarea,
 #open-journal-information-form #edit-data #edit-dc-language {
-	float: right;
-	width: 180px;
+  float: right;
+  width: 180px;
 }
 #edit-data #edit-dc-language {
-	width: 207px;
+  width: 207px;
 }
 #edit-data .add-multi-textfield {
-	float: left;
-	margin-left: 156px;
+  float: left;
+  margin-left: 156px;
 }
-	#edit-subject-sub .fieldset-wrapper .form-item,
-	#edit-subject-en .fieldset-wrapper .form-item,
-	#edit-creator-en .fieldset-wrapper .form-item,
+  #edit-subject-sub .fieldset-wrapper .form-item,
+  #edit-subject-en .fieldset-wrapper .form-item,
+  #edit-creator-en .fieldset-wrapper .form-item,
   #edit-creator-sub .fieldset-wrapper .form-item,
   #edit-creator-email .fieldset-wrapper .form-item,
-	#edit-dc-publisher .fieldset-wrapper .form-item,
-	#edit-dc-contributor .fieldset-wrapper .form-item,
-	#edit-date .fieldset-wrapper .form-item,
-	.form-item-dc-identifier #edit-dc-identifier,
-	.form-item-dc-coverage #edit-dc-coverage,
+  #edit-dc-publisher .fieldset-wrapper .form-item,
+  #edit-dc-contributor .fieldset-wrapper .form-item,
+  #edit-date .fieldset-wrapper .form-item,
+  .form-item-dc-identifier #edit-dc-identifier,
+  .form-item-dc-coverage #edit-dc-coverage,
   .form-item-dc-type #edit-dc-type,
   .form-item-dc-format #edit-dc-format,
   .form-item-dc-right #edit-dc-right,
   .form-item-address #edit-address{
-		margin-bottom: 0;
-		padding-top: 0;
-	}
-		#edit-data .multi-textfield,
-		.form-item-address .form-textarea,
-		.form-item-dc-identifier #edit-dc-identifier,
-		.form-item-dc-coverage #edit-dc-coverage,
+    margin-bottom: 0;
+    padding-top: 0;
+  }
+    #edit-data .multi-textfield,
+    .form-item-address .form-textarea,
+    .form-item-dc-identifier #edit-dc-identifier,
+    .form-item-dc-coverage #edit-dc-coverage,
     .form-item-dc-type #edit-dc-type,
     .form-item-dc-format #edit-dc-format,
     .form-item-dc-right #edit-dc-right,
     .form-item-address #edit-address,
-		.form-item-title-en .form-text,
-		.form-item-title-sub .form-text,
-		.form-item-description-sub .form-textarea,
-		.form-item-description-en .form-textarea {
-			width: 180px;
-			padding: 2px 10px 2px 10px;
-			border: 1px solid #f1f1f1;
-			background: #f1f1f1;
-			color: #111;
-			font-family: 'THSarabunNewRegular';
-			font-size: 20px;
-		}
-		.form-item-title-en .form-text,
-		.form-item-title-sub .form-text,
-		.form-item-description-sub .form-textarea,
-		.form-item-description-en .form-textarea  {
-			width: 470px;
-			max-width: 470px;
-			line-height: 1em;
-		}
-		#edit-description-sub,
-		#edit-description-en {
-			padding-top: 10px;
-			padding-bottom: 10px;
-		}
-		.form-item-title-en .form-text,
-		.form-item-title-sub .form-text {
-			width: 450px;
-		}
-		.form-item-dc-identifier #edit-dc-identifier,
-		.form-item-dc-coverage #edit-dc-coverage,
+    .form-item-title-en .form-text,
+    .form-item-title-sub .form-text,
+    .form-item-description-sub .form-textarea,
+    .form-item-description-en .form-textarea {
+      width: 180px;
+      padding: 2px 10px 2px 10px;
+      border: 1px solid #f1f1f1;
+      background: #f1f1f1;
+      color: #111;
+      font-family: 'THSarabunNewRegular';
+      font-size: 20px;
+    }
+    .form-item-title-en .form-text,
+    .form-item-title-sub .form-text,
+    .form-item-description-sub .form-textarea,
+    .form-item-description-en .form-textarea  {
+      width: 470px;
+      max-width: 470px;
+      line-height: 1em;
+    }
+    #edit-description-sub,
+    #edit-description-en {
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+    .form-item-title-en .form-text,
+    .form-item-title-sub .form-text {
+      width: 450px;
+    }
+    .form-item-dc-identifier #edit-dc-identifier,
+    .form-item-dc-coverage #edit-dc-coverage,
     .form-item-dc-type #edit-dc-type,
     .form-item-dc-format #edit-dc-format,
     .form-item-dc-right #edit-dc-right {
-			margin-right: 5px;
-		}
-		
+      margin-right: 5px;
+    }
+    
 #edit-date .form-type-select,
 #edit-date .fieldset-wrapper span {
-	float: left;
-	margin-right: 10px;
-	text-align: center;
+  float: left;
+  margin-right: 10px;
+  text-align: center;
 }
 #edit-date .fieldset-wrapper span {
-	margin-top: 20px;
+  margin-top: 20px;
 }
 #edit-file-ajax-wrapper {
-	margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 #edit-file-ajax-wrapper label {
   position: relative;
@@ -2226,30 +2227,30 @@ h2.journal-block-title {
   width: 100%;
 }
 .form-type-managed-file {
-	padding-left: 20px;
-	margin-bottom: 20px;
+  padding-left: 20px;
+  margin-bottom: 20px;
 }
 
 #edit-file {
-	width: 470px;
-	float: left;
+  width: 470px;
+  float: left;
 }
 #edit-file-upload-button,
 #edit-file-remove-button {
-	float: none;
-	margin-left: 20px;
+  float: none;
+  margin-left: 20px;
 }
 .form-item-description-sub .form-textarea-wrapper,
 .form-item-description-en .form-textarea-wrapper {
-	clear: both;
+  clear: both;
 }
 #edit-main .form-actions {
   padding-left: 20px;
   margin-top: 30px;
 }
 #edit-main .form-actions a {
-	color: #555;
-	line-height: 35px;
+  color: #555;
+  line-height: 35px;
 }
 
 .form-item-address {
@@ -2313,8 +2314,8 @@ h2.journal-block-title {
 }
 #open-journal-discussion-form .form-textarea,
 #open-journal-comment-form .form-textarea {
-	width: 504px;
-	max-width: 504px;
+  width: 504px;
+  max-width: 504px;
 }
 .form-item-title .form-text,
 .form-item-description .form-textarea {
@@ -2322,27 +2323,27 @@ h2.journal-block-title {
   max-width: 520px;
 }
 #open-journal-discussion-form .form-textarea {
-	width: 560px;
-	max-width: 560px;
+  width: 560px;
+  max-width: 560px;
 }
 #open-journal-comment-form .form-textarea {
-	width: 600px;
-	max-width: 600px;
+  width: 600px;
+  max-width: 600px;
 }
 .discussion-item-content #open-journal-comment-form .form-textarea {
-	width: 504px;
-	max-width: 504px;
+  width: 504px;
+  max-width: 504px;
 }
 
 #open-journal-discussion-form .form-text {
-	width: 540px;
-	max-width: 540px;
+  width: 540px;
+  max-width: 540px;
 }
 .form-item-title .form-text {
   width: 500px;
 }
 #edit-fid-ajax-wrapper {
-	margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 #edit-fid-ajax-wrapper label {
   position: relative;
@@ -2350,9 +2351,9 @@ h2.journal-block-title {
 }
 #open-journal-discussion-form label,
 #open-journal-comment-form label {
-	margin-bottom: 10px;
-	line-height: 30px;
-	margin-right: 10px;
+  margin-bottom: 10px;
+  line-height: 30px;
+  margin-right: 10px;
 }
 #edit-fid-ajax-wrapper .description,
 #edit-fid-ajax-wrapper .form-type-managed-file {
@@ -2360,13 +2361,13 @@ h2.journal-block-title {
   padding-left: 0;
 }
 #edit-fid {
-	width: 520px;
-	float: left;
+  width: 520px;
+  float: left;
 }
 #edit-fid-upload-button,
 #edit-fid-remove-button {
-	float: none;
-	margin-left: 20px;
+  float: none;
+  margin-left: 20px;
 }
 #open-journal-discussion-form .form-actions {
   padding-left: 0;
@@ -2376,12 +2377,12 @@ h2.journal-block-title {
 #open-journal-discussion-form .form-actions a,
 #open-journal-reject-sidebar-form .form-actions a,
 #open-journal-withdraw-sidebar-form .form-actions a  {
-	color: #555;
-	line-height: 35px;
+  color: #555;
+  line-height: 35px;
 }
 #open-journal-discussion-form .form-item,
 #open-journal-discussion-form .form-actions {
-	padding: 0 20px;
+  padding: 0 20px;
 }
 #open-journal-discussion-form .form-item-roles {
 
@@ -2417,55 +2418,55 @@ h2.journal-block-title {
 /* Discussion List
 ----------------------------------------------------------------*/
 .journal-discussion-list-block {
-	padding: 53px 40px 40px 40px;
-	position: relative;
-	float: left;
+  padding: 53px 40px 40px 40px;
+  position: relative;
+  float: left;
 }
 .journal-discussion-list-block .add-discussion-btn {
-	position: absolute;
-	right: 40px;
-	top: 10px;
+  position: absolute;
+  right: 40px;
+  top: 10px;
 }
-	.journal-discussion-list-block .add-discussion-btn a {
-	  display: block;
-	  padding: 5px 10px 5px 30px;
-	  border-radius: 5px;
-	  -moz-border-radius: 5px;
-	  -webkit-border-radius: 5px;
-	  color: #FFF !important;
-	  /* text-transform: uppercase; */
-	  background: url(images/ic-add-journal-btn.png) #55b0d6 no-repeat 7px 7px !important;
-	  margin-right: 0 !important;
-	}
-		.journal-discussion-list-block .add-discussion-btn a:hover {
-		  text-decoration: none;
-		  background-color: #4084a0 !important;
-		}
+  .journal-discussion-list-block .add-discussion-btn a {
+    display: block;
+    padding: 5px 10px 5px 30px;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    color: #FFF !important;
+    /* text-transform: uppercase; */
+    background: url(images/ic-add-journal-btn.png) #55b0d6 no-repeat 7px 7px !important;
+    margin-right: 0 !important;
+  }
+    .journal-discussion-list-block .add-discussion-btn a:hover {
+      text-decoration: none;
+      background-color: #4084a0 !important;
+    }
 .journal-discussion-list-item {
-	border-top: 1px solid #aaa;
-	border-bottom: 0;
-	padding: 10px 0;
-	float: left;
-	position: relative;
+  border-top: 1px solid #aaa;
+  border-bottom: 0;
+  padding: 10px 0;
+  float: left;
+  position: relative;
 }
-	.journal-discussion-list-item .journal-user {
-		width: 130px;
-		height: 40px;
-		float: left;
-		/* line-height: 40px; */
-		margin-right: 10px;
-	}
-		.journal-discussion-list-item .user-picture-wrapper
-		/* .journal-discussion-list-item .journal-user img */ {
-			float: left;
-			margin-right: 10px;
-			width: 40px;
-			height: 40px;
-		}
-		a.user-name-wrapper {
-			color: #000;
-			text-decoration: none;
-		}
+  .journal-discussion-list-item .journal-user {
+    width: 130px;
+    height: 40px;
+    float: left;
+    /* line-height: 40px; */
+    margin-right: 10px;
+  }
+    .journal-discussion-list-item .user-picture-wrapper
+    /* .journal-discussion-list-item .journal-user img */ {
+      float: left;
+      margin-right: 10px;
+      width: 40px;
+      height: 40px;
+    }
+    a.user-name-wrapper {
+      color: #000;
+      text-decoration: none;
+    }
 
   .journal-discussion-list-item .user-name-wrapper {
       max-width: 74px;
@@ -2473,25 +2474,25 @@ h2.journal-block-title {
       display: inline-block;
       text-overflow: ellipsis;
   }
-	.journal-discussion-list-item .discus-title,
-	.journal-discussion-list-item .discus-content {
-		width: 410px;
-		float: right;
-		padding-right: 10px;
-	}
-	.journal-discussion-list-item .discus-title {
-		margin-bottom: 7px;
+  .journal-discussion-list-item .discus-title,
+  .journal-discussion-list-item .discus-content {
+    width: 410px;
+    float: right;
+    padding-right: 10px;
+  }
+  .journal-discussion-list-item .discus-title {
+    margin-bottom: 7px;
     font-weight: bold;
-	}
-	.journal-discussion-list-item .discus-title a {
-		font-weight: bold;
-		color: #111;
-		float: left;
-		margin-right: 5px;
-	}
-		.journal-discussion-list-item .discus-title a:hover {
-			text-decoration: none;
-		}
+  }
+  .journal-discussion-list-item .discus-title a {
+    font-weight: bold;
+    color: #111;
+    float: left;
+    margin-right: 5px;
+  }
+    .journal-discussion-list-item .discus-title a:hover {
+      text-decoration: none;
+    }
   .latest-file-link {
     position: absolute;
     top: 20px;
@@ -2503,171 +2504,171 @@ h2.journal-block-title {
 /* Discussion Detail
 ----------------------------------------------------------------*/
 .discussion-block h3 {
-	width: 560px;
-	font-size: 22px;
-	padding-left: 20px;
-	float: left;
+  width: 560px;
+  font-size: 22px;
+  padding-left: 20px;
+  float: left;
 }
 ul.discussion-list {
-	margin: 0;
-	list-style: none;
-	padding: 0 20px;
+  margin: 0;
+  list-style: none;
+  padding: 0 20px;
 }
   ul.discussion-list li.discussion-item,
-	ul.discussion-list li.comment-item {
-		border-top: 1px solid #aaa;
-		padding: 10px 0;
-		float: left;
-		width: 560px;
-	}
-		ul.discussion-list li .user-picture-wrapper,
-		.journal-comment-form-wrapper .user-picture-wrapper {
-			float: left;
-			width: 40px;
-			margin-right: 15px;
-		}
-		ul.discussion-list li img {
-			float: left;
-			margin-right: 15px;
-		}
-		.discussion-item-submited {
-			font-weight: bold;
-			float: left;
-			margin-right: 15px;
-		}
-		.discussion-item-content,
-		.comment-item-content {
-			float: left;
-			width: 504px;
-			margin-top: 8px;
-		}
-		.discussion-item-description,
-		.comment-item-message {
-			width: 504px;
-			float: left;
-		}
-		.discussion-item-file,
-		.comment-item-file {
-			float: left;
-		}
+  ul.discussion-list li.comment-item {
+    border-top: 1px solid #aaa;
+    padding: 10px 0;
+    float: left;
+    width: 560px;
+  }
+    ul.discussion-list li .user-picture-wrapper,
+    .journal-comment-form-wrapper .user-picture-wrapper {
+      float: left;
+      width: 40px;
+      margin-right: 15px;
+    }
+    ul.discussion-list li img {
+      float: left;
+      margin-right: 15px;
+    }
+    .discussion-item-submited {
+      font-weight: bold;
+      float: left;
+      margin-right: 15px;
+    }
+    .discussion-item-content,
+    .comment-item-content {
+      float: left;
+      width: 504px;
+      margin-top: 8px;
+    }
+    .discussion-item-description,
+    .comment-item-message {
+      width: 504px;
+      float: left;
+    }
+    .discussion-item-file,
+    .comment-item-file {
+      float: left;
+    }
 
-		.discussion-item-edit-link,
-		.comment-item-edit-link {
-			
-		}
-			.discussion-item-edit-link a,
-			.comment-item-edit-link a {
-				color: #aa9c84;
-				font-size: 0.8em;
-			}
+    .discussion-item-edit-link,
+    .comment-item-edit-link {
+      
+    }
+      .discussion-item-edit-link a,
+      .comment-item-edit-link a {
+        color: #aa9c84;
+        font-size: 0.8em;
+      }
 .discussion-item-content #open-journal-comment-form {
   padding: 0;
   box-shadow: none;
 }
 .journal-comment-form-wrapper {
-	margin: 0 20px;
-	width: 560px;
-	float: left;
-	padding: 10px 0 10px 0;
-	border-top: 1px solid #aaa;
+  margin: 0 20px;
+  width: 560px;
+  float: left;
+  padding: 10px 0 10px 0;
+  border-top: 1px solid #aaa;
 }
-	.journal-comment-form-submited {
-		margin-bottom: 17px;
-	}
-	.journal-comment-form-submited,
-	.journal-comment-form-submited a {
-		font-weight: bold;
-		color: #000;
-	}
+  .journal-comment-form-submited {
+    margin-bottom: 17px;
+  }
+  .journal-comment-form-submited,
+  .journal-comment-form-submited a {
+    font-weight: bold;
+    color: #000;
+  }
 
 .discussion-block .contributor-only {
-	float: left;
-	margin: 7px 0 0 0;
-	line-height: 20px;
-	margin-left: 20px;
-	color: red;
-	font-size: 16px;
-	background: url(images/ic-lock.png) no-repeat;
-	padding-left: 30px;
+  float: left;
+  margin: 7px 0 0 0;
+  line-height: 20px;
+  margin-left: 20px;
+  color: red;
+  font-size: 16px;
+  background: url(images/ic-lock.png) no-repeat;
+  padding-left: 30px;
 }
 .contributor-only-icon {
-	position: absolute;
-	display: block;
-	width: 22px;
-	height: 22px;
-	left: -30px;
-	top: 20px;
-	background: url(images/ic-lock.png) no-repeat;
-	text-indent: -999em;
+  position: absolute;
+  display: block;
+  width: 22px;
+  height: 22px;
+  left: -30px;
+  top: 20px;
+  background: url(images/ic-lock.png) no-repeat;
+  text-indent: -999em;
 }
 .discussion-item-content .discussion-item-edit-link {
-	width: 50px;
-	position: absolute;
-	right: 40px;
-	top: 45px;
-	text-align: right;
+  width: 50px;
+  position: absolute;
+  right: 40px;
+  top: 45px;
+  text-align: right;
 }
 /* File List
 ----------------------------------------------------------------*/
 .files-block {
-	background: url(images/bg-new-file.png) #FFF no-repeat 0 77px;
+  background: url(images/bg-new-file.png) #FFF no-repeat 0 77px;
 }
 .files-block h2.journal-block-title {float: left;}
 
 #file-list-item, 
 #file-list-item li { width: 880px; }
 #file-list-item li { overflow: hidden; }
-	#file-list-item li .file-name {
-		width: 580px;
-		float: left;
-		padding-right: 110px;
-	}
-		#file-list-item li .file-name a {
-			color: #111;
-			font-size: 18px;
-			font-weight: bold;
-		}
-		#file-list-item li .file-name a:hover {
-			text-decoration: none;
-		}
-	#file-list-item li .upload-date,
-	#file-list-item li .file-size {
-		width: 100px;
-		float: left;
-		margin-right: 30px;
-		color: #333;
-		font-size: 0.8em;
-	}
-	#file-list-item li .file-attach img {
-		margin-right: 4px;
-	}
-	#file-list-item li a.file-download-btn {
-		padding: 10px 15px;
-		position: absolute;
-		top: 10px;
-		right: 0;
-		height: 18px;
-		line-height: 18px;
-	}
+  #file-list-item li .file-name {
+    width: 580px;
+    float: left;
+    padding-right: 110px;
+  }
+    #file-list-item li .file-name a {
+      color: #111;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    #file-list-item li .file-name a:hover {
+      text-decoration: none;
+    }
+  #file-list-item li .upload-date,
+  #file-list-item li .file-size {
+    width: 100px;
+    float: left;
+    margin-right: 30px;
+    color: #333;
+    font-size: 0.8em;
+  }
+  #file-list-item li .file-attach img {
+    margin-right: 4px;
+  }
+  #file-list-item li a.file-download-btn {
+    padding: 10px 15px;
+    position: absolute;
+    top: 10px;
+    right: 0;
+    height: 18px;
+    line-height: 18px;
+  }
 
 /* People
 ----------------------------------------------------------------*/
 .people-block {
-	padding-top: 0;
+  padding-top: 0;
 }
 .people-block .people-block-inner {
-	width: 920px;
-	overflow: hidden;
+  width: 920px;
+  overflow: hidden;
 }
 
 .people-block h2.journal-block-title {
-	margin-bottom: 0;
+  margin-bottom: 0;
 }
 .people-block .journal-block-content {
-	padding: 0 20px;
-	margin-top: 30px;
-	width: 100%;
-	float: left;
+  padding: 0 20px;
+  margin-top: 30px;
+  width: 100%;
+  float: left;
 }
 h3.people-section-title {
   color: #111;
@@ -2677,33 +2678,33 @@ h3.people-section-title {
   margin-bottom: 20px;
 }
 .people-block .journal-block-content ul {
-	list-style: none;
-	margin: 0;
-	margin-top: 30px;
+  list-style: none;
+  margin: 0;
+  margin-top: 30px;
 }
 .people-block .journal-block-content ul li {
-	float: left;
-	width: 280px;
-	height: 100px;
-	padding-right: 20px;
-	margin-bottom: 40px;
+  float: left;
+  width: 280px;
+  height: 100px;
+  padding-right: 20px;
+  margin-bottom: 40px;
 }
 .people-creator .journal-user {
-	width: 100%;
+  width: 100%;
 }
 .people-block .journal-user {
-	float: left;
+  float: left;
 }
 
 .people-block .people-contributor .journal-user img,
 .people-block .people-creator .journal-user img {
-	float: left;
-	margin-right: 15px;
-	border-radius: 50%;
-	-moz-border-radius: 50%;
-	-webkit-border-radius: 50%;
-	-ms-border-radius: 50%;
-	-o-border-radius: 50%;
+  float: left;
+  margin-right: 15px;
+  border-radius: 50%;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
 }
 
 .people-block .journal-user .user-picture-wrapper {
@@ -2711,38 +2712,38 @@ h3.people-section-title {
 }
 
 .people-block .journal-user h3 {
-	margin: 0;
+  margin: 0;
 }
 .people-block .journal-user h3 a,
 .people-block .journal-user h3  {
-	font-size: 30px;
-	color: #111;
-	font-family: 'THSarabunNewRegular';
+  font-size: 30px;
+  color: #111;
+  font-family: 'THSarabunNewRegular';
 }
 .people-block .journal-user h3 a:hover {
-	text-decoration: none;
+  text-decoration: none;
 }
 .people-contributor .join-date {
-	color: #666666;
+  color: #666666;
 }
 .journal-user .active-people-btn,
 .journal-user .inactive-people-btn  {
-	display: block;
-	float: left;
-	text-transform: uppercase;
-	color: #FFF;
-	font-size: 10px;
-	line-height: 20px;
-	padding: 0 10px;
-	background-color: #a0dacc;
-	margin-top: 10px;
+  display: block;
+  float: left;
+  text-transform: uppercase;
+  color: #FFF;
+  font-size: 10px;
+  line-height: 20px;
+  padding: 0 10px;
+  background-color: #a0dacc;
+  margin-top: 10px;
 }
 .journal-user .inactive-people-btn {
-	background-color: #c2c2c2;
+  background-color: #c2c2c2;
 }
 .journal-user .active-people-btn:hover,
 .journal-user .inactive-people-btn:hover {
-	text-decoration: none;
+  text-decoration: none;
 }
 .people-block .inactive-people img {
   filter: grayscale(100%);
@@ -2756,42 +2757,42 @@ h3.people-section-title {
 /* No Journal Page
 ----------------------------------------------------------------*/
 .journal-list-empty {
-	width: 400px;
-	margin: 20px auto;
-	text-align: center;
+  width: 400px;
+  margin: 20px auto;
+  text-align: center;
 }
 .journal-list-empty h2 {
-	font-size: 30px;
-	margin: 20px 0;
+  font-size: 30px;
+  margin: 20px 0;
 }
 .journal-list-empty .add-journal-btn a {
-	width: 65px;
-	display: block;
-	padding: 5px 10px 5px 30px;
-	border-radius: 5px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	color: #FFF;
-	background: url(images/ic-add-journal-btn.png) #55b0d6 no-repeat 7px 7px;
-	margin: 20px auto;
+  width: 65px;
+  display: block;
+  padding: 5px 10px 5px 30px;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  color: #FFF;
+  background: url(images/ic-add-journal-btn.png) #55b0d6 no-repeat 7px 7px;
+  margin: 20px auto;
 }
 
 /* Status Sidebar
 ----------------------------------------------------------------*/
 .sidebar-status-block {
-	width: 260px;
-	float: left;
+  width: 260px;
+  float: left;
 }
 .sidebar-status-block .status-active,
 .sidebar-status-block .status-disabled {
-	width: 260px;
-	/* height: 55px; */
-	float: left;
-	font-family: 'THSarabunNewRegular';
-	font-size: 28px;
-	line-height: 50px;
-	color: #626262;
-	margin-bottom: 10px;
+  width: 260px;
+  /* height: 55px; */
+  float: left;
+  font-family: 'THSarabunNewRegular';
+  font-size: 28px;
+  line-height: 50px;
+  color: #626262;
+  margin-bottom: 10px;
 }
 
 .sidebar-status-block .status-children {
@@ -2799,35 +2800,35 @@ h3.people-section-title {
 }
 
 .sidebar-status-block .status-active.current .can-approve {
-	line-height: 28px;
+  line-height: 28px;
 }
 
 .sidebar-status-block .status-active .status-number,
 .sidebar-status-block .status-disabled .status-number {
-	width: 40px;
-	height: 40px;
-	float: left;
-	border-radius: 50%;
-	-moz-border-radius: 50%;
-	-webkit-border-radius: 50%;
-	text-align: center;
-	line-height: 42px;
-	margin: 5px;
-	color: #FFF;
-	font-family: 'THSarabunNewRegular';
-	font-size: 30px;
-	margin-right: 15px;
+  width: 40px;
+  height: 40px;
+  float: left;
+  border-radius: 50%;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  text-align: center;
+  line-height: 42px;
+  margin: 5px;
+  color: #FFF;
+  font-family: 'THSarabunNewRegular';
+  font-size: 30px;
+  margin-right: 15px;
 }
 .sidebar-status-block .status-disabled .status-number {
-	background-color: #dedede;
+  background-color: #dedede;
 }
 
 /* Information review */
 .sidebar-status-block .status-active .discussion-sidebar-status-0 {
-	background-color: #55b0d6;
+  background-color: #55b0d6;
 }
 .sidebar-status-block .status-active.current .discussion-sidebar-status-0 {
-	border: 5px solid #4084a0;
+  border: 5px solid #4084a0;
 }
 
 /* Editor first view */
@@ -2851,7 +2852,7 @@ h3.people-section-title {
 .sidebar-status-block .status-active .discussion-sidebar-status-13,
 .sidebar-status-block .status-active .discussion-sidebar-status-101,
 .sidebar-status-block .status-active .discussion-sidebar-status-102 {
-	background-color: #c6aadd;
+  background-color: #c6aadd;
 }
 .sidebar-status-block .status-active.current .discussion-sidebar-status-5,
 .sidebar-status-block .status-active.current .discussion-sidebar-status-1,
@@ -2865,27 +2866,27 @@ h3.people-section-title {
 .sidebar-status-block .status-active.current .discussion-sidebar-status-13,
 .sidebar-status-block .status-active.current .discussion-sidebar-status-101,
 .sidebar-status-block .status-active.current .discussion-sidebar-status-102 {
-	border: 5px solid #9982ac;
+  border: 5px solid #9982ac;
 }
 
 
 .sidebar-status-block .status-active .discussion-sidebar-status-2 {
-	background-color: #cd935e;
+  background-color: #cd935e;
 }
 .sidebar-status-block .status-active.current .discussion-sidebar-status-2 {
-	border: 5px solid #ac7a4b;
+  border: 5px solid #ac7a4b;
 }
 .sidebar-status-block .status-active .discussion-sidebar-status-3 {
-	background-color: #62c9ae;
+  background-color: #62c9ae;
 }
 .sidebar-status-block .status-active.finish .discussion-sidebar-status-3 {
-	border: 5px solid #59a192;
+  border: 5px solid #59a192;
 }
 .sidebar-status-block .status-active.current .discussion-sidebar-status-0,
 .sidebar-status-block .status-active.current .discussion-sidebar-status-1,
 .sidebar-status-block .status-active.current .discussion-sidebar-status-2,
 .sidebar-status-block .status-active.finish .discussion-sidebar-status-3 {
-	margin: 0 10px 0 0;
+  margin: 0 10px 0 0;
 }
 .approve-popup-button {
   line-height: 30px;
@@ -2895,6 +2896,15 @@ h3.people-section-title {
 #reject_bottom,
 #withdraw_bottom {
   font-family: "Lucida Grande", Verdana, sans-serif;
+  font-size: 10px;
+  padding: 5px 10px;
+  background-color: #888;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  text-shadow: -1px -1px 1px #6d6d6d;
+  color: #FFF;
+  text-transform: uppercase;
 }
 
 .approve-plus-popup textarea {
@@ -2904,213 +2914,213 @@ h3.people-section-title {
 #open-journal-approve-sidebar-form .form-submit:hover,
 #reject_bottom:hover,
 #withdraw_bottom:hover {
-	background-color: #55b0d6;
-	text-decoration: none;
+  background-color: #55b0d6;
+  text-decoration: none;
 }
 
 .reject-button,
 .withdraw-button {
-	display: block;
-	text-align: center;
+  display: block;
+  text-align: center;
 }
 .reject-tag,
 .withdraw-tag {
-	float: left;
-	width: 252px;
-	padding: 10px 0;
-	text-align: center;
-	border: 4px solid rgb(175, 30, 30);
-	color: rgb(175, 30, 30);
-	text-transform: uppercase;
-	font-size: 22px;
+  float: left;
+  width: 252px;
+  padding: 10px 0;
+  text-align: center;
+  border: 4px solid rgb(175, 30, 30);
+  color: rgb(175, 30, 30);
+  text-transform: uppercase;
+  font-size: 22px;
 }
 
 /* Informal Status
 ----------------------------------------------------------------*/
 .informal-status-block,
 .download-file-sidebar-block {
-	width: 260px;
-	float: left;
+  width: 260px;
+  float: left;
 }
 ul.journal-informal-approve-list {
-	margin: 0;
-	list-style-type: none;
+  margin: 0;
+  list-style-type: none;
 }
 ul.journal-informal-approve-list li {
-	float: left;
-	width: 100%;
-	margin-bottom: 10px;
+  float: left;
+  width: 100%;
+  margin-bottom: 10px;
 }
 ul.journal-informal-approve-list li .user-picture-wrapper {
-	float: left;
-	margin-right: 10px;
-	width: 40px;
+  float: left;
+  margin-right: 10px;
+  width: 40px;
 }
 ul.journal-informal-approve-list li .user-name-wrapper {
-	font-weight: bold;
+  font-weight: bold;
 }
 .informal-action {
-	width: 210px;
-	float: right;
+  width: 210px;
+  float: right;
 }
 .informal-action .active-status {
-	float: left;
-	width: 210px;
-	margin-bottom: 5px;
+  float: left;
+  width: 210px;
+  margin-bottom: 5px;
 }
 .informal-action .form-submit {
-	display: block;
-	float: left;
-	text-transform: uppercase;
-	color: #FFF;
-	/* text-shadow: -1px -1px 1px #666; */
-	font-size: 12px;
-	line-height: 20px;
-	padding: 5px 10px;
-	background-color: #62C9AE;
+  display: block;
+  float: left;
+  text-transform: uppercase;
+  color: #FFF;
+  /* text-shadow: -1px -1px 1px #666; */
+  font-size: 12px;
+  line-height: 20px;
+  padding: 5px 10px;
+  background-color: #62C9AE;
 }
 
 /* Account Profile
 ----------------------------------------------------------------*/
 .account-profile {
-	font-family: 'THSarabunNewRegular';
-	font-size: 32px;
-	line-height: 32px;
-	float: left;
-	width: 880px;
-	padding: 20px 40px;
+  font-family: 'THSarabunNewRegular';
+  font-size: 32px;
+  line-height: 32px;
+  float: left;
+  width: 880px;
+  padding: 20px 40px;
 }
 .account-profile .user-picture-wrapper {
-	margin-bottom: 10px;
-	width: 73px;
-	float: left;
-	margin-right: 47px;
+  margin-bottom: 10px;
+  width: 73px;
+  float: left;
+  margin-right: 47px;
 }
 .account-profile-content {
-	width: 636px;
-	float: left;
-	border-left: 2px solid #ccc;
-	padding-left: 60px;
+  width: 636px;
+  float: left;
+  border-left: 2px solid #ccc;
+  padding-left: 60px;
 }
 .account-profile-item {
-	float: left;
-	width: 636px;
-	margin-bottom: 10px;
-	font-family: 'THSarabunNewBold';
+  float: left;
+  width: 636px;
+  margin-bottom: 10px;
+  font-family: 'THSarabunNewBold';
 }
 .account-profile-label {
-	float: left;
-	margin-right: 10px;
-	font-family: 'THSarabunNewRegular';
-	margin-bottom: 10px;
+  float: left;
+  margin-right: 10px;
+  font-family: 'THSarabunNewRegular';
+  margin-bottom: 10px;
 }
 
 /* Issue Section
 ----------------------------------------------------------------*/
 #open-journal-issue-form {
-	width: 920px;
-	float: left;
+  width: 920px;
+  float: left;
 }
 #open-journal-issue-form .form-item {
-	margin-bottom: 0;
+  margin-bottom: 0;
 }
 #open-journal-issue-form .form-item-title .form-text {
-	padding: 2px;
-	border: 1px solid #ccc;
-	border-top-color: #999;
-	background: #FFF;
-	color: #333;
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  padding: 2px;
+  border: 1px solid #ccc;
+  border-top-color: #999;
+  background: #FFF;
+  color: #333;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 #open-journal-issue-form .form-text {
-	font-size: 16px;
+  font-size: 16px;
 }
 
 #issue-sections-form-table .title-remove-wrapper .form-item {
-	margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .issue-journals-wrapper > div {
-	float:left;
-	width: 100%;
+  float:left;
+  width: 100%;
 }
 
 #open-journal-issue-form .form-actions #edit-delete {
-	color: #666;
-	line-height: 35px;
+  color: #666;
+  line-height: 35px;
 }
 .issue-journals-wrapper .form-submit,
 #edit-section-more {
-	padding: 5px 10px;
-	text-transform: none;
-	padding: 2px 6px 3px;
-	color: buttontext;
-	border: 2px outset #f1f1f1;
-	background-color: #f1f1f1;
+  padding: 5px 10px;
+  text-transform: none;
+  padding: 2px 6px 3px;
+  color: buttontext;
+  border: 2px outset #f1f1f1;
+  background-color: #f1f1f1;
 }
 .issue-journals-wrapper .form-submit:hover {
-	background-color: #DDD;
-	cursor: pointer;
+  background-color: #DDD;
+  cursor: pointer;
 }
 
 .issue-detail {
-	float: left;
-	width: 920px;
+  float: left;
+  width: 920px;
 }
 .back-to-all-issue,
 .issue-add-link {
-	width: 960px;
-	text-align: left;
-	margin: 0 auto 10px auto;
+  width: 960px;
+  text-align: left;
+  margin: 0 auto 10px auto;
 }
 .issue-add-link {
-	background: url(images/ic-add-journal-btn-gray.png) transparent no-repeat 7px 7px;
-	padding: 7px 0 0 30px;
-	color: #7d7d7d;
+  background: url(images/ic-add-journal-btn-gray.png) transparent no-repeat 7px 7px;
+  padding: 7px 0 0 30px;
+  color: #7d7d7d;
 }
 .back-to-all-issue a {
-	background: url(images/ic-back.png) transparent no-repeat 7px 7px;
-	padding: 7px 0 0 30px;
-	color: #7d7d7d;
+  background: url(images/ic-back.png) transparent no-repeat 7px 7px;
+  padding: 7px 0 0 30px;
+  color: #7d7d7d;
 }
 .page-issue-view h3 {
-	font-size: 36px;
-	border-bottom: 1px solid #ccc;
-	padding-bottom: 15px;
+  font-size: 36px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 15px;
 }
 .page-issue-view .item-list {
-	margin-bottom: 30px;
+  margin-bottom: 30px;
 }
 .page-issue-view .item-list ul {
-	margin: 0;
-	list-style-type: none;
+  margin: 0;
+  list-style-type: none;
 }
 .page-issue-view .item-list ul li {
-	list-style-type: none;
+  list-style-type: none;
 }
 .page-issue-view .item-list ul li.section-item {
-	margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 .page-issue-view .item-list ul li.section-item,
 .page-issue-view .item-list ul li.journal-item,
 .page-issue-view .item-list ul li {
-	padding-left: 20px;	
+  padding-left: 20px; 
 }
 .page-issue-view .item-list ul > li {
-	padding-right: 20px;
+  padding-right: 20px;
 }
 .page-issue-view .item-list ul.section-list ul li {
-	font-size: 18px;
-	margin-bottom: 10px;
-	list-style-type: disc;
-	list-style-position: inside;
+  font-size: 18px;
+  margin-bottom: 10px;
+  list-style-type: disc;
+  list-style-position: inside;
 }
 .page-issue-view .item-list .admin-links li {
-	float: left;
+  float: left;
 }
 .issue-list-table th {
-	padding-top: 10px;
-	padding-bottom: 5px;
+  padding-top: 10px;
+  padding-bottom: 5px;
 }
 .issue-list-table th,
 .issue-list-table td {
@@ -3119,24 +3129,24 @@ ul.journal-informal-approve-list li .user-name-wrapper {
 /* Footer
 ----------------------------------------------------------------*/
 #footer {
-	width: 100%;
-	height: 84px;
-	background: #FFF;
-	border-top: 1px solid #ebebeb;
-	color: #55b0d6;
-	text-align: center;
-	line-height: 24px;
-	margin: 0;
-	margin-top: 50px;
-	float: left;
+  width: 100%;
+  height: 84px;
+  background: #FFF;
+  border-top: 1px solid #ebebeb;
+  color: #55b0d6;
+  text-align: center;
+  line-height: 24px;
+  margin: 0;
+  margin-top: 50px;
+  float: left;
 }
 #footer p {
-	margin: 0;
-	font-family: 'THSarabunNewRegular';
-	font-size: 18px;
+  margin: 0;
+  font-family: 'THSarabunNewRegular';
+  font-size: 18px;
 }
 .feed {
-	margin-left: 10px;
+  margin-left: 10px;
 }
 .feed img{
   width:23px;
