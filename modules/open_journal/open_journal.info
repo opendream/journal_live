@@ -6,3 +6,6 @@ core = 7.x
 project = "open_journal"
 
 files[] = includes/open_journal_register_form.inc
+
+dependencies[] = autoassignrole:autoassignrole
+dependencies[] = plupload:plupload
