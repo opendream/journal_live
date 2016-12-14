@@ -13,7 +13,7 @@ function open_journal_comment_form($form, $form_state, $journal, $discussion, $d
   
   $form['#attached']['js']['open_journal_compact'] = drupal_get_path('module', 'open_journal').'/js/open_journal_compact.js';
 
-  $form_disabled = ($journal && !user_access('access contributor process') && ($journal->reject || $journal->withdraw || $journal->status == open_journal_get_last_state()));
+  $form_disabled = ($journal && !open_journal_user_access('access contributor process', $user, TRUE) && ($journal->reject || $journal->withdraw || $journal->sid == open_journal_get_last_state()));
   
   $submit_text = t('Add this comment');
   if (open_journal_get_field($data, 'cid')) {

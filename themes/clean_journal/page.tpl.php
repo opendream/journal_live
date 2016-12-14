@@ -1,7 +1,7 @@
 
   <?php if(!empty($open_journal_logo2)):?>
     <div id="open-journal-sign-logo">
-      <?php if ($logo): ?>
+      <?php if (FALSE && $logo): ?>
       <?php print l(theme('image', array('path' => $logo)), '', array('html' => TRUE));?>
       <?php else: ?>
       <?php print l($open_journal_logo2, '', array('html' => TRUE));?>  
@@ -10,6 +10,10 @@
   <?php endif;?>
   
   <?php if (isset($journal) && !$disabled_title): ?>
+    <div class="breadcrumb">
+      <?php print l('Home', '/'); ?>
+    </div>
+
     <h1 class="page-title">
       <?php if(isset($journal->title)):?>
       <?php if ($journal->code): ?>

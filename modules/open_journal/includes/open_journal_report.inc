@@ -72,7 +72,7 @@ function open_journal_get_query() {
     $end_date = REQUEST_TIME;
   }
   else {
-    $end_date = strtotime($_GET['end_date']);
+    $end_date = strtotime($_GET['end_date'] . ' + 1 days');
   }
 
   return array(':start_date' => $start_date, ':end_date' => $end_date);
@@ -144,9 +144,11 @@ function open_journal_report_journal_list() {
   $query = open_journal_get_query();
   $result = db_query("SELECT 
       j.jid `ID`, 
+      j.code `Code`, 
       j.title_en `Title (en)`, 
       j.title_sub `Title (th)`, 
       s.name `State`, 
+      j.address `Offices`,
       DATE_FORMAT(FROM_UNIXTIME(j.created), '%Y-%m-%d %T') `Created at`, 
       DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%m-%d %T') `Last state changed at` 
     FROM 
@@ -174,6 +176,8 @@ function open_journal_report_journal_summary() {
   SELECT s.name, COUNT(j.jid) `include published`, IFNULL(COUNT(j.jid) - SUM(j.sid = 3), 0) `exclude published`  FROM open_journal_state s LEFT JOIN (SELECT * FROM (SELECT sid, jid FROM open_journal_journal_state WHERE start_date <= 1479457121 ORDER BY start_date DESC, jsid DESC) sjs GROUP BY sjs.jid) js ON s.sid = js.sid LEFT JOIN open_journal_journal j ON js.jid = j.jid GROUP BY s.sid;
   */
 
+  $status_list = array_keys(open_journal_get_status_list(TRUE));
+
   $query = array(
     ':last_sid' => open_journal_get_last_state(),
     ':start_date' => $query[':start_date'],
@@ -190,15 +194,15 @@ function open_journal_report_journal_summary() {
   $cols = "";
   if(count($published_years) > 0) {
     foreach ($published_years as $year) {
-      $cols .= "IFNULL(SUM(j.sid = :last_sid AND DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y') = '".$year->year."'), 0) `Published on ".$year->year."`, ";
+      $cols .= "IFNULL(SUM(j.sid = :last_sid AND DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y') = '".$year->year."'), 0) `Published in ".$year->year."`, ";
     }
   }
 
   $result = db_query("SELECT 
       s.name `State`, 
-      COUNT(j.jid) `Include published`, 
+      COUNT(j.jid) `Total`, 
       $cols
-      IFNULL(COUNT(j.jid) - SUM(j.sid = :last_sid), 0) `Exclude published` 
+      IFNULL(COUNT(j.jid) - SUM(j.sid = :last_sid), 0) `Unpublished` 
     FROM 
       {open_journal_state} s 
     LEFT JOIN 
@@ -222,6 +226,7 @@ function open_journal_report_journal_summary() {
       j.created >= :start_date
     GROUP BY 
       s.sid
+    ORDER BY FIELD(s.sid, ".implode(', ', $status_list).")
   ", $query);
 
   open_journal_result_to_csv($result);
@@ -240,11 +245,13 @@ function open_journal_report_journal_publication() {
 
   $result = db_query("SELECT 
       j.jid `ID`, 
+      j.code `Code`, 
       j.title_en `Title (en)`, 
       j.title_sub `Title (th)`, 
       SUBSTRING_INDEX(j.creator_en, ',', 1) `Author (en)`, 
       SUBSTRING_INDEX(j.creator_sub, ',', 1) `Author (th)`, 
-      DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%m-%d %T') `Published at` 
+      DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%m-%d %T') `Published at`, 
+      j.address `Offices`,
     FROM 
       {open_journal_journal} j  
     WHERE 
@@ -268,14 +275,16 @@ function open_journal_report_journal_reject() {
   $query = open_journal_get_query();
 
   $result = db_query("SELECT 
-      j.jid `ID`, 
+      j.jid `ID`,  
+      j.code `Code`, 
       j.title_en `Title (en)`, 
       j.title_sub `Title (th)`, 
       SUBSTRING_INDEX(j.creator_en, ',', 1) `Author (en)`, 
       SUBSTRING_INDEX(j.creator_sub, ',', 1) `Author (th)`, 
       DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%m-%d %T') `Rejected at`,
       CEIL((status_changed - created)/(60*60*24)) `Duration (days)`, 
-      s.name `State`,
+      s.name `State`, 
+      j.address `Offices`, 
       j.reject_reason `Reason`  
     FROM 
       {open_journal_journal} j, 
@@ -301,14 +310,16 @@ function open_journal_report_journal_withdraw() {
   $query = open_journal_get_query();
 
   $result = db_query("SELECT 
-      j.jid `ID`, 
+      j.jid `ID`,  
+      j.code `Code`, 
       j.title_en `Title (en)`, 
       j.title_sub `Title (th)`, 
       SUBSTRING_INDEX(j.creator_en, ',', 1) `Author (en)`, 
       SUBSTRING_INDEX(j.creator_sub, ',', 1) `Author (th)`, 
       DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%m-%d %T') `Withdraw at`,
       CEIL((status_changed - created)/(60*60*24)) `Duration (days)`, 
-      s.name `State`,
+      s.name `State`, 
+      j.address `Offices`,
       j.withdraw_reason `Reason`  
     FROM 
       {open_journal_journal} j, 
@@ -333,11 +344,13 @@ function open_journal_report_journal_reviewer() {
   $query = open_journal_get_query();
 
   $result = db_query("SELECT 
-      j.jid `ID`, 
+      j.jid `ID`,  
+      j.code `Code`, 
       j.title_en `Title (en)`, 
       j.title_sub `Title (th)`, 
       SUBSTRING_INDEX(j.creator_en, ',', 1) `Author (en)`, 
       SUBSTRING_INDEX(j.creator_sub, ',', 1) `Author (th)`, 
+      j.address `Offices`,
       GROUP_CONCAT(u.uid SEPARATOR ',') `Reviewers` 
     FROM 
       {open_journal_journal} j 

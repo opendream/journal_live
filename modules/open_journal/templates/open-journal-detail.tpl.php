@@ -1,4 +1,3 @@
-
 <?php if ($jid): ?>
 <div class="journal-menu">
   <ul id="journal-menu-item-list">
@@ -12,7 +11,7 @@
 <?php endif ?>
 
 <div id="journal-detail-wrapper" class="journal-detail-normal<?php if ($sidebar): ?> journal-detail-has-sidebar<?php endif; ?> ">
-  <?php if ($journal && !user_access('access contributor process') && ($journal->reject || $journal->withdraw || $journal->status == open_journal_get_last_state())): ?>
+  <?php if ($journal && !open_journal_user_access('access contributor process', $user, TRUE) && ($journal->reject || $journal->withdraw || $journal->sid == open_journal_get_last_state())): ?>
   <br />
   <div class="messages warning">
     This article locked, you can't update anything.

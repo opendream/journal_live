@@ -3290,3 +3290,8 @@ border: 2px solid red !important;
 tr.row-state {
   font-size: 20px;
 }
+
+.breadcrumb {
+  width: 960px;
+  margin: 20px auto 0 auto;
+}

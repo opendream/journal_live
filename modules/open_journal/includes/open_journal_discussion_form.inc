@@ -5,7 +5,7 @@ function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL,
   drupal_add_js(drupal_get_path('module', 'open_journal') . '/js/open_journal_status_sidebar.js');
   drupal_add_js(drupal_get_path('module', 'open_journal') . '/js/jquery.qtip.min.js');
 
-  $form_disabled = ($journal && !user_access('access contributor process') && ($journal->reject || $journal->withdraw || $journal->status == open_journal_get_last_state()));
+  $form_disabled = ($journal && !open_journal_user_access('access contributor process', $user, TRUE) && ($journal->reject || $journal->withdraw || $journal->sid == open_journal_get_last_state()));
 
   $form['#attached']['js'][] = array(
     'data' => array(
@@ -135,7 +135,6 @@ function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL,
 
   }
 
-
   $default_roles = array();
   if (isset($data->roles)) {
     $default_roles = $data->roles;
@@ -161,7 +160,7 @@ function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL,
     '#title' => t('Contributors only'),
     '#type' => 'checkbox',
     '#description' => t('If this box is checked, only contributors can view the discussions.'),
-    '#access' => !open_journal_get_field($data, 'permanent') && user_access('access contributor process')
+    '#access' => FALSE
   );
 
   $form['main']['actions'] = array('#type' => 'actions');

@@ -13,7 +13,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
   
   $fs = open_journal_get_field_settings();
 
-  $form_disabled = $data && !user_access('access contributor process') && ($data->reject || $data->withdraw || $data->status == open_journal_get_last_state());
+  $form_disabled = $data && !open_journal_user_access('access contributor process', $user, TRUE) && ($data->reject || $data->withdraw || $data->sid == open_journal_get_last_state());
 
   // Main form
   $form['main'] = array('#type' => 'container');
@@ -165,7 +165,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
   
 
   $form['data']['group']['address'] = array(
-    '#title' => open_journal_label_help('Offices', 'Work address for principal researcher', FALSE),
+    '#title' => open_journal_label_help('Offices', 'Work address for principal author', FALSE),
     '#type' => 'textarea',
     '#default_value' => open_journal_get_field($data, 'address'),
     '#rows' => 3,
@@ -271,7 +271,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
   $form['data']['group']['dc_right'] = array(
     '#title' => open_journal_label_help('Right', 'Information about rights held in and over the resource'),
     '#type' => 'textfield',
-    '#default_value' => open_journal_get_field($data, 'dc_right'),
+    '#default_value' => open_journal_get_field($data, 'dc_right', OPEN_JOURNAL_DEFAULT_PUBLISHER_NAME),
     '#access' => user_access('access contributor process') && $fs['dc_identifier'],
     '#disabled' => $form_disabled,
   );
@@ -330,7 +330,7 @@ function open_journal_multi_textfield($title='' , $values = FALSE, $name, $add_m
     'dc_subject' => 'Words or phrases relevant to the article',
     'dc_publisher' => 'Health Systems Research Institute',
     'dc_contributor' => 'Funding organizations',
-    'dc_creator' => 'Name of principal researcher',
+    'dc_creator' => 'Name and email of principal researcher',
     'dc_creator.email' => 'Email of principal researcher',
   );
 

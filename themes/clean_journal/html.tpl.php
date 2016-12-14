@@ -66,7 +66,7 @@ $account = user_load($user->uid);
     <div id="header-content">
       <?php if(!empty($open_journal_logo1)):?>
       <div id="open-journal-small-logo">
-        <?php if ($logo): ?>
+        <?php if (FALSE && $logo): ?>
         <?php print l(theme('image_style', array('path' => $logo, 'style_name' => 'open_journal_logo')), '', array('html' => TRUE));?>  
         <?php else: ?>
         <?php print l($open_journal_logo1, '', array('html' => TRUE));?>  

@@ -1481,3 +1481,40 @@ function open_journal_update_7056(&$sandbox) {
 function open_journal_update_7057(&$sandbox) {
   open_journal_update_7054();
 }
+
+function open_journal_update_7058(&$sandbox) {
+  db_query("DELETE FROM {variable} WHERE name LIKE :name", array(':name' => db_like('open_journal_latest_code_').'%'));
+
+  $rs = db_query("SELECT jid, created FROM {open_journal_journal} ORDER BY created ASC");
+  foreach ($rs as $journal) {
+    db_query("UPDATE {open_journal_journal} SET code = :code WHERE jid = :jid", array(
+      ':code' => open_journal_journal_get_code($journal->created),
+      ':jid' => $journal->jid
+    ));
+  }
+}
+function open_journal_update_7059(&$sandbox) {
+  /*
+  +-----+--------------------+
+  | rid | name               |
+  +-----+--------------------+
+  |   3 | administrator      |
+  |   1 | anonymous user     |
+  |   2 | authenticated user |
+  |   8 | author             |
+  |   4 | editor             |
+  |   6 | librarian          |
+  |   7 | manager            |
+  |   5 | reviewer           |
+  +-----+--------------------+
+  */
+  $roles = array(3, 8, 4, 6);
+
+  db_query("DELETE FROM {role_permission} WHERE permission = 'send email template'");
+  foreach ($roles as $rid) {
+    db_query("INSERT INTO {role_permission} (rid, permission, module) VALUES (:rid, :permission, 'open_journal')", array(
+      ':rid' => $rid, 
+      ':permission' => 'send email template'
+    ));
+  }
+}
