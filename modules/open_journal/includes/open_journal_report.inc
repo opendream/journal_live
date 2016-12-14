@@ -200,9 +200,9 @@ function open_journal_report_journal_summary() {
 
   $result = db_query("SELECT 
       s.name `State`, 
-      COUNT(j.jid) `Total`, 
       $cols
-      IFNULL(COUNT(j.jid) - SUM(j.sid = :last_sid), 0) `Unpublished` 
+      IFNULL(COUNT(j.jid) - SUM(j.sid = :last_sid), 0) `Unpublished`, 
+      COUNT(j.jid) `Total`
     FROM 
       {open_journal_state} s 
     LEFT JOIN 
