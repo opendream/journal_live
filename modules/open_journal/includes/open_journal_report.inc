@@ -1,7 +1,50 @@
 <?php
+function open_journal_reviewer_form() {
+  $rs = db_query("SELECT 
+      u.uid `uid`,
+      u.name `name`
+    FROM 
+      {users} u 
+    LEFT JOIN 
+      (
+        SELECT * 
+        FROM 
+          (
+            SELECT jid, uid, status 
+            FROM  {open_journal_journal_people} 
+            WHERE role_list LIKE '%reviewer%' 
+            ORDER BY created DESC
+          ) jp 
+        GROUP BY jp.jid, jp.uid 
+        HAVING jp.status = 1
+      ) jp 
+    ON 
+      u.uid = jp.uid 
+    WHERE 
+      u.uid > 0
+    GROUP BY 
+      jp.uid")->fetchAll();
 
+  $reviewers = array();
+  foreach ($rs as $line) {
+    $reviewer = user_load($line->uid);
+    $reviewers[$reviewer->uid] = $reviewer->data['firstname'].' '.$reviewer->data['lastname'].' [uid:'.$reviewer->uid.']';
+  }
+
+  return array(
+    'uid' => array(
+      '#title' => 'Select reviewer',
+      '#type' => 'select',
+      '#options' => $reviewers
+    )
+  );
+}
 
 function open_journal_report_data() {
+
+
+    
+
   return array(
     //5.1
     array(
@@ -50,7 +93,8 @@ function open_journal_report_data() {
       'title' => 'รายงานผลการทำงานของผู้ทรงคุณวุฒิ',
       'subtitle' => 'แสดง : ชื่อผู้ทรงคุณวุฒิ จำนวนบทความที่ได้พิจารณา และรายชื่อบทความ',
       'url' => OPEN_JOURNAL_PREFIX_PATH.'/report/reviewer-summary',
-      'callback' => 'open_journal_report_reviewer_journal'
+      'callback' => 'open_journal_report_reviewer_journal',
+      'extra_form' => 'open_journal_reviewer_form',
     ),
   );
 }
@@ -400,19 +444,22 @@ function open_journal_report_reviewer_journal() {
   // TODO: j.jid -> j.code
 
   $query = open_journal_get_query();
+  $query[':uid'] = $_GET['uid'];
 
   $result = db_query("SELECT 
-      u.uid `Reviewer`,
-      COUNT(j.jid) `Total reviews`,  
-      GROUP_CONCAT(CONCAT('[en] ', j.title_en, ' / [th]', j.title_sub, ' [jid:', j.jid, ']') SEPARATOR ', ') `Journals` 
+      jp.uid `Reviewer`,
+      j.jid `ID`,  
+      j.code `Code`, 
+      DATE_FORMAT(FROM_UNIXTIME(jp.created), '%Y-%m-%d %T') `Review date`,
+      j.title_en `Title (en)`, 
+      j.title_sub `Title (th)`,
+      j.address `Offices`
     FROM 
-      {users} u 
-    LEFT JOIN 
       (
         SELECT * 
         FROM 
           (
-            SELECT jid, uid, status 
+            SELECT jid, uid, status, created 
             FROM  {open_journal_journal_people} 
             WHERE role_list LIKE '%reviewer%' AND created >= :start_date AND created <= :end_date 
             ORDER BY created DESC
@@ -420,16 +467,12 @@ function open_journal_report_reviewer_journal() {
         GROUP BY jp.jid, jp.uid 
         HAVING jp.status = 1
       ) jp 
-    ON 
-      u.uid = jp.uid 
     LEFT JOIN 
       {open_journal_journal} j 
     ON 
       jp.jid = j.jid 
-    GROUP BY 
-      jp.uid 
-    HAVING 
-      Journals IS NOT NULL
+    WHERE
+      jp.uid = :uid
   ", $query)->fetchAll();
 
   foreach ($result as &$line) {

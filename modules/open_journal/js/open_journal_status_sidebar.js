@@ -39,7 +39,13 @@ jQuery(document).ready(function () {
             padding: 10, 
             textAlign: 'left',
             tip: true, // Give it a speech bubble tip with automatic corner detection
-            name: 'blue' // Style it according to the preset 'cream' style
+
+            name: 'blue', // Style it according to the preset 'cream' style
+            width: 500, 
+            height: 300,
+            name: 'blue', // Style it according to the preset 'cream' style
+            classes: {tooltip: 'approve-plus-popup'}
+
          }
      });
 

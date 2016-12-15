@@ -2847,7 +2847,7 @@ function open_journal_replace_template_string($template_list, $journal, $add_rol
       ($journal->dc_identifier? $journal->dc_identifier: url('journal/'.$journal->jid.'/information', array('absolute' => TRUE))),
       $receiver_roles,
       url('journal/'.$journal->jid.'/approve-by-timer', array('absolute' => TRUE)),
-      
+
     );
 
     $template_list[$key]->body = str_replace($replace_code_list, $replace_code_to, $value->body);

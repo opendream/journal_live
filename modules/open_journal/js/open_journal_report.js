@@ -20,16 +20,34 @@ $(document).ready(function () {
 
 	}
 
-	var update_query = function () {
+	update_query = function () {
 
 		console.log(option);
-
-		var query = '';
-		if (option == 'range') {
-			query = '?' + $.param(get_date_filter());
-		}
+		var filter = get_date_filter();
 
 		$('a.report-export').each(function () {
+
+			var query = '';
+			var inFilter = {};
+			var extraFilter = {};
+
+			if (option == 'range') {
+				inFilter = $.extend({}, inFilter, filter);
+			}
+			if ($(this).hasClass('has-extra-form')) {
+
+				$.each($(this).parents('.has-extra-form').find('form').serializeArray(), function(_, kv) {
+					//if (!$.inArray(kv.name, ['form_build_id', 'form_token', 'form_id'])) {
+						extraFilter[kv.name] = kv.value;
+					//}
+				});
+				inFilter = $.extend({}, inFilter, extraFilter);
+			}
+
+			if (!$.isEmptyObject(inFilter)) {
+				query = '?' + $.param(inFilter);
+			}
+
 			var href = $(this).attr('href').split('?')[0];
 			$(this).attr('href', href + query);
 
@@ -49,6 +67,10 @@ $(document).ready(function () {
 	});
 
 	$('.filter-start-date-input select, .filter-end-date-input select').change(function() {
+		update_query();
+	});
+
+	$('.has-extra-form, select, .has-extra-form, input').change(function() {
 		update_query();
 	});
 

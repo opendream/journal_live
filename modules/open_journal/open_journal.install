@@ -1518,3 +1518,13 @@ function open_journal_update_7059(&$sandbox) {
     ));
   }
 }
+
+function open_journal_update_7060(&$sandbox) {
+  db_query("UPDATE {open_journal_template} SET body = REPLACE(body, '..... โปรดระบุ .....', '{{ ..... โปรดระบุลงในวงเล็บปีกกานี้ โดยห้ามลบวงเล็บออก ..... }}') WHERE name = 'reject'");
+  db_query("UPDATE {open_journal_template} SET body = REPLACE(body, '..... Please fill in .....', '{{ ..... Please fill in bracket, do not remove bracket ..... }}') WHERE name = 'reject'");
+}
+
+function open_journal_update_7061(&$sandbox) {
+  db_query("UPDATE {open_journal_template} SET body = REPLACE(body, ' ..... โปรดระบุลงในวงเล็บปีกกานี้ โดยห้ามลบวงเล็บออก ..... ', '[[ ..... โปรดระบุลงในวงเล็บสี่เหลี่ยมนี้ โดยห้ามลบวงเล็บออก ..... ]]') WHERE name = 'reject'");
+  db_query("UPDATE {open_journal_template} SET body = REPLACE(body, ' ..... Please fill in bracket, do not remove bracket ..... ', '[[ ..... Please fill in bracket, do not remove bracket ..... ]]') WHERE name = 'reject'");
+}

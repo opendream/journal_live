@@ -3236,6 +3236,11 @@ border: 2px solid red !important;
   height: 190px;
   position: relative;
 }
+.report-item.has-extra-form {
+  text-align: center;
+  height: 240px;
+}
+
 .report-title {
     font-size: 28px;
 }
@@ -3281,6 +3286,7 @@ border: 2px solid red !important;
   border: solid 1px #eee;
 }
 
+
 /* people add */
 .sub-page-title {
   font-size: 28px;
@@ -3294,4 +3300,9 @@ tr.row-state {
 .breadcrumb {
   width: 960px;
   margin: 20px auto 0 auto;
+}
+
+
+#open-journal-approve-sidebar-form  input[name=fid_upload_button] {
+  display: none;
 }

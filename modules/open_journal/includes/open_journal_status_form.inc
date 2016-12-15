@@ -49,8 +49,18 @@ function open_journal_reject_sidebar_form($form, &$form_state, $journal, $templa
 }
 
 function open_journal_reject_submit($jid, $reject_reason='', $roles=FALSE, $template_title=FALSE, $redirect=TRUE) {
+
+  preg_match_all("^\[\[(.*?)\]\]^", $reject_reason, $fill_reject_reason, PREG_PATTERN_ORDER);
+
+  if (count($fill_reject_reason) == 2) {
+    $fill_reject_reason = implode("\n ", $fill_reject_reason[1]);
+  }
+  else {
+    $fill_reject_reason = $reject_reason;
+  }
+
   $sql = "UPDATE open_journal_journal SET reject = 1, status_changed = :status_changed, reject_reason = :reject_reason WHERE jid = ".$jid;
-  db_query($sql, array(':status_changed' => REQUEST_TIME, ':reject_reason' => $reject_reason));
+  db_query($sql, array(':status_changed' => REQUEST_TIME, ':reject_reason' => $fill_reject_reason));
 
   // Create new discussion
   $reject_reason = open_journal_trim($reject_reason)? $reject_reason:'We are sorry. If you want to more information to rejected, you can talk on this discussion.' ;
@@ -279,12 +289,17 @@ function open_journal_approve_sidebar_form($form, &$form_state, $journal , $next
       '#default_value' => $default_value,
     );
 
+    $allow_file_type = OPEN_JOURNAL_ALLOWED_FILE_TYPE;
+    if (open_journal_user_access('access contributor process', $user, TRUE)) {
+      $allow_file_type = OPEN_JOURNAL_ALLOWED_FINAL_STATUS_FILE_TYPE;
+    }
+
     $form['fid'] = array(
       '#type' => 'managed_file',
       '#title' => t('File'),
-      '#description' => t('File type allowed: %s',array('%s' => OPEN_JOURNAL_ALLOWED_FILE_TYPE)),
+      '#description' => t('File type allowed: %s',array('%s' => $allow_file_type)),
       '#upload_validators' => array(
-        'file_validate_extensions' => array(OPEN_JOURNAL_ALLOWED_FILE_TYPE),
+        'file_validate_extensions' => array($allow_file_type),
       ),
       '#upload_location' => "public://journal/",
     );

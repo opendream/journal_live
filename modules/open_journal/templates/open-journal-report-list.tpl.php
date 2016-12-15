@@ -71,13 +71,18 @@
 
 <div class="report-list-wrapper">
 	<?php foreach ($report_list as $report): ?>
-	<div class="report-item block-bg-shadow">
+	<div class="report-item block-bg-shadow<?php if ($report['extra_form']): ?> has-extra-form<?php endif; ?>">
 		<div class="report-info">
 			<h2 class="report-title"><?php print $report['title'] ?></h2>
 			<div class="report-subtitle"><?php print $report['subtitle'] ?></div>
+			<?php if ($report['extra_form']): ?>
+			<div class="report-extra-form">
+				<?php print drupal_render(drupal_get_form($report['extra_form'])); ?>
+			</div>
+			<?php endif ?>
 		</div>
 		<div class="report-action">
-			<a class="report-export" href="<?php print url($report['url']); ?>" target="_blank">EXPORT</a>
+			<a class="report-export<?php if ($report['extra_form']): ?> has-extra-form<?php endif; ?>" href="<?php print url($report['url']); ?>" target="_blank">EXPORT</a>
 		</div>
 	</div>
 	<?php endforeach ?>

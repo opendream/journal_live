@@ -36,7 +36,7 @@ function open_journal_comment_form($form, $form_state, $journal, $discussion, $d
     //'#prefix' => '<div id="wmd-toolbar-editor" class="wmd-toolbar">'.'</div>',
     
   );
-  if($journal->sid != open_journal_get_last_state()) {
+  if(!open_journal_user_access('access contributor process', $user, TRUE) || $journal->sid != open_journal_get_last_state()) {
     $form['fid'] = array(
     '#type' => 'managed_file',
     '#title' => t('File'),
