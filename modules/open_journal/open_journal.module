@@ -1270,6 +1270,10 @@ function open_journal_people_mail($data) {
 
   if ($sender->uid != $receiver->uid) {
 
+    if (!user_access('send email template', $receiver)) {
+      return FALSE;
+    }
+
     $sender_info = open_journal_get_display_user_info($sender, array('user' => $receiver));
     $sender->name = $sender_info['display_name_text'];
 
@@ -1562,6 +1566,10 @@ function open_jounal_discussion_mail($data, $params=array()) {
 
   foreach ($user_list as $receiver) {
 
+    if (!user_access('send email template', $receiver)) {
+      continue;
+    }
+
     $sender->name = $org_name;
     $sender_info = open_journal_get_display_user_info($sender, array('user' => $receiver));
     $sender->name = $sender_info['display_name_text'];
@@ -1680,6 +1688,10 @@ function open_jounal_comment_mail($data) {
   $org_name = $sender->name;
   foreach ($user_list as $receiver) {
 
+    if (!user_access('send email template', $receiver)) {
+      continue;
+    }
+    
     $sender->name = $org_name;
     $sender_info = open_journal_get_display_user_info($sender, array('user' => $receiver));
     $sender->name = $sender_info['display_name_text'];
