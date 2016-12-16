@@ -328,10 +328,10 @@ function open_journal_multi_textfield($title='' , $values = FALSE, $name, $add_m
   $fs = open_journal_get_field_settings();
   $help_map = array(
     'dc_subject' => 'Words or phrases relevant to the article',
-    'dc_publisher' => 'Health Systems Research Institute',
+    'dc_publisher' => 'HSRI',
     'dc_contributor' => 'Funding organizations',
-    'dc_creator' => 'Name and email of principal researcher',
-    'dc_creator.email' => 'Email of principal researcher',
+    'dc_creator' => 'Name and email of principal author, do not put any title',
+    'dc_creator.email' => 'Email of principal author',
   );
 
   $help_text = isset($help_map[$name])? $help_map[$name]: 'Help me please.';
