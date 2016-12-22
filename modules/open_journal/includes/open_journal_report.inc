@@ -132,8 +132,45 @@ function open_journal_get_filename($prefix) {
     return $prefix;
 }
 
+function open_journal_result_to_xlsx($result, $filename) {
+
+  include_once("xlsxwriter.class.php");
+
+  $filename = str_replace(array('open_journal_', '_'), array('', '-'), $filename);
+
+  $filename = open_journal_get_filename($filename).".xlsx";
+  header('Content-disposition: attachment; filename="'.XLSXWriter::sanitize_filename($filename).'"');
+  header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8");
+  header('Content-Transfer-Encoding: binary');
+  header('Cache-Control: must-revalidate');
+  header('Pragma: public');
+
+  $header = array();
+  foreach ($result as $line) {
+    $header = get_object_vars($line);
+    break;
+  }
+  foreach ($header as $k => $v) {
+    $header[$k] = 'string';
+  }
+
+  $data = array();
+  foreach ($result as $line) {
+    $data[] = (array) $line;
+  }
+
+
+  $writer = new XLSXWriter();
+  $writer->writeSheet($data, 'Sheet1', $header);
+  $writer->writeToStdOut();
+
+  drupal_exit();
+
+}
+
 function open_journal_result_to_csv($result) {
 
+  
   drupal_add_http_header('Content-Type', 'text/csv');
   drupal_add_http_header('Content-Disposition', 'attachment;filename='.open_journal_get_filename('report-journal-list').'.csv');
 
@@ -153,6 +190,7 @@ function open_journal_result_to_csv($result) {
   }
   fclose($fp);
   drupal_exit();
+  
 }
 
 function open_journal_report_list() {
@@ -204,7 +242,7 @@ function open_journal_report_journal_list() {
       j.created DESC
   ", $query);
 
-  open_journal_result_to_csv($result);
+  open_journal_result_to_xlsx($result, __FUNCTION__);
 
 }
 
@@ -273,7 +311,7 @@ function open_journal_report_journal_summary() {
     ORDER BY FIELD(s.sid, ".implode(', ', $status_list).")
   ", $query);
 
-  open_journal_result_to_csv($result);
+  open_journal_result_to_xlsx($result, __FUNCTION__);
 
 }
 
@@ -295,7 +333,7 @@ function open_journal_report_journal_publication() {
       SUBSTRING_INDEX(j.creator_en, ',', 1) `Author (en)`, 
       SUBSTRING_INDEX(j.creator_sub, ',', 1) `Author (th)`, 
       DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%m-%d %T') `Published at`, 
-      j.address `Offices`,
+      j.address `Offices`
     FROM 
       {open_journal_journal} j  
     WHERE 
@@ -304,7 +342,7 @@ function open_journal_report_journal_publication() {
       j.status_changed DESC
   ", $query);
 
-  open_journal_result_to_csv($result);
+  open_journal_result_to_xlsx($result, __FUNCTION__);
 
 }
 
@@ -339,7 +377,7 @@ function open_journal_report_journal_reject() {
       j.status_changed DESC
   ", $query);
 
-  open_journal_result_to_csv($result);
+  open_journal_result_to_xlsx($result, __FUNCTION__);
 
 }
 
@@ -374,7 +412,7 @@ function open_journal_report_journal_withdraw() {
       j.status_changed DESC
   ", $query);
 
-  open_journal_result_to_csv($result);
+  open_journal_result_to_xlsx($result, __FUNCTION__);
 }
 
 // 5.8
@@ -432,7 +470,7 @@ function open_journal_report_journal_reviewer() {
     $line->Reviewers = implode(', ', $reviewers);
   }
 
-  open_journal_result_to_csv($result);
+  open_journal_result_to_xlsx($result, __FUNCTION__);
 }
 
 // 5.9
@@ -481,6 +519,6 @@ function open_journal_report_reviewer_journal() {
     $line->Reviewer = $reviewer->data['firstname'].' '.$reviewer->data['lastname'].' [uid:'.$reviewer->uid.']';
   }
 
-  open_journal_result_to_csv($result);
+  open_journal_result_to_xlsx($result, __FUNCTION__);
 
 }
