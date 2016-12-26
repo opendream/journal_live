@@ -154,7 +154,7 @@ function open_journal_comment_delete_form($form, &$form_state, $journal, $discus
 }
 
 function open_journal_comment_delete_form_submit($form, &$form_state) {
-  open_journal_discussion_remove($form_state['values']['cid']);
+  db_query("DELETE FROM {open_journal_comment} WHERE cid = :cid", array(':cid' => $form_state['values']['cid']));
   drupal_set_message(t('The comment has been deleted.'));
   drupal_goto(OPEN_JOURNAL_PREFIX_PATH.'/'.$form_state['values']['jid'].'/discussion/'.$form_state['values']['did']);
 }

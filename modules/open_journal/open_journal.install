@@ -328,6 +328,10 @@ function open_journal_schema() {
         'not null' => FALSE,
         'default' => 0,
       ),
+      'roles' => array(
+        'type' => 'text',
+        'size' => 'big'
+      ),
     ),
     'primary key' => array('did'),
   );
@@ -1527,4 +1531,9 @@ function open_journal_update_7060(&$sandbox) {
 function open_journal_update_7061(&$sandbox) {
   db_query("UPDATE {open_journal_template} SET body = REPLACE(body, ' ..... โปรดระบุลงในวงเล็บปีกกานี้ โดยห้ามลบวงเล็บออก ..... ', '[[ ..... โปรดระบุลงในวงเล็บสี่เหลี่ยมนี้ โดยห้ามลบวงเล็บออก ..... ]]') WHERE name = 'reject'");
   db_query("UPDATE {open_journal_template} SET body = REPLACE(body, ' ..... Please fill in bracket, do not remove bracket ..... ', '[[ ..... Please fill in bracket, do not remove bracket ..... ]]') WHERE name = 'reject'");
+}
+
+function open_journal_update_7062(&$sandbox) {
+  $schema = open_journal_schema();
+  //xdb_add_field('open_journal_discussion', 'roles', $schema['open_journal_discussion']['fields']['roles']);
 }

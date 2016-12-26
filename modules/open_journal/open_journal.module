@@ -1422,7 +1422,7 @@ function open_journal_discussion_save($data, $params=array()) {
   $data->is_new = !$pk;
 
   // Create discussion role
-  if (isset($data->roles)) {
+  if (!$params['ignore_roles'] && isset($data->roles)) {
 
     // Clear old discussion role when edit discussion role
     $sql = "DELETE FROM {open_journal_discussion_role} WHERE did = :did";
@@ -1489,14 +1489,24 @@ function open_journal_discussion_file_save($did, $fid) {
   drupal_write_record('open_journal_discussion_file', $data, array());
 }
 
-function open_journal_people_active_role_list($data, $exclude_roles_me=TRUE) {
-
-    $discussion = $data->discussion ? $data->discussion: $data;
+function open_journal_people_active_role_list($data, $exclude_roles_me=TRUE) {    
 
     global $user;
     $role_list = array();
     $roles = $data->roles;
     $jid = $data->jid;
+    
+    if ($data->discussion) {
+      $discussion = $data->discussion;
+      $rs = db_query("SELECT rid FROM {open_journal_discussion_role} WHERE did = :did", array(':did' => $discussion->did));
+      $roles = array();
+      foreach ($rs as $role) {
+        $roles[$role->rid] = $role->rid;
+      }
+    }
+    else {
+      $discussion = $data;
+    }
 
     foreach ($roles as $key => $value) {
       if ($value) {
@@ -1512,11 +1522,13 @@ function open_journal_people_active_role_list($data, $exclude_roles_me=TRUE) {
       }
     }
 
+
     if (!empty($role_list)) {
 
       $sql = 'SELECT DISTINCT(ur.uid) FROM {users_roles} ur INNER JOIN {open_journal_journal_people} jp ON jp.uid = ur.uid AND jp.created <= :created WHERE ur.rid IN (:rids) AND jp.jid = :jid';
       $result = db_query($sql, array(':rids' => $role_list, ':jid' => $jid, ':created' => $discussion->created));
       $uids = $result->fetchCol();
+
 
     }
     else {
@@ -1599,10 +1611,10 @@ function open_jounal_discussion_mail($data, $params=array()) {
  * Replace sender name to role
  */
 function open_journal_replace_sender_name($sender) {
-  foreach ($sender->roles as $key => $value) {
-    $sender_name = $value;
-  }
-  return $sender_name;
+  $first_role = end($sender->roles);
+  $role_name = $sender->data['current_role']? $sender->roles[$sender->data['current_role']]: $first_role;
+  $role_name = ucfirst($role_name);
+  return $role_name;
 }
 
 /**
@@ -1651,7 +1663,8 @@ function open_journal_comment_save($data) {
 
   drupal_write_record('open_journal_comment', $data, $pk);
   $discussion = open_journal_discussion_load($data->did);
-  open_journal_discussion_save($discussion);
+  open_journal_discussion_save($discussion, array('ignore_roles' => TRUE));
+
 
   if ($data->fid) {
     $file->status = FILE_STATUS_PERMANENT;
@@ -1684,6 +1697,7 @@ function open_jounal_comment_mail($data) {
   $data->journal = open_journal_journal_load($data->discussion->jid, TRUE);
 
   $user_list = open_journal_people_active_role_list($data);
+
 
   $org_name = $sender->name;
   foreach ($user_list as $receiver) {
