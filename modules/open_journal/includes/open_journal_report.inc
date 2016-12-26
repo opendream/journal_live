@@ -138,7 +138,7 @@ function open_journal_result_to_xlsx($result, $filename) {
 
   $filename = str_replace(array('open_journal_', '_'), array('', '-'), $filename);
 
-  $filename = open_journal_get_filename($filename).".xlsx";
+  $filename = open_journal_get_filename($filename).".".date("Y-m-d-His", REQUEST_TIME).".xlsx";
   header('Content-disposition: attachment; filename="'.XLSXWriter::sanitize_filename($filename).'"');
   header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8");
   header('Content-Transfer-Encoding: binary');
@@ -146,19 +146,20 @@ function open_journal_result_to_xlsx($result, $filename) {
   header('Pragma: public');
 
   $header = array();
-  foreach ($result as $line) {
-    $header = get_object_vars($line);
-    break;
-  }
-  foreach ($header as $k => $v) {
-    $header[$k] = 'string';
-  }
 
   $data = array();
+  $is_first = TRUE;
   foreach ($result as $line) {
+    if ($is_first) {
+      $is_first = FALSE;
+      $header = get_object_vars($line);
+    }
     $data[] = (array) $line;
   }
 
+  foreach ($header as $k => $v) {
+    $header[$k] = 'string';
+  }
 
   $writer = new XLSXWriter();
   $writer->writeSheet($data, 'Sheet1', $header);
@@ -237,10 +238,11 @@ function open_journal_report_journal_list() {
       {open_journal_journal} j, 
       {open_journal_state} s 
     WHERE 
-      j.sid = s.sid AND j.reject = 0 AND j.created >= :start_date AND j.created <= :end_date
+      j.sid = s.sid AND j.reject = 0 AND j.withdraw = 0 AND j.created >= :start_date AND j.created <= :end_date
     ORDER BY
       j.created DESC
   ", $query);
+
 
   open_journal_result_to_xlsx($result, __FUNCTION__);
 
@@ -363,10 +365,10 @@ function open_journal_report_journal_reject() {
       j.title_sub `Title (th)`, 
       SUBSTRING_INDEX(j.creator_en, ',', 1) `Author (en)`, 
       SUBSTRING_INDEX(j.creator_sub, ',', 1) `Author (th)`, 
+      j.address `Offices`, 
       DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%m-%d %T') `Rejected at`,
       CEIL((status_changed - created)/(60*60*24)) `Duration (days)`, 
       s.name `State`, 
-      j.address `Offices`, 
       j.reject_reason `Reason`  
     FROM 
       {open_journal_journal} j, 
@@ -398,10 +400,10 @@ function open_journal_report_journal_withdraw() {
       j.title_sub `Title (th)`, 
       SUBSTRING_INDEX(j.creator_en, ',', 1) `Author (en)`, 
       SUBSTRING_INDEX(j.creator_sub, ',', 1) `Author (th)`, 
+      j.address `Offices`,
       DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%m-%d %T') `Withdraw at`,
       CEIL((status_changed - created)/(60*60*24)) `Duration (days)`, 
       s.name `State`, 
-      j.address `Offices`,
       j.withdraw_reason `Reason`  
     FROM 
       {open_journal_journal} j, 

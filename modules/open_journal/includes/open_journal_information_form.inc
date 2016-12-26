@@ -169,6 +169,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
     '#type' => 'textarea',
     '#default_value' => open_journal_get_field($data, 'address'),
     '#rows' => 3,
+    '#required' => TRUE,
     '#access' => $fs['address'],
     '#disabled' => $form_disabled,
   );
