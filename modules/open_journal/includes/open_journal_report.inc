@@ -307,7 +307,7 @@ function open_journal_report_journal_summary() {
     ON 
       js.jid = j.jid 
     WHERE
-      j.created >= :start_date
+      j.reject = 0 AND j.withdraw = 0 AND j.created >= :start_date
     GROUP BY 
       s.sid
     ORDER BY FIELD(s.sid, ".implode(', ', $status_list).")
