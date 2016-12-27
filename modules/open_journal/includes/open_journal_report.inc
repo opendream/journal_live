@@ -132,20 +132,41 @@ function open_journal_get_filename($prefix) {
     return $prefix;
 }
 
-function open_journal_result_to_xlsx($result, $filename) {
+function open_journal_result_to_xlsx2($result, $filename) {
 
-  include_once("xlsxwriter.class.php");
+  include_once("PHPExcel.php");
 
   $filename = str_replace(array('open_journal_', '_'), array('', '-'), $filename);
 
   $filename = open_journal_get_filename($filename).".".date("Y-m-d-His", REQUEST_TIME).".xlsx";
-  header('Content-disposition: attachment; filename="'.XLSXWriter::sanitize_filename($filename).'"');
+  header('Content-disposition: attachment; filename="'.$filename.'"');
   header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8");
   header('Content-Transfer-Encoding: binary');
   header('Cache-Control: must-revalidate');
   header('Pragma: public');
 
-  $header = array();
+  $objPHPExcel = new PHPExcel();
+
+  $objPHPExcel->getProperties()->setCreator("E-Journal")
+               ->setLastModifiedBy("E-Journal")
+               ->setTitle("Office 2007 XLSX Test Document")
+               ->setSubject("Office 2007 XLSX Test Document")
+               ->setDescription("Test document for Office 2007 XLSX, generated using PHP classes.")
+               ->setKeywords("office 2007 openxml php")
+               ->setCategory("Test result file");
+
+  // Add some data
+$objPHPExcel->setActiveSheetIndex(0)
+            ->setCellValue('A1', 'Hello')
+            ->setCellValue('B2', 'world!')
+            ->setCellValue('C1', 'Hello')
+            ->setCellValue('D2', 'world!');
+
+$objPHPExcel->getActiveSheet()->setTitle('Simple');
+
+$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+$objWriter->save('php://output');
+drupal_exit();
 
   $data = array();
   $is_first = TRUE;
@@ -168,6 +189,45 @@ function open_journal_result_to_xlsx($result, $filename) {
   drupal_exit();
 
 }
+
+function open_journal_result_to_xlsx($result, $filename) {
+
+  include_once("xlsxwriter.class.php");
+
+  $filename = str_replace(array('open_journal_', '_'), array('', '-'), $filename);
+
+  $filename = open_journal_get_filename($filename).".".date("Y-m-d-His", REQUEST_TIME).".xlsx";
+  header('Content-disposition: attachment; filename="'.XLSXWriter::sanitize_filename($filename).'"');
+  header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8");
+  header('Content-Transfer-Encoding: binary');
+  header('Cache-Control: must-revalidate');
+  header('Pragma: public');
+
+
+  $data = array();
+  $is_first = TRUE;
+  foreach ($result as $line) {
+    if ($is_first) {
+      $is_first = FALSE;
+      $header = get_object_vars($line);
+    }
+    $data[] = (array) $line;
+  }
+
+  foreach ($header as $k => $v) {
+    $header[$k] = 'string';
+  }
+
+  $meta = 'as of : '.date("Y-m-d-His", REQUEST_TIME);
+
+  $writer = new XLSXWriter();
+  $writer->writeSheet($data, 'Sheet1', $header, $meta);
+  $writer->writeToStdOut();
+
+  drupal_exit();
+
+}
+
 
 function open_journal_result_to_csv($result) {
 
@@ -225,15 +285,18 @@ function open_journal_report_journal_list() {
   // TODO: j.jid -> j.code, WHERE j.withdraw = 0
 
   $query = open_journal_get_query();
+  db_query("SET @rn=0");
   $result = db_query("SELECT 
-      j.jid `ID`, 
-      j.code `Code`, 
-      j.title_en `Title (en)`, 
-      j.title_sub `Title (th)`, 
-      s.name `State`, 
-      j.address `Offices`,
-      DATE_FORMAT(FROM_UNIXTIME(j.created), '%Y-%m-%d %T') `Created at`, 
-      DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%m-%d %T') `Last state changed at` 
+      @rn:=@rn+1 AS `no.`, 
+      j.code `ID`, 
+      j.jid `URL ID`, 
+      j.title_en `title (en)`, 
+      j.title_sub `title (th)`, 
+      s.name `status`, 
+      j.address `offices`,
+      DATE_FORMAT(FROM_UNIXTIME(j.created), '%Y-%m-%d %T') `submission date`, 
+      DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%m-%d %T') `date of latest status change`, 
+      CEIL((j.status_changed - j.created)/(60*60*24)) `days in current status` 
     FROM 
       {open_journal_journal} j, 
       {open_journal_state} s 
@@ -278,15 +341,15 @@ function open_journal_report_journal_summary() {
   $cols = "";
   if(count($published_years) > 0) {
     foreach ($published_years as $year) {
-      $cols .= "IFNULL(SUM(j.sid = :last_sid AND DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y') = '".$year->year."'), 0) `Published in ".$year->year."`, ";
+      $cols .= "IFNULL(SUM(j.sid = :last_sid AND DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y') = '".$year->year."'), 0) `published in ".$year->year."`, ";
     }
   }
 
   $result = db_query("SELECT 
-      s.name `State`, 
+      s.name `status`, 
       $cols
-      IFNULL(COUNT(j.jid) - SUM(j.sid = :last_sid), 0) `Unpublished`, 
-      COUNT(j.jid) `Total`
+      IFNULL(COUNT(j.jid) - SUM(j.sid = :last_sid), 0) `unpublished`, 
+      COUNT(j.jid) `total`
     FROM 
       {open_journal_state} s 
     LEFT JOIN 
@@ -313,6 +376,21 @@ function open_journal_report_journal_summary() {
     ORDER BY FIELD(s.sid, ".implode(', ', $status_list).")
   ", $query);
 
+  $result = $result->fetchAll();
+  $total_row = array();
+  foreach ($result as $i => $obj) {
+    foreach (get_object_vars($obj) as $key => $value) {
+      if (is_numeric($obj->{$key})) {
+        $total_row[$key] += $obj->{$key};
+      }
+      else {
+        $total_row[$key] = 'Total';
+      }
+    }
+  }
+  $result[] = (object) $total_row;
+
+
   open_journal_result_to_xlsx($result, __FUNCTION__);
 
 }
@@ -327,15 +405,17 @@ function open_journal_report_journal_publication() {
   $query = open_journal_get_query();
   $query[':last_sid'] = open_journal_get_last_state();
 
+  db_query("SET @rn=0");
   $result = db_query("SELECT 
-      j.jid `ID`, 
-      j.code `Code`, 
-      j.title_en `Title (en)`, 
-      j.title_sub `Title (th)`, 
-      SUBSTRING_INDEX(j.creator_en, ',', 1) `Author (en)`, 
-      SUBSTRING_INDEX(j.creator_sub, ',', 1) `Author (th)`, 
-      DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%m-%d %T') `Published at`, 
-      j.address `Offices`
+      @rn:=@rn+1 AS `no.`, 
+      j.code `ID`, 
+      j.jid `URL ID`, 
+      j.title_en `title (en)`, 
+      j.title_sub `title (th)`, 
+      SUBSTRING_INDEX(j.creator_en, ',', 1) `author (en)`, 
+      SUBSTRING_INDEX(j.creator_sub, ',', 1) `author (th)`, 
+      DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%m-%d %T') `published at`, 
+      j.address `offices`
     FROM 
       {open_journal_journal} j  
     WHERE 
@@ -358,18 +438,20 @@ function open_journal_report_journal_reject() {
 
   $query = open_journal_get_query();
 
+  db_query("SET @rn=0");
   $result = db_query("SELECT 
-      j.jid `ID`,  
-      j.code `Code`, 
-      j.title_en `Title (en)`, 
-      j.title_sub `Title (th)`, 
-      SUBSTRING_INDEX(j.creator_en, ',', 1) `Author (en)`, 
-      SUBSTRING_INDEX(j.creator_sub, ',', 1) `Author (th)`, 
-      j.address `Offices`, 
-      DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%m-%d %T') `Rejected at`,
-      CEIL((status_changed - created)/(60*60*24)) `Duration (days)`, 
-      s.name `State`, 
-      j.reject_reason `Reason`  
+      @rn:=@rn+1 AS `no.`, 
+      j.code `ID`, 
+      j.jid `URL ID`,  
+      j.title_en `title (en)`, 
+      j.title_sub `title (th)`, 
+      SUBSTRING_INDEX(j.creator_en, ',', 1) `author (en)`, 
+      SUBSTRING_INDEX(j.creator_sub, ',', 1) `author (th)`, 
+      j.address `offices`, 
+      DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%m-%d %T') `rejected at`,
+      CEIL((status_changed - created)/(60*60*24)) `days in current status`, 
+      s.name `status`, 
+      j.reject_reason `reason`  
     FROM 
       {open_journal_journal} j, 
       {open_journal_state} s 
@@ -393,18 +475,20 @@ function open_journal_report_journal_withdraw() {
 
   $query = open_journal_get_query();
 
+  db_query("SET @rn=0");
   $result = db_query("SELECT 
-      j.jid `ID`,  
-      j.code `Code`, 
-      j.title_en `Title (en)`, 
-      j.title_sub `Title (th)`, 
-      SUBSTRING_INDEX(j.creator_en, ',', 1) `Author (en)`, 
-      SUBSTRING_INDEX(j.creator_sub, ',', 1) `Author (th)`, 
+      @rn:=@rn+1 AS `no.`, 
+      j.code `ID`, 
+      j.jid `URL ID`,  
+      j.title_en `title (en)`, 
+      j.title_sub `title (th)`, 
+      SUBSTRING_INDEX(j.creator_en, ',', 1) `author (en)`, 
+      SUBSTRING_INDEX(j.creator_sub, ',', 1) `author (th)`, 
       j.address `Offices`,
-      DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%m-%d %T') `Withdraw at`,
-      CEIL((status_changed - created)/(60*60*24)) `Duration (days)`, 
-      s.name `State`, 
-      j.withdraw_reason `Reason`  
+      DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%m-%d %T') `withdraw at`,
+      CEIL((status_changed - created)/(60*60*24)) `days in current status`, 
+      s.name `status`, 
+      j.withdraw_reason `reason`  
     FROM 
       {open_journal_journal} j, 
       {open_journal_state} s 
@@ -427,15 +511,17 @@ function open_journal_report_journal_reviewer() {
 
   $query = open_journal_get_query();
 
+  db_query("SET @rn=0");
   $result = db_query("SELECT 
-      j.jid `ID`,  
-      j.code `Code`, 
-      j.title_en `Title (en)`, 
-      j.title_sub `Title (th)`, 
-      SUBSTRING_INDEX(j.creator_en, ',', 1) `Author (en)`, 
-      SUBSTRING_INDEX(j.creator_sub, ',', 1) `Author (th)`, 
-      j.address `Offices`,
-      GROUP_CONCAT(u.uid SEPARATOR ',') `Reviewers` 
+      @rn:=@rn+1 AS `no.`, 
+      j.code `ID`, 
+      j.jid `URL ID`,  
+      j.title_en `title (en)`, 
+      j.title_sub `title (th)`, 
+      SUBSTRING_INDEX(j.creator_en, ',', 1) `author (en)`, 
+      SUBSTRING_INDEX(j.creator_sub, ',', 1) `author (th)`, 
+      j.address `offices`,
+      GROUP_CONCAT(u.uid SEPARATOR ',') `reviewers` 
     FROM 
       {open_journal_journal} j 
     LEFT JOIN 
@@ -487,13 +573,13 @@ function open_journal_report_reviewer_journal() {
   $query[':uid'] = $_GET['uid'];
 
   $result = db_query("SELECT 
-      jp.uid `Reviewer`,
-      j.jid `ID`,  
-      j.code `Code`, 
-      DATE_FORMAT(FROM_UNIXTIME(jp.created), '%Y-%m-%d %T') `Review date`,
-      j.title_en `Title (en)`, 
-      j.title_sub `Title (th)`,
-      j.address `Offices`
+      jp.uid `reviewer`,
+      j.code `ID`, 
+      j.jid `URL ID`,  
+      DATE_FORMAT(FROM_UNIXTIME(jp.created), '%Y-%m-%d %T') `review date`,
+      j.title_en `title (en)`, 
+      j.title_sub `title (th)`,
+      j.address `offices`
     FROM 
       (
         SELECT * 

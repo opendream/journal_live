@@ -31,6 +31,7 @@ class XLSXWriter
 			date_default_timezone_set('UTC');
 		}
 		$this->addCellFormat($cell_format='GENERAL');
+		$this->addCellFormat($cell_format='RIGHT');
 	}
 
 	public function setAuthor($author='') { $this->author=$author; }
@@ -159,6 +160,7 @@ class XLSXWriter
 	{
 		$cell_format = str_replace("[RED]", "", $cell_format);
 		if ($cell_format=='GENERAL') return 'string';
+		if ($cell_format=='RIGHT') return 'string';
 		if ($cell_format=='0') return 'numeric';
 		if (preg_match("/[H]{1,2}:[M]{1,2}/", $cell_format)) return 'datetime';
 		if (preg_match("/[M]{1,2}:[S]{1,2}/", $cell_format)) return 'datetime';
@@ -197,6 +199,7 @@ class XLSXWriter
 	{
 		//for backwards compatibility, to handle older versions
 		if      ($cell_format=='string')   $cell_format='GENERAL';
+		else if ($cell_format=='RIGHT')   $cell_format='RIGHT';
 		else if ($cell_format=='integer')  $cell_format='0';
 		else if ($cell_format=='date')     $cell_format='YYYY-MM-DD';
 		else if ($cell_format=='datetime') $cell_format='YYYY-MM-DD HH:MM:SS';
@@ -220,7 +223,7 @@ class XLSXWriter
 
 	public function writeSheetHeader($sheet_name, array $header_types, $suppress_row = false)
 	{
-		if (empty($sheet_name) || empty($header_types) || !empty($this->sheets[$sheet_name]))
+		if (empty($sheet_name) || empty($header_types))
 			return;
 
 		self::initializeSheet($sheet_name);
@@ -228,15 +231,19 @@ class XLSXWriter
 		$sheet->columns = array();
 		foreach($header_types as $v)
 		{
-			$sheet->columns[] = $this->addCellFormat($v);
+			//$sheet->columns[] = $this->addCellFormat($v);
 		}
         if (!$suppress_row)
         {
 			$header_row = array_keys($header_types);
 
-			$sheet->file_writer->write('<row collapsed="false" customFormat="false" customHeight="false" hidden="false" ht="12.1" outlineLevel="0" r="' . (1) . '">');
-			foreach ($header_row as $k => $v) {
-				$this->writeCell($sheet->file_writer, 0, $k, $v, $cell_format_index = '0');//'0'=>'string'
+			$sheet->file_writer->write('<row collapsed="false" customFormat="false" customHeight="false" hidden="false" ht="12.1" outlineLevel="0" r="' . ($sheet->row_count + 1) . '">');
+			$k = 0;
+
+			foreach ($header_types as $k_format => $v) {
+				$cell_format_index = ($v == 'RIGHT'? '1': '0');
+				$this->writeCell($sheet->file_writer, $sheet->row_count, $k, $k_format, $cell_format_index);//'0'=>'string'
+				$k++;
 			}
 			$sheet->file_writer->write('</row>');
 			$sheet->row_count++;
@@ -315,10 +322,19 @@ class XLSXWriter
 		$sheet->merge_cells[] = $startCell . ":" . $endCell;
 	}
 
-	public function writeSheet(array $data, $sheet_name='', array $header_types=array())
+	public function writeSheet(array $data, $sheet_name='', array $header_types=array(), $header_meta=FALSE)
 	{
 		$sheet_name = empty($sheet_name) ? 'Sheet1' : $sheet_name;
 		$data = empty($data) ? array(array('')) : $data;
+		if ($header_meta)
+		{
+			$this->has_header_meta = TRUE;
+			$this->writeSheetHeader($sheet_name, array($header_meta => 'RIGHT'));
+			$this->markMergedCell($sheet_name, $this->row_count, $start_col = 0, $this->row_count, count($header_types)-1);
+			$this->writeSheetRow($sheet_name, array(''));
+			$this->markMergedCell($sheet_name, $this->row_count+1, $start_col = 0, $this->row_count+1, count($header_types)-1);
+
+		}
 		if (!empty($header_types))
 		{
 			$this->writeSheetHeader($sheet_name, $header_types);
@@ -337,8 +353,10 @@ class XLSXWriter
 
 		if (!is_scalar($value) || $value==='') { //objects, array, empty
 			$file->write('<c r="'.$cell_name.'" s="'.$cell_format_index.'"/>');
+		} elseif (is_numeric($value)){
+			$file->write('<c r="'.$cell_name.'" s="'.$cell_format_index.'" t="n"><v>'.($value*1).'</v></c>');
 		} elseif (is_string($value) && $value{0}=='='){
-			$file->write('<c r="'.$cell_name.'" s="'.$cell_format_index.'" t="s"><f>'.self::xmlspecialchars($value).'</f></c>');
+			$file->write('<c r="'.$cell_name.'" s="'.$cell_format_index.'" t="n"><f>'.self::xmlspecialchars($value).'</f></c>');
 		} elseif ($cell_type=='date') {
 			$file->write('<c r="'.$cell_name.'" s="'.$cell_format_index.'" t="n"><v>'.intval(self::convert_date_time($value)).'</v></c>');
 		} elseif ($cell_type=='datetime') {
@@ -407,7 +425,19 @@ class XLSXWriter
 		$file->write(	'<cellXfs count="'.count($this->cell_formats).'">');
 		foreach($this->cell_formats as $i=>$v)
 		{
-			$file->write('<xf applyAlignment="false" applyBorder="false" applyFont="false" applyProtection="false" borderId="0" fillId="0" fontId="0" numFmtId="'.(164+$i).'" xfId="0"/>');
+			if ($v == 'RIGHT') {
+				$file->write('<xf applyAlignment="true" applyBorder="false" applyFont="false" applyProtection="false" borderId="0" fillId="0" fontId="0" numFmtId="'.(164+$i).'" xfId="0">');
+				$file->write(	'<alignment horizontal="right" indent="0" shrinkToFit="false" textRotation="0" vertical="top" wrapText="false"/>');
+				$file->write(	'<protection hidden="false" locked="true"/>');
+				$file->write('</xf>');
+			}
+			else {
+				$file->write('<xf applyAlignment="true" applyBorder="false" applyFont="false" applyProtection="false" borderId="0" fillId="0" fontId="0" numFmtId="'.(164+$i).'" xfId="0">');
+				$file->write(	'<alignment horizontal="general" indent="0" shrinkToFit="false" textRotation="0" vertical="bottom" wrapText="false"/>');
+				$file->write(	'<protection hidden="false" locked="true"/>');
+				$file->write('</xf>');
+			}
+
 		}
 		$file->write(	'</cellXfs>');
 		//$file->write(	'<cellXfs count="4">');
