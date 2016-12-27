@@ -218,7 +218,7 @@ function open_journal_result_to_xlsx($result, $filename) {
     $header[$k] = 'string';
   }
 
-  $meta = 'as of : '.date("Y-m-d-His", REQUEST_TIME);
+  $meta = 'as of : '.date("Y-m-d H:i:s", REQUEST_TIME);
 
   $writer = new XLSXWriter();
   $writer->writeSheet($data, 'Sheet1', $header, $meta);
