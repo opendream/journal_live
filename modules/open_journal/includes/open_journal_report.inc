@@ -67,6 +67,13 @@ function open_journal_report_data() {
       'url' => OPEN_JOURNAL_PREFIX_PATH.'/report/journal-publication',
       'callback' => 'open_journal_report_journal_publication'
     ),
+    //5.3+
+    array(
+      'title' => 'รายงานบทความที่ตีพิมพ์ และผู้เขียนร่วม',
+      'subtitle' => 'แสดง : ID, ชื่อบทความ, ผู้เขียนหลัก, ผู้เขียนร่วม, ฉบับที่ตีพิมพ์ และ วันเดือนปีที่ตีพิมพ์', 
+      'url' => OPEN_JOURNAL_PREFIX_PATH.'/report/journal-publication2',
+      'callback' => 'open_journal_report_journal_publication2'
+    ),
     //5.+
     array(
       'title' => 'รายงานบทความ และช่วงเวลาในแต่ละสถานะ',
@@ -435,6 +442,72 @@ function open_journal_report_journal_publication() {
 
 }
 
+// 5.3+
+function open_journal_report_journal_publication2() {
+  /*
+  'title' => 'รายงานบทความที่ตีพิมพ์',
+  'subtitle' => 'แสดง : ID, ชื่อบทความ, ผู้เขียนหลัก, ฉบับที่ตีพิมพ์ และ วันเดือนปีที่ตีพิมพ์', 
+  */
+  // TODO: j.jid -> j.code, WHERE j.withdraw = 0
+  $query = open_journal_get_query();
+  $query[':last_sid'] = open_journal_get_last_state();
+
+  db_query("SET @rn=0");
+  $tmp_result = db_query("SELECT 
+      @rn:=@rn+1 AS `no.`, 
+      DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%M-%d') `publish date`, 
+      j.code `ID`, 
+      j.jid `URL ID`, 
+      j.title_en `title (en)`, 
+      j.title_sub `title (th)`, 
+      j.creator_en `author (en)`, 
+      j.creator_sub `author (th)`, 
+      j.address `offices`
+    FROM 
+      {open_journal_journal} j  
+    WHERE 
+      j.sid = :last_sid AND j.reject = 0 AND j.status_changed >= :start_date AND j.status_changed <= :end_date 
+    ORDER BY
+      j.status_changed DESC
+  ", $query);
+
+  $result = array();
+  foreach ($tmp_result as $row) {
+    $crow = clone $row;
+    $author_en_list = explode(',', $crow->{'author (en)'});
+    $author_sub_list = explode(',', $crow->{'author (th)'});
+
+    if (count($author_en_list) >= count($author_th_list)) {
+      $author_list = $author_en_list;
+    }
+    else {
+      $author_list = $author_sub_list;
+    }
+
+    $is_first = TRUE;
+    foreach ($author_list as $i => $author) {
+      if (!trim($author)) {
+        continue;
+      }
+
+      $crow = clone $row;
+      if (!$is_first) {
+        foreach (get_object_vars($crow) as $key => $type) {
+          $crow->{$key} = '';
+        }
+      }
+      $crow->{'author (en)'} = $author_en_list[$i];
+      $crow->{'author (th)'} = $author_sub_list[$i];
+      $result[] = $crow;
+      $is_first = FALSE;
+    }
+
+  }
+
+  open_journal_result_to_xlsx($result, __FUNCTION__);
+
+}
+
 // 5.+
 function open_journal_report_journal_days_in_status() {
 
@@ -511,9 +584,6 @@ function open_journal_report_journal_days_in_status() {
   ", $query);
 
   foreach ($result_value as $value) {
-    if ($value->jid == 301) {
-      dpm($value);
-    }
     $journal_list[$value->jid]->{$value->name} += $value->days;
   }
 
