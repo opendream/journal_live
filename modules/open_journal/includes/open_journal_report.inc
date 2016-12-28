@@ -288,14 +288,14 @@ function open_journal_report_journal_list() {
   db_query("SET @rn=0");
   $result = db_query("SELECT 
       @rn:=@rn+1 AS `no.`, 
+      s.name `status`, 
       j.code `ID`, 
       j.jid `URL ID`, 
       j.title_en `title (en)`, 
       j.title_sub `title (th)`, 
-      s.name `status`, 
       j.address `offices`,
-      DATE_FORMAT(FROM_UNIXTIME(j.created), '%Y-%m-%d %T') `submission date`, 
-      DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%m-%d %T') `date of latest status change`, 
+      DATE_FORMAT(FROM_UNIXTIME(j.created), '%Y-%M-%d') `submission date`, 
+      DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%M-%d') `date of latest status change`, 
       CEIL((j.status_changed - j.created)/(60*60*24)) `days in current status` 
     FROM 
       {open_journal_journal} j, 
@@ -408,13 +408,13 @@ function open_journal_report_journal_publication() {
   db_query("SET @rn=0");
   $result = db_query("SELECT 
       @rn:=@rn+1 AS `no.`, 
+      DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%M-%d') `publish date`, 
       j.code `ID`, 
       j.jid `URL ID`, 
       j.title_en `title (en)`, 
       j.title_sub `title (th)`, 
       SUBSTRING_INDEX(j.creator_en, ',', 1) `author (en)`, 
       SUBSTRING_INDEX(j.creator_sub, ',', 1) `author (th)`, 
-      DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%m-%d %T') `published at`, 
       j.address `offices`
     FROM 
       {open_journal_journal} j  
@@ -441,6 +441,10 @@ function open_journal_report_journal_reject() {
   db_query("SET @rn=0");
   $result = db_query("SELECT 
       @rn:=@rn+1 AS `no.`, 
+      DATE_FORMAT(FROM_UNIXTIME(j.created), '%Y-%M-%d') `submission date`, 
+      DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%M-%d') `reject date`,
+      CEIL((status_changed - created)/(60*60*24)) `days in process`, 
+      s.name `status before rejecting`, 
       j.code `ID`, 
       j.jid `URL ID`,  
       j.title_en `title (en)`, 
@@ -448,9 +452,6 @@ function open_journal_report_journal_reject() {
       SUBSTRING_INDEX(j.creator_en, ',', 1) `author (en)`, 
       SUBSTRING_INDEX(j.creator_sub, ',', 1) `author (th)`, 
       j.address `offices`, 
-      DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%m-%d %T') `rejected at`,
-      CEIL((status_changed - created)/(60*60*24)) `days in current status`, 
-      s.name `status`, 
       j.reject_reason `reason`  
     FROM 
       {open_journal_journal} j, 
@@ -478,16 +479,17 @@ function open_journal_report_journal_withdraw() {
   db_query("SET @rn=0");
   $result = db_query("SELECT 
       @rn:=@rn+1 AS `no.`, 
+      DATE_FORMAT(FROM_UNIXTIME(j.created), '%Y-%M-%d') `submission date`, 
+      DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%M-%d') `withdraw date`,
+      CEIL((status_changed - created)/(60*60*24)) `days in process`, 
+      s.name `status before withdrawal`,
       j.code `ID`, 
       j.jid `URL ID`,  
       j.title_en `title (en)`, 
       j.title_sub `title (th)`, 
       SUBSTRING_INDEX(j.creator_en, ',', 1) `author (en)`, 
       SUBSTRING_INDEX(j.creator_sub, ',', 1) `author (th)`, 
-      j.address `Offices`,
-      DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%m-%d %T') `withdraw at`,
-      CEIL((status_changed - created)/(60*60*24)) `days in current status`, 
-      s.name `status`, 
+      j.address `offices`,
       j.withdraw_reason `reason`  
     FROM 
       {open_journal_journal} j, 
@@ -576,7 +578,7 @@ function open_journal_report_reviewer_journal() {
       jp.uid `reviewer`,
       j.code `ID`, 
       j.jid `URL ID`,  
-      DATE_FORMAT(FROM_UNIXTIME(jp.created), '%Y-%m-%d %T') `review date`,
+      DATE_FORMAT(FROM_UNIXTIME(jp.created), '%Y-%M-%d') `review date`,
       j.title_en `title (en)`, 
       j.title_sub `title (th)`,
       j.address `offices`
