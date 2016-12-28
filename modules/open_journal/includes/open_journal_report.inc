@@ -67,6 +67,13 @@ function open_journal_report_data() {
       'url' => OPEN_JOURNAL_PREFIX_PATH.'/report/journal-publication',
       'callback' => 'open_journal_report_journal_publication'
     ),
+    //5.+
+    array(
+      'title' => 'รายงานบทความ และช่วงเวลาในแต่ละสถานะ',
+      'subtitle' => 'แสดง : ID, ชื่อบทความ และ ช่วงเวลาที่อยู่ในแต่ละสถานะ', 
+      'url' => OPEN_JOURNAL_PREFIX_PATH.'/report/journal-days-in-status',
+      'callback' => 'open_journal_report_journal_days_in_status'
+    ),
     //5.4
     array(
       'title' => 'รายงานบทความที่ปฏิเสธ',
@@ -425,6 +432,92 @@ function open_journal_report_journal_publication() {
   ", $query);
 
   open_journal_result_to_xlsx($result, __FUNCTION__);
+
+}
+
+// 5.+
+function open_journal_report_journal_days_in_status() {
+
+  $query = open_journal_get_query();
+
+
+  $status_list = array();
+  foreach (open_journal_get_status_list(TRUE) as $sid => $status) {
+    $status_list[] = $status['name'];
+  }
+
+  $cols = "";
+  if(count($status_list) > 0) {
+    foreach ($status_list as $name) {
+      $cols .= ", 0 AS `$name`";
+    }
+  }
+
+  db_query("SET @rn=0");
+  $result = db_query("SELECT 
+      @rn:=@rn+1 AS `no.`, 
+      j.code `ID`, 
+      j.jid `URL ID`, 
+      j.title_en `title (en)`, 
+      j.title_sub `title (th)`,
+      s.name `status`
+      $cols
+    FROM
+      {open_journal_journal} j
+    LEFT JOIN
+      {open_journal_state} s
+    ON
+      j.sid = s.sid 
+    WHERE 
+      j.reject = 0 AND j.withdraw = 0 AND j.created >= :start_date AND j.created <= :end_date
+  ", $query)->fetchAll();
+
+  $journal_list = array();
+  foreach ($result as $row) {
+    $journal_list[$row->{'URL ID'}] = $row; 
+  }
+
+  $query[':last_sid'] = open_journal_get_last_state();
+
+  $now = REQUEST_TIME;
+  $result_value = db_query("SELECT 
+      js.jid jid, 
+      s.name name, 
+      SUM(
+        IF(
+          js.sid = :last_sid,
+          CEIL(
+            ($now-js.start_date)/(60*60*24)
+          ),
+          CEIL(
+            (IFNULL(js.end_date, $now)-js.start_date)/(60*60*24)
+          )
+        )
+      ) days 
+    FROM 
+      open_journal_journal_state js 
+    LEFT JOIN 
+      open_journal_state s 
+    ON 
+      js.sid = s.sid 
+    LEFT JOIN 
+      open_journal_journal j 
+    ON 
+      js.jid =j.jid 
+    WHERE 
+      j.reject = 0 AND j.withdraw = 0 AND j.created >= :start_date AND j.created <= :end_date 
+    GROUP BY 
+      js.jid, s.name
+  ", $query);
+
+  foreach ($result_value as $value) {
+    if ($value->jid == 301) {
+      dpm($value);
+    }
+    $journal_list[$value->jid]->{$value->name} += $value->days;
+  }
+
+  open_journal_result_to_xlsx($journal_list, __FUNCTION__);
 
 }
 
