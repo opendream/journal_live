@@ -328,10 +328,6 @@ function open_journal_schema() {
         'not null' => FALSE,
         'default' => 0,
       ),
-      'roles' => array(
-        'type' => 'text',
-        'size' => 'big'
-      ),
     ),
     'primary key' => array('did'),
   );
