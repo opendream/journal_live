@@ -82,7 +82,7 @@ function open_journal_people_create_form($form, &$form_state, $journal) {
   }
 
   // Alter 
-  $form['title']['#markup'] = '<h2 class="sub-page-title">'.t('Add !role to journal', array('!role' => $role->name)).'</h2>';
+  $form['title']['#markup'] = '<h2 class="sub-page-title">'.t('Add !role to article', array('!role' => $role->name)).'</h2>';
   
   if ($_GET['role']) {
     $form['account']['roles']['#default_value'] = array($_GET['role']);
