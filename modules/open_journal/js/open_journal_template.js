@@ -40,7 +40,7 @@ $(document).ready(function () {
 		}
 
 		// Todo rit change hi-so dialog and change wording
-		if ($(this).val() != 'none') {
+		if (('.form-type-plupload').length) {
 
 			$('.form-type-plupload').show();
 			// Clear select role
@@ -65,6 +65,7 @@ $(document).ready(function () {
 		}
 
 	});
+	$('#edit-template').change();
 
 	$('#select_all').css({'cursor': 'pointer'});
 	$('#select_none').css({'cursor': 'pointer'});
