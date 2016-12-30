@@ -4002,12 +4002,10 @@ function open_jounal_daily_mail($data) {
 }
 
 function open_journal_cron() {
-  //$cron_last = variable_set('open_journal_cron_last', 0);
-
   require_once('includes/open_journal_status_form.inc');
 
   $cron_last = variable_get('open_journal_cron_last', 0);
-  if(date('ymd', $cron_last) != date('ymd', time())) {
+  if(REQUEST_TIME > $cron_last+(60*60*24)) {
 
     open_jounal_daily_mail($journal);
 
