@@ -711,15 +711,19 @@ function open_journal_report_journal_reviewer() {
     GROUP BY 
       jp.jid 
     HAVING 
-      Reviewers IS NOT NULL
+      reviewers IS NOT NULL
   ", $query)->fetchAll();
 
-  foreach ($result as &$line) {
+  foreach ($result as $no => &$line) {
     $reviewers = array();
     foreach (explode(',', $line->reviewers) as $uid) {
       $reviewer = user_load($uid);
-      $reviewers[] = $reviewer->data['firstname'].' '.$reviewer->data['lastname'].' [uid:'.$reviewer->uid.']';
+      $name = $reviewer->data['firstname'].' '.$reviewer->data['lastname'];
+      $name = trim($name)? $name: $reviewer->name;
+
+      $reviewers[] = $name.' [uid:'.$reviewer->uid.']';
     }
+    $line->{'no.'} = $no+1; 
     $line->reviewers = implode(', ', $reviewers);
   }
 
@@ -744,6 +748,7 @@ function open_journal_report_reviewer_journal() {
       DATE_FORMAT(FROM_UNIXTIME(jp.created), '%Y-%M-%d') `review date`,
       j.title_en `title (en)`, 
       j.title_sub `title (th)`,
+      SUBSTRING_INDEX(j.creator_sub, ',', 1) `author (th)`, 
       j.address `offices`
     FROM 
       (
@@ -768,8 +773,10 @@ function open_journal_report_reviewer_journal() {
 
   foreach ($result as &$line) {
     $reviewer = user_load($line->reviewer);
+    $name = $reviewer->data['firstname'].' '.$reviewer->data['lastname'];
+    $name = trim($name)? $name: $reviewer->name;
 
-    $line->reviewer = $reviewer->data['firstname'].' '.$reviewer->data['lastname'].' [uid:'.$reviewer->uid.']';
+    $line->reviewer = $name.' [uid:'.$reviewer->uid.']';
   }
 
   open_journal_result_to_xlsx($result, __FUNCTION__);
