@@ -2724,7 +2724,8 @@ function open_journal_get_status_form_variables($journal) {
       }
       $vars['template_list'] = $template_list;
 
-      $vars['approve_form'] = drupal_render(drupal_get_form('open_journal_approve_sidebar_form', $journal, $vars['next_status'], $template_list));
+      $approve_sidebar_form = drupal_get_form('open_journal_approve_sidebar_form', $journal, $vars['next_status'], $template_list);
+      $vars['approve_form'] = drupal_render($approve_sidebar_form);
     }
     $vars['status_add_class'] = ' can-approve';
   }

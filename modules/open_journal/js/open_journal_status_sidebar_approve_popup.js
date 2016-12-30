@@ -25,8 +25,8 @@ jQuery(document).ready(function () {
       },
       position: {
           corner: {
-            tooltip: 'rightBottom', // Use the corner...
-          target: 'topLeft' // ...and opposite corner
+            tooltip: 'rightTop', // Use the corner...
+            target: 'topLeft' // ...and opposite corner
           }
        },
        style: {
@@ -40,7 +40,7 @@ jQuery(document).ready(function () {
 
           name: 'blue', // Style it according to the preset 'cream' style
           width: 500, 
-          height: 300,
+          height: 600,
           classes: {tooltip: 'approve-plus-popup'}
        }
    });

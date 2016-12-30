@@ -304,6 +304,34 @@ function open_journal_approve_sidebar_form($form, &$form_state, $journal , $next
       '#upload_location' => "public://journal/",
     );
 
+    // Multiple upload file
+    // Todo rit1 remove hardcode
+    if (open_journal_user_access('access contributor process', $user, TRUE)) {
+      if (!$form_disabled) {
+        $form['files_upload'] = array( 
+          '#type' => 'plupload', 
+          '#title' => t('Upload other files.'), 
+          '#description' => t('File type allowed: %s',array('%s' => OPEN_JOURNAL_ALLOWED_FINAL_STATUS_FILE_TYPE)),
+          '#upload_validators' => array(
+            'file_validate_extensions' => array(OPEN_JOURNAL_ALLOWED_FINAL_STATUS_FILE_TYPE),
+            //'file_validate_size' => array(2 * 1048576),
+          ),
+          '#size' => 50, 
+          '#upload_location' => "public://journal/",
+          '#autoupload' => TRUE,
+          '#plupload_settings' => array(
+            'runtimes' => 'html5,flash', // Also consider the order of technologies.
+            'chunk_size' => '10mb',
+            'unique_names' => TRUE,
+            'flash_swf_url' => file_create_url(_plupload_library_path() . '/js/plupload.flash.swf'),
+            'multiple_queues' => TRUE,
+          ),
+          '#access' => !$form_disabled
+        );
+      }
+
+    }
+
 
     $form['actions'] = array('#type' => 'actions');
     $form['actions']['submit'] = array(
@@ -384,11 +412,15 @@ function open_journal_approve_sidebar_form_submit($form, &$form_state) {
   if (isset($form_state['values']['fid'])) {
     $fid = $form_state['values']['fid'];
   }
-  open_journal_approve_submit($jid, $next_status, $approve_reason, $template_title, $roles, $redirect, TRUE, FALSE, $fid);
+  if (isset($form_state['values']['files_upload'])) {
+    $files_upload = $form_state['values']['files_upload'];
+  }
+
+  open_journal_approve_submit($jid, $next_status, $approve_reason, $template_title, $roles, $redirect, TRUE, FALSE, $fid, $files_upload);
 
 }
 
-function open_journal_approve_submit($jid, $next_status, $approve_reason=NULL, $template_title=NULL, $roles=array(), $redirect=TRUE, $commit=TRUE, $silent=FALSE, $fid=FALSE) {
+function open_journal_approve_submit($jid, $next_status, $approve_reason=NULL, $template_title=NULL, $roles=array(), $redirect=TRUE, $commit=TRUE, $silent=FALSE, $fid=FALSE, $files_upload=FALSE) {
   // TODO use $form_state['value'] for block hacker
  	//$sql = "UPDATE open_journal_journal SET status = ".$next_status." staWHERE jid = ".$jid;
 	//db_query($sql);
@@ -411,6 +443,9 @@ function open_journal_approve_submit($jid, $next_status, $approve_reason=NULL, $
     );
     if ($fid) {
       $discussion['fid'] = $fid;
+    }
+    if ($files_upload) {
+      $discussion['files_upload'] = $files_upload;
     }
     $discussion['roles'] = $roles; 
     $discussion = (object) $discussion;
