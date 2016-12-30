@@ -1297,7 +1297,7 @@ function open_journal_discussion_load($did) {
     $sql .=  ' AND d.contributor_only = 0';
   }
 
-  return db_query($sql)->fetchObject();
+  return db_query($sql, array(':did' => $did))->fetchObject();
 }
 
 
