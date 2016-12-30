@@ -26,7 +26,7 @@
 	      	
 	      	<?php if($discussion_item->auto):?>
 	      		<?php  print $discussion_item->title; ?>
-	      	<?php elseif($discussion_item->fid):?>
+	      	<?php elseif($discussion_item->fid || count($discussion_item->files_upload)):?>
 	      		<?php  print l($discussion_item->title.' <span class="file-attach">'.$image_file.'</span>', OPEN_JOURNAL_PREFIX_PATH.'/'.$jid.'/discussion/'.$discussion_item->did, array('html' => TRUE));?>
 	      	<?php else:?>
 	      		<?php  print l($discussion_item->title, OPEN_JOURNAL_PREFIX_PATH.'/'.$jid.'/discussion/'.$discussion_item->did, array('html' => TRUE));?>
