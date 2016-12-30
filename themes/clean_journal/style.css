@@ -2364,8 +2364,11 @@ h2.journal-block-title {
   width: 520px;
   float: left;
 }
-#edit-fid-upload-button,
-#edit-fid-remove-button {
+.form-type-managed-file label {
+  float: left;
+  margin-right: 10px;
+}
+.form-managed-file .form-submit {
   float: none;
   margin-left: 20px;
 }
@@ -3305,13 +3308,4 @@ tr.row-state {
 
 #open-journal-approve-sidebar-form  input[name=fid_upload_button] {
   display: none;
-}
-
-.form-type-managed-file .input {
-  display: inline-block;
-  float: none;
-}
-
-.form-type-managed-file .input[type=file] {
-  margin-right: 20px;
 }
