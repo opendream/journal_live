@@ -290,7 +290,7 @@ function open_journal_approve_sidebar_form($form, &$form_state, $journal , $next
     );
 
     $allow_file_type = OPEN_JOURNAL_ALLOWED_FILE_TYPE;
-    if (open_journal_user_access('access contributor process', $user, TRUE)) {
+    if (open_journal_user_access('access contributor process', $user, TRUE) || in_array($journal->sid, array(11, 12, 13, 2, 3))) {
       $allow_file_type = OPEN_JOURNAL_ALLOWED_FINAL_STATUS_FILE_TYPE;
     }
 

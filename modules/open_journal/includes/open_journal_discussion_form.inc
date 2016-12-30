@@ -83,7 +83,7 @@ function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL,
     '#default_value' => open_journal_get_field($data, 'description')
   );
 
-  if(!open_journal_user_access('access contributor process', $user, TRUE) && $journal->sid != open_journal_get_last_state()) {
+  if(!open_journal_user_access('access contributor process', $user, TRUE) && $journal->sid != open_journal_get_last_state() && !in_array($journal->sid, array(11, 12, 13, 2, 3))) {
     $form['fid'] = array(
       '#type' => 'managed_file',
       '#title' => t('File'),

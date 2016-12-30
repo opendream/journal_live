@@ -89,7 +89,7 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
   }
   else {
 
-    if(!open_journal_user_access('access contributor process', $user, TRUE) && $data->sid != open_journal_get_last_state()) {
+    if(!open_journal_user_access('access contributor process', $user, TRUE) && $data->sid != open_journal_get_last_state() && !in_array($journal->sid, array(11, 12, 13, 2, 3))) {
       $form['main']['file'] = array(
         '#type' => 'managed_file',
         '#title' => open_journal_label_help('Full text', 'Upload a full-text file here', TRUE),
