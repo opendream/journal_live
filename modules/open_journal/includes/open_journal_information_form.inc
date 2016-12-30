@@ -88,18 +88,35 @@ function open_journal_information_form($form, &$form_state, $data=NULL) {
     $submit_text = t('Save changes');
   }
   else {
-    $form['main']['file'] = array(
-      '#type' => 'managed_file',
-      '#title' => open_journal_label_help('Full text', 'Upload a full-text file here', TRUE),
-      '#description' => t('File types allowed: %s',array('%s' => OPEN_JOURNAL_ALLOWED_FILE_TYPE)),
-      '#upload_validators' => array(
-        'file_validate_extensions' => array(OPEN_JOURNAL_ALLOWED_FILE_TYPE),
-        //'file_validate_size' => array(2 * 1048576),\
-      ),
-      '#upload_location' => "public://journal/",
-      '#required' => TRUE,
-      '#disabled' => $form_disabled,
-    );
+
+    if(!open_journal_user_access('access contributor process', $user, TRUE) && $data->sid != open_journal_get_last_state()) {
+      $form['main']['file'] = array(
+        '#type' => 'managed_file',
+        '#title' => open_journal_label_help('Full text', 'Upload a full-text file here', TRUE),
+        '#description' => t('File types allowed: %s',array('%s' => OPEN_JOURNAL_ALLOWED_FILE_TYPE)),
+        '#upload_validators' => array(
+          'file_validate_extensions' => array(OPEN_JOURNAL_ALLOWED_FILE_TYPE),
+          //'file_validate_size' => array(2 * 1048576),\
+        ),
+        '#upload_location' => "public://journal/",
+        '#required' => TRUE,
+        '#disabled' => $form_disabled,
+      );
+    }
+    else {
+      $form['main']['file'] = array(
+        '#type' => 'managed_file',
+        '#title' => open_journal_label_help('Full text', 'Upload a full-text file here', TRUE),
+        '#description' => t('File types allowed: %s',array('%s' => OPEN_JOURNAL_ALLOWED_FINAL_STATUS_FILE_TYPE)),
+        '#upload_validators' => array(
+          'file_validate_extensions' => array(OPEN_JOURNAL_ALLOWED_FINAL_STATUS_FILE_TYPE),
+          //'file_validate_size' => array(2 * 1048576),\
+        ),
+        '#upload_location' => "public://journal/",
+        '#required' => TRUE,
+        '#disabled' => $form_disabled,
+      );
+    }
 
     $form['main']['guideline'] = array(
       '#title' => t('I have read the submission guidelines.').' '.l(t('Download guideline'), 'sites/all/modules/open_journal/files/guideline-author.pdf'),

@@ -3306,3 +3306,12 @@ tr.row-state {
 #open-journal-approve-sidebar-form  input[name=fid_upload_button] {
   display: none;
 }
+
+.form-type-managed-file .input {
+  display: inline-block;
+  float: none;
+}
+
+.form-type-managed-file .input[type=file] {
+  margin-right: 20px;
+}
