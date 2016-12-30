@@ -1291,15 +1291,13 @@ function open_journal_people_mail($data) {
 function open_journal_discussion_load($did) {
 
   // Query data from database for edit journal when have journal ID
-  $data = db_select('open_journal_discussion', 'd')
-  ->fields('d')
-  ->condition('did', $did, '=');
+  $sql = "SELECT d.*, LOCATE('Files upload:', d.description) has_files_upload FROM {open_journal_discussion} d WHERE d.did = :did";
 
   if (!user_access('access contributor process')) {
-    $data->condition('contributor_only', 0, '=');
+    $sql .=  ' AND d.contributor_only = 0';
   }
 
-  return $data->execute()->fetchObject();
+  return db_query($sql)->fetchObject();
 }
 
 
