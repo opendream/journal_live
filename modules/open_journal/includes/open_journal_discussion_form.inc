@@ -114,11 +114,16 @@ function open_journal_discussion_form($form, &$form_state, $journal, $data=NULL,
 
   // Multiple upload file
   // Todo rit1 remove hardcode
-  if ($journal->sid == 6 || open_journal_parent_sid($journal->sid) == 6) {
+  if (open_journal_user_access('access contributor process', $user, TRUE) || $journal->sid == 6 || open_journal_parent_sid($journal->sid) == 6) {
     if (!$form_disabled) {
       $form['files_upload'] = array( 
         '#type' => 'plupload', 
         '#title' => t('Upload other files.'), 
+        '#description' => t('File type allowed: %s',array('%s' => OPEN_JOURNAL_ALLOWED_FINAL_STATUS_FILE_TYPE)),
+        '#upload_validators' => array(
+          'file_validate_extensions' => array(OPEN_JOURNAL_ALLOWED_FINAL_STATUS_FILE_TYPE),
+          //'file_validate_size' => array(2 * 1048576),
+        ),
         '#size' => 50, 
         '#upload_location' => "public://journal/",
         '#autoupload' => TRUE,
