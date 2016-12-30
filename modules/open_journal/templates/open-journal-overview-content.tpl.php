@@ -56,7 +56,7 @@
         <div class="discus-title">
           <?php if ($data['auto']):?>
             <?php print $data['title']; ?>
-          <?php elseif($data['fid'] || $data['file_upload']):?>
+          <?php elseif($data['fid'] || count($data['files_upload'])):?>
             <?php  print l($data['title'].'<span class="file-attach">'.$image_file.'</span>', OPEN_JOURNAL_PREFIX_PATH.'/'.$data['jid'].'/discussion/'.$data['did'], array('html' => TRUE));?>
           <?php else:?>
             <?php  print l($data['title'], OPEN_JOURNAL_PREFIX_PATH.'/'.$data['jid'].'/discussion/'.$data['did'], array('html' => TRUE));?>
