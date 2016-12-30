@@ -716,11 +716,11 @@ function open_journal_report_journal_reviewer() {
 
   foreach ($result as &$line) {
     $reviewers = array();
-    foreach (explode(',', $line->Reviewers) as $uid) {
+    foreach (explode(',', $line->reviewers) as $uid) {
       $reviewer = user_load($uid);
       $reviewers[] = $reviewer->data['firstname'].' '.$reviewer->data['lastname'].' [uid:'.$reviewer->uid.']';
     }
-    $line->Reviewers = implode(', ', $reviewers);
+    $line->reviewers = implode(', ', $reviewers);
   }
 
   open_journal_result_to_xlsx($result, __FUNCTION__);
@@ -767,9 +767,9 @@ function open_journal_report_reviewer_journal() {
   ", $query)->fetchAll();
 
   foreach ($result as &$line) {
-    $reviewer = user_load($line->Reviewer);
+    $reviewer = user_load($line->reviewer);
 
-    $line->Reviewer = $reviewer->data['firstname'].' '.$reviewer->data['lastname'].' [uid:'.$reviewer->uid.']';
+    $line->reviewer = $reviewer->data['firstname'].' '.$reviewer->data['lastname'].' [uid:'.$reviewer->uid.']';
   }
 
   open_journal_result_to_xlsx($result, __FUNCTION__);
