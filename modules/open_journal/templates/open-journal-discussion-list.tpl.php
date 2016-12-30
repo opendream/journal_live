@@ -23,7 +23,7 @@
 	      </div>
 	      
 	      <div class="discus-title">
-	      	<?php print $discussion_item->has_files_upload; ?> zz
+	      	<?php print $discussion_item->has_files_upload; ?>
 	      	<?php if($discussion_item->auto):?>
 	      		<?php  print $discussion_item->title; ?>
 	      	<?php elseif($discussion_item->fid || $discussion_item->has_files_upload > 0):?>
