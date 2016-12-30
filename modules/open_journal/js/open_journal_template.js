@@ -40,7 +40,7 @@ $(document).ready(function () {
 		}
 
 		// Todo rit change hi-so dialog and change wording
-		if (('.form-type-plupload').length) {
+		if ($('.form-type-plupload').length) {
 
 			$('.form-type-plupload').show();
 			// Clear select role
