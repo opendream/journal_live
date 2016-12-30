@@ -2471,7 +2471,8 @@ function _open_journal_discussion_list($journal, $limit=0, $select_count=FALSE) 
       MAX(d.did) did,
       MAX(c.cid) cid,
       IF(c.cid IS NOT NULL, c.uid, d.uid) user,
-      d.auto auto
+      d.auto auto,
+      LOCATE('Files upload:') has_files_upload 
     FROM
       {open_journal_discussion} d
     LEFT JOIN
