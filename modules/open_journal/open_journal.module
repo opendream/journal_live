@@ -3506,7 +3506,7 @@ function open_journal_list($status=NULL, $after_jid=NULL, $limit=OPEN_JOURNAL_LI
     $last_update = open_journal_get_last_update($journal->jid);
     $start = new DateTime(date('Y-m-d', $last_update));
     $end = new DateTime();
-    $days = round(($end->format('U') - $start->format('U')) / (60*60*24));
+    $days = floor(($end->format('U') - $start->format('U')) / (60*60*24));
     $journal->lastupdate_ago = $days;
   }
 
