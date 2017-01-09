@@ -297,6 +297,7 @@ function open_journal_report_journal_list() {
   'subtitle' => 'แสดง : ID, ชื่อบทความ, สถานะปัจจุบัน, วันที่ส่งบทความ และ วันสุดท้ายที่มีการเปลี่ยนแปลงสถานะครั้งล่าสุด',
   */
   // TODO: j.jid -> j.code, WHERE j.withdraw = 0
+  $now = REQUEST_TIME;
 
   $query = open_journal_get_query();
   db_query("SET @rn=0");
@@ -310,7 +311,7 @@ function open_journal_report_journal_list() {
       j.address `offices`,
       DATE_FORMAT(FROM_UNIXTIME(j.created), '%Y-%M-%d') `submission date`, 
       DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%M-%d') `date of latest status change`, 
-      CEIL((j.status_changed - j.created)/(60*60*24)) `days in current status` 
+      CEIL(($now - j.status_changed)/(60*60*24)) `days in current status` 
     FROM 
       {open_journal_journal} j, 
       {open_journal_state} s 
