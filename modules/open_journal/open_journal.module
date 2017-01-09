@@ -1737,7 +1737,7 @@ function open_journal_mail($key, &$message, $data) {
   switch ($key) {
     case 'open_journal_discussion_add':
       //$message['subject'] = '['.truncate_utf8($data->journal->title, 10, FALSE, TRUE).']'.$data->title;
-      $message['subject'] = '['.$site_name.'] '.open_journal_trim($data->title).' - '.open_journal_trim($data->journal->title, 20);
+      $message['subject'] = '['.$site_name.'] '.$data->journal->code.' - '.open_journal_trim($data->title).' - '.open_journal_trim($data->journal->title, 20);
 
       //$body = "\n";
       //$body .= "\n".'Article: '.$data->journal->title;
@@ -1785,7 +1785,7 @@ function open_journal_mail($key, &$message, $data) {
       $body .= "===== AUTOMAITICAL EMAIL...DO NOT REPLY TO THIS EMAIL =====\n";
       $body .= "===== กรุณาอย่าตอบกลับกรุณาใช้ระบบ ejournal ในการติดต่อ =====\n\n";
       $body .= "\n";
-      $body .= "\n".'Article: '.$data->journal->title;
+      $body .= "\n".'Article: '.$data->journal->code.' - '.$data->journal->title;
       $body .= "\n";
       $body .= "\n".'Re: '.$data->discussion->title;
       $body .= "\n".'------------------------------------------------------------------------';
@@ -1803,7 +1803,7 @@ function open_journal_mail($key, &$message, $data) {
 
     case 'open_journal_people_invite':
 
-      $message['subject'] = '['.$site_name.'] '."A new submission : ".open_journal_trim($data->journal->title, 20);
+      $message['subject'] = '['.$site_name.'] '."A new submission : ".$data->journal->code.' - '.open_journal_trim($data->journal->title, 20);
 
       $body = "\n";
       $body .= "===== AUTOMAITICAL EMAIL...DO NOT REPLY TO THIS EMAIL =====\n";
@@ -1828,7 +1828,7 @@ function open_journal_mail($key, &$message, $data) {
       $body .= "===== AUTOMAITICAL EMAIL...DO NOT REPLY TO THIS EMAIL =====\n";
       $body .= "===== กรุณาอย่าตอบกลับกรุณาใช้ระบบ ejournal ในการติดต่อ =====\n\n";
       $body .= "\n";
-      $body .= "\n".'Article: '.$data->journal->title;
+      $body .= "\n".'Article: '.$data->journal->code.' - '.$data->journal->title;
       $body .= "\n".'------------------------------------------------------------------------';
       $body .= "\n";
       $body .= "\n".'Your article was published.';
@@ -1850,7 +1850,7 @@ function open_journal_mail($key, &$message, $data) {
       $body .= "===== AUTOMAITICAL EMAIL...DO NOT REPLY TO THIS EMAIL =====\n";
       $body .= "===== กรุณาอย่าตอบกลับกรุณาใช้ระบบ ejournal ในการติดต่อ =====\n\n";
       $body .= "\n";
-      $body .= "\n".'Article: '.$data->journal->title;
+      $body .= "\n".'Article: '.$data->journal->code.' - '.$data->journal->title;
       $body .= "\n".'------------------------------------------------------------------------';
       $body .= "\n";
       $body .= "\n".'The article was not update in '.OPEN_JOURNAL_REMINDER_DAYS.' days ago.';
