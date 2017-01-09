@@ -387,7 +387,7 @@ function open_journal_approve_sidebar_form_validate($element, &$form_state) {
   $final_url = $element['journal']['#value']->dc_identifier;
 
   // Todo rit remove hardcode 
-  if($next_status == 2) {
+  if($next_status == open_journal_get_last_state()) {
     if(!$final_url) {
       form_error($element, t('Please fill in final URL before.'));
 
