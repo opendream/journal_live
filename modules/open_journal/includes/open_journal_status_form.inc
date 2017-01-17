@@ -627,6 +627,11 @@ function open_journal_check_timeout_exist($journal, $state, $type, $now=NULL) {
 
     return TRUE;
   }
+  else {
+    $next_sid = open_journal_next_sid($state->sid);
+    $next_state = db_query("SELECT name FROM {open_journal_state} WHERE sid = :sid", array(':sid' => $next_sid))->fetchObject();
+    drupal_set_message('Article ID: '.$journal->code.', will change state from <strong>'.$state->name.'</strong> to <strong>'.$next_state->name.'</strong> in '.$days_after_status_changed.' days');
+  }
 
   return FALSE;
 }
@@ -637,7 +642,7 @@ function open_journal_timeout_check() {
 
   $state_list = db_query($sql)->fetchAll();
   foreach ($state_list as $state) {
-      $sql = "SELECT * FROM {open_journal_journal} WHERE sid = :sid AND reject = 0";
+      $sql = "SELECT * FROM {open_journal_journal} WHERE sid = :sid AND reject = 0 AND withdraw = 0";
       $journal_list = db_query($sql, array(':sid' => $state->sid))->fetchAll();
 
       foreach ($journal_list as $journal) {
@@ -653,7 +658,8 @@ function open_journal_timeout_check() {
           drupal_set_message('timeout_auto_reminder : '.$journal->jid);
           open_journal_discussion_when_state_change($journal, 'time', FALSE);
         }
-        else if (open_journal_check_timeout_exist($journal, $state, 'timeout_auto_approve', $now) && $journal->approve_by_timer) {
+        else if (open_journal_check_timeo
+          ut_exist($journal, $state, 'timeout_auto_approve', $now) && $journal->approve_by_timer) {
           drupal_set_message('timeout_auto_approve : '.$journal->jid);
           $next_sid= open_journal_next_sid($journal->sid);
           open_journal_approve_submit($journal->jid, $next_sid, NULL, NULL, array(), FALSE);
