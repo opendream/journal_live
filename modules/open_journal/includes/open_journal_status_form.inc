@@ -631,7 +631,7 @@ function open_journal_check_timeout_exist($journal, $state, $type, $now=NULL) {
     $next_sid = open_journal_next_sid($state->sid);
     $next_state = db_query("SELECT name FROM {open_journal_state} WHERE sid = :sid", array(':sid' => $next_sid))->fetchObject();
 
-    drupal_set_message('Article ID: <strong>'.$journal->code.'</strong> will change state from <strong>'.$state->name.'</strong> to <strong>'.$next_state->name.'</strong> in '.floor($state->{$type} - $days_after_status_changed).' days');
+    drupal_set_message('Article ID: <strong>'.l($journal->code, OPEN_JOURNAL_PREFIX_PATH.'/'.$journal->jid).'</strong> will change state from <strong>'.$state->name.'</strong> to <strong>'.$next_state->name.'</strong> in '.floor($state->{$type} - $days_after_status_changed).' days');
   }
 
   return FALSE;
