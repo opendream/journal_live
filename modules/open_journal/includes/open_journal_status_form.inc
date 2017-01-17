@@ -627,7 +627,7 @@ function open_journal_check_timeout_exist($journal, $state, $type, $now=NULL) {
 
     return TRUE;
   }
-  else {
+  elseif ($days_after_status_changed < $state->{$type} && $type == 'timeout_auto_approve') {
     $next_sid = open_journal_next_sid($state->sid);
     $next_state = db_query("SELECT name FROM {open_journal_state} WHERE sid = :sid", array(':sid' => $next_sid))->fetchObject();
 
