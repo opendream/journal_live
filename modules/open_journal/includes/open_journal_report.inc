@@ -46,10 +46,17 @@ function open_journal_report_data() {
     
 
   return array(
+    //5.0
+    array(
+      'title' => 'รายงานบทความทั้งหมด',
+      'subtitle' => 'แสดง : ID, ชื่อบทความ, สถานะปัจจุบัน, วันที่ส่งบทความ และ วันสุดท้ายที่มีการเปลี่ยนแปลงสถานะครั้งล่าสุด',
+      'url' => OPEN_JOURNAL_PREFIX_PATH.'/report/journal-list-all',
+      'callback' => 'open_journal_report_journal_list_all'
+    ),
     //5.1
     array(
       'title' => 'รายงานบทความ',
-      'subtitle' => 'แสดง : ID, ชื่อบทความ, สถานะปัจจุบัน, วันที่ส่งบทความ และ วันสุดท้ายที่มีการเปลี่ยนแปลงสถานะครั้งล่าสุด',
+      'subtitle' => 'แสดง : ID, ชื่อบทความ, สถานะปัจจุบัน, วันที่ส่งบทความ และ วันสุดท้ายที่มีการเปลี่ยนแปลงสถานะครั้งล่าสุด โดยไม่รวมบทความที่ปฏิเสธ หรือถอน',
       'url' => OPEN_JOURNAL_PREFIX_PATH.'/report/journal-list',
       'callback' => 'open_journal_report_journal_list'
     ),
@@ -289,6 +296,38 @@ function open_journal_report_list() {
 }
 
 
+// 5.0
+function open_journal_report_journal_list_all() {
+  $now = REQUEST_TIME;
+
+  $query = open_journal_get_query();
+  db_query("SET @rn=0");
+  $result = db_query("SELECT 
+      @rn:=@rn+1 AS `no.`, 
+      s.name `status`, 
+      j.reject `reject`,
+      j.withdraw `withdraw`,
+      j.code `ID`, 
+      j.jid `URL ID`, 
+      j.title_en `title (en)`, 
+      j.title_sub `title (th)`, 
+      j.address `offices`,
+      DATE_FORMAT(FROM_UNIXTIME(j.created), '%Y-%M-%d') `submission date`, 
+      DATE_FORMAT(FROM_UNIXTIME(j.status_changed), '%Y-%M-%d') `date of latest status change`, 
+      CEIL(($now - j.status_changed)/(60*60*24)) `days in current status` 
+    FROM 
+      {open_journal_journal} j, 
+      {open_journal_state} s 
+    WHERE 
+      j.sid = s.sid AND j.created >= :start_date AND j.created <= :end_date
+    ORDER BY
+      j.created DESC
+  ", $query);
+
+
+  open_journal_result_to_xlsx($result, __FUNCTION__);
+
+}
 
 // 5.1
 function open_journal_report_journal_list() {
