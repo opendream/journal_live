@@ -1442,7 +1442,7 @@ function open_journal_discussion_save($data, $params=array()) {
   // Auto app state when state has flag upload_auto_approve
   $journal = open_journal_journal_load($data->jid);
   $state = db_query("SELECT * FROM {open_journal_state} WHERE sid = :sid", array(':sid' => $journal->sid))->fetchObject();
-  if (($data->files_upload || $data->fid) && $state->upload_auto_approve) {
+  if (!$params['from_comment'] && ($data->files_upload || $data->fid) && $state->upload_auto_approve) {
     $next_sid= open_journal_next_sid($journal->sid, TRUE);
     open_journal_approve_submit($journal->jid, $next_sid, NULL, NULL, array(), FALSE);
   }
@@ -1661,7 +1661,7 @@ function open_journal_comment_save($data) {
 
   drupal_write_record('open_journal_comment', $data, $pk);
   $discussion = open_journal_discussion_load($data->did);
-  open_journal_discussion_save($discussion, array('ignore_roles' => TRUE));
+  open_journal_discussion_save($discussion, array('ignore_roles' => TRUE, 'from_comment' => TRUE));
 
 
   if ($data->fid) {
